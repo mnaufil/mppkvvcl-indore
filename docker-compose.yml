@@ -1,0 +1,44 @@
+nginx:
+    build: ./nginx/
+    container_name: nginx-container_dev
+    ports:
+        - 4000:80
+    links:
+        - php
+    volumes_from:
+        - app-data
+
+php:
+    image: php:8.1-fpm
+    container_name: php-container_dev
+    expose:
+        - 9000
+    # links:  
+    #    - mysql
+    volumes_from:
+        - app-data
+
+app-data:
+    image: php:8.1-fpm
+    container_name: app-data-container_dev
+    volumes:
+        - ./app/:/var/www/html/
+    command: "true"
+
+# mysql:    
+#     image: mysql:5.7  
+#     container_name: mysql-container_dev  
+#     volumes_from:  
+#         - mysql-data_dev  
+#     environment:  
+#         MYSQL_ROOT_PASSWORD: Bcsp!@VD#2  
+#         MYSQL_DATABASE: kimai_db_1  
+#         MYSQL_USER: root  
+#         MYSQL_PASSWORD: Bcsp!@VD#2  
+
+# mysql-data:    
+#     image: mysql:5.7  
+#     container_name: mysql-data-container_dev  
+#     volumes:  
+#         - /var/lib/mysql  
+#     command: "true"

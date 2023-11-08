@@ -15,7 +15,7 @@
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo base_url('assets/images/brand/favicon.ico'); ?>">
 
         <!-- TITLE -->
-        <title>MPPKVVCL - Reports</title>
+        <title>MPPKVVCL - <?php echo $title; ?></title>
 
         <!-- BOOTSTRAP CSS -->
         <link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
@@ -23,7 +23,7 @@
         <!-- STYLE CSS -->
         <link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
 
-    	<!-- Plugins CSS -->
+        <!-- Plugins CSS -->
         <link href="<?php echo base_url('assets/css/plugins.css'); ?>" rel="stylesheet">
 
         <!--- FONT-ICONS CSS -->
@@ -74,15 +74,15 @@
                             <!-- PAGE-HEADER END -->
 
                             <!-- Row -->
-                            <div class="row row-sm">
+                            <?php if (!empty($report_list)) { ?>
+                            <div class="row">
                                 <div class="col-lg-12">
                                     <div class="card">
                                         <div class="card-body mt-3 mb-3">
                                             <div class="table-responsive">
                                                 <div class="card-body">
-                                                    <div class=""> 
-                                                        <ul class="list-group"> 
-                                                            <!-- <a href="view-report.php">1. 33/11 kv New Sub-Station</a> -->
+                                                    <div class="row"> 
+                                                        <ul class="list-group">
                                                             <?php if (in_array('Physical Progress', $report_list)) { ?>
                                                             <li class="list-group-item">
                                                                 <a href="<?php echo base_url('view-report'); ?>"><i class="ti ti-player-record-filled"></i> Physical Progress</a>
@@ -123,7 +123,7 @@
                                                                     <a href="<?php echo base_url('material-status-summary'); ?>"><i class="ti ti-player-record-filled"></i> Material Status Summary</a>
                                                                 </li>
                                                             <?php } ?>
-                                                            <?php if (in_array('Visit  Report', $report_list)) { ?>
+                                                            <?php if (in_array('Visit Report', $report_list)) { ?>
                                                                 <li class="list-group-item">
                                                                     <a href="<?php echo base_url('visit-report');?>"><i class="ti ti-player-record-filled"></i> Visit  Report</a>
                                                                 </li>
@@ -145,7 +145,21 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>    
+                            <?php } else { ?>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="card">
+                                        <div class="card-body bg-danger text-white pt-2 rounded-2">
+                                            <div class="row">
+                                                <h3 class="pt-3"><strong>Authorization failed.</strong></h3>
+                                                <p>You don't have access any reports. Ask your administrator for help or request for access.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            <?php } ?>
                             <!-- End Row -->
 
                         </div>
@@ -175,8 +189,8 @@
         <!-- INPUT MASK JS-->
         <script src="<?php echo base_url('assets/plugins/input-mask/jquery.mask.min.js'); ?>"></script>
 
-    	<!-- TypeHead js -->
-    	<script src="<?php echo base_url('assets/plugins/bootstrap5-typehead/autocomplete.js'); ?>"></script>
+        <!-- TypeHead js -->
+        <script src="<?php echo base_url('assets/plugins/bootstrap5-typehead/autocomplete.js'); ?>"></script>
         <script src="<?php echo base_url('assets/js/typehead.js'); ?>"></script>
 
         <!-- SELECT2 JS -->

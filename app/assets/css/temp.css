@@ -335,5 +335,10 @@ float: right;
     display: block;
 }
 
+.list-view-contractor {
+    max-height: 300px;
+    overflow: auto;
+}
+
 
 

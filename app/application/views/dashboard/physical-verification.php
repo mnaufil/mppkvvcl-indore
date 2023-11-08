@@ -102,7 +102,7 @@
 	            									<tbody>
 	            										<?php foreach ($verification_data as $key => $value) { ?>
 	            										<tr data-contract-id="<?php echo $value['contract_id']; ?>" data-package-no="<?php echo $value['package_no']; ?>">
-	            											<td style="text-align: center;"><?php echo $value['package_no']; ?></td>
+	            											<td style="text-align: left;"><?php echo $value['package_no']; ?></td>
 	            											<td style="text-align: left;"><?php echo $value['contractor_name']; ?></td>
 	            											<td style="text-align: left;"><?php echo $value['typeofwork']; ?></td>
 	            											<td style="text-align: center;"><?php echo $value['ss']; ?></td>

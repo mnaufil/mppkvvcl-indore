@@ -635,7 +635,8 @@ class Report_Model extends CI_Model
 		
 		if($query)
 		{
-			$result =  $query->result();
+			// $result = $query->result();
+			$result = $query->result_array();
 			return $result;
 		}
 	}	

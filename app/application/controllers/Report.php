@@ -117,35 +117,65 @@ class Report extends CI_Controller
 				if (empty($reportData)) {
 					$data['reportData'] = 'No Records Found';
 				} else {
-					$data['reportData'] = $reportData;
-					$myVar = json_encode($data['reportData'][0]);
+					$myVar = $reportData[0];
 					$onlyKeys = array();
-					$jsonArray = json_decode($myVar,true);
-				
-					foreach($jsonArray as $key => $value) {
+
+					foreach($myVar as $key => $value) {
 						array_push($onlyKeys, $key);
 					}
 
-					$data['onlyKeys'] = $onlyKeys;		
-			
-					$mainHeadingArray = array();
-					$subHeadingArray = array();
-					$subSubHeadingArray = array();
+					$data['onlyKeys'] = $onlyKeys;
+
+					$mainHeadingArray = $subHeadingArray = $subSubHeadingArray = [];
 
 					foreach($data['onlyKeys'] as $mainHeading)
 					{
-					  if(str_contains($mainHeading, "__"))
-					  {
-					  	$explode = explode("__", $mainHeading);	
-		 					array_push($mainHeadingArray, $explode[0]);
-		 					array_push($subHeadingArray, $explode[1].' ('.$explode[2].')');
-		 					array_push($subSubHeadingArray, $explode[3]);
-					  } 
+						if ($mainHeading == 'feeder_id') {
+							continue;
+						}
+
+						$explode = explode("__", $mainHeading);
+						array_push($mainHeadingArray, $explode[0]);
+	 					array_push($subHeadingArray, $explode[1].' ('.$explode[2].')');
+	 					array_push($subSubHeadingArray, $explode[3]);
 					}
 
-					$data['mainHeadingArray'] = array_unique($mainHeadingArray);
+					$mainHeadingArray = array_unique($mainHeadingArray);
+
+					$header_count = [];
+					foreach ($mainHeadingArray as $group_name) {
+						$header_count[$group_name] = 0;
+						foreach ($data['onlyKeys'] as $value) {
+							$match = '/^'.$group_name.'__/';
+							if (preg_match($match, $value)) {
+								$header_count[$group_name]++;
+							}
+						}
+					}
+
+					$data['mainHeadingArray'] = $header_count;
 					$data['subHeadingArray'] = $subHeadingArray;
 					$data['subSubHeadingArray'] = $subSubHeadingArray;
+
+					// Modifying reportData
+					$modified_report_data = [];
+					
+					foreach ($reportData as $key => $value) {
+						$i = 0;
+						foreach ($value as $k => $val) {
+							if (str_contains($k, 'boq_qty')) {
+								$boq_key = 'boq_qty_'.$i;
+								$modified_report_data[$value['feeder_id']][$boq_key] = $val;
+							} elseif (str_contains($k, 'erection_qty')) {
+								$erection_key = 'erection_qty_'.$i;
+								$modified_report_data[$value['feeder_id']][$erection_key] = $val;
+							}
+
+							$i++;
+						}
+					}
+
+					$data['reportData'] = $modified_report_data;
 				}
 			}
 		} else {

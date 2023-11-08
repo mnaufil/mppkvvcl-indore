@@ -327,57 +327,35 @@
                                           <div class="table-responsive mb-3">
                                              <table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
                                                 <tbody>
-
                                                    <tr>
-                                                     
-                                                     <?php foreach ($mainHeadingArray as $key1) { ?>
-                                                      <th colspan="3"><?php echo str_replace("_", " ", $key1);?></th>
+                                                      <td></td>
+                                                      <?php foreach ($mainHeadingArray as $key => $value) { ?>
+                                                      <!-- <th colspan="3"><?php //echo str_replace("_", " ", $key1);?></th> -->
+                                                      <th colspan="<?php echo $value; ?>"><?php echo $key;?></th>
                                                       <?php  } ?>
                                                    </tr> 
 
                                                    <tr>
                                                      <th>Feeder ID</th>
                                                      <?php foreach ($subHeadingArray as $key) { ?>
-                                                      <th><?php echo str_replace("_", " ", $key);?></th>
+                                                      <th style="text-align:left"><?php echo str_replace("_", " ", $key);?></th>
                                                       <?php  } ?>
                                                    </tr> 
                                                    <tr>
-                                                       <th></th>
-                                                    <?php foreach ($subSubHeadingArray as $val) {
-                                                   ?>  
-                                                   <th><?php echo str_replace("_", " ", $val);?></th>
-                                                <?php } ?>
-                                                 </tr> 
-                                                   <?php foreach ($reportData as $value) {
+                                                      <th></th>
+                                                      <?php foreach ($subSubHeadingArray as $val) { ?>  
+                                                      <th><?php echo str_replace("_", " ", $val);?></th>
+                                                      <?php } ?>
+                                                   </tr> 
+                                                   <?php foreach ($reportData as $key => $value) {
                                                    ?>                                            
                                                    <tr>
-                                                      <td><?php echo $value->feeder_id;?></td>
-                                                      <td><?php echo $value->Civil_Work__Foundation__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Civil_Work__Foundation__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__11_KV_Capacitor_Bank__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__11_KV_Capacitor_Bank__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__11_KV_Potential_X_mer_Installation__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__11_KV_Potential_X_mer_Installation__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__11_KV_VCB_slash_CT_Installation__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__11_KV_VCB_slash_CT_Installation__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Bus_Bar_Erection__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Bus_Bar_Erection__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Cabling_Connection__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Cabling_Connection__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Commissioning_of_Capacitor_Bank__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Commissioning_of_Capacitor_Bank__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Earthing_Network__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Earthing_Network__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Isolator_Installation__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Isolator_Installation__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Lightining_Arrester_Installation__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Lightining_Arrester_Installation__NOS__erection_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Residual_Voltage_X_mer_Installation__NOS__boq_qty;?></td>
-                                                      <td><?php echo $value->Electrical__Residual_Voltage_X_mer_Installation__NOS__erection_qty;?></td>
-                                                     
-
+                                                      <td><?php echo $key; ?></td>
+                                                      <?php foreach ($value as $val) { ?>
+                                                      <td><?php echo $val; ?></td>
+                                                      <?php } ?>
                                                    </tr>
-                                                <?php } ?>
+                                                   <?php } ?>
                                                 </tbody>
                                              </table>
                                           </div>
@@ -401,20 +379,20 @@
                            <?php } ?>
                         <?php } ?>
                         <!-- Report Row Ends -->   
-                     <?php } elseif(isset($feeder_access) && !$feeder_access) { ?>
-                           <div class="row">
-                              <div class="col-lg-12">
-                                 <div class="card">
-                                    <div class="card-body bg-danger text-white pt-2 rounded-2">
-                                       <div class="row">
-                                          <h3 class="pt-3"><strong>Authorization failed.</strong></h3>
-                                          <p>You don't have access to this record. Ask your administrator for help or request for access.</p>
-                                       </div>
+                        <?php } elseif(isset($feeder_access) && !$feeder_access) { ?>
+                        <div class="row">
+                           <div class="col-lg-12">
+                              <div class="card">
+                                 <div class="card-body bg-danger text-white pt-2 rounded-2">
+                                    <div class="row">
+                                       <h3 class="pt-3"><strong>Authorization failed.</strong></h3>
+                                       <p>You don't have access to this record. Ask your administrator for help or request for access.</p>
                                     </div>
                                  </div>
                               </div>
                            </div>
-                     <?php } ?>
+                        </div>
+                        <?php } ?>
 
                   </div>
                   <!-- CONTAINER CLOSED -->

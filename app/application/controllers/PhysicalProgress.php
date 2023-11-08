@@ -5,8 +5,7 @@ class PhysicalProgress extends CI_Controller
      function __construct()
      {
           parent::__construct();
-
-          //$this->load->library('form_validation'); 
+ 
           $this->load->model('PhysicalProgress_Model', 'pp_model');
         
           if(!$this->session->isUserLoggedIn)
@@ -231,7 +230,7 @@ class PhysicalProgress extends CI_Controller
 
                $sheet_result['task_ratio'] = $task_ratio = $this->calculateTaskRatio($sheet_result, $mode);
                $task_ratio_arr = explode(' / ', $task_ratio);
-               $sheet_result['work_completion'] = number_format(((int)$task_ratio_arr[0] / (int)$task_ratio_arr[1]) * 100, 2);
+               $sheet_result['work_completion'] = round(((int)$task_ratio_arr[0] / (int)$task_ratio_arr[1]) * 100);
 
                if (!empty($sheet_result['activities_list'])) {
                     $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);

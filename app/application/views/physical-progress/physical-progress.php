@@ -375,7 +375,7 @@
                                     <td style="text-align: center;">
                                       <!-- Work Completion (In %) -->
                                       <?php $work_completion = ($value['tt_task'] != 0) ? ((int)$value['cc_task'] / (int)$value['tt_task']) * 100 : ''; ?>
-                                      <?php echo ($work_completion == 0 || $work_completion == 100 || $work_completion == '') ? $work_completion : number_format($work_completion, 2); ?>
+                                      <?php echo ($work_completion == 0 || $work_completion == 100 || $work_completion == '') ? $work_completion : round($work_completion); ?>
                                     </td>
                                     <td>
                                       <!-- Reported By -->

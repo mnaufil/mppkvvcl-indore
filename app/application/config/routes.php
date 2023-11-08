@@ -151,6 +151,7 @@ $route['save-invoice'] = 'InvoiceStatus/saveInvoice';
 $route['get-invoice/(:num)/(:num)'] = 'InvoiceStatus/getInvoice/$1/$2';
 $route['view-invoice/(:num)'] = 'InvoiceStatus/viewInvoice/$1';
 
+/*Reports Module*/
 $route['reports'] = 'Report/index';
 $route['view-report'] = 'Report/viewReport';
 $route['generate-physical-report'] = 'Report/generatePhysicalReport';
@@ -159,42 +160,31 @@ $route['generate-visit-report'] = 'Report/generateVisitReport';
 $route['ncr-report'] = 'Report/ncrReport';
 $route['generate-ncr-report'] = 'Report/generateNcrReport';
 $route['export-excel-sp'] = 'Report/exportExcelSp';
-
 $route['contract-summary-report'] = 'Report/contractSummaryReport';
 $route['generate-contract-summary-report'] = 'Report/generateContractSummaryReport';
 $route['bg-summary-report'] = 'Report/bgSummaryReport';
 $route['generate-bg-summary-report'] = 'Report/generateBgSummaryReport';
 $route['show-tkcs/(:num)'] = 'Report/showtkcs/$1';
-
 $route['mobilisation-summary-report'] = 'Report/mobilisationSummaryReport';
 $route['generate-mobilisation-summary-report'] = 'Report/generateMobilisationSummaryReport';
-
 $route['non-conformance-report'] = 'Report/nonConformanceReport';
 $route['generate-non-conformance-report'] = 'Report/generateNonConformaceReport';
-
 $route['material-status-report'] = 'Report/materialStatusReport';
 $route['generate-material-status-report'] = 'Report/generateMaterialStatusReport';
-
-
 $route['material-status-summary'] = 'Report/materialStatusSummary';
 $route['generate-material-status-summary'] = 'Report/generateMaterialStatusSummary';
-
-
 $route['cash-flow-report'] = 'Report/cashFlowReport';
 $route['generate-cash-flow-report'] = 'Report/generateCashFlowReport';
-
 $route['invoicing-payment-report'] = 'Report/invoicingPaymentReport';
 $route['generate-invoicing-payment-report'] = 'Report/generateInvoicingPaymentReport';
-
 $route['convert-pdf'] = 'Report/convertPdf';
-
 $route['show-feeders/(:num)'] = 'Report/showfeeders/$1';
 
+/*TypeofWork Module*/
 $route['work-type'] = 'Setup/worktype';
 $route['add-typeofwork'] = 'Setup/addtypeofwork';
 $route['edit-typeofwork'] = 'Setup/edittypeofwork';
 $route['save-typeofwork'] = 'Setup/savetypeofwork';
-
 
 /*TypeofWork-Activities Module*/
 $route['typeofwork-activities'] = 'TypeofWorkActivities/index';
@@ -203,7 +193,6 @@ $route['save-activity-group'] = 'TypeofWorkActivities/saveActivityGroup';
 $route['save-activity'] = 'TypeofWorkActivities/saveTypeofWorkActivities';
 $route['update-activity'] = 'TypeofWorkActivities/updateTypeofWorkActivities';
 $route['delete-activity'] = 'TypeofWorkActivities/deleteTypeofWorkActivity';
-
 
 $route['circle'] = 'Setup/divisions';
 $route['loadmilestones/(:num)'] = 'Setup/loadmilestones/$1';

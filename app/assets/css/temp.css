@@ -329,5 +329,11 @@ float: right;
     margin-right: 7px;
 }
 
+.physical-popup {
+    max-height: 450px;
+    overflow: auto;
+    display: block;
+}
+
 
 

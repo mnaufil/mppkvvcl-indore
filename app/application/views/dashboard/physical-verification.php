@@ -181,7 +181,7 @@
 
 	    	<!-- Feeders List Modal -->
 	    	<div class="modal fade" id="feeders-list-modal" tabindex="-1" role="dialog">
-	    		<div class="modal-dialog modal-lg " role="document">
+	    		<div class="modal-dialog modal-xl " role="document">
 	    			<div class="modal-content">
 	    				<div class="modal-header">
 	    					<h5 class="modal-title" id="modal_title"></h5>
@@ -199,7 +199,7 @@
           					</div>
     					</div>
 
-	    				<div class="modal-body">
+	    				<div class="modal-body physical-popup">
 	    					<form class="form-horizontal">
 	    						<div class="row">
 	    							<!-- Region -->
@@ -237,8 +237,8 @@
 	    							<table class="table text-nowrap text-md-nowrap mb-0 mt-3 text-center table-hover" id="feeders-list-table">
 	    								<thead>
 	    									<tr>
-	    										<th>Contract No</th>
-	    										<th>Contractor</th>
+	    										<!-- <th>Contract No</th>
+	    										<th>Contractor</th> -->
 	    										<th>Region/Circle/Division</th>
 	    										<th>Site Location</th>
 	    										<th>Feeder ID</th>
@@ -252,8 +252,8 @@
 	    								</thead>
 	    								<tbody>
 	    									<tr>
-	    										<td></td>
-	    										<td></td>
+	    										<!-- <td></td>
+	    										<td></td> -->
 	    										<td></td>
 	    										<td></td>
 	    										<td></td>
@@ -422,8 +422,8 @@
 					            let url = '<?php echo base_url("add-physical-progress") ?>' + '/' + mode + '/' + value.physical_progress_id + '/' + value.contract_id + '/' + value.contract_location_id;
 
         						tbody_html += '<tr>';
-        						tbody_html += '<td>'+ value.contract_no +'</td>';
-        						tbody_html += '<td>'+ value.contractor +'</td>';
+        						/*tbody_html += '<td>'+ value.contract_no +'</td>';
+        						tbody_html += '<td>'+ value.contractor +'</td>';*/
         						tbody_html += '<td>'+ value.region_circle_division +'</td>';
         						tbody_html += '<td>'+ value.site_location +'</td>';
         						tbody_html += '<td>'+ value.feeder_id +'</td>';
@@ -500,6 +500,7 @@
         		} else {
         			let slab = $('#slab').val();
         			let contract_id = $('#contract_id').val();
+        			let package_no = $('#package_no').val();
         			let date = $('input[name="monthdate"]').val();
 
         			// Ajax call to get feeders data with filters
@@ -507,7 +508,7 @@
         				type: 'POST',
         				url: '<?php echo base_url('get-feeders-list') ?>',
         				dataType: 'json',
-        				data: {slab:slab, contract_id:contract_id, date:date, region_id:selected_region_id, circle_id:selected_circle_id, division_id:selected_division_id},
+        				data: {slab:slab, contract_id:contract_id, package_no:package_no,date:date, region_id:selected_region_id, circle_id:selected_circle_id, division_id:selected_division_id},
         				success: function(response) {
         					let feeders_list = response.feeders_data;
         					console.log(feeders_list);
@@ -541,8 +542,8 @@
 						            let url = '<?php echo base_url("add-physical-progress") ?>' + '/' + mode + '/' + value.physical_progress_id + '/' + value.contract_id + '/' + value.contract_location_id;
 
 	        						tbody_html += '<tr>';
-	        						tbody_html += '<td>'+ value.contract_no +'</td>';
-	        						tbody_html += '<td>'+ value.contractor +'</td>';
+	        						/*tbody_html += '<td>'+ value.contract_no +'</td>';
+	        						tbody_html += '<td>'+ value.contractor +'</td>';*/
 	        						tbody_html += '<td>'+ value.region_circle_division +'</td>';
 	        						tbody_html += '<td>'+ value.site_location +'</td>';
 	        						tbody_html += '<td>'+ value.feeder_id +'</td>';
@@ -583,6 +584,7 @@
 
         		let slab = $('#slab').val();
     			let contract_id = $('#contract_id').val();
+    			let package_no = $('#package_no').val();
     			let date = $('input[name="monthdate"]').val();
 
     			// Ajax call to get feeders data by clearing filters
@@ -590,7 +592,7 @@
     				type: 'POST',
     				url: '<?php echo base_url('get-feeders-list') ?>',
     				dataType: 'json',
-    				data: {slab:slab, contract_id:contract_id, date:date},
+    				data: {slab:slab, contract_id:contract_id, package_no:package_no, date:date},
     				success: function(response) {
     					let feeders_list = response.feeders_data;
 
@@ -624,8 +626,8 @@
 					            let url = '<?php echo base_url("add-physical-progress") ?>' + '/' + mode + '/' + value.physical_progress_id + '/' + value.contract_id + '/' + value.contract_location_id;
 
         						tbody_html += '<tr>';
-        						tbody_html += '<td>'+ value.contract_no +'</td>';
-        						tbody_html += '<td>'+ value.contractor +'</td>';
+        						/*tbody_html += '<td>'+ value.contract_no +'</td>';
+        						tbody_html += '<td>'+ value.contractor +'</td>';*/
         						tbody_html += '<td>'+ value.region_circle_division +'</td>';
         						tbody_html += '<td>'+ value.site_location +'</td>';
         						tbody_html += '<td>'+ value.feeder_id +'</td>';

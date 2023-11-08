@@ -109,7 +109,7 @@
               							</div>
               							<!-- Work Completion -->
               							<div class="mt-3">
-              								<strong>Work Completion (In %): <span><?php echo $sheet_data['work_completion']; ?></span></strong>
+              								<h5><strong>Work Completion (In %): <span><?php echo $sheet_data['work_completion']; ?></span></strong></h5>
               							</div>
               						</div>
 
@@ -710,7 +710,7 @@
 																										<?php $input_name = strtolower(str_replace(' ', '_', $k1)).'_'.$v2['typeofwork_activity_id']; ?>
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>">	
-																										<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed') { ?>
+																										<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																											<?php $erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty']; ?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>">	
 																										<?php } ?>																										
@@ -1038,7 +1038,6 @@
 																									<!-- Calculating Observation Flag -->
 																									<?php $hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_observation_'.$v2['typeofwork_activity_id']; ?>
 																									<?php $observation_flag = 'no observation'; ?>
-																									<?php //echo 'v2: <pre>'; print_r($v2); echo '</pre>'; die(); ?>
 																									<?php if (isset($v2['applied_observations']) && !empty($v2['applied_observations'])) {
 																													$obs_list_count = count($v2['applied_observations']);
 																													$obs_complete_count = 0;
@@ -1316,7 +1315,6 @@
               							<div class="col-xl-12">
               								<label for="completionFile" class="form-label mt-0">Completion File
               								<div class="text-wrap">
-              									<?php //echo 'ppsheet_completion_file: <pre>'; print_r($sheet_data['ppsheet_completion_file']); echo '</pre>'; die(); ?>
               									<?php foreach ($sheet_data['ppsheet_completion_file'] as $key => $value) { ?>
               										<?php $obs_file_id = 'image-'.$key; ?>
               										<div class="file-image-1" data-pp-file-id=<?php echo $value['physical_progress_file_id']; ?>>
@@ -2245,16 +2243,22 @@
 				let tr = $(input).closest('tr');
 				let table_row = $(tr).attr('data-table-row');
 				let activity_index = $(input).closest('table').attr('data-activity-index');
-				console.log('activity_index: '+activity_index);
 
       	//Check if erected qty does not exceeds BOQ qty
 				let boq_td = $(input).parent().prev('.boq-qty');
 				let boq_qty = $(boq_td).find('input').val();
 				
 				let erected_qty = $(input).val();
-				console.log('erected_qty:'+ erected_qty);	
 
-				if (isNaN(erected_qty)) {
+				if (boq_qty == 0) {
+					$('.toast-body').text('Cannot enter erected quantity against 0 BOQ quantity');
+	      	$('.toast').toast('show');
+
+	      	// Setting input value to blank
+	      	$(input).val('');
+	      	
+	      	return false;
+				} else if (isNaN(erected_qty)) {
 					$('.toast-body').text('Enter only digits');
 	      	$('.toast').toast('show');
 
@@ -2279,15 +2283,12 @@
 
 						//Getting selected activity details
 						let activity = getActivityDetails(table_name, table_row, activity_index);
-						console.log(activity);
 
 						//Getting selected activity's id
 						let activity_id = activity.typeofwork_activity_id;
-						console.log('activity_id: '+activity_id);
 
 						//Getting selected activity's observations
 						let activity_obs = activity.observations_list;
-						console.log(activity_obs);
 
 						if (activity_obs.length > 0) {
 			    		apply_observations(tr, table_row, table_name, activity_id, 'withBOQ'); 

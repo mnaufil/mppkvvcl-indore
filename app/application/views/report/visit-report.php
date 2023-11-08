@@ -16,7 +16,7 @@
 	   	<title>MPPKVVCL - View Report</title>
 
 	   	<!-- BOOTSTRAP CSS -->
-	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">	   	
+	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
 	   	<!-- STYLE CSS -->
 	   	<link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
@@ -81,12 +81,11 @@
 			                					</div>
 			                				</div>
 			                				<!-- Form -->
-			                				<form method="post" action="<?php echo base_url('generate-visit-report')?>">
+			                				<form id="generateVisitReport" name="generateVisitReport" method="post" action="<?php echo base_url('generate-visit-report')?>">
 			                					<div class="form-row">
+			                						<!-- Physical Progress Date -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label class="form-label" for="physicalProgressDate">Physical Progress Date
-	                        								<span class="text-red">*</span>
-	                        							</label>
+			                							<label class="form-label" for="physicalProgressDate">Physical Progress Date<span class="text-red">*</span></label>
 	                        							<div class="input-group">
 	                                                        <div class="input-group-text dates">
 	                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
@@ -211,6 +210,7 @@
 			                						</div>
 			                					</div>
 			                					<div class="form-row">
+			                						<!-- Status -->
 			                						<div class="col-xl-3 mb-3">
 			                							<label for="status" class="form-label">Status
 				                                       	</label>
@@ -220,12 +220,10 @@
 															<?php foreach($statuss as $sat) { ?>
 															<option value="<?php echo $sat->status_id;?>"  <?php if(in_array($sat->status_id, $status)) { ?> selected <?php } ?>><?php echo $sat->name;?></option>
 															<?php } ?>
-				                                          	<!--option value="Open">Open</option>
-				                                          	<option value="In-Process">In-Process</option>
-				                                          	<option value="Completed">Completed</option-->
 				                                        </select>
 			                						</div>
 			                						<div class="col-xl-3"></div>
+			                						<!-- Report Type -->
 			                						<div class="col-xl-4 mb-3">
 			                							<label class="form-label" for="reportType">Report Type
 				                							<span class="text-red">*</span>
@@ -233,11 +231,11 @@
 				                						<div class="form-group">
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
-				                                       				<input type="radio" class="custom-control-input" name="reportType" value="1" <?php if($reportType=='1') { ?> checked <?php } ?> required>
+				                                       				<input type="radio" class="custom-control-input" name="reportType" value="1" <?php if($reportType=='1') { ?> checked <?php } ?>>
 				                                       				<span class="custom-control-label">Visit Summary</span>
 				                                       			</label>
 				                                       			<label class="custom-control custom-radio status-radio">
-				                                       				<input type="radio" class="custom-control-input" name="reportType" value="2" <?php if($reportType=='2') { ?> checked <?php } ?> required>
+				                                       				<input type="radio" class="custom-control-input" name="reportType" value="2" <?php if($reportType=='2') { ?> checked <?php } ?>>
 				                                       				<span class="custom-control-label">User wise Complete List</span>
 				                                       			</label>	
 				                                       		</div>
@@ -248,7 +246,6 @@
 			                					<!--button class="btn btn-success mb-3 mt-3" type="button" onclick="showReport()">Generate</button-->
 												<button class="btn btn-success mb-3 mt-3" type="submit">Generate </button>
 												<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('visit-report')?>">Clear</a>
-
                                  				<a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports')?>">Back</a>
 			                				</form>
 			                				<!-- Form Ends -->
@@ -259,11 +256,14 @@
 			                <!-- Row Ends -->
 
 			                <!-- Report Row -->
+			                <?php if (isset($reportData)) { ?>
+			                <?php if (is_array($reportData)) { ?>
 			                <div class="row" id="report-table" >
 			                	<div class="col-lg-12">
 			                		<div class="card">
 			                			<div class="card-body" <?php if(!isset($_POST['physicalProgressDate'])) { ?> style="background: #eeeef4;" <?php } ?>>
 			                				<?php if(isset($_POST['physicalProgressDate'])) { ?>
+			                				<?php if ($download_access) { ?>
 			                				<div class="row">
 			                					<!-- Export Button -->
 			                					<div class="col-sm-12 col-md-9s mt-3">
@@ -271,7 +271,8 @@
 				                                       <a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" type="button"><span>Export</span></a>
 				                                    </div>
 				                                </div>	
-			                				</div>
+			                				</div>	
+			                				<?php } ?>
 			                			<?php } ?>
 			                				<div class="row">
 											<?php if($reportType=='1' && $reportType != "") { ?>
@@ -349,7 +350,21 @@
 			                			</div>
 			                		</div>
 			                	</div>
-			                </div>
+			                </div>		
+			                <?php } else { ?>
+			                <div class="row">
+				                  	<div class="col-lg-12">
+				                    	<div class="card">
+				                    		<div class="card-body">
+				                      			<div class="row">
+				                        			<h4 class="pt-3"><strong><?php echo $reportData; ?></strong></h4>
+				                        		</div>
+				                      		</div>
+				                    	</div>
+				                  	</div>
+				               	</div>
+			                <?php } ?>
+			                <?php } ?>
 			                <!-- Report Row Ends -->
 
 		        		</div>
@@ -361,8 +376,8 @@
 			</div>
 
 		<!-- Footer -->
-            <?php $this->load->view('include/footer');?>
-            <!-- Footer Ends -->
+        <?php $this->load->view('include/footer');?>
+        <!-- Footer Ends -->
 
 		</div>
 		<!-- PAGE ENDS-->
@@ -451,10 +466,15 @@
 
 	   	<script type="text/javascript">
 	   	$('input[name="physicalProgressDate"]').daterangepicker({
-            //autoUpdateInput: false,
+            autoUpdateInput: false,
             locale: {
                 format: 'DD-MM-YYYY'
             }
+        });
+
+        $('input[name="physicalProgressDate"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD-MM-YYYY') +' - '+ picker.endDate.format('DD-MM-YYYY'));
+            // $(this).val();
         });
 
         $('input[name="employee"]').on('change', function() {
@@ -550,6 +570,29 @@
 	   			}
 	   		}
 	   	}
+
+	   	$('#generateVisitReport').submit(function(event) {
+	   		let pp_date = $('#physicalProgressDate').val();
+
+	   		let checked_report_type_count = $('input[name="reportType"]:checked').length;
+
+	   		if (pp_date == '' && checked_report_type_count == 0) {
+	   			$('.toast-body').text('Select mandatory filters to generate the report');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+	   		} else if (pp_date == '') {
+	   			$('.toast-body').text('Select Physical Progress Date range');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+	   		} else if (checked_report_type_count == 0) {
+	   			$('.toast-body').text('Select Report Type');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+	   		}
+	   	});
 
 	   	
 	   	</script>

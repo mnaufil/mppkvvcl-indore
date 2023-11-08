@@ -49,12 +49,12 @@
 			<div class="page-main">
 				
 				 <!-- App-Header -->
-                <?php $this->load->view('include/header');?>
-                <!-- App-Header Ends -->
+             <?php $this->load->view('include/header');?>
+             <!-- App-Header Ends -->
 
-                <!-- App-Sidebar -->
-                <?php $this->load->view('include/side-bar');?>
-                <!-- App-Sidebar Ends -->
+             <!-- App-Sidebar -->
+             <?php $this->load->view('include/side-bar');?>
+             <!-- App-Sidebar Ends -->
 
 		        <!--app-content open-->
 		        <div class="main-content app-content mt-0">
@@ -77,49 +77,54 @@
 			                				<div class="form-row mt-2 mb-2">
 			                					<div class="col-xl-12">
 			                						<label class="form-label">Report Description:</label>
-                                    				<p class="report-desc">Updated Position of Invoicing and Payment Report</p>
+                                    		<p class="report-desc">Updated Position of Invoicing and Payment Report</p>
 			                					</div>
 			                				</div>
 			                				<!-- Form -->
-			                				<form class="needs-validation2" novalidate method="post" action="<?php echo base_url('generate-invoicing-payment-report'); ?>">
+			                				<form id="generateInvoicingPaymentReport" name="generateInvoicingPaymentReport" method="post" action="<?php echo base_url('generate-invoicing-payment-report'); ?>">
 			                					<div class="form-row">
+			                						<!-- Date -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label class="form-label" for="date">Date
-	                        								<span class="text-red">*</span>
-	                        							</label>
-	                        							<div class="input-group">
-	                                                        <div class="input-group-text dates">
-	                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-	                                                        </div>
-	                                                        <input type="text" class="form-control" name="date" id="date" value="<?php echo empty($_POST['date']) ? "" : $_POST['date'] ?>"/>
-	                                                    </div>
+			                							<label class="form-label" for="date">Date<span class="text-red">*</span></label>
+                        							<div class="input-group">
+	                                          	<div class="input-group-text dates">
+	                                             	<i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                                </div>
+	                                             <input type="text" class="form-control" name="date" id="date" value="<?php echo empty($_POST['date']) ? "" : $_POST['date'] ?>"/>
+                                             </div>
 			                						</div>
 			                					</div>
 			                					<button class="btn btn-success mb-3 mt-3"  type="submit">Generate</button>
-														<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('invoicing-payment-report'); ?>">Clear</a>
-                                    <a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
+													<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('invoicing-payment-report'); ?>">Clear</a>
+                                    	<a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
 			                				</form>
 			                				<!-- Form Ends -->
 			                			</div>
 			                		</div>
 			                	</div>
-			                </div>
-			                <!-- Row Ends -->
+			               </div>
+			               <!-- Row Ends -->
 
-			                <!-- Report Row -->
-			                <div class="row" id="report-table">
+			               <!-- Report Row -->
+			               <?php if (isset($reportData)) { ?>
+			               <?php if (is_array($reportData)) { ?>
+			               <div class="row" id="report-table">
 			                	<div class="col-lg-12">
 			                		<div class="card">
 			                			<?php if(!empty($reportData)) { ?>
 			                			<div class="card-body">
+
+			                				<?php if ($download_access) { ?>
 			                				<div class="row">
 			                					<!-- Export Button -->
 			                					<div class="col-sm-12 col-md-9s mt-3">
-				                                    <div class="dts-buttons btn-group flex-wrap" style="float:right;">
-				                                       <a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>
-				                                    </div>
-				                                </div>	
-			                				</div>
+		                                    <div class="dts-buttons btn-group flex-wrap" style="float:right;">
+				                              	<a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>
+			                                 </div>
+			                              </div>	
+			                				</div>	
+			                				<?php } ?>
+			                				
 			                				<div class="row">
 			                					<p class="report-desc">Updated Position regarding Invoicing and Payment as on <span id="invoiceDate"></span></p>
 			                				</Div>
@@ -160,59 +165,7 @@
 			                									<td class="table-td-center"><?php echo $report->total_payment;?></td>
 			                									<!-- <td><?php echo $report->package_no;?></td> -->
 			                								</tr>
-			                								<?php } ?>	
-			                								<!-- <tr>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                								</tr>
-			                								<tr>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                								</tr>
-			                								<tr>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                								</tr>
-			                								<tr>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                								</tr> -->
+			                								<?php } ?>
 			                							</tbody>
 			                						</table>
 			                					</div>
@@ -221,8 +174,22 @@
 			                			<?php } ?>
 			                		</div>
 			                	</div>
-			                </div>
-			                <!-- Report Row Ends -->
+			               </div> 	
+			               <?php } else { ?>
+			               <div class="row">
+		                  	<div class="col-lg-12">
+		                    		<div class="card">
+		                    			<div class="card-body">
+		                      			<div class="row">
+		                        			<h4 class="pt-3"><strong><?php echo $reportData; ?></strong></h4>
+		                        		</div>
+		                      		</div>
+		                    		</div>
+		                  	</div>
+		               	</div>
+			               <?php } ?>	
+			               <?php } ?>
+			               <!-- Report Row Ends -->
 
 		        		</div>
 		        		<!-- CONTAINER ENDS-->
@@ -233,8 +200,8 @@
 			</div>
 
 			<!-- Footer -->
-		    <?php $this->load->view('include/footer');?>
-		    <!-- Footer Ends -->
+		   <?php $this->load->view('include/footer');?>
+		   <!-- Footer Ends -->
 
 		</div>
 		<!-- PAGE ENDS-->
@@ -307,34 +274,33 @@
 	   <script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
 	   <script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
 
-	   	<!-- DATERANGE PICKER JS -->
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	   <!-- DATERANGE PICKER JS -->
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-        <!-- MULTI JS -->
-        <script src="<?php echo base_url('assets/plugins/multi/multi.min.js'); ?>"></script>
+      <!-- MULTI JS -->
+      <script src="<?php echo base_url('assets/plugins/multi/multi.min.js'); ?>"></script>
 
-        <!-- MULTIPLE SELECT JS -->
+      <!-- MULTIPLE SELECT JS -->
 		<script src="<?php echo base_url('assets/plugins/multipleselect/multiple-select.js'); ?>"></script>
 		<script src="<?php echo base_url('assets/plugins/multipleselect/multi-select.js'); ?>"></script>        
 
 		<!-- SUMOSELECT JS -->
 		<!-- <script src="<?php echo base_url('assets/plugins/sumoselect/jquery.sumoselect.js'); ?>"></script> -->
 
-	   	<script type="text/javascript">
+	   <script type="text/javascript">
 	   	$('input[name="date"]').daterangepicker({
            // autoUpdateInput: false,
             singleDatePicker: true,
             showDropdowns: true,
             locale: {
-                format: 'DD-MM-YYYY'
+               format: 'DD-MM-YYYY'
             }
-        });
-
+        	});
 
          <?php if(empty($_POST['date']))  {  ?>
             $('input[name="date"]').val("");
-            <?php } ?>
+         <?php } ?>
 
 	   	function showReport() {
 	   		let date = $('input[name="date"]').val();
@@ -343,7 +309,16 @@
 	   		$('#report-table').removeAttr('hidden');
 	   	}
 
-	   	
+	   	$('#generateInvoicingPaymentReport').submit(function(event) {
+	   		let date = $('#date').val();
+
+	   		if (date == '') {
+	   			$('.toast-body').text('Select Date');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+	   		}
+	   	});
 	   	</script>
 
 	</body>

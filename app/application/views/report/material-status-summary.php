@@ -16,7 +16,7 @@
 	   	<title>MPPKVVCL - View Summary</title>
 
 	   	<!-- BOOTSTRAP CSS -->
-	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">	   	
+	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
 	   	<!-- STYLE CSS -->
 	   	<link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
@@ -83,60 +83,33 @@
 			                					</div>
 			                				</div>
 			                				<!-- Form -->
-			                				<form class="needs-validation2" novalidate method="post" action="<?php echo base_url('generate-material-status-summary'); ?>">
+			                				<form id="generateMaterialStatusSummary" name="generateMaterialStatusSummary" method="post" action="<?php echo base_url('generate-material-status-summary'); ?>">
 			                					<div class="form-row">
-			                						<!-- <div class="col-xl-4 mb-3">
-			                							<label for="contractor" class="form-label">Contractor (TKC)
-				                                          	<span class="text-red">*</span>
-				                                       	</label>
-				                                       	<input class="form-control" type="text" name="contractor" id="contractor"value="<?php echo @$contractor;?>">
-                                                        <div class="list-group list-view-contractor" id="list-view"></div>
-			                						</div> -->
-			                						<!-- <div class="col-xl-4 mb-3">
-			                							<label class="form-label" for="circle">Circle
-				                							<span class="text-red">*</span>
-				                						</label>
-				                						<select class="form-control select2" id="circle" name="circle" required>
-				                                          	<option value="select" selected disabled>Select Circle</option>
-				                                          	<option value="jabalpur_city">Jabalpur City</option>
-				                                          	<option value="jabalpur_om">Jabalpur O&M</option>
-				                                          	<option value="katni">Katni</option>
-				                                          	<option value="mandla">Mandla</option>
-				                                          	<option value="narsinghpur">Narsinghpur</option>
-				                                          	<option value="seoni">Seoni</option>
-				                                          	<option value="balaghat">Balaghat</option>
-				                                          	<option value="chhindwara">Chhindwara</option>
-				                                        </select>	
-			                						</div> -->
+			                						<!-- Package No -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label for="packageNo" class="form-label">Package No.
-				                                          	<span class="text-red">*</span>
-				                                       	</label>
-				                                       <select class="form-control select2" id="packageNo" name="packageNo" required>
+			                							<label for="packageNo" class="form-label">Package No.<span class="text-red">*</span></label>
+				                                       <select class="form-control select2" id="packageNo" name="packageNo" >
+				                                       		<option value="select" selected disabled>Select Package</option>
 				                                          	<?php foreach($packages as $package) { ?>
 				                                          	<option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
 															<?php } ?>
 				                                        </select>
 			                						</div>
-
+			                						<!-- Date -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label class="form-label" for="date">Date
-	                        								<span class="text-red">*</span>
-	                        							</label>
+			                							<label class="form-label" for="date">Date<span class="text-red">*</span></label>
 	                        							<div class="input-group">
 	                                                        <div class="input-group-text dates">
 	                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
 	                                                        </div>
-	                                                        <input type="text" class="form-control" name="date" id="date" required value="<?php echo empty($_POST['date']) ? "" : $_POST['date'] ?>"/>
+	                                                        <input type="text" class="form-control" name="date" id="date" value="<?php echo empty($_POST['date']) ? "" : $_POST['date'] ?>"/>
 	                                                    </div>
 			                						</div>
-
-
 			                					</div>
 
-			                						<button class="btn btn-success mb-3 mt-3"  type="submit">Generate</button>
-														<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('material-status-summary'); ?>">Clear</a>
-                                    <a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
+			                					<button class="btn btn-success mb-3 mt-3"  type="submit">Generate</button>
+												<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('material-status-summary'); ?>">Clear</a>
+                                				<a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
 			                				</form>
 			                				<!-- Form Ends -->
 			                			</div>
@@ -145,12 +118,16 @@
 			                </div>
 			                <!-- Row Ends -->
 
+			                <?php if (isset($feeder_access) && $feeder_access) { ?>
 			                <!-- Report Row -->
+			                <?php if (is_array($reportData)) { ?>
 			                <div class="row" id="report-table" >
 			                	<div class="col-lg-12">
 			                		<div class="card">
 			                			<?php if(!empty($reportData)) { ?>
 			                			<div class="card-body">
+
+			                				<?php if ($download_access) { ?>
 			                				<div class="row">
 			                					<!-- Export Button -->
 			                					<div class="col-sm-12 col-md-9s mt-3">
@@ -158,7 +135,9 @@
 				                                        <a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>			
 				                                    </div>
 				                                </div>	
-			                				</div>
+			                				</div>	
+			                				<?php } ?>
+			                				
 			                				<div class="row">
 			                					<div class="table-responsive mb-3 mt-3">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
@@ -195,8 +174,35 @@
 			                			<?php } ?>
 			                		</div>
 			                	</div>
-			                </div>
-			                <!-- Report Row Ends -->
+			                </div>	
+			                <?php } else { ?>
+			                <div class="row">
+			                  	<div class="col-lg-12">
+			                    	<div class="card">
+			                    		<div class="card-body">
+			                      			<div class="row">
+			                        			<h4 class="pt-3"><strong><?php echo $reportData; ?></strong></h4>
+			                        		</div>
+			                      		</div>
+			                    	</div>
+			                  	</div>
+			               	</div>
+			                <?php } ?>			                
+			                <!-- Report Row Ends -->	
+			                <?php } elseif (isset($feeder_access) && !$feeder_access) { ?>
+			                <div class="row">
+		                    	<div class="col-lg-12">
+		                       		<div class="card">
+		                          		<div class="card-body bg-danger text-white pt-2 rounded-2">
+		                             		<div class="row">
+		                                		<h3 class="pt-3"><strong>Authorization failed.</strong></h3>
+		                                		<p>You don't have access to this record. Ask your administrator for help or request for access.</p>
+		                             		</div>
+		                          		</div>
+		                       		</div>
+		                    	</div>
+		                 	</div>	
+			                <?php }?>
 
 		        		</div>
 		        		<!-- CONTAINER ENDS-->
@@ -297,58 +303,36 @@
             }
         });
 
-
-         <?php if(empty($_POST['date']))  {  ?>
+        <?php if(empty($_POST['date']))  {  ?>
             $('input[name="date"]').val("");
             <?php } ?>
-
 
 	   	function showReport() {
 	   		$('#report-table').removeAttr('hidden');
 	   	}
 
-	   	//Displays contractor search list view
-        function showtkc(tkcValue) {
-            // alert(tkcValue);
-            $('#list-view').show();
-            if (tkcValue !== '') {
-                var html = '';
-                $('#list-view').empty();
+		$('#generateMaterialStatusSummary').submit(function(event) {
+			let package_no = $('#packageNo option:selected').val();
 
-                for (var i = 0; i < 3; i++) {
-                    html += '<a href="javascript:void(0)" class="list-group-item list-group-item-action flex-column align-items-start ">';
-                    html += '<div class="d-flex w-100 justify-content-between">';
-                    html += '<h4 class="mb-1"><strong>M/s Shreem Capcitor</strong></h4>';
-                    html += '<p>Package - 1 </p>';
-                    html += '</div>';
-                    html += '<p class="mb-1">Type Of Work: <span class="text-primary"> Capacitor Bank</span></p>';
-                    html += '<small class="text-muted">Award No: <span class="text-primary">483</span></small><br>';
-                    html += '<small class="text-muted">Award Date : <span class="text-primary"> 25-09-2023</span></small>';
-                    html += '</a>';
-                }
+			let date = $('#date').val();
 
-                $('#list-view').append(html);
-            } else {
-                $('#list-view').empty();
-            }
+			if (package_no == 'select' && date == '') {
+				$('.toast-body').text('Select Filters to generate the report');
+           		$('.toast').toast('show');
 
-            /*if(tkcValue!=='')
-            {
-                $("#tkclist").show();
-            }
-            else
-            {
-                $("#tkclist").hide();
-            }*/
-        }
+           		event.preventDefault();
+			} else if (package_no == 'select') {
+				$('.toast-body').text('Select Package No');
+           		$('.toast').toast('show');
 
-        $(document).click(function() {
-            // alert('click');
-            var list_view = $('#list-view');
-            if (!list_view.is(event.target) && !list_view.has(event.target).length) {
-                list_view.hide();
-            }
-        });
+           		event.preventDefault();
+			} else if (date == '') {
+				$('.toast-body').text('Select Date');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+			}
+		});
 	   </script>
 
 	</body>

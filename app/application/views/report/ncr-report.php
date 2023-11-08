@@ -16,7 +16,7 @@
 	   	<title>MPPKVVCL - View Report</title>
 
 	   	<!-- BOOTSTRAP CSS -->
-	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">	   	
+	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
 	   	<!-- STYLE CSS -->
 	   	<link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
@@ -81,12 +81,11 @@
 			                					</div>
 			                				</div>
 			                				<!-- Form -->
-			                				<form method="post" action="<?php echo base_url('generate-ncr-report')?>">
+			                				<form id="generateNCRReport" name="generateNCRReport" method="post" action="<?php echo base_url('generate-ncr-report')?>">
 			                					<div class="form-row">
+			                						<!-- Physical Progress Date -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label class="form-label" for="physicalProgressDate">Physical Progress Date
-	                        								<span class="text-red">*</span>
-	                        							</label>
+			                							<label class="form-label" for="physicalProgressDate">Physical Progress Date<span class="text-red">*</span></label>
 	                        							<div class="input-group">
 	                                                        <div class="input-group-text dates">
 	                                                            <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
@@ -98,8 +97,7 @@
 			                					<div class="form-row">
 			                						<!-- Employee -->
 			                						<div class="col-xl-2 mb-3">
-			                							<label class="form-label" for="employee">Employee
-				                						</label>
+			                							<label class="form-label" for="employee">Employee</label>
 				                						<div class="form-group">
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
@@ -127,8 +125,7 @@
 													<?php //} ?>
 			                						<!-- Package -->
 			                						<div class="col-xl-2 mb-3">
-			                							<label class="form-label" for="package">Package
-				                						</label>
+			                							<label class="form-label" for="package">Package</label>
 				                						<div class="form-group">
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
@@ -156,8 +153,7 @@
 			                					<div class="form-row">
 			                						<!-- Region -->
 			                						<div class="col-xl-2 mb-3">
-			                							<label class="form-label" for="region">Region
-				                						</label>
+			                							<label class="form-label" for="region">Region</label>
 				                						<div class="form-group">
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
@@ -183,8 +179,7 @@
 			                						</div>
 			                						<!-- Circle -->
 			                						<div class="col-xl-2 mb-3">
-			                							<label class="form-label" for="circle">Circle
-				                						</label>
+			                							<label class="form-label" for="circle">Circle</label>
 				                						<div class="form-group">
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
@@ -210,10 +205,9 @@
 			                						</div>
 			                					</div>
 			                					<div class="form-row">
+			                						<!-- NCR Status -->
 			                						<div class="col-xl-3 mb-3">
-			                							<label for="ncr-status" class="form-label">NCR Status
-				                                          	
-				                                       	</label>
+			                							<label for="ncr-status" class="form-label">NCR Status</label>
 				                                       	<select class="form-control select2" multiple id="ncr_status" name="ncr_status[]" >
 				                                          	<option value="" disabled>Select NCR Status</option>
 				                                          	<option value="All" <?php if(in_array("All", $ncr_status)) { ?> selected <?php } ?>>All</option>
@@ -223,26 +217,25 @@
 			                						</div>
 			                					</div>
 			                					<div class="form-row">
+			                						<!-- Report Type -->
 			                						<div class="col-xl-12 mb-3">
-			                							<label class="form-label" for="reportType">Report Type
-				                							<span class="text-red">*</span>
-				                						</label>
+			                							<label class="form-label" for="reportType">Report Type<span class="text-red">*</span></label>
 				                						<div class="form-group">
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
-				                                       				<input type="radio" class="custom-control-input" name="reportType" value="1" <?php if($reportType=='1') { ?> checked <?php } ?> required>
+				                                       				<input type="radio" class="custom-control-input" name="reportType" value="1" <?php if($reportType=='1') { ?> checked <?php } ?>>
 				                                       				<span class="custom-control-label">Package wise NCR Summary</span>
 				                                       			</label>
 				                                       			<label class="custom-control custom-radio status-radio">
-				                                       				<input type="radio" class="custom-control-input" name="reportType" value="2" <?php if($reportType=='2') { ?> checked <?php } ?>required>
+				                                       				<input type="radio" class="custom-control-input" name="reportType" value="2" <?php if($reportType=='2') { ?> checked <?php } ?>>
 				                                       				<span class="custom-control-label">Circle wise NCR Summary</span>
 				                                       			</label>
 				                                       			<label class="custom-control custom-radio status-radio">
-				                                       				<input type="radio" class="custom-control-input" name="reportType" value="3" <?php if($reportType=='3') { ?> checked <?php } ?> required>
+				                                       				<input type="radio" class="custom-control-input" name="reportType" value="3" <?php if($reportType=='3') { ?> checked <?php } ?>>
 				                                       				<span class="custom-control-label">Feeder wise NCR Summary</span>
 				                                       			</label>
 				                                       			<label class="custom-control custom-radio status-radio">
-				                                       				<input type="radio" class="custom-control-input" name="reportType" value="4" <?php if($reportType=='4') { ?> checked <?php } ?> required>
+				                                       				<input type="radio" class="custom-control-input" name="reportType" value="4" <?php if($reportType=='4') { ?> checked <?php } ?>>
 				                                       				<span class="custom-control-label">NCR Data</span>
 				                                       			</label>
 				                                       		</div>
@@ -252,7 +245,6 @@
 
 			                					<button class="btn btn-success mb-3 mt-3" type="submit" >Generate</button>
 												<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('ncr-report')?>">Clear</a>
-
                                  				<a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports')?>">Back</a>
 			                				</form>
 			                				<!-- Form Ends -->
@@ -263,174 +255,193 @@
 			                <!-- Row Ends -->
 
 			                <!-- Report Row -->
-			                <div class="row" id="report-table">
-			                	<div class="col-lg-12">
-			                		<div class="card">
-			                			<div class="card-body" <?php if(!isset($_POST['physicalProgressDate'])) { ?> style="background: #eeeef4;" <?php } ?>>
-			                				<?php if(isset($_POST['physicalProgressDate'])) { ?>
-			                				<div class="row">
-			                					<!-- Export Button -->
-			                					<div class="col-sm-12 col-md-9s mt-3">
-				                                    <div class="dts-buttons btn-group flex-wrap" style="float:right;">
- <a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" type="button"><span>Export</span></a>				                                    </div>
-				                                </div>	
-			                				</div>
-			                				<?php } ?>
-			                				<div class="row">
-											<?php if($reportType=='1' && $reportType != "") { ?>
-			                					<div class="table-responsive mb-3 mt-3" id="package-wise-table">
-			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
-			                							<thead>
-			                								<tr>
-			                									<th>Package No.</th>
-			                									<th>TKC</th>
-			                									<th>#NCR Raise</th>
-			                									<th>#NCR Closed</th>
-			                									<th>#NCR Open</th>
-			                								</tr>
-			                							</thead>
-			                							<tbody>
-														<?php if(!empty($reportData)) { ?>
-														<?php foreach($reportData as $report) { ?>
-			                								<tr>
-			                									<td><?php echo $report->package_no;?></td>
-			                									<td><?php echo $report->contractor_name;?></td>
-			                									<td class="table-td-center"><?php echo $report->ncr_raised;?></td>
-			                									<td class="table-td-center"><?php echo $report->ncr_closed;?></td>
-			                									<td class="table-td-center"><?php echo $report->ncr_open;?></td>
-			                								</tr>
-			                							<?php } ?>	
-														<?php } ?>	
-			                							</tbody>
-			                						</table>
-			                					</div>
-												<?php } ?>
-												<?php if($reportType=='2' && $reportType != "") { ?>
-			                					<div class="table-responsive mb-3 mt-3" id="circle-wise-table">
-			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
-			                							<thead>
-			                								<tr>
-			                									<th>Package No.</th>	
-			                									<th>TKC</th>	
-			                									<th>Circle</th>	
-			                									<th>#NCR Raised</th>	
-			                									<th>#NCR Closed</th>	
-			                									<th>#NCR Open</th>	
-			                								</tr>
-			                							</thead>
-			                							<tbody>
-														<?php if(!empty($reportData)) { ?>
-			                								<?php foreach($reportData as $report) { ?>
-			                								<tr>
-			                									<td><?php echo $report->package_no;?></td>
-			                									<td><?php echo $report->contractor_name;?></td>
-																<td><?php echo $report->circle_name;?></td>
-			                									<td class="table-td-center"><?php echo $report->ncr_raised;?></td>
-			                									<td class="table-td-center"><?php echo $report->ncr_closed;?></td>
-			                									<td class="table-td-center"><?php echo $report->ncr_open;?></td>
-			                								</tr>
-			                							<?php } ?>	
-			                								<?php } ?>	
-			                							</tbody>
-			                						</table>
-			                					</div>
-												<?php } ?>
-												<?php if($reportType=='3' && $reportType != "") { ?>
-			                					<div class="table-responsive mb-3 mt-3" id="feeder-wise-table" >
-			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
-			                							<thead>
-			                								<tr>
-			                									<th>Package No.</th>
-			                									<th>TKC</th>
-			                									<th>Circle</th>
-			                									<th>Feeder ID</th>
-			                									<th>Feeder Name</th>
-			                									<th>Substation</th>
-			                									<th>#NCR Raised</th>
-			                									<th>#NCR Closed</th>
-			                									<th>#NCR Open</th>
-			                								</tr>
-			                							</thead>
-			                							<tbody>
-														<?php if(!empty($reportData)) { ?>
-														<?php foreach($reportData as $report) { ?>
-			                								<tr>
-			                									<td><?php echo $report->package_no;?></td>
-			                									<td><?php echo $report->contractor_name;?></td>
-																<td><?php echo $report->circle_name;?></td>
-			                									<td><?php echo $report->feeder_id;?></td>
-			                									<td><?php echo $report->feeder_name;?></td>
-			                									<td><?php echo $report->substation;?></td>
-																<td class="table-td-center"><?php echo $report->ncr_raised;?></td>
-			                									<td class="table-td-center"><?php echo $report->ncr_closed;?></td>
-			                									<td class="table-td-center"><?php echo $report->ncr_open;?></td>
-			                								</tr>
-															<?php } ?>
-			                							<?php } ?>
-			                							</tbody>
-			                						</table>
-			                					</div>
-												<?php } ?>
-												<?php if($reportType=='4' && $reportType != "") { ?>
-			                					<div class="table-responsive mb-3 mt-3" id="ncr-data-table">
-			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
-			                							<thead>
-			                								<tr>
-			                									<th>NCR No.</th>	
-			                									<th>NCR Date</th>	
-			                									<th>Package</th>	
-			                									<th>TKC</th>	
-			                									<th>Region</th>	
-			                									<th>Circle</th>	
-			                									<th>Division</th>	
-			                									<th>Feeder ID</th>	
-			                									<th>Feeder Name</th>	
-			                									<th>Substation</th>	
-			                									<th>Inspected By</th>	
-			                									<th>Observation Type</th>	
-			                									<th>Observation</th>	
-			                									<th>Status</th>	
-			                									<th>Closed Date</th>	
-			                									<th>Delay Time</th>	
-			                									<th>Action Taken</th>	
-			                								</tr>
-			                							</thead>
-			                							<tbody>
-														<?php if(!empty($reportData)) { ?>
-														<?php foreach($reportData as $report) { ?>
+			                <?php if (isset($reportData)) { ?>
+				                <?php if (is_array($reportData)) { ?>
+				                <div class="row" id="report-table">
+				                	<div class="col-lg-12">
+				                		<div class="card">
+				                			<div class="card-body" <?php if(!isset($_POST['physicalProgressDate'])) { ?> style="background: #eeeef4;" <?php } ?>>
+				                				<?php if(isset($_POST['physicalProgressDate'])) { ?>
+				                				<?php if ($download_access) { ?>
+				                				<div class="row">
+				                					<!-- Export Button -->
+				                					<div class="col-sm-12 col-md-9s mt-3">
+					                                    <div class="dts-buttons btn-group flex-wrap" style="float:right;">
+	 														<a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" type="button"><span>Export</span></a>
+	 													</div>
+					                                </div>	
+				                				</div>
+				                				<?php } ?>
+				                				<?php } ?>
+				                				<div class="row">
+													<?php if($reportType=='1' && $reportType != "") { ?>
+				                					<div class="table-responsive mb-3 mt-3" id="package-wise-table">
+				                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
+				                							<thead>
+				                								<tr>
+				                									<th>Package No.</th>
+				                									<th>TKC</th>
+				                									<th>#NCR Raise</th>
+				                									<th>#NCR Closed</th>
+				                									<th>#NCR Open</th>
+				                								</tr>
+				                							</thead>
+				                							<tbody>
+															<?php if(!empty($reportData)) { ?>
+															<?php foreach($reportData as $report) { ?>
+				                								<tr>
+				                									<td><?php echo $report->package_no;?></td>
+				                									<td><?php echo $report->contractor_name;?></td>
+				                									<td class="table-td-center"><?php echo $report->ncr_raised;?></td>
+				                									<td class="table-td-center"><?php echo $report->ncr_closed;?></td>
+				                									<td class="table-td-center"><?php echo $report->ncr_open;?></td>
+				                								</tr>
+				                							<?php } ?>	
+															<?php } ?>	
+				                							</tbody>
+				                						</table>
+				                					</div>
+													<?php } ?>
+													<?php if($reportType=='2' && $reportType != "") { ?>
+				                					<div class="table-responsive mb-3 mt-3" id="circle-wise-table">
+				                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
+				                							<thead>
+				                								<tr>
+				                									<th>Package No.</th>	
+				                									<th>TKC</th>	
+				                									<th>Circle</th>	
+				                									<th>#NCR Raised</th>	
+				                									<th>#NCR Closed</th>	
+				                									<th>#NCR Open</th>	
+				                								</tr>
+				                							</thead>
+				                							<tbody>
+															<?php if(!empty($reportData)) { ?>
+				                								<?php foreach($reportData as $report) { ?>
+				                								<tr>
+				                									<td><?php echo $report->package_no;?></td>
+				                									<td><?php echo $report->contractor_name;?></td>
+																	<td><?php echo $report->circle_name;?></td>
+				                									<td class="table-td-center"><?php echo $report->ncr_raised;?></td>
+				                									<td class="table-td-center"><?php echo $report->ncr_closed;?></td>
+				                									<td class="table-td-center"><?php echo $report->ncr_open;?></td>
+				                								</tr>
+				                							<?php } ?>	
+				                								<?php } ?>	
+				                							</tbody>
+				                						</table>
+				                					</div>
+													<?php } ?>
+													<?php if($reportType=='3' && $reportType != "") { ?>
+				                					<div class="table-responsive mb-3 mt-3" id="feeder-wise-table" >
+				                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
+				                							<thead>
+				                								<tr>
+				                									<th>Package No.</th>
+				                									<th>TKC</th>
+				                									<th>Circle</th>
+				                									<th>Feeder ID</th>
+				                									<th>Feeder Name</th>
+				                									<th>Substation</th>
+				                									<th>#NCR Raised</th>
+				                									<th>#NCR Closed</th>
+				                									<th>#NCR Open</th>
+				                								</tr>
+				                							</thead>
+				                							<tbody>
+															<?php if(!empty($reportData)) { ?>
+															<?php foreach($reportData as $report) { ?>
+				                								<tr>
+				                									<td><?php echo $report->package_no;?></td>
+				                									<td><?php echo $report->contractor_name;?></td>
+																	<td><?php echo $report->circle_name;?></td>
+				                									<td><?php echo $report->feeder_id;?></td>
+				                									<td><?php echo $report->feeder_name;?></td>
+				                									<td><?php echo $report->substation;?></td>
+																	<td class="table-td-center"><?php echo $report->ncr_raised;?></td>
+				                									<td class="table-td-center"><?php echo $report->ncr_closed;?></td>
+				                									<td class="table-td-center"><?php echo $report->ncr_open;?></td>
+				                								</tr>
+																<?php } ?>
+				                							<?php } ?>
+				                							</tbody>
+				                						</table>
+				                					</div>
+													<?php } ?>
+													<?php if($reportType=='4' && $reportType != "") { ?>
+				                					<div class="table-responsive mb-3 mt-3" id="ncr-data-table">
+				                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
+				                							<thead>
+				                								<tr>
+				                									<th>NCR No.</th>	
+				                									<th>NCR Date</th>	
+				                									<th>Package</th>	
+				                									<th>TKC</th>	
+				                									<th>Region</th>	
+				                									<th>Circle</th>	
+				                									<th>Division</th>	
+				                									<th>Feeder ID</th>	
+				                									<th>Feeder Name</th>	
+				                									<th>Substation</th>	
+				                									<th>Inspected By</th>	
+				                									<th>Observation Type</th>	
+				                									<th>Observation</th>	
+				                									<th>Status</th>	
+				                									<th>Closed Date</th>	
+				                									<th>Delay Time</th>	
+				                									<th>Action Taken</th>	
+				                								</tr>
+				                							</thead>
+				                							<tbody>
+															<?php if(!empty($reportData)) { ?>
+															<?php foreach($reportData as $report) { ?>
 
-			                								<tr>
-			                									<td><?php echo $report->ncr_id;?></td>
-			                									<td><?php echo date('d-m-Y', strtotime($report->ncr_date));?></td>
-																<td><?php echo $report->package_no;?></td>
-			                									<td><?php echo $report->contractor_name;?></td>
-			                									<td><?php echo $report->region_name;?></td>
-			                									<td><?php echo $report->circle_name;?></td>
-																<td><?php echo $report->division_name;?></td>
-																<td><?php echo $report->feeder_id;?></td>
-																<td><?php echo $report->feeder_name;?></td>
-																<td><?php echo $report->substation;?></td>
-																<td><?php echo $report->Inspected_by;?></td>
-																<td><?php echo $report->observation_type;?></td>
-																<td><?php echo $report->observation;?></td>
-																<td><?php echo $report->status;?></td>
-																<td><?php echo $report->closed_date;?></td>
-																<td><?php echo $report->delay_time;?></td>
-																<td><?php echo $report->action_taken;?></td>
-																
-			                								</tr>
-															<?php } ?>
-															<?php } ?>
-			                								
-			                							</tbody>
-			                						</table>
-			                					</div>
-												<?php } ?>
-			                				</div>
-			                			</div>
-			                		</div>
-			                	</div>
-			                </div>
+				                								<tr>
+				                									<td><?php echo $report->ncr_id;?></td>
+				                									<td><?php echo date('d-m-Y', strtotime($report->ncr_date));?></td>
+																	<td><?php echo $report->package_no;?></td>
+				                									<td><?php echo $report->contractor_name;?></td>
+				                									<td><?php echo $report->region_name;?></td>
+				                									<td><?php echo $report->circle_name;?></td>
+																	<td><?php echo $report->division_name;?></td>
+																	<td><?php echo $report->feeder_id;?></td>
+																	<td><?php echo $report->feeder_name;?></td>
+																	<td><?php echo $report->substation;?></td>
+																	<td><?php echo $report->Inspected_by;?></td>
+																	<td><?php echo $report->observation_type;?></td>
+																	<td><?php echo $report->observation;?></td>
+																	<td><?php echo $report->status;?></td>
+																	<td><?php echo $report->closed_date;?></td>
+																	<td><?php echo $report->delay_time;?></td>
+																	<td><?php echo $report->action_taken;?></td>
+																	
+				                								</tr>
+																<?php } ?>
+																<?php } ?>
+				                								
+				                							</tbody>
+				                						</table>
+				                					</div>
+													<?php } ?>
+				                				</div>
+				                			</div>
+				                		</div>
+				                	</div>
+				                </div>	
+				                <?php } else { ?>
+				                <div class="row">
+				                  	<div class="col-lg-12">
+				                    	<div class="card">
+				                    		<div class="card-body">
+				                      			<div class="row">
+				                        			<h4 class="pt-3"><strong><?php echo $reportData; ?></strong></h4>
+				                        		</div>
+				                      		</div>
+				                    	</div>
+				                  	</div>
+				               	</div>
+				                <?php } ?>	
+			                <?php } ?>
 			                <!-- Report Row Ends -->
 
 		        		</div>
@@ -529,14 +540,18 @@
 
 	   	<script type="text/javascript">
 	   	$('input[name="physicalProgressDate"]').daterangepicker({
-            //autoUpdateInput: false,
+            autoUpdateInput: false,
             locale: {
                 format: 'DD-MM-YYYY'
             }
         });
 
-        $('input[name="employee"]').on('change', function() {
+        $('input[name="physicalProgressDate"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD-MM-YYYY') +' - '+ picker.endDate.format('DD-MM-YYYY'));
+            // $(this).val();
+         });
 
+        $('input[name="employee"]').on('change', function() {
         	let employee = $(this).val();
         	if (employee == 'specific') {
         		$('#employee_filter').removeAttr('hidden');
@@ -692,6 +707,29 @@
 			    	break;
 			}
 	   	}
+
+	   	$('#generateNCRReport').submit(function(event) {
+	   		let pp_date = $('#physicalProgressDate').val();
+
+	   		let checked_report_type_count = $('input[name="reportType"]:checked').length;
+
+	   		if (pp_date == '' && checked_report_type_count == 0) {
+	   			$('.toast-body').text('Select mandatory filters to generate the report');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+	   		} else if (pp_date == '') {
+	   			$('.toast-body').text('Select Physical Progress Date range');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+	   		} else if (checked_report_type_count == 0) {
+	   			$('.toast-body').text('Select Report Type');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+	   		}
+	   	});
 	   	
 	   	</script>
 

@@ -16,7 +16,7 @@
 	   <title>MPPKVVCL - View Report</title>
 
 	   <!-- BOOTSTRAP CSS -->
-	   <link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">	   
+	   <link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
 	   <!-- STYLE CSS -->
 	   <link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
@@ -45,13 +45,13 @@
 		<div class="page">
 			<div class="page-main">
 				
-				<!-- App-Header -->
+			<!-- App-Header -->
             <?php $this->load->view('include/header');?>
-		        <!-- App-Header Ends -->
+		    <!-- App-Header Ends -->
 
-		        <!-- App-Sidebar -->
+		    <!-- App-Sidebar -->
             <?php $this->load->view('include/side-bar');?>
-		        <!-- App-Sidebar Ends -->
+		    <!-- App-Sidebar Ends -->
 
 		        <!--app-content open-->
 		        <div class="main-content app-content mt-0">
@@ -78,52 +78,40 @@
 			                					</div>
 			                				</div>
 			                				<!-- Form -->
-			                				<form class="needs-validation2" novalidate method="post" action="<?php echo base_url('generate-bg-summary-report'); ?>">
+			                				<form id="generateBGSummaryReport" name="generateBGSummaryReport" method="post" action="<?php echo base_url('generate-bg-summary-report'); ?>">
 			                					<div class="form-row">
+			                						<!-- Package No -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label for="packageNo" class="form-label">Package No.
+			                							<label for="packageNo" class="form-label">Package No.<span class="text-red">*</span>
 				                                       	</label>
-				                                       	<select class="form-control select2" id="packageNo" name="packageNo" required>
-				                                          	<!--option value="select" selected disabled>Select Package No.</option-->
+				                                       	<select class="form-control select2" id="packageNo" name="packageNo">
+				                                          	<option value="select" selected disabled>Select Package No.</option>
 															<?php foreach($packages as $package) { ?>
 				                                          	<option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
 															<?php } ?>
-				                                          	<!--option value="package2">Package-2</option>
-				                                          	<option value="package3">Package-3</option>
-				                                          	<option value="package4">Package-4</option>
-				                                          	<option value="package5">Package-5</option>
-				                                          	<option value="package6">Package-6</option>
-				                                          	<option value="package7">Package-7</option>
-				                                          	<option value="package8">Package-8</option>
-				                                          	<option value="package9">Package-9</option>
-				                                          	<option value="package10">Package-10</option-->
 				                                        </select>
 			                						</div>
+			                						<!-- Contractor (TKC) -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label for="contractor" class="form-label">Contractor (TKC)
-				                                       	</label>
-				                                       	<input class="form-control" type="text" name="contractor" id="contractor" onkeyup="showtkcssss(this.value)" value="<?php echo @$contractor;?>">
+			                							<label for="contractor" class="form-label">Contractor (TKC)<span class="text-red">*</span></label>
+				                                       	<input class="form-control" type="text" name="contractor" id="contractor" onkeyup="showtkclist(this.value)" value="<?php echo @$contractor;?>">
                                                         <div class="list-group list-view-contractor" id="list-view"></div>
 			                						</div>
+			                						<!-- Type of Work -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label for="typeOfWork" class="form-label">Type of Work
-				                                       	</label>
-				                                       	<select class="form-control select2" id="typeOfWork" name="typeOfWork" required>
+			                							<label for="typeOfWork" class="form-label">Type of Work<span class="text-red">*</span></label>
+				                                       	<select class="form-control select2" id="typeOfWork" name="typeOfWork">
 				                                          	<option value="select" selected disabled>Select Type of Work</option>
 															<?php foreach($worktypes as $type) { ?>
 				                                          	<option value="<?php echo $type->typeofwork_id;?>" <?php if($typeOfWork == $type->typeofwork_id) { ?> selected <?php } ?>><?php echo $type->name;?></option>
 															<?php } ?>
-				                                          	<!--option value="33 KV / 11 KV New Substation">33 KV / 11 KV New Substation</option>
-				                                          	<option value="11 KV Feeder Separation">11 KV Feeder Separation</option>
-				                                          	<option value="11 KV Interconnection Line / LT AB Cabling">11 KV Interconnection Line / LT AB Cabling</option>
-				                                          	<option value="33 KV Interconnection Line">33 KV Interconnection Line</option-->
 				                                        </select>
 			                						</div>
 			                					</div>
 
 			                					<button class="btn btn-success mb-3 mt-3"  type="submit">Generate</button>
-														<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('bg-summary-report'); ?>">Clear</a>
-                                    <a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
+												<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('bg-summary-report'); ?>">Clear</a>
+                                    			<a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
 			                				</form>
 			                				<!-- Form Ends -->
 			                			</div>
@@ -132,19 +120,26 @@
 			                </div>
 			                <!-- Row Ends -->
 
+			                <?php if (isset($feeder_access) && $feeder_access) { ?>
 			                <!-- Report Row -->
+			                <?php if (is_array($reportData)) { ?>
 			                <div class="row" id="report-table" >
 			                	<div class="col-lg-12">
 			                		<div class="card">
 									<?php if(!empty($reportData)) { ?>
 			                			<div class="card-body">
+
+			                				<?php if ($download_access) { ?>
 			                				<div class="row">
 			                					<!-- Export Button -->
 			                					<div class="col-sm-12 col-md-9s mt-3">
 				                                    <div class="dts-buttons btn-group flex-wrap" style="float:right;">
-									<a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>				                                    </div>
+														<a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>
+													</div>
 				                                </div>	
-			                				</div>
+			                				</div>	
+			                				<?php } ?>
+			                				
 			                				<div class="row">
 			                					<div class="table-responsive mb-3 mt-3">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
@@ -191,8 +186,36 @@
 			                			</div>
 			                		</div>
 			                	</div>
-			                </div>
-			                <!-- Report Row Ends -->
+			                </div>	
+			                <?php } else { ?>
+			                <div class="row">
+			                  	<div class="col-lg-12">
+			                    	<div class="card">
+			                    		<div class="card-body">
+			                      			<div class="row">
+			                        			<h4 class="pt-3"><strong><?php echo $reportData; ?></strong></h4>
+			                        		</div>
+			                      		</div>
+			                    	</div>
+			                  	</div>
+			               	</div>
+			                <?php } ?>
+			                <!-- Report Row Ends -->	
+			                <?php } elseif (isset($feeder_access) && !$feeder_access) { ?>
+			                <div class="row">
+		                    	<div class="col-lg-12">
+		                       		<div class="card">
+		                          		<div class="card-body bg-danger text-white pt-2 rounded-2">
+		                             		<div class="row">
+		                                		<h3 class="pt-3"><strong>Authorization failed.</strong></h3>
+		                                		<p>You don't have access to this record. Ask your administrator for help or request for access.</p>
+		                             		</div>
+		                          		</div>
+		                       		</div>
+		                    	</div>
+		                 	</div>
+			                <?php } ?>
+			                
 
 		        		</div>
 		        		<!-- CONTAINER ENDS-->
@@ -203,7 +226,7 @@
 			</div>
 
 			<!-- Footer -->
-         <?php $this->load->view('include/footer');?>
+         	<?php $this->load->view('include/footer');?>
 		    <!-- Footer Ends -->
 
 		</div>
@@ -212,9 +235,9 @@
 		<!-- BACK-TO-TOP -->
 	   <a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>
 	   
-	   <script type="text/javascript">
-    var base_url = '<?php echo base_url(); ?>';
-</script>
+	   	<script type="text/javascript">
+    	var base_url = '<?php echo base_url(); ?>';
+		</script>
 
 	   <!-- JQUERY JS -->
 	   <script src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
@@ -286,58 +309,92 @@
 	   		$('#report-table').removeAttr('hidden');
 	   	}
 
-	   	//Displays contractor search list view
-        function showtkc(tkcValue) {
-            // alert(tkcValue);
-            $('#list-view').show();
-            if (tkcValue !== '') {
-                var html = '';
-                $('#list-view').empty();
+        //Ajax Call to get Contractor Details
+        function showtkclist(tkcValue) {
+            $.ajax({
+               	type: 'POST',
+               	url: '<?php echo base_url('search-contractor') ?>',
+               	dataType: 'json',
+               	data: {contractor: tkcValue},
+               	success: function(response){
+                  	// console.log(response);
 
-                for (var i = 0; i < 3; i++) {
-                    html += '<a href="javascript:void(0)" class="list-group-item list-group-item-action flex-column align-items-start ">';
-                    html += '<div class="d-flex w-100 justify-content-between">';
-                    html += '<h4 class="mb-1"><strong>M/s Shreem Capcitor</strong></h4>';
-                    html += '<p>Package - 1 </p>';
-                    html += '</div>';
-                    html += '<p class="mb-1">Type Of Work: <span class="text-primary"> Capacitor Bank</span></p>';
-                    html += '<small class="text-muted">Award No: <span class="text-primary">483</span></small><br>';
-                    html += '<small class="text-muted">Award Date : <span class="text-primary"> 25-09-2023</span></small>';
-                    html += '</a>';
-                }
+                  	$('#list-view').show();
+                  	$('#list-view').empty();
 
-                $('#list-view').append(html);
-            } else {
-                $('#list-view').empty();
-            }
+                  	var html = '';
 
-            /*if(tkcValue!=='')
-            {
-                $("#tkclist").show();
-            }
-            else
-            {
-                $("#tkclist").hide();
-            }*/
+                  	let contractor_data = response.contractor_data;
+                  	console.log("contractor_data: ");
+                  	console.log(contractor_data);
+                  	if ($.isEmptyObject(contractor_data)) {
+                     	html += 'No Contractor Found';
+                  	} else {
+                     	$.each(contractor_data, function(index, value){
+                        	// console.log(value);
+                        	html += '<a href="javascript:void(0)" class="list-group-item list-group-item-action flex-column align-items-start" data-typeofwork-id="'+value.typeofwork_id+'" data-contract-id="'+value.contract_id+'" onclick=applyContractorDetails(this)>';
+                        	html += '<div class="d-flex w-100 justify-content-between">';
+                        	html += '<h4 class="mb-1 contractor-name"><strong>'+value.contractor_name+'</strong></h4>';
+                        	html += '<small class="text-muted contract-date">Contract Date : <span class="text-primary"> '+value.tender_award_date+'</span></small>';
+                        	html += '</div>';
+                        	html += '<p class="mb-1 type-of-work">Type Of Work: <span class="text-primary"> '+value.typeofwork_name+'</span></p>';
+                        	html += '<small class="text-muted contract-no">Contract No: <span class="text-primary">'+value.tender_award_no+'</span></small>';
+                        	html += '</a>';
+                     	});
+                  	}
+
+                  	$('#list-view').append(html);
+               	},
+               	error: function(xhr, status, error){
+                  	console.log(xhr.responseText);
+               	}
+            });
         }
-		
-		
-		function showtkcs(tkcValue) {
-			
-			 $.ajax({url: base_url+"show-tkcs/"+tkcValue, success: function(result){
-					
-					
-					
-					}});
-					
-		}
 
         $(document).click(function() {
-            // alert('click');
             var list_view = $('#list-view');
             if (!list_view.is(event.target) && !list_view.has(event.target).length) {
-                list_view.hide();
+               list_view.hide();
             }
+        });
+
+        //Applying selected contractor values
+     	function applyContractorDetails(anchor) {
+            $('#list-view').hide();
+
+            let contractor_name = $(anchor).find('.contractor-name').text();
+
+            $('input[name="contractor"]').val(contractor_name);
+        }
+
+        $('#generateBGSummaryReport').submit(function(event) {
+        	let package_no = $('#packageNo option:selected').val();
+
+        	let contractor = $('#contractor').val();
+
+        	let typeofwork = $('#typeOfWork option:selected').val();
+
+        	if (package_no == 'select' && contractor == '' && typeofwork == 'select') {
+        		$('.toast-body').text('Select Filters to generate the report');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+        	} else if (package_no == 'select') {
+        		$('.toast-body').text('Select Package No');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+        	} else if (contractor == '') {
+        		$('.toast-body').text('Enter Contractor (TKC)');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+        	} else if (typeofwork == 'select') {
+        		$('.toast-body').text('Select Type of Work');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+        	}
         });
 	   </script>
 

@@ -16,8 +16,8 @@
 	   <title>MPPKVVCL - View Report</title>
 
 	   <!-- BOOTSTRAP CSS -->
-	   <link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">	   
-
+	   <link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
+	   
 	   <!-- STYLE CSS -->
 	   <link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
 
@@ -45,7 +45,7 @@
 		<div class="page">
 			<div class="page-main">
 				
-				 <!-- App-Header -->
+			<!-- App-Header -->
             <?php $this->load->view('include/header');?>
             <!-- App-Header Ends -->
 
@@ -99,13 +99,11 @@
 
 				                                       	<button class="btn btn-success mb-3 mt-3"  type="submit">Generate</button>
 														<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('contract-summary-report'); ?>">Clear</a>
-                                    <a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
-
+                                    					<a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
 			                						</div>
 			                					</div>
 			                				</form>
 			                				<!-- Form Ends -->
-
 			                			</div>
 			                		</div>
 			                	</div>
@@ -118,14 +116,16 @@
 			                		<div class="card">
 									 	<?php if(!empty($reportData)) { ?>
 									 	<div class="card-body">
-		                				<div class="row">
+									 	<?php if ($download_access) { ?>
+									 	<div class="row">
 		                					<!-- Export Button -->
 		                					<div class="col-sm-12 col-md-9s mt-3">
 			                                    <div class="dts-buttons btn-group flex-wrap" style="float:right;">
                                       				<a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>
 			                                    </div>
 			                                </div>	
-		                				</div>
+		                				</div>	
+									 	<?php } ?>
 		                				<div class="row">
 										
 										 	<?php if($outputOption==1) { ?>

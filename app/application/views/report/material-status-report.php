@@ -16,7 +16,7 @@
 	   	<title>MPPKVVCL - View Report</title>
 
 	   	<!-- BOOTSTRAP CSS -->
-	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">	   	
+	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
 	   	<!-- STYLE CSS -->
 	   	<link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
@@ -71,60 +71,46 @@
 			                	<div class="col-lg-12">
 			                		<div class="card">
 			                			<div class="card-body">
-			                				<div class="form-row mt-2 mb-2">
+			                				<div class="row mt-2 mb-2">
 			                					<div class="col-xl-12">
 			                						<label class="form-label">Report Description:</label>
                                     				<p class="report-desc">Material Status Report</p>
 			                					</div>
 			                				</div>
 			                				<!-- Form -->
-			                				<form class="needs-validation2" novalidate method="post" action="<?php echo base_url('generate-material-status-report'); ?>">
+			                				<form id="generateMaterialStatusReport" name="generateMaterialStatusReport" method="post" action="<?php echo base_url('generate-material-status-report'); ?>">
 			                					<div class="form-row">
-			                						<!-- <div class="col-xl-3 mb-3">
-			                							<label for="contractor" class="form-label">Contractor (TKC)
-				                                          	<span class="text-red">*</span>
-				                                       	</label>
-				                                       	<input class="form-control" type="text" name="contractor" id="contractor" onkeyup="showtkc(this.value)">
-                                                        <div class="list-group list-view-contractor" id="list-view"></div>
-			                						</div>
-			                						<div class="col-xl-3 mb-3">
-			                							<label class="form-label" for="circle">Circle
-				                							<span class="text-red">*</span>
-				                						</label>
-				                						<select class="form-control select2" id="circle" name="circle" required>
-				                                          	<option value="select" selected disabled>Select Circle</option>
-				                                          	<option value="jabalpur_city">Jabalpur City</option>
-				                                          	<option value="jabalpur_om">Jabalpur O&M</option>
-				                                          	<option value="katni">Katni</option>
-				                                          	<option value="mandla">Mandla</option>
-				                                          	<option value="narsinghpur">Narsinghpur</option>
-				                                          	<option value="seoni">Seoni</option>
-				                                          	<option value="balaghat">Balaghat</option>
-				                                          	<option value="chhindwara">Chhindwara</option>
-				                                        </select>	
-			                						</div> -->
-			                						<div class="col-xl-3 mb-3">
-			                							<label for="packageNo" class="form-label">Package No.
-				                                          	<span class="text-red">*</span>
-				                                       	</label>
-				                                       	<select class="form-control select2" id="packageNo" name="packageNo" required>
-				                                          	<?php foreach($packages as $package) { ?>
-				                                          	<option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
+			                						<!-- Package No -->
+			                						<div class="col-xl-4 mb-3">
+			                							<label for="packageNo" class="form-label">Package No.<span class="text-red">*</span></label>
+			                							<select class="form-control select2" id="packageNo" name="packageNo">
+			                								<option value="select" selected disabled>Select Package</option>
+													      	<?php foreach($packages as $package) { ?>
+													        <option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
 															<?php } ?>
-				                                        </select>
+													    </select>
 			                						</div>
-			                						
-			                						<div class="col-xl-3 mb-3">
-			                							<label for="contractNo" class="form-label">Contract No.
-				                                          	<span class="text-red">*</span>
-				                                       	</label>
-				                                       	<input class="form-control" type="text" id="contractNo" name="contractor" required value="<?php echo @$contractor;?>">
+			                						<!-- Contract No -->
+			                						<!-- <div class="col-xl-4 mb-3">
+			                							<label for="contractNo" class="form-label">Contract No.<span class="text-red">*</span></label>
+			                							<input class="form-control" type="text" id="contractNo" name="contractor" value="<?php echo @$contractor;?>">
+			                						</div> -->
+			                						<!-- Circle -->
+			                						<div class="col-xl-4 mb-3">
+			                							<label for="circle" class="form-label">Circle<span class="text-red">*</span></label>
+			                							<select class="form-control select2" id="circle" name="circle">
+			                								<option value="select" selected disabled>Select Circle</option>
+			                								<?php foreach ($circles as $key => $value) { ?>
+			                								<?php $selected = ($value->circle_id == $circle) ? 'selected' : ''; ?>
+			                								<option value="<?php echo $value->circle_id; ?>" <?php echo $selected; ?>><?php echo $value->circle_name; ?></option>
+			                								<?php } ?>
+			                							</select>
 			                						</div>
 			                					</div>
 
 			                					<button class="btn btn-success mb-3 mt-3"  type="submit">Generate</button>
-														<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('material-status-report'); ?>">Clear</a>
-                                    <a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
+												<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('material-status-report'); ?>">Clear</a>
+												<a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
 			                				</form>
 			                				<!-- Form Ends -->
 			                			</div>
@@ -133,12 +119,16 @@
 			                </div>
 			                <!-- Row Ends -->
 
+			                <?php if (isset($feeder_access) && $feeder_access) { ?>
 			                <!-- Report Row -->
+			                <?php if (is_array($reportData)) { ?>
 			                <div class="row" id="report-table">
 			                	<div class="col-lg-12">
 			                		<div class="card">
 			                			<?php if(!empty($reportData)) { ?>
 			                			<div class="card-body">
+
+			                				<?php if ($download_access) { ?>
 			                				<div class="row">
 			                					<!-- Export Button -->
 			                					<div class="col-sm-12 col-md-9s mt-3">
@@ -147,6 +137,8 @@
 				                                    </div>
 				                                </div>	
 			                				</div>
+			                				<?php } ?>
+			                				
 			                				<div class="row">
 			                					<div class="table-responsive mb-3 mt-3">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
@@ -177,62 +169,7 @@
 			                									<td><?php echo $report->accepted_date;?></td>
 			                									<td><?php echo $report->rejected_quantity;?></td>
 			                								</tr>
-			                								<?php } ?>	
-			                								<!-- <tr>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                								</tr>
-			                								<tr>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                								</tr>
-			                								<tr>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                								</tr>
-			                								<tr>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                								</tr>
-			                								<tr>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                									<td></td>
-			                								</tr> -->
+			                								<?php } ?>
 			                							</tbody>
 			                						</table>
 			                					</div>
@@ -241,8 +178,37 @@
 			                		</div>
 			                		<?php } ?>
 			                	</div>
-			                </div>
-			                <!-- Report Row Ends -->
+			                </div>	
+			                <?php } else { ?>
+			                <div class="row">
+			                  	<div class="col-lg-12">
+			                    	<div class="card">
+			                    		<div class="card-body">
+			                      			<div class="row">
+			                        			<h4 class="pt-3"><strong><?php echo $reportData; ?></strong></h4>
+			                        		</div>
+			                      		</div>
+			                    	</div>
+			                  	</div>
+			               	</div>
+			                <?php } ?>
+			                
+			                <!-- Report Row Ends -->	
+			                <?php } elseif (isset($feeder_access) && !$feeder_access) { ?>
+			                <div class="row">
+		                    	<div class="col-lg-12">
+		                       		<div class="card">
+		                          		<div class="card-body bg-danger text-white pt-2 rounded-2">
+		                             		<div class="row">
+		                                		<h3 class="pt-3"><strong>Authorization failed.</strong></h3>
+		                                		<p>You don't have access to this record. Ask your administrator for help or request for access.</p>
+		                             		</div>
+		                          		</div>
+		                       		</div>
+		                    	</div>
+		                 	</div>
+			                <?php } ?>
+			                
 
 		        		</div>
 		        		<!-- CONTAINER ENDS-->
@@ -260,75 +226,74 @@
 		<!-- PAGE ENDS-->
 
 		<!-- BACK-TO-TOP -->
-	   <a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>
+	   	<a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>
 
-	   <!-- JQUERY JS -->
-	   <script src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
+	   	<!-- JQUERY JS -->
+	   	<script src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
 
-	   <!-- BOOTSTRAP JS -->
-	   <script src="<?php echo base_url('assets/plugins/bootstrap/js/popper.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/bootstrap/js/bootstrap.min.js'); ?>"></script>
+	   	<!-- BOOTSTRAP JS -->
+	   	<script src="<?php echo base_url('assets/plugins/bootstrap/js/popper.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/bootstrap/js/bootstrap.min.js'); ?>"></script>
 
-	   <!-- INPUT MASK JS-->
-	   <script src="<?php echo base_url('assets/plugins/input-mask/jquery.mask.min.js'); ?>"></script>
+	   	<!-- INPUT MASK JS-->
+	   	<script src="<?php echo base_url('assets/plugins/input-mask/jquery.mask.min.js'); ?>"></script>
 
 		<!-- TypeHead js -->
 		<script src="<?php echo base_url('assets/plugins/bootstrap5-typehead/autocomplete.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/js/typehead.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/js/typehead.js'); ?>"></script>
 
-	   <!-- SELECT2 JS -->
-	   <script src="<?php echo base_url('assets/plugins/select2/select2.full.min.js'); ?>"></script>
+	   	<!-- SELECT2 JS -->
+	   	<script src="<?php echo base_url('assets/plugins/select2/select2.full.min.js'); ?>"></script>
 
-	   <!-- FORMVALIDATION JS -->
-	   <script src="<?php echo base_url('assets/js/form-validation.js'); ?>"></script>
+	   	<!-- FORMVALIDATION JS -->
+	   	<script src="<?php echo base_url('assets/js/form-validation.js'); ?>"></script>
 
-	   <!-- Perfect SCROLLBAR JS-->
-	   <script src="<?php echo base_url('assets/plugins/p-scroll/perfect-scrollbar.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/p-scroll/pscroll.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/p-scroll/pscroll-1.js'); ?>"></script>
+	   	<!-- Perfect SCROLLBAR JS-->
+	   	<script src="<?php echo base_url('assets/plugins/p-scroll/perfect-scrollbar.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/p-scroll/pscroll.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/p-scroll/pscroll-1.js'); ?>"></script>
 
-	   <!-- SIDE-MENU JS -->
-	   <script src="<?php echo base_url('assets/plugins/sidemenu/sidemenu.js'); ?>"></script>
+	   	<!-- SIDE-MENU JS -->
+	   	<script src="<?php echo base_url('assets/plugins/sidemenu/sidemenu.js'); ?>"></script>
 
-	   <!-- SIDEBAR JS -->
-	   <script src="<?php echo base_url('assets/plugins/sidebar/sidebar.js'); ?>"></script>
+	   	<!-- SIDEBAR JS -->
+	   	<script src="<?php echo base_url('assets/plugins/sidebar/sidebar.js'); ?>"></script>
 
-	   <!-- Color Theme js -->
-	   <script src="<?php echo base_url('assets/js/themeColors.js'); ?>"></script>
+	   	<!-- Color Theme js -->
+	   	<script src="<?php echo base_url('assets/js/themeColors.js'); ?>"></script>
 
-	   <!-- Sticky js -->
-	   <script src="<?php echo base_url('assets/js/sticky.js'); ?>"></script>
+	   	<!-- Sticky js -->
+	   	<script src="<?php echo base_url('assets/js/sticky.js'); ?>"></script>
 
-	   <!-- CUSTOM JS -->
-	   <script src="<?php echo base_url('assets/js/custom.js'); ?>"></script>
+	   	<!-- CUSTOM JS -->
+	   	<script src="<?php echo base_url('assets/js/custom.js'); ?>"></script>
 
-	   <!-- Custom-switcher -->
-	   <script src="<?php echo base_url('assets/js/custom-swicher.js'); ?>"></script>
+	   	<!-- Custom-switcher -->
+	   	<script src="<?php echo base_url('assets/js/custom-swicher.js'); ?>"></script>
 
-	   <!-- Switcher js -->
-	   <script src="<?php echo base_url('assets/switcher/js/switcher.js'); ?>"></script>
+	   	<!-- Switcher js -->
+	   	<script src="<?php echo base_url('assets/switcher/js/switcher.js'); ?>"></script>
 
-	   <!-- DATA TABLE JS-->
-	   <script src="<?php echo base_url('assets/plugins/datatable/js/jquery.dataTables.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/js/dataTables.bootstrap5.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/js/dataTables.buttons.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/js/buttons.bootstrap5.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/js/jszip.min.js'); ?>">
-	   </script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/pdfmake/pdfmake.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/pdfmake/vfs_fonts.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/js/buttons.php5.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/js/buttons.print.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/js/buttons.colVis.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/dataTables.responsive.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/plugins/datatable/responsive.bootstrap5.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/js/table-data.js'); ?>"></script>
+	   	<!-- DATA TABLE JS-->
+	   	<script src="<?php echo base_url('assets/plugins/datatable/js/jquery.dataTables.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/js/dataTables.bootstrap5.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/js/dataTables.buttons.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/js/buttons.bootstrap5.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/js/jszip.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/pdfmake/pdfmake.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/pdfmake/vfs_fonts.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/js/buttons.php5.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/js/buttons.print.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/js/buttons.colVis.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/dataTables.responsive.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/datatable/responsive.bootstrap5.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/js/table-data.js'); ?>"></script>
 
-	   <!-- SWEET-ALERT JS -->
-	   <script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
-	   <script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
+	   	<!-- SWEET-ALERT JS -->
+	   	<script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
 
-	   <script type="text/javascript">
+	   	<script type="text/javascript">
 	   	function showReport() {
 	   		$('#report-table').removeAttr('hidden');
 	   	}
@@ -374,6 +339,35 @@
             if (!list_view.is(event.target) && !list_view.has(event.target).length) {
                 list_view.hide();
             }
+        });
+
+        $('#generateMaterialStatusReport').submit(function(event) {
+        	let package_no = $('#packageNo option:selected').val();
+
+        	// let contract_no = $('#contractNo').val();
+        	let circle = $('#circle option:selected').val();
+
+        	if (package_no == 'select' && circle == 'select') {
+        		$('.toast-body').text('Select Filters to generate the report');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+        	} else if (package_no == 'select') {
+        		$('.toast-body').text('Select Package No');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+        	} /*else if (contract_no == '') {
+        		$('.toast-body').text('Enter Contract No');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+        	}*/ else if (circle == 'select') {
+           		$('.toast-body').text('Select Circle');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+        	}
         });
 	   </script>
 

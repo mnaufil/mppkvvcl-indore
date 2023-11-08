@@ -16,7 +16,7 @@
 	   	<title>MPPKVVCL - View Report</title>
 
 	   	<!-- BOOTSTRAP CSS -->
-	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">	   	
+	   	<link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
 	   	<!-- STYLE CSS -->
 	   	<link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
@@ -50,7 +50,7 @@
 		        <!-- App-Header Ends -->
 
 		        <!-- App-Sidebar -->
-            <?php $this->load->view('include/side-bar');?>
+            	<?php $this->load->view('include/side-bar');?>
 		        <!-- App-Sidebar Ends -->
 
 		        <!--app-content open-->
@@ -78,63 +78,23 @@
 			                					</div>
 			                				</div>
 			                				<!-- Form -->
-			                			<form class="needs-validation2" novalidate method="post" action="<?php echo base_url('generate-cash-flow-report'); ?>">
+			                				<form id="generateCashFlowReport" name="generateCashFlowReport" method="post" action="<?php echo base_url('generate-cash-flow-report'); ?>">
 			                					<div class="form-row">
-			                						<!-- <div class="col-xl-3 mb-3">
-			                							<label for="month" class="form-label">Month
-				                                          	<span class="text-red">*</span>
-				                                       	</label>
-				                                       	<select class="form-control select2" id="month" name="month" required>
-				                                          	<option value="select" selected disabled>Select Month</option>
-				                                          	<option value="January">January</option>
-				                                          	<option value="February">February</option>
-				                                          	<option value="March">March</option>
-				                                          	<option value="April">April</option>
-				                                          	<option value="May">May</option>
-				                                          	<option value="June">June</option>
-				                                          	<option value="July">July</option>
-				                                          	<option value="August">August</option>
-				                                          	<option value="September">September</option>
-				                                          	<option value="October">October</option>
-				                                          	<option value="November">November</option>
-				                                          	<option value="December">December</option>
-				                                        </select>	
-			                						</div> -->
 			                						<div class="col-xl-3 mb-3">
 			                							<label for="packageNo" class="form-label">Package No.
 				                                          	<span class="text-red">*</span>
 				                                       	</label>
-				                                       	 	<select class="form-control select2" id="packageNo" name="packageNo" required>
-				                                          	<!--option value="select" selected disabled>Select Package No.</option-->
+				                                       	<select class="form-control select2" id="packageNo" name="packageNo">
+				                                          	<option value="select" selected disabled>Select Package No.</option>
 				                                          	<?php foreach($packages as $package) { ?>
 				                                          	<option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
 															<?php } ?>
 				                                        </select>
 			                						</div>
-			                						<!-- <div class="col-xl-3 mb-3">
-			                							<label for="contractor" class="form-label">Contractor (TKC)
-				                                          	<span class="text-red">*</span>
-				                                       	</label>
-				                                       	<input class="form-control" type="text" name="contractor" id="contractor" onkeyup="showtkc(this.value)">
-                                                        <div class="list-group list-view-contractor" id="list-view"></div>
-			                						</div>
-			                						<div class="col-xl-3 mb-3">
-			                							<label for="typeOfWork" class="form-label">Type of Work
-				                                          	<span class="text-red">*</span>
-				                                       	</label>
-				                                       	<select class="form-control select2" id="typeOfWork" name="typeOfWork" required>
-				                                          	<option value="select" selected disabled>Select Type of Work</option>
-				                                          	<option value="Capacitor Bank">Capacitor Bank</option>
-				                                          	<option value="33 KV / 11 KV New Substation">33 KV / 11 KV New Substation</option>
-				                                          	<option value="11 KV Feeder Separation">11 KV Feeder Separation</option>
-				                                          	<option value="11 KV Interconnection Line / LT AB Cabling">11 KV Interconnection Line / LT AB Cabling</option>
-				                                          	<option value="33 KV Interconnection Line">33 KV Interconnection Line</option>
-				                                        </select>
-			                						</div> -->
 			                					</div>
 
 			                					<button class="btn btn-success mb-3 mt-3"  type="submit">Generate</button>
-														<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('cash-flow-report'); ?>">Clear</a>
+												<a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('cash-flow-report'); ?>">Clear</a>
                                  				<a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
 			                				</form>
 			                				<!-- Form Ends -->
@@ -145,18 +105,23 @@
 			                <!-- Row Ends -->
 
 			                <!-- Report Row -->
+			                <?php if (isset($feeder_access) && $feeder_access) { ?>
 			                <div class="row" id="report-table">
 			                	<div class="col-lg-12">
 			                		<div class="card">
 			                			<?php if(!empty($reportData)) { ?>
 			                			<div class="card-body">
+			                				<?php if (is_array($reportData)) { ?>
+			                				<?php if ($download_access) { ?>
 			                				<div class="row">
 			                					<!-- Export Button -->
 			                					<div class="col-sm-12 col-md-9s mt-3">
-				                                   <div class="dts-buttons btn-group flex-wrap" style="float:right;">
-									<a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>				                                    </div>
+				                                   	<div class="dts-buttons btn-group flex-wrap" style="float:right;">
+														<a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>
+													</div>
 				                                </div>	
-			                				</div>
+			                				</div>	
+			                				<?php } ?>
 			                				<div class="row">
 			                					<div class="table-responsive mb-3 mt-3">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
@@ -203,16 +168,43 @@
 			                									<td><?php echo $report->TOTAL;?></td>
 			                								
 			                								</tr>
-			                									<?php } ?>	
+			                								<?php } ?>	
 			                							</tbody>
 			                						</table>
 			                					</div>
-			                				</div>
+			                				</div>	
+			                				<?php } else { ?>
+			                				<div class="row">
+							                  	<div class="col-lg-12">
+							                    	<div class="card">
+							                    		<div class="card-body">
+									                      	<div class="row">
+									                        	<h4 class="pt-3"><strong><?php echo $reportData; ?></strong></h4>
+									                        </div>
+							                      		</div>
+							                    	</div>
+							                  	</div>
+							               	</div>
+			                				<?php } ?>
 			                			</div>
 			                			<?php } ?>
 			                		</div>
 			                	</div>
-			                </div>
+			                </div>	
+			                <?php } elseif (isset($feeder_access) && !$feeder_access) { ?>
+			                <div class="row">
+			                    <div class="col-lg-12">
+			                       <div class="card">
+			                          <div class="card-body bg-danger text-white pt-2 rounded-2">
+			                             <div class="row">
+			                                <h3 class="pt-3"><strong>Authorization failed.</strong></h3>
+			                                <p>You don't have access to this record. Ask your administrator for help or request for access.</p>
+			                             </div>
+			                          </div>
+			                       </div>
+			                    </div>
+			                 </div>
+			                <?php } ?>
 			                <!-- Report Row Ends -->
 
 		        		</div>
@@ -295,55 +287,23 @@
 	   <script src="<?php echo base_url('assets/js/table-data.js'); ?>"></script>
 
 	   <!-- SWEET-ALERT JS -->
-	   <script src="assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
-	   <script src="assets/js/sweet-alert.js'); ?>"></script>
+	   <script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
+	   <script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
 
 	   <script type="text/javascript">
 	   	function showReport() {
 	   		$('#report-table').removeAttr('hidden');
 	   	}
 
-	   	//Displays contractor search list view
-        function showtkc(tkcValue) {
-            // alert(tkcValue);
-            $('#list-view').show();
-            if (tkcValue !== '') {
-                var html = '';
-                $('#list-view').empty();
+        $('#generateCashFlowReport').submit(function(event) {
+        	let package_no = $('#packageNo option:selected').val();
 
-                for (var i = 0; i < 3; i++) {
-                    html += '<a href="javascript:void(0)" class="list-group-item list-group-item-action flex-column align-items-start ">';
-                    html += '<div class="d-flex w-100 justify-content-between">';
-                    html += '<h4 class="mb-1"><strong>M/s Shreem Capcitor</strong></h4>';
-                    html += '<p>Package - 1 </p>';
-                    html += '</div>';
-                    html += '<p class="mb-1">Type Of Work: <span class="text-primary"> Capacitor Bank</span></p>';
-                    html += '<small class="text-muted">Award No: <span class="text-primary">483</span></small><br>';
-                    html += '<small class="text-muted">Award Date : <span class="text-primary"> 25-09-2023</span></small>';
-                    html += '</a>';
-                }
+        	if (package_no == 'select') {
+        		$('.toast-body').text('Select Package No');
+           		$('.toast').toast('show');
 
-                $('#list-view').append(html);
-            } else {
-                $('#list-view').empty();
-            }
-
-            /*if(tkcValue!=='')
-            {
-                $("#tkclist").show();
-            }
-            else
-            {
-                $("#tkclist").hide();
-            }*/
-        }
-
-        $(document).click(function() {
-            // alert('click');
-            var list_view = $('#list-view');
-            if (!list_view.is(event.target) && !list_view.has(event.target).length) {
-                list_view.hide();
-            }
+           		event.preventDefault();
+        	}
         });
 	   </script>
 

@@ -17,9 +17,8 @@
         <!-- TITLE -->
         <title>MPPKVVCL - Dashboard</title>
 
-
         <!-- BOOTSTRAP CSS -->
-        <link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">        
+        <link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
 
         <!-- STYLE CSS -->
          <link href="<?php echo base_url('assets/css/style.css'); ?>" rel="stylesheet">
@@ -130,7 +129,7 @@
                                                         <tr>
                                                             <!--td><?php //echo $key->srno;?></td-->   
                                                             <!--td class="text-nowrap"><a href="javascript:;" data-bs-target="#package-modal" data-bs-toggle="modal"><?php echo $key->package_no;?></a></td-->
-															  <td class="text-nowrap"><a href="javascript:;" onclick="showModal('<?php echo $key->contractor_name ?>', <?php echo $key->package_no;?>)"><?php echo $key->package_no;?></a></td>
+                                                              <td class="text-nowrap"><a href="javascript:;" onclick="showModal('<?php echo $key->contractor_name ?>', <?php echo $key->package_no;?>)"><?php echo $key->package_no;?></a></td>
                                                             <td class="text-nowrap" style="text-align: left"><?php echo $key->contractor_name;?></td>
                                                             <td class="text-nowrap" style="text-align: left"><?php echo $key->typeofwork;?></td>
                                                             <td style="text-align: center;" ><?php echo $key->ss;?></td>
@@ -146,132 +145,6 @@
                                                             <td style="text-align: center;"><?php echo number_format((float)$key->slippage_in_percentage, 2, '.', ''); ?></td>
                                                         </tr>  
                                                     <?php } ?>
-                                                        <!-- <tr>
-                                                            <td>2</td>   
-                                                            <td>Package-2</td>
-                                                            <td>M/s Universal MEP</td>
-                                                            <td>Substation</td>
-                                                            <td>47</td>
-                                                            <td>-</td>
-                                                            <td>14</td>
-                                                            <td class="text-nowrap">25-09-2023</td>
-                                                            <td>Nil </td>
-                                                            <td>Nil</td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>3</td>   
-                                                            <td>Package-3</td>
-                                                            <td>M/s A.K. Infra</td>
-                                                            <td>Substation</td>
-                                                            <td>44</td>
-                                                            <td>-</td>
-                                                            <td>12</td>
-                                                            <td class="text-nowrap">25-09-2023</td>
-                                                            <td>Nil</td>
-                                                            <td>Nil </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>4</td>   
-                                                            <td>Package-4</td>
-                                                            <td>M/s MDP Infra</td>
-                                                            <td>Feeder Separation</td>
-                                                            <td>-</td>
-                                                            <td>52</td>
-                                                            <td>16</td>
-                                                            <td class="text-nowrap">25-09-2023</td>
-                                                            <td>Nil</td>
-                                                            <td>Nil </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>5</td>   
-                                                            <td>Package-5</td>
-                                                            <td>M/s Kishore Infra</td>
-                                                            <td>Feeder Separation </td>
-                                                            <td>-</td>
-                                                            <td>90</td>
-                                                            <td>26</td>
-                                                            <td class="text-nowrap">25-09-2023</td>
-                                                            <td>Nil </td>
-                                                            <td>Nil</td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>6</td>   
-                                                            <td>Package-6</td>
-                                                            <td>M/s Ashoka Buildcon</td>
-                                                            <td>Feeder Separation</td>
-                                                            <td>-</td>
-                                                            <td>103</td>
-                                                            <td>26</td>
-                                                            <td class="text-nowrap">25-09-2023</td>
-                                                            <td>Nil </td>
-                                                            <td>Nil </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>7</td>   
-                                                            <td>Package-7</td>
-                                                            <td>M/s Ashoka Buildcon </td>
-                                                            <td>Feeder Separation</td>
-                                                            <td>-</td>
-                                                            <td>266</td>
-                                                            <td>70</td>
-                                                            <td class="text-nowrap">25-09-2023</td>
-                                                            <td>Nil</td>
-                                                            <td>Nil </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>8</td>   
-                                                            <td>Package-8</td>
-                                                            <td>M/s Ashoka Buildcon</td>
-                                                            <td>Feeder Separation</td>
-                                                            <td>-</td>
-                                                            <td>234</td>
-                                                            <td>64</td>
-                                                            <td class="text-nowrap">25-09-2023</td>
-                                                            <td>Nil</td>
-                                                            <td>Nil</td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>9</td>   
-                                                            <td>Package-9</td>
-                                                            <td>M/s Agrawal Power </td>
-                                                            <td>33 KV Line</td>
-                                                            <td>-</td>
-                                                            <td>265</td>
-                                                            <td>89</td>
-                                                            <td class="text-nowrap">25-09-2023</td>
-                                                            <td>Nil</td>
-                                                            <td>Nil </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>10</td>   
-                                                            <td>Package-10</td>
-                                                            <td>M/s Rail Vikas Nigam Ltd.</td>
-                                                            <td>33 KV Line</td>
-                                                            <td>-</td>
-                                                            <td>163</td>
-                                                            <td>44</td>
-                                                            <td class="text-nowrap">25-09-2023</td>
-                                                            <td>Nil </td>
-                                                            <td>Nil</td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr> -->
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -282,18 +155,6 @@
                             
                         </div>
                         <!-- ROW-1 END -->
-
-                        <!-- ROW-2 -->
-                       
-                        <!-- ROW-2 END -->
-
-                        <!-- ROW-3 -->
-                       
-                        <!-- ROW-3 END -->
-
-                        <!-- ROW-4 -->
-                       
-                        <!-- ROW-4 END -->
                     </div>
                     <!-- CONTAINER END -->
                 </div>
@@ -304,7 +165,7 @@
 
         <!-- Package Modal -->
         <div class="modal fade" id="package-modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg " role="document">
+            <div class="modal-dialog modal-xl " role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modal_title"></h5>
@@ -312,52 +173,38 @@
                             <span aria-hidden="true">×</span>
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body physical-popup">
                         <!-- <p>Modal body text goes here.</p> -->
                         <form class="form-horizontal">
                             <div class="row">
+                                <!-- Region -->
                                 <div class="col-md-3">
                                     <label class="form-label" for="select-region">Region</label>
                                     <select name="select-region" class="form-control form-select" data-bs-placeholder="Select Region" id="select-region" onchange="selectCircle(this.value);">
                                         <option value="" selected disabled>Select Region</option>
-                                       <!--  <option value="jabalpur">Jabalpur</option>
-                                        <option value="rewa">Rewa</option>
-                                        <option value="sagar">Sagar</option>
-                                        <option value="shedol">Shedol</option> -->
                                         <?php foreach ($regions as $reg) { ?>
                                             <option value="<?php echo $reg->region_id;?>"><?php echo $reg->region_name;?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
+                                <!-- Circle -->
                                 <div class="col-md-3">
                                     <label class="form-label" for="select-circle">Circle</label>
                                     <select name="select-circle" class="form-control form-select" data-bs-placeholder="Select Circle" id="select-circle" onchange="selectDivisions(this.value);">
                                         <option value="" selected disabled>Select Circle</option>
-                                        <!-- <option value="jabalpur_city">Jabalpur City</option>
-                                        <option value="jabalpur_om">Jabalpur O&M</option>
-                                        <option value="dindori">Dindori</option>
-                                        <option value="balaghat">Balaghat</option>
-                                        <option value="mandla">Mandla</option>
-                                        <option value="chindwara">Chindwara</option>
-                                        <option value="narsinghpur">Narsinghpur</option>
-                                        <option value="katni">Katni</option>
-                                        <option value="seoni">Seoni</option> -->
                                     </select>
                                 </div>
+                                <!-- Division -->
                                 <div class="col-md-3">
                                     <label class="form-label" for="select-division">Division</label>
                                     <select name="select-division" class="form-control form-select" data-bs-placeholder="Select Division" id="select-division">
                                         <option value="" selected disabled>Select Division</option>
-                                       <!--  <option value="city_dn_east">City Dn East</option>
-                                        <option value="city_dn_west">City Dn West</option>
-                                        <option value="city_dn_north">City Dn North</option>
-                                        <option value="city_dn_south">City Dn South</option>
-                                        <option value="vijay_nagar">Vijay Nagar</option> -->
                                     </select>
                                 </div>
                                 <input type="hidden" name="packageNo" id="packageNo">
                                 <div class="col-md-3">
-                                    <button class="btn btn-primary mt-6" type="button" onclick="applyFilter()">Apply Filters</button>
+                                    <button class="btn btn-primary mt-6 p-2" type="button" onclick="applyFilter()">Apply Filters</button>
+                                    <button type="button" class="btn btn-danger mt-6 ml-0 p-2" onclick="clearFilter()">CLEAR</button>
                                 </div>
                             </div>
                         </form>
@@ -367,9 +214,9 @@
                                 <table class="table text-nowrap text-md-nowrap mb-0 mt-3 text-center table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Contract No</th>
+                                            <!-- <th>Contract No</th>
                                             <th>Contractor</th>
-                                            <th>Type of Work</th>
+                                            <th>Type of Work</th> -->
                                             <th>Region</th>
                                             <th>Circle</th>
                                             <th>Division</th>
@@ -485,73 +332,89 @@
 
         <!-- SWEET-ALERT JS -->
         <script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
-        <script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
+        <script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>        
         
-        <script type="text/javascript">
-                
-                function changepp(stageId)
-                {
-                    //alert(stageId);
-                    window.location.href = baseUrl+"physical/"+stageId;
-                }
+        <script>
+            function changepp(stageId)
+            {
+                window.location.href = baseUrl+"physical/"+stageId;
+            }
 
+            function showModal(name, package_no)
+            {
+                $("#modal_title").empty();
+                $("#packageNo").val(package_no);
+                $("#modal_title").text(name);
+
+                $.ajax({
+                    url: baseUrl+"getlocations/"+package_no, 
+                    success: function(result){
+                        inputs = result;
+                        $("#htmlload").empty();
+                        $("#htmlload").html(inputs);
+                    }
+                });
+                                
+                $("#package-modal").modal("show");
+            }
+
+            function selectCircle(region_id)
+            {
+                $.ajax({url: baseUrl+"getcircles/"+region_id, success: function(result){
+                                    inputs = result;
+                                   $("#select-circle").empty();
+                                   $("#select-circle").html(inputs);
+                                }});
+            }
+
+            function selectDivisions(circle_id)
+            {
+                $.ajax({url: baseUrl+"getdivisions/"+circle_id, success: function(result){
+                                    inputs = result;
+                                   $("#select-division").empty();
+                                   $("#select-division").html(inputs);
+                                }});
+            }
+
+            function applyFilter()
+            {
+                var region_id = $("#select-region").val();
+                var circle_id = $("#select-circle").val();
+                var division_id = $("#select-division").val();
+
+                var package_no = $("#packageNo").val();
+
+                 $.ajax({
+                    url: baseUrl+"getlocationsfilter/"+package_no+"/"+region_id+"/"+circle_id+"/"+division_id, 
+                    success: function(result){
+                        // console.log(result); return false;
+                        inputs = result;
+                        $("#htmlload").empty();
+                        $("#htmlload").html(inputs);
+                    }
+                });
+            }
+
+            function clearFilter() {
+                $('#select-region').val('').change();
+                $('#select-circle').val('').change();
+                $('#select-division').val('').change();
+
+                let packageNo = $("#packageNo").val();
+
+                $.ajax({
+                    url: baseUrl+"getlocations/"+packageNo, 
+                    success: function(result){
+                        inputs = result;
+                        $("#htmlload").empty();
+                        $("#htmlload").html(inputs);
+                    }
+                });
+
+                $('#select-circle').empty().append('<option value="" selected disabled>Select Circle</option>');
+                $('#select-division').empty().append('<option value="" selected disabled>Select Division</option>');
+            }
         </script>
-<script>
-function showModal(name, package_no)
-{
-    $("#modal_title").empty();
-    $("#packageNo").val(package_no);
-	$("#modal_title").text(name);
-
-	$.ajax({
-        url: baseUrl+"getlocations/"+package_no, 
-        success: function(result){
-            inputs = result;
-            $("#htmlload").empty();
-			$("#htmlload").html(inputs);
-        }
-    });
-					
-	$("#package-modal").modal("show");
-}
-
-function selectCircle(region_id)
-{
-    $.ajax({url: baseUrl+"getcircles/"+region_id, success: function(result){
-                        inputs = result;
-                       $("#select-circle").empty();
-                       $("#select-circle").html(inputs);
-                    }});
-}
-function selectDivisions(circle_id)
-{
-    $.ajax({url: baseUrl+"getdivisions/"+circle_id, success: function(result){
-                        inputs = result;
-                       $("#select-division").empty();
-                       $("#select-division").html(inputs);
-                    }});
-}
-
-
-function applyFilter()
-{
-    var region_id = $("#select-region").val();
-    var circle_id = $("#select-circle").val();
-    var division_id = $("#select-division").val();
-
-    var package_no = $("#packageNo").val();
-
-     $.ajax({
-        url: baseUrl+"getlocationsfilter/"+package_no+"/"+region_id+"/"+circle_id+"/"+division_id, 
-        success: function(result){
-            // console.log(result); return false;
-            inputs = result;
-            $("#htmlload").empty();
-            $("#htmlload").html(inputs);
-        }
-    });
-}
-</script>
 
     </body>
 

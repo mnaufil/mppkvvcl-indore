@@ -2,7 +2,7 @@
 
 class Dashboard_Model extends CI_Model
 {
-	function __construct()
+    function __construct()
     {
         parent::__construct();
        
@@ -85,71 +85,71 @@ class Dashboard_Model extends CI_Model
         return $result;
         
     }
-	
-	function getContractId($packageNo)
-	{
-		$this->db->where("package_no", $packageNo);
+    
+    function getContractId($packageNo)
+    {
+        $this->db->where("package_no", $packageNo);
         $query = $this->db->get("contract");
-		 $result = $query->row();
-		 return  $result->contract_id;
-	}
-	
-	
-	public function getlocations($packageNo)
-	{
-		$contract_id = $this->getContractId($packageNo);
-		$regions = implode(",",$_SESSION['myRegions']);	
-		$this->db->select('mst_typeofwork.name as t_name, contract.tender_award_no, `contract`.`typeofwork_id`, `contract`.`contractor_name`,contract_location.*,mst_region.region_name, mst_circle.circle_name, mst_division.division_name, `mst_status`.`name`, `physical_progress`.`physical_progress_id`');
+         $result = $query->row();
+         return  $result->contract_id;
+    }
+    
+    
+    public function getlocations($packageNo)
+    {
+        $contract_id = $this->getContractId($packageNo);
+        $regions = implode(",",$_SESSION['myRegions']); 
+        $this->db->select('mst_typeofwork.name as t_name, contract.tender_award_no, `contract`.`typeofwork_id`, `contract`.`contractor_name`,contract_location.*,mst_region.region_name, mst_circle.circle_name, mst_division.division_name, `mst_status`.`name`, `physical_progress`.`physical_progress_id`');
         //$this->db->where_in("contract_location.region_id", $regions);
-		$this->db->where("physical_progress.contract_id", $contract_id);
-		// $this->db->or_where("mst_status.status_id", 5);		
-		$this->db->from('physical_progress');
-		$this->db->join('contract_location', 'contract_location.contract_location_id  = physical_progress.contract_location_id', 'inner');
-		$this->db->join('mst_region', 'mst_region.region_id  = contract_location.region_id', 'inner');
-		$this->db->join('mst_circle', 'mst_circle.circle_id  = contract_location.circle_id', 'inner');
-		$this->db->join('mst_division', 'mst_division.division_id  = contract_location.division_id', 'inner');
-		$this->db->join('mst_status', 'mst_status.status_id  = physical_progress.status_id', 'inner');
+        $this->db->where("physical_progress.contract_id", $contract_id);
+        // $this->db->or_where("mst_status.status_id", 5);      
+        $this->db->from('physical_progress');
+        $this->db->join('contract_location', 'contract_location.contract_location_id  = physical_progress.contract_location_id', 'inner');
+        $this->db->join('mst_region', 'mst_region.region_id  = contract_location.region_id', 'inner');
+        $this->db->join('mst_circle', 'mst_circle.circle_id  = contract_location.circle_id', 'inner');
+        $this->db->join('mst_division', 'mst_division.division_id  = contract_location.division_id', 'inner');
+        $this->db->join('mst_status', 'mst_status.status_id  = physical_progress.status_id', 'inner');
         $this->db->join('contract', 'contract.contract_id  = physical_progress.contract_id', 'inner');
          $this->db->join('mst_typeofwork', 'mst_typeofwork.typeofwork_id  = contract.typeofwork_id', 'inner');
-		$query = $this->db->get();
-		//echo $this->db->last_query(); die;
-		$result = $query->result();
-		
-		$html = "";
-		
-		foreach($result as $res)
-		{
-			$mode = "";
+        $query = $this->db->get();
+        //echo $this->db->last_query(); die;
+        $result = $query->result();
+        
+        $html = "";
+        
+        foreach($result as $res)
+        {
+            $mode = "";
             $action_btn = '';
             $status_color = '';
-			if($res->name=="Open")
-			{
-				$mode = "edit-new";
+            if($res->name=="Open")
+            {
+                $mode = "edit-new";
                 $action_btn = 'fe fe-edit';
                 $status_color = 'text-gray';
-			}
-			else if($res->name=="In Process")
-			{
-				$mode = "edit-prev";
+            }
+            else if($res->name=="In Process")
+            {
+                $mode = "edit-prev";
                 $action_btn = 'fe fe-edit';
                 $status_color = 'text-yellow';
-			}
+            }
             else if ($res->name=="Reviewed")
             {
                 $mode = "view";
                 $action_btn = 'fa fa-eye';
                 $status_color = 'text-blue';   
             }
-			else if($res->name=="Completed")
-			{
-				$mode = "view";
+            else if($res->name=="Completed")
+            {
+                $mode = "view";
                 $action_btn = 'fa fa-eye';
                 $status_color = 'text-green';
-			}
-			
-			$myUrl = base_url('add-physical-progress')."/".$mode."/".$res->physical_progress_id."/".$res->contract_id."/".$res->contract_location_id;
-			
-			$html .=    '<tr>
+            }
+            
+            $myUrl = base_url('add-physical-progress')."/".$mode."/".$res->physical_progress_id."/".$res->contract_id."/".$res->contract_location_id;
+            
+            /*$html .=    '<tr>
                             <td>'.$res->tender_award_no.'</td>
                             <td>'.$res->contractor_name.'</td>
                             <td>'.$res->t_name.'</td>
@@ -164,11 +164,24 @@ class Dashboard_Model extends CI_Model
                                     <span class="'.$action_btn.' fa-lg action-btn-table"></span>
                                 </a>
                             </td>
+                        </tr>';*/
+            $html .=    '<tr>
+                            <td>'.$res->region_name.'</td>
+                            <td>'.$res->circle_name.'</td>
+                            <td>'.$res->division_name.'</td>
+                            <td>'.$res->location_name.'</td>
+                            <td>'.$res->feeder_id.'</td>
+                            <td class="'.$status_color.'">'.$res->name.'</td>
+                            <td>
+                                <a target="_blank" href="'.$myUrl.'" id="bEdit" type="button" class="btn btn-sm " style="">
+                                    <span class="'.$action_btn.' fa-lg action-btn-table"></span>
+                                </a>
+                            </td>
                         </tr>';
-		}
+        }
 
-		echo  $html;
-	}
+        echo  $html;
+    }
 
     public function getlocationsfilter($packageNo, $regionId, $circleId, $divisionId)
     {
@@ -329,23 +342,23 @@ class Dashboard_Model extends CI_Model
     return $ResultSet;
 }
 
-	
-	
-	public function statisticspopup($packageNo, $contractId)
-	{
+    
+    
+    public function statisticspopup($packageNo, $contractId)
+    {
 
-		$result = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup(1,'$packageNo','week',NULL, NULL,1)");
+        $result = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup(1,'$packageNo','week',NULL, NULL,1)");
 
         // $result_multiple = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup_weekdate_stage($contractId)");
        
           //print_r($result_multiple); die;
        // echo "call sp_get_dashboard_statistics_popup(1,'$packageNo','week',NULL, NULL,1)";
-		//$result = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup(1,'102','month',NULL, NULL,NULL)");
+        //$result = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup(1,'102','month',NULL, NULL,NULL)");
        // echo $result[1]['Stage_stage2'];
          //print_r($result[1]);   
         //print_r(array_keys($result[1]));
 
-		
+        
         $allValues = $result[1];
         $allKeys = array_keys($result[1]);
         $mainHeaders = array();
@@ -353,8 +366,8 @@ class Dashboard_Model extends CI_Model
         $mainHeadersWithoutPercent = array();
         //$weekOrMonth = "month_";
          $weekOrMonth = "week_";
-		 $stage = explode("_", $allKeys[0]);
-		 $stageDropdown = $this->stagePopup($contractId, $stage[1]); 
+         $stage = explode("_", $allKeys[0]);
+         $stageDropdown = $this->stagePopup($contractId, $stage[1]); 
 
         
 
@@ -443,7 +456,7 @@ class Dashboard_Model extends CI_Model
               print_r($mainHeadersWithoutPercent); */
             //$result =  $query->result_array();
         //echo $allKeys[0]; 
-		
+        
           //$weekDropdownWithDates = $this->getWeekDropdownDate($contractId);  
         $weekDropdownWithDates = $this->getWeekDropdownDateLoad($contractId, $result[0]['week_or_month'], $stage[1]);  
         
@@ -453,8 +466,8 @@ class Dashboard_Model extends CI_Model
         </select>";
       
         //echo $weekDropdownWithDates; die;
-		//echo $result->contractor_name;
-		echo $html = '<div class="modal-body">
+        //echo $result->contractor_name;
+        echo $html = '<div class="modal-body">
                                         <!-- Show a second modal and hide this one with the button below. -->
                                         <div class="table-responsive">
                                         <input type="hidden" id="packageNo" value="'.$packageNo.'">
@@ -544,14 +557,14 @@ class Dashboard_Model extends CI_Model
                                             </table>
                                         </div>
                                     </div>';
-		
-		
-	}
+        
+        
+    }
 
 
     function getWeekDropdownDate($contractId)
     {
-		
+        
         $weekOrMonthQuery2 = $this->db->query("CALL sp_get_dashboard_statistics_popup_weekdate($contractId)"); 
        $select = "";
           //$weekOrMonthQuery = $this->db->query("CALL sp_get_dashboard_statistics_popup_weekdate('102')"); 
@@ -560,7 +573,7 @@ class Dashboard_Model extends CI_Model
       // $select  .='<option value="">Select week Range</option>';
           if($weekOrMonthQuery2)
             {                 
-				          
+                          
                   $weekOrMonthResult =  $weekOrMonthQuery2->result();
                  foreach($weekOrMonthResult as $res)
                  {
@@ -630,13 +643,13 @@ class Dashboard_Model extends CI_Model
     public function stagePopup($contractId, $stage)
     {
         $stageDropdown = "";
-		 $userId = $_SESSION['userId'];
+         $userId = $_SESSION['userId'];
           $stageQuery = $this->db->query("CALL sp_get_dashboard_statistics_popup_stage($userId, '$contractId')");
         
          //$stageQuery = $this->db->query("CALL sp_get_dashboard_statistics_popup_stage('102')");
          if($stageQuery)
         {
-			
+            
             $stageResult =  $stageQuery->result();
            /* $stageDropdown .= '<select id="stageChange" onchange="changeStage(this.value)"><option value="All">All</option>';*/
             $stageDropdown .= '<select id="stageChange" onchange="changeStage(this.value)">';
@@ -745,7 +758,7 @@ class Dashboard_Model extends CI_Model
             $result = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup($sessionId,'$packageno','month','$monthdate', NULL,NULL)");
         }
         else
-        {	$explode = explode(" ", $stageValue);
+        {   $explode = explode(" ", $stageValue);
 
 
              $result = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup($sessionId,'$packageno','month','$monthdate', NULL, '$explode[1]')");
@@ -772,8 +785,8 @@ class Dashboard_Model extends CI_Model
         }
         else
         {
-           	$explode = explode(" ", $stageValue);
-			$stageId = $explode[1];
+            $explode = explode(" ", $stageValue);
+            $stageId = $explode[1];
            
             $result = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup($sessionId,'$packageno','week','$weekDateFirst', '$weekDateSecond','$stageId')");
         }

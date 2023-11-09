@@ -239,7 +239,7 @@
 	                                </tr>         
 	                                <?php } ?>
 	                                <tr>
-	                                	<td><b>NCR Id</b></td>
+	                                	<td><b>NCR ID</b></td>
 	                                	<td><?php echo $report->ncr_id?></td>
 	                               	</tr>
 	                                <tr>

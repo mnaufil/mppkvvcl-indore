@@ -693,12 +693,14 @@ class Report extends CI_Controller
 	public function generateNonConformaceReport()
 	{
 		$data['packages'] = $this->Report_Model->loadPackages();
-		$data['regions'] = $this->Report_Model->loadRegions();
-		$data['circles'] = $this->Report_Model->loadCircles();
+		$data['regions'] = $user_regions = $this->Report_Model->loadRegions();
 
-		$data['selected_region_circle_data'] = $this->Report_Model->getSelectedRegionCircles($this->input->post('region'));
-		$circle_data = $this->Report_Model->getCircleData();
+		$user_circles = $this->Report_Model->loadCircles();
+		$user_circles = $this->getCirlceIDs($user_circles);
+		$circle_data = $this->Report_Model->getCircleData($user_circles);
 		$data['circle_data'] = $this->groupCircleData($circle_data);
+
+		$data['selected_region_circle_data'] = $this->Report_Model->getSelectedRegionCircles($this->input->post('region'), $user_circles);
 
 		$data['postpackage'] = $this->input->post('packageNo');
 		$data['postregion'] = $this->input->post('region');

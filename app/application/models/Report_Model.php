@@ -240,12 +240,13 @@ class Report_Model extends CI_Model
 		}
 	}
 
-	public function getSelectedRegionCircles($region)
+	public function getSelectedRegionCircles($region, $user_circle_ids)
 	{
 		$this->db->select('mst_circle.circle_name');
 		$this->db->from('mst_circle');
 		$this->db->join('mst_region', 'mst_circle.region_id = mst_region.region_id', 'INNER');
 		$this->db->where(array('mst_region.region_name' => $region));
+		$this->db->where_in('mst_circle.circle_id', $user_circle_ids);
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();

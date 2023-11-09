@@ -98,6 +98,8 @@ class Report_Model extends CI_Model
 
 		$this->db->where_in("region_id", $regions);
 		$this->db->where("is_active", 1);
+		$this->db->order_by('region_name', 'ASC');
+
 		$query = $this->db->get("mst_region");
 		// echo $this->db->last_query(); die;
 
@@ -112,6 +114,8 @@ class Report_Model extends CI_Model
 
 		$this->db->where_in("circle_id", $circles);
 		$this->db->where("is_active", 1);
+		$this->db->order_by('circle_name', 'ASC');
+
 		$query = $this->db->get("mst_circle");
 		// echo $this->db->last_query(); die();
 
@@ -126,6 +130,8 @@ class Report_Model extends CI_Model
 
 		$this->db->where_in("division_id", $divisions);
 		$this->db->where("is_active", 1);
+		$this->db->order_by('division_name', 'ASC');
+
 		$query = $this->db->get("mst_division");
 		// echo $this->db->last_query(); die();
 
@@ -154,14 +160,14 @@ class Report_Model extends CI_Model
 		}
 	}
 
-	public function getCircleData($user_region_ids= NULL)
+	public function getCircleData($user_circles_id = NULL)
 	{
 		$this->db->select('mst_circle.circle_id, mst_circle.circle_name AS circle, mst_region.region_name AS region');
 		$this->db->from('mst_circle');
 		$this->db->join('mst_region', 'mst_circle.region_id = mst_region.region_id', 'INNER');
 
-		if (!empty($user_region_ids)) {
-			$this->db->where_in('mst_region.region_id', $user_region_ids);
+		if (!empty($user_circles_id)) {
+			$this->db->where_in('mst_circle.circle_id', $user_circles_id);
 		}
 
 		$query = $this->db->get();
@@ -182,14 +188,14 @@ class Report_Model extends CI_Model
 		}
 	}
 
-	public function getDivisionData($user_circles_ids = NULL)
+	public function getDivisionData($user_divisions_ids = NULL)
 	{
 		$this->db->select('mst_division.division_id, mst_division.division_name, mst_circle.circle_name');
 		$this->db->from('mst_division');
 		$this->db->join('mst_circle', 'mst_division.circle_id = mst_circle.circle_id', 'INNER');
 
-		if (!empty($user_circles_ids)) {
-			$this->db->where_in('mst_circle.circle_id', $user_circles_ids);
+		if (!empty($user_divisions_ids)) {
+			$this->db->where_in('mst_division.division_id', $user_divisions_ids);
 		}
 
 		$query = $this->db->get();

@@ -47,14 +47,15 @@ class Report extends CI_Controller
 		
 		$user_regions = $this->getRegionIDs($user_regions);
 		$user_circles = $this->getCirlceIDs($user_circles);
+		$user_divisions = $this->getDivisionIDs($user_divisions);
 
 		/*$region_data = $this->Report_Model->getRegionData();
 		$data['region_data'] = $region_data;*/
 
-		$circle_data = $this->Report_Model->getCircleData($user_regions);
+		$circle_data = $this->Report_Model->getCircleData($user_circles);
 		$data['circles'] = $this->groupCircleData($circle_data);
 
-		$division_data = $this->Report_Model->getDivisionData($user_circles);
+		$division_data = $this->Report_Model->getDivisionData($user_divisions);
 		$data['divisions'] = $this->groupDivisionData($division_data);
 
 		$data['title'] = 'View Report';
@@ -75,11 +76,11 @@ class Report extends CI_Controller
 
 		$user_circles = $this->Report_Model->loadCircles();
 		$user_circles = $this->getCirlceIDs($user_circles);
-		$circle_data = $this->Report_Model->getCircleData($user_regions);
+		$circle_data = $this->Report_Model->getCircleData($user_circles);
 		$data['circles'] = $this->groupCircleData($circle_data);
 
 		$user_divisions = $this->Report_Model->loadDivisions();
-		$user_divisions = $this->getCirlceIDs($user_divisions);
+		$user_divisions = $this->getDivisionIDs($user_divisions);
 		$division_data = $this->Report_Model->getDivisionData($user_divisions);
 		$data['divisions'] = $this->groupDivisionData($division_data);
 
@@ -655,6 +656,12 @@ class Report extends CI_Controller
 			$circles[$value['region']][$value['circle_id']] = $value['circle'];
 		}
 
+		// Sorting the new array alphabetically
+		foreach ($circles as $key => $value) {
+			asort($value);
+			$circles[$key] = $value;
+		}
+
 		return $circles;
 	}
 
@@ -665,7 +672,13 @@ class Report extends CI_Controller
 			$divisions[$value['circle_name']][$value['division_id']] = $value['division_name'];
 		}
 
-		return $divisions;	
+		// Sorting the new array alphabetically
+		foreach ($divisions as $key => $value) {
+			asort($value);
+			$divisions[$key] = $value;
+		}
+
+		return $divisions;
 	}
 
 	public function generateNonConformaceReport()

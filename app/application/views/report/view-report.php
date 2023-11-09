@@ -465,9 +465,11 @@
        <script>
          var baseUrl = "<?php echo base_url(); ?>";
 
-         let circles = <?php echo json_encode($circles) ?>;
+         let circles = <?php echo json_encode($circles) ?>;         
          let divisions = <?php echo json_encode($divisions) ?>;
+
          let regions_select = 0;
+         let circles_select = 0;
 
          $('#region').on('change', function() {
             let selected_regions = [];
@@ -509,29 +511,38 @@
             let selected_circles = [];
             let division_data = [];
 
-            $('#circle option:selected').each(function(index, value) {
-               selected_circles.push($(value).text());
-            });
-
-            $.each(selected_circles, function(index, value) {
-               division_data.push(divisions[value]);
-            });
-
             let division_html = '';
 
-            if (regions_select) {
-               $.each(division_data, function(index, value) {
-                  $.each(value, function(ind, val) {
-                     division_html += '<option value="'+ ind +'">'+ val +'</option>';
-                  });
-               });
-            } else {
+            if ($('#circle option:selected').length == 0) {
                $.each(divisions, function(index, value) {
                   $.each(value, function(ind, val) {
                      division_html += '<option value="'+ ind +'">'+ val +'</option>';
                   });
                });
-            }            
+            } else {
+               circles_select = 1;
+               $('#circle option:selected').each(function(index, value) {
+                  selected_circles.push($(value).text());
+               });
+
+               $.each(selected_circles, function(index, value) {
+                  division_data.push(divisions[value]);
+               });
+
+               if ((regions_select && circles_select) || circles_select) {
+                  $.each(division_data, function(index, value) {
+                     $.each(value, function(ind, val) {
+                        division_html += '<option value="'+ ind +'">'+ val +'</option>';
+                     });
+                  });
+               } else {
+                  $.each(divisions, function(index, value) {
+                     $.each(value, function(ind, val) {
+                        division_html += '<option value="'+ ind +'">'+ val +'</option>';
+                     });
+                  });   
+               }
+            }                        
 
             $('#division').empty();
             $('#division').append(division_html);
@@ -591,16 +602,14 @@
                   list_view.empty();
                }   
             }
-        });
+         });
 
          function feeder(feederId)
          {
             $("#feederId").empty();
             $("#feederId").val(feederId);
             $("#list_view_feeders").html("");
-         }
-
-         
+         }         
       </script>
    </body>
 

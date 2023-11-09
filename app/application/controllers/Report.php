@@ -57,6 +57,8 @@ class Report extends CI_Controller
 		$division_data = $this->Report_Model->getDivisionData($user_circles);
 		$data['divisions'] = $this->groupDivisionData($division_data);
 
+		$data['title'] = 'View Report';
+
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('report/view-report', $data);
 	}
@@ -181,6 +183,8 @@ class Report extends CI_Controller
 		} else {
 			$data['feeder_access'] = false;
 		}
+
+		$data['title'] = 'View Report';
 
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('report/view-report', $data);

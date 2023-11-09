@@ -2,7 +2,6 @@
 <html lang="en" dir="ltr">
 
    <head>
-
       <!-- META DATA -->
       <meta charset="UTF-8">
       <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
@@ -15,7 +14,7 @@
       <link rel="shortcut icon" type="image/x-icon" href="<?php echo base_url('assets/images/brand/favicon.ico'); ?>">
 
       <!-- TITLE -->
-      <title>MPPKVVCL - View Report</title>
+      <title>MPPKVVCL - <?php echo $title; ?></title>
 
       <!-- BOOTSTRAP CSS -->
       <link id="style" href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
@@ -89,7 +88,7 @@
                                  </div>
                                  <!-- <form class="needs-validation" novalidate method="post" action="<?php //echo base_url('generate-report'); ?>"> -->
                                     <!-- For time being -->
-                                 <form class="needs-validation2" id="generatePhysicalReport" name="generatePhysicalReport" novalidate method="post" action="<?php echo base_url('generate-physical-report'); ?>">
+                                 <form id="generatePhysicalReport" name="generatePhysicalReport" method="post" action="<?php echo base_url('generate-physical-report'); ?>">
                                     <div class="form-row">
                                        <!-- Package No -->
                                        <div class="col-xl-4 mb-3">
@@ -102,8 +101,6 @@
                                                    <option value="<?php echo $package->package_no;?>" <?php if($postpackage==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
                                                 <?php } ?>
                                            </select>
-                                          <!-- <input type="text" class="form-control" id="" value="" required>
-                                          <div class="valid-feedback">Looks good!</div> -->
                                        </div>
                                        <!-- Feeder ID -->
                                        <div class="col-xl-4 mb-3">
@@ -125,7 +122,7 @@
                                              <?php } ?>
                                           </select>
                                        </div>
-                                       <!-- Cricle -->
+                                       <!-- Circle -->
                                        <div class="col-xl-4 mb-3">
                                           <label class="form-label" for="circle">Circle</label>
                                           <select class="filter-multi" id="circle" name="circle[]" multiple="multiple">
@@ -182,8 +179,6 @@
                                        </div>
                                     </div>
 
-                                    <!-- <button class="btn btn-success mb-3 mt-3" type="submit">Generate</button> -->
-                                    <!-- For time being -->
                                     <button class="btn btn-success mb-3 mt-3" type="submit" >Generate</button>
                                     <a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('view-report'); ?>">Clear</a>
                                     <a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
@@ -566,40 +561,47 @@
          });
 
          function showReport() {
-
             $('#report-table').removeAttr('hidden');
          }
 
          function showfeeders(feederId)
          {
-           // alert(feederId);
-            $.ajax({
-                 type: "POST",
-                 url: baseUrl+"show-feeders/"+feederId,
-                 //data: {name: 'John'},
-                 //data: data,
-                 success: function(data){
-                 //alert(data);
-                
-                 $("#list_view_feeders").html(data);
-                 },
-                 error: function(xhr, status, error){
-                 console.error(xhr);
-                 }
-             });
+            if (feederId.length >= 3) {
+               $.ajax({
+                  type: "POST",
+                  url: baseUrl+"show-feeders/"+feederId,
+                  //data: data,
+                  success: function(data) {
+                     $("#list_view_feeders").html(data);
+                  },
+                  error: function(xhr, status, error) {
+                     console.error(xhr);
+                  }
+               });
+            } else if (feederId.length == 0) {
+               $('#list_view_feeders').empty();
+            }
          }
+
+         $(document).click(function(event) {
+            var list_view = $('#list_view_feeders');
+
+            if (list_view.children().length > 0) {
+               if (!list_view.is(event.target) && !list_view.has(event.target).length) {
+                  list_view.empty();
+               }   
+            }
+        });
 
          function feeder(feederId)
          {
             $("#feederId").empty();
             $("#feederId").val(feederId);
-             $("#list_view_feeders").html("");
-
+            $("#list_view_feeders").html("");
          }
 
-
+         
       </script>
-
    </body>
 
 </html>

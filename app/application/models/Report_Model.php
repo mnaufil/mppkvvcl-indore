@@ -671,7 +671,8 @@ class Report_Model extends CI_Model
 		
 		//echo "CALL sp_rpt_physical_progres($sessionId,$package,$feederId)"; die;
 		$_SESSION['spQuery'] = "CALL sp_rpt_contract_summary($sessionId,$outputOption)";
-		$query1 = $this->db->query("CALL sp_rpt_contract_summary($sessionId,$outputOption)");		
+		$query1 = $this->db->query("CALL sp_rpt_contract_summary($sessionId,$outputOption)");
+		// echo $this->db->last_query(); die();
 		
 		if($query1)
 		{
@@ -1154,7 +1155,7 @@ class Report_Model extends CI_Model
 	{
 		$this->db->select('contract_location.*,mst_region.region_name, mst_circle.circle_name, mst_division.division_name');
 		$this->db->where("contract_location.is_active", 1);
-			$this->db->where("contract_location.feeder_id", $feederId);
+		$this->db->like("contract_location.feeder_id", $feederId);
 		// $this->db->or_where("mst_status.status_id", 5);		
 		$this->db->from('contract_location');
 		
@@ -1162,8 +1163,10 @@ class Report_Model extends CI_Model
 		$this->db->join('mst_circle', 'mst_circle.circle_id  = contract_location.circle_id', 'inner');
 		$this->db->join('mst_division', 'mst_division.division_id  = contract_location.division_id', 'inner');
 		//$this->db->join('mst_status', 'mst_status.status_id  = physical_progress.status_id', 'inner');
+
 		$query = $this->db->get();
-		//echo $this->db->last_query(); die;
+		// echo $this->db->last_query(); die;
+
 		$result = $query->result();
 		$html = "";
 		foreach($result as $res)

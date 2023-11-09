@@ -78,7 +78,7 @@
 			                					</div>
 			                				</div>
 			                				<!-- Form -->
-			                				<form class="needs-validation2" novalidate method="post" action="<?php echo base_url('generate-contract-summary-report'); ?>">
+			                				<form id="generateContractSummaryReport" name="generateContractSummaryReport" method="post" action="<?php echo base_url('generate-contract-summary-report'); ?>">
 			                					<div class="form-row">
 			                						<div class="col-xl-4 mb-3">
 			                							<label for="outputOption" class="form-label">Output Option
@@ -87,11 +87,11 @@
 				                                       	<div class="form-group">
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
-				                                       				<input type="radio" class="custom-control-input" name="outputOption" value="1" checked>
+				                                       				<input type="radio" class="custom-control-input" name="outputOption" value="1" <?php echo (isset($outputOption) && $outputOption == 1) ? 'checked' : ''; ?>>
 				                                       				<span class="custom-control-label">Package Wise</span>
 				                                       			</label>
 				                                       			<label class="custom-control custom-radio status-radio">
-				                                       				<input type="radio" class="custom-control-input" name="outputOption" value="2">
+				                                       				<input type="radio" class="custom-control-input" name="outputOption" value="2" <?php echo (isset($outputOption) && $outputOption == 2) ? 'checked' : ''; ?>>
 				                                       				<span class="custom-control-label">Type of Work Wise</span>
 				                                       			</label>	
 				                                       		</div>
@@ -409,6 +409,17 @@
 	   			}
 	   		}
 	   	}
+
+	   	$('#generateContractSummaryReport').submit(function(event) {
+	   		let checked_radio = $('input[name="outputOption"]:checked');
+
+	   		if (checked_radio.length == 0) {
+	   			$('.toast-body').text('Select Output Option');
+           		$('.toast').toast('show');
+
+           		event.preventDefault();
+	   		}
+	   	});
 	   </script>
 
 	</body>

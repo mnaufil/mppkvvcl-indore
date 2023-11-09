@@ -640,10 +640,11 @@ class Report extends CI_Controller
 		
 		$data['packages'] = $this->Report_Model->loadPackages();
 		$data['worktypes'] = $this->Setup_Model->loadworktypes();
-		$data['regions'] = $this->Report_Model->loadRegions();
-		$data['circles'] = $this->Report_Model->loadCircles();
+		$data['regions'] = $user_regions = $this->Report_Model->loadRegions();
 
-		$circle_data = $this->Report_Model->getCircleData();
+		$user_circles = $this->Report_Model->loadCircles();
+		$user_circles = $this->getCirlceIDs($user_circles);
+		$circle_data = $this->Report_Model->getCircleData($user_circles);
 		$data['circle_data'] = $this->groupCircleData($circle_data);
 
 	  $data['postpackage'] = "";

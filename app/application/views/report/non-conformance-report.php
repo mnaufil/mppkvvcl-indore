@@ -466,7 +466,7 @@
 					let status = $('#status option:selected').val();
 
 					if (package_no == '' && region == '' && circle == '' && ncrDate == '' && status == '') {
-						$('.toast-body').text('Select Filters to generate the report');
+						$('.toast-body').text('Select filters to generate the report');
            	$('.toast').toast('show');
 
            	event.preventDefault();

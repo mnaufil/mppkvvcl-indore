@@ -164,17 +164,25 @@ class Report extends CI_Controller
 					$modified_report_data = [];
 					
 					foreach ($reportData as $key => $value) {
-						$i = 0;
+						$i = 1;
 						foreach ($value as $k => $val) {
 							if (str_contains($k, 'boq_qty')) {
 								$boq_key = 'boq_qty_'.$i;
 								$modified_report_data[$value['feeder_id']][$boq_key] = $val;
+
+								$i++;
 							} elseif (str_contains($k, 'erection_qty')) {
 								$erection_key = 'erection_qty_'.$i;
 								$modified_report_data[$value['feeder_id']][$erection_key] = $val;
-							}
 
-							$i++;
+								$i++;
+							} elseif (str_contains($k, 'region_name')) {
+								$modified_report_data[$value['feeder_id']]['region_name'] = $val;
+							} elseif (str_contains($k, 'circle_name')) {
+								$modified_report_data[$value['feeder_id']]['circle_name'] = $val;
+							} elseif (str_contains($k, 'division_name')) {
+								$modified_report_data[$value['feeder_id']]['division_name'] = $val;
+							}
 						}
 					}
 

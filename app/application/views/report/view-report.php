@@ -255,7 +255,7 @@
                                                    </tr>
                                                    <tr>
                                                       <th style="width: 150px;">S.No.</th>
-                                                      <th style="width: 300px;">Items</th>
+                                                      <th style="width: 300px;">Activity / Item</th>
                                                       <th>Unit</th>
                                                       <th>BOQ Qty</th>
                                                       <th>Erection Qty</th>
@@ -331,12 +331,18 @@
                                                    </tr> 
 
                                                    <tr>
-                                                     <th>Feeder ID</th>
-                                                     <?php foreach ($subHeadingArray as $key) { ?>
+                                                      <th>Region</th>
+                                                      <th>Circle</th>
+                                                      <th>Division</th>
+                                                      <th>Feeder ID</th>
+                                                      <?php foreach ($subHeadingArray as $key) { ?>
                                                       <th style="text-align:left"><?php echo str_replace("_", " ", $key);?></th>
                                                       <?php  } ?>
                                                    </tr> 
                                                    <tr>
+                                                      <th></th>
+                                                      <th></th>
+                                                      <th></th>
                                                       <th></th>
                                                       <?php foreach ($subSubHeadingArray as $val) { ?>  
                                                       <th><?php echo str_replace("_", " ", $val);?></th>
@@ -345,7 +351,11 @@
                                                    <?php foreach ($reportData as $key => $value) {
                                                    ?>                                            
                                                    <tr>
+                                                      <td><?php echo $reportData[$key]['region_name']; ?></td>
+                                                      <td><?php echo $reportData[$key]['circle_name']; ?></td>
+                                                      <td><?php echo $reportData[$key]['division_name']; ?></td>
                                                       <td><?php echo $key; ?></td>
+                                                      <?php $value = array_slice($value, 3); ?>
                                                       <?php foreach ($value as $val) { ?>
                                                       <td style="text-align:center;"><?php echo $val; ?></td>
                                                       <?php } ?>

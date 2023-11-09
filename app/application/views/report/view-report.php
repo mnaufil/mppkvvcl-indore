@@ -102,12 +102,6 @@
                                                 <?php } ?>
                                            </select>
                                        </div>
-                                       <!-- Feeder ID -->
-                                       <div class="col-xl-4 mb-3">
-                                          <label for="feederId" class="form-label">Feeder ID</label>
-                                          <input type="text" class="form-control" id="feederId" name="feederId" value="<?php echo $postfeederId; ?>" onkeyup="showfeeders(this.value)">
-                                          <div class="list-group list-view-contractor" id="list_view_feeders" style="width:100%"></div>
-                                       </div>
                                        <!-- Region -->
                                        <div class="col-xl-4 mb-3">
                                           <label class="form-label" for="region">Region</label>
@@ -157,6 +151,12 @@
                                                    }
                                              ?>
                                           </select>
+                                       </div>
+                                       <!-- Feeder ID -->
+                                       <div class="col-xl-4 mb-3">
+                                          <label for="feederId" class="form-label">Feeder ID</label>
+                                          <input type="text" class="form-control" id="feederId" name="feederId" value="<?php echo $postfeederId; ?>" onkeyup="showfeeders(this.value)">
+                                          <div class="list-group list-view-contractor" id="list_view_feeders" style="width:100%"></div>
                                        </div>
                                     </div>
 

@@ -496,6 +496,7 @@ class Report_Model extends CI_Model
 		$spRegion = 'NULL';
 		$spCircle = 'NULL';
 		$spDivision = 'NULL';
+
 		if(!empty($this->input->post('region')))
 		{
 			$allRegion = implode(",",  $this->input->post('region'));
@@ -541,7 +542,7 @@ class Report_Model extends CI_Model
 			$awardNoArray = array();
 			$contractNameArray = array();
 			$dateTimeArray = array();
-		
+
 			foreach($result as $res)
 			{
 				$mainArray['scheme_name'] = $res->scheme_name;
@@ -562,8 +563,8 @@ class Report_Model extends CI_Model
 					array_Push($regionArray, "-");
 					array_Push($circleArray, "-");
 					array_Push($divisionArray, "-");
-					array_Push($awardNoArray, "-");
-					array_Push($contractNameArray, "-");
+					array_Push($awardNoArray, $res->award_no);
+					array_Push($contractNameArray, $res->contractor_name);
 					array_Push($dateTimeArray, "-");
 				}
 				else
@@ -587,8 +588,8 @@ class Report_Model extends CI_Model
 			$mainArray['division_name'] = implode(",", array_unique($divisionArray));
 			$mainArray['award_no'] = implode(",", array_unique($awardNoArray));
 			$mainArray['contractor_name'] = implode(",", array_unique($contractNameArray));
-			$mainArray['datetime'] = implode(",", array_unique($dateTimeArray));		
-		
+			$mainArray['datetime'] = implode(",", array_unique($dateTimeArray));
+
 			$mainArray['result'] = $result;
 			return $mainArray;
 		}

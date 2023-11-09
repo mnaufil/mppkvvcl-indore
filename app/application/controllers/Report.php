@@ -133,7 +133,7 @@ class Report extends CI_Controller
 
 					foreach($data['onlyKeys'] as $mainHeading)
 					{
-						if ($mainHeading == 'feeder_id') {
+						if ($mainHeading == 'feeder_id' || $mainHeading == 'region_name' || $mainHeading == 'circle_name' || $mainHeading == 'division_name') {
 							continue;
 						}
 

@@ -167,11 +167,11 @@
                                           <div class="form-group">
                                              <div class="custom-controls">
                                                 <label class="custom-control custom-radio status-radio">
-                                                   <input type="radio" class="custom-control-input" name="reportType" value="1" <?php if($reportType=='1') { ?> checked <?php } ?>  required />
+                                                   <input type="radio" class="custom-control-input" name="reportType" value="1" <?php if($reportType=='1') { ?> checked <?php } ?>/>
                                                    <span class="custom-control-label">Feeder ID Wise</span>
                                                 </label>
                                                 <label class="custom-control custom-radio status-radio">
-                                                   <input type="radio" class="custom-control-input" name="reportType" value="2" <?php if($reportType=='2') { ?> checked <?php } ?> required>
+                                                   <input type="radio" class="custom-control-input" name="reportType" value="2" <?php if($reportType=='2') { ?> checked <?php } ?>>
                                                    <span class="custom-control-label">Consolidated Activity Wise</span>
                                                 </label>
                                              </div>
@@ -210,7 +210,7 @@
                                        <?php } ?>
                                        
                                        <div class="row">
-                                          <div class="table-responsive mb-3">
+                                          <div class="table-responsive mb-3" style="max-height: 500px;overflow: auto;">
                                              <table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
                                                 <tbody>
                                                    <tr>
@@ -319,7 +319,7 @@
                                        <?php } ?>
                                        
                                        <div class="row">
-                                          <div class="table-responsive mb-3">
+                                          <div class="table-responsive mb-3" style="max-height: 500px;overflow: auto;">
                                              <table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
                                                 <tbody>
                                                    <tr>
@@ -347,7 +347,7 @@
                                                    <tr>
                                                       <td><?php echo $key; ?></td>
                                                       <?php foreach ($value as $val) { ?>
-                                                      <td><?php echo $val; ?></td>
+                                                      <td style="text-align:center;"><?php echo $val; ?></td>
                                                       <?php } ?>
                                                    </tr>
                                                    <?php } ?>

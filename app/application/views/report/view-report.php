@@ -266,7 +266,7 @@
                                                    ?>
                                                    <tr align="center">
                                                       <td><?php echo $i;?></td>
-                                                      <td align="left"><?php echo $report->item;?></td>
+                                                      <td align="left"><?php echo $report->activity;?></td>
                                                       <td><?php echo $report->unit;?></td>
                                                       <td><?php echo $report->boq_qty;?></td>
                                                       <td><?php echo $report->erection_qty;?></td>
@@ -326,6 +326,9 @@
                                                       <td></td>
                                                       <?php foreach ($mainHeadingArray as $key => $value) { ?>
                                                       <!-- <th colspan="3"><?php //echo str_replace("_", " ", $key1);?></th> -->
+                                                      <th></th>
+                                                      <th></th>
+                                                      <th></th>
                                                       <th colspan="<?php echo $value; ?>"><?php echo $key;?></th>
                                                       <?php  } ?>
                                                    </tr> 

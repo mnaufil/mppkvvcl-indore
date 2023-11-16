@@ -713,7 +713,13 @@ class Report extends CI_Controller
 			$data['feeder_access'] = true;
 
 			$reportData = $this->Report_Model->generateNonConformaceReport();
-			$data['reportData'] = (!empty($reportData)) ? $reportData : 'No Records Found';
+			if (empty($reportData)) {
+				$data['reportData'] = 'No Records Found';
+			} else {
+				$grouped_ncr_data = $this->groupNCRs($reportData);
+
+				$data['reportData'] = $grouped_ncr_data;
+			}
 
 			$user_role_id = $_SESSION['loggedData']->role_id;
 			$report_name = 'Non Conformance Report';
@@ -731,6 +737,19 @@ class Report extends CI_Controller
 
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('report/non-conformance-report', $data);
+	}
+
+	public function groupNCRs($reportData)
+	{
+		// echo 'reportData: <pre>'; print_r($reportData); echo '</pre>'; 
+		$feeder_wise_data = [];
+
+		foreach ($reportData as $key => $value) {
+			$feeder_wise_data[$value->feeder_id][] = $value;
+		}
+
+		// echo 'feeder_wise_data: <pre>'; print_r($feeder_wise_data); echo '</pre>'; die();
+		return $feeder_wise_data;
 	}
 
 	public function materialStatusReport()

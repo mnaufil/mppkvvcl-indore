@@ -187,7 +187,10 @@
 			                    	<div class="col-xl-12" style="overflow: auto;width: 500px;">
 			                        <table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 			                        	<tbody>
-			                          	<?php $i=0; foreach($reportData as $report) { ?> 
+			                          	<?php foreach($reportData as $key => $value) {
+			                          					$i=0;
+			                          					foreach ($value as $report) {
+			                          	?> 
 			                            <?php if($i==0) { ?>
 	                                <tr>
 	                                	<tr>
@@ -199,39 +202,39 @@
 	                              	</tr>
 	                              	<tr>
 	                              		<td><b>Package No</b></td>
-	                              		<td><?php echo $report->package_no?></td>
+	                              		<td><?php echo $report->package_no; ?></td>
 	                              	</tr>
 	                                <tr>
 	                                	<td><b>Contractor Name</b></td>
-	                                	<td><?php echo $report->contractor_name?></td>
+	                                	<td><?php echo $report->contractor_name; ?></td>
 	                               	</tr>
 	                                <tr>
 	                                	<td><b>Region Name</b></td>
-	                                	<td><?php echo $report->region_name?></td>
+	                                	<td><?php echo $report->region_name; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Circle Name</b></td>
-	                                	<td><?php echo $report->circle_name?></td>
+	                                	<td><?php echo $report->circle_name; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Division Name</b></td>
-	                                	<td><?php echo $report->division_name?></td>
+	                                	<td><?php echo $report->division_name; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Feeder ID</b></td>
-	                                	<td><?php echo $report->feeder_id?></td>
+	                                	<td><?php echo $report->feeder_id; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Feeder Name</b></td>
-	                                	<td><?php echo $report->feeder_name?></td>
+	                                	<td><?php echo $report->feeder_name; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Substation</b></td>
-	                                	<td><?php echo $report->substation?></td>
+	                                	<td><?php echo $report->substation; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Standards</b></td>
-	                                	<td><?php echo $report->standards?></td>
+	                                	<td><?php echo $report->standards; ?></td>
 	                               	</tr>
 	                                <tr style="height:50px">
 	                                	<td border='0'></td>
@@ -240,27 +243,27 @@
 	                                <?php } ?>
 	                                <tr>
 	                                	<td><b>NCR ID</b></td>
-	                                	<td><?php echo $report->ncr_id?></td>
+	                                	<td><?php echo $report->ncr_id.' ('.$report->status.')'; ?></td>
 	                               	</tr>
 	                                <tr>
 	                                	<td><b>NCR Date</b></td>
-	                                	<td><?php echo $report->ncr_date?></td>
+	                                	<td><?php echo $report->ncr_date; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Raised By</b></td>
-	                                	<td><?php echo $report->Inspected_by?></td>
+	                                	<td><?php echo $report->Inspected_by; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Activity</b></td>
-	                                	<td><?php echo $report->activity?></td>
+	                                	<td><?php echo $report->activity; ?></td>
 	                               	</tr>
 	                                <tr>
 	                                	<td><b>Observation Type</b></td>
-	                                	<td><?php echo $report->observation_type?></td>
+	                                	<td><?php echo $report->observation_type; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Observation</b></td>
-	                                	<td><?php echo $report->observation?></td>
+	                                	<td><?php echo $report->observation; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Observation Photos</b></td>
@@ -269,7 +272,7 @@
 	                                          $count = count($explode);
 	                                          for($i=0;$i<$count;$i++) { 
 	                                    ?>
-	                                    <img src="<?php echo $explode[$i]?>" width="150"/>
+	                                    <img src="<?php echo $explode[$i]; ?>" width="150"/>
 	                                    <?php } ?>
 	                                  </td>
 	                                </tr>
@@ -280,7 +283,7 @@
 	                                          $count1 = count($explode1);
 	                                          for($j=0;$j<$count1;$j++) { 
 	                                    ?>
-	                                    <img src="<?php echo $explode1[$j]?>" width="150"/>
+	                                    <img src="<?php echo $explode1[$j]; ?>" width="150"/>
 	                                  	<?php } ?>
 	                                	</td>
 	                                </tr>
@@ -292,7 +295,10 @@
 	                                	<td border='0'></td>
 	                                	<td></td>
 	                              	</tr>
-	                                <?php $i++; } ?>
+	                                <?php $i++; 
+	                              					}
+	                              				}
+	                              	?>
 	                        		  </tbody>
 	                        		</table>
 	                        	</div>

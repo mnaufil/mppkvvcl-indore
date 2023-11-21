@@ -583,7 +583,7 @@ class Report_Model extends CI_Model
 					
 					array_Push($awardNoArray, $res->award_no);
 					array_Push($contractNameArray, $res->contractor_name);
-					array_Push($dateTimeArray, "-");
+					array_Push($dateTimeArray, $res->datetime);
 				}
 				else
 				{

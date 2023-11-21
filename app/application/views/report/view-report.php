@@ -251,7 +251,7 @@
                                                    </tr>
                                                    <tr>
                                                       <td style="text-transform: uppercase;"><b>Date & Time</b></td>
-                                                      <td colspan="5"><?php echo @$reportData['datetime'];?></td>
+                                                      <td colspan="5"><?php echo @date('d-m-Y H:i:s', strtotime($reportData['datetime']));?></td>
                                                    </tr>
                                                    <tr>
                                                       <th style="width: 150px;">S.No.</th>

@@ -276,7 +276,7 @@
 			                			<?php } ?>
 			                				<div class="row">
 											<?php if($reportType=='1' && $reportType != "") { ?>
-			                					<div class="table-responsive mb-3 mt-3" id="visit-count-table">
+			                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;" id="visit-count-table">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 			                							<thead>
 			                								<tr>
@@ -308,7 +308,7 @@
 			                					</div>
 											<?php } ?>
 											<?php if($reportType==2 && $reportType != "") { ?>
-			                					<div class="table-responsive mb-3 mt-3" id="complete-list-table">
+			                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;" id="complete-list-table">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 			                							<thead>
 			                								<tr>
@@ -328,17 +328,17 @@
 			                							<tbody>
 			                								<?php foreach($reportData as $report) { ?>
 			                								<tr>
-			                									<td><?php echo $report->username?></td>
-			                									<td><?php echo $report->role?></td>
-			                									<td><?php echo $report->package_no?></td>
-			                									<td><?php echo $report->region_name?></td>
-			                									<td><?php echo $report->circle_name?></td>
-			                									<td><?php echo $report->division_name?></td>
-			                									<td><?php echo $report->feeder_id?></td>
-			                									<td><?php echo $report->feeder_name?></td>
-																<td><?php echo $report->substation?></td>
-																<td><?php echo $report->visit_date?></td>
-																<td class="table-td-center"><?php echo $report->observation_raised?></td>
+			                									<td><?php echo $report->username; ?></td>
+			                									<td><?php echo $report->role; ?></td>
+			                									<td><?php echo $report->package_no; ?></td>
+			                									<td><?php echo $report->region_name; ?></td>
+			                									<td><?php echo $report->circle_name; ?></td>
+			                									<td><?php echo $report->division_name; ?></td>
+			                									<td><?php echo $report->feeder_id; ?></td>
+			                									<td><?php echo $report->feeder_name; ?></td>
+																<td><?php echo $report->substation; ?></td>
+																<td><?php echo date('d-m-Y', strtotime($report->visit_date)); ?></td>
+																<td class="table-td-center"><?php echo $report->observation_raised; ?></td>
 			                								</tr>
 			                								<?php } ?>
 			                								

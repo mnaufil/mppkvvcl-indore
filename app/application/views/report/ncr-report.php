@@ -115,7 +115,7 @@
 			                						<div class="col-xl-4 mb-3">
 			                							<div class="form-group" id="employee_filter" <?php if($employee=="all" || $employee=="") { ?> hidden <?php } ?>>
 			                								<label class="form-label">Select Employee</label>
-			                								<select multiple="multiple" class="filter-multi" style="display: none;"  name="allemployee[]">
+			                								<select multiple="multiple" class="filter-multi" style="display: none;"  name="allemployee[]" id="allemployee">
 			                									<?php foreach($employees as $employee) { ?>
 			                									<option value="<?php echo $employee->user_id;?>" <?php if(in_array($employee->user_id, $allEmployee)) { ?> selected <?php } ?>><?php echo $employee->username;?></option>
 															<?php } ?>
@@ -142,7 +142,7 @@
 			                						<div class="col-xl-4">
 			                							<div class="form-group" id="package_filter" <?php if($package=="all" || $package=="") { ?> hidden <?php } ?>>
 			                								<label class="form-label">Select Package</label>
-			                								<select multiple="multiple" class="filter-multi" style="display: none;" name="allpackage[]">
+			                								<select multiple="multiple" class="filter-multi" style="display: none;" name="allpackage[]" id="allpackage">
 			                									<?php foreach($packages as $package) { ?>
 			                									<option value="<?php echo $package->package_no;?>" <?php if(in_array($package->package_no, $allPackage)) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
 																<?php } ?>
@@ -170,7 +170,7 @@
 			                						<div class="col-xl-4">
 			                							<div class="form-group" id="region_filter"  <?php if($region=="all" || $region=="") { ?> hidden <?php } ?>>
 			                								<label class="form-label">Select Region</label>
-			                								<select multiple="multiple" class="filter-multi" style="display: none;" name="allregion[]">
+			                								<select multiple="multiple" class="filter-multi" style="display: none;" name="allregion[]" id="allregion">
 			                									<?php foreach($regions as $region) { ?>
 			                									<option value="<?php echo $region->region_id;?>" <?php if(in_array($region->region_id, $allRegion)) { ?> selected <?php } ?>><?php echo $region->region_name;?></option>
 			                								<?php } ?>	
@@ -196,7 +196,7 @@
 			                						<div class="col-xl-4">
 			                							<div class="form-group" id="circle_filter" <?php if($circle=="all" || $circle=="") { ?> hidden <?php } ?>>
 			                								<label class="form-label">Select Circle</label>
-			                								<select multiple="multiple" class="filter-multi" style="display: none;" name="allcircle[]">
+			                								<select multiple="multiple" class="filter-multi" style="display: none;" name="allcircle[]" id="allcircle">
 			                									<?php foreach($circles as $circle) { ?>
 			                									<option value="<?php echo $circle->circle_id;?>" <?php if(in_array($circle->circle_id, $allCircle)) { ?> selected <?php } ?>><?php echo $circle->circle_name;?></option>
 			                								<?php } ?>	
@@ -711,7 +711,7 @@
 	   	$('#generateNCRReport').submit(function(event) {
 	   		let pp_date = $('#physicalProgressDate').val();
 
-	   		let checked_report_type_count = $('input[name="reportType"]:checked').length;
+	   		let checked_report_type_count = $('input[name="reportType"]:checked').length;	   		
 
 	   		if (pp_date == '' && checked_report_type_count == 0) {
 	   			$('.toast-body').text('Select mandatory filters to generate the report');
@@ -728,6 +728,49 @@
            		$('.toast').toast('show');
 
            		event.preventDefault();
+	   		}
+	   		
+	   		let employee_val = $('input[name="employee"]:checked').val();
+	   		let package_val = $('input[name="package"]:checked').val();
+	   		let region_val = $('input[name="region"]:checked').val();
+	   		let circle_val = $('input[name="circle"]:checked').val();
+
+	   		if (employee_val == 'specific') {
+	   			let employee_selected = $('#allemployee option:selected').length;
+	   			
+	   			if (employee_selected == 0) {
+	   				$('.toast-body').text('Select specific employee');
+	           		$('.toast').toast('show');
+
+	           		event.preventDefault();
+	   			}
+	   		} else if (package_val == 'specific') {
+	   			let package_selected = $('#allpackage option:selected').length;
+	   			
+	   			if (package_selected == 0) {
+	   				$('.toast-body').text('Select specific package');
+	           		$('.toast').toast('show');
+
+	           		event.preventDefault();
+	   			}
+	   		} else if (region_val == 'specific') {
+	   			let region_selected = $('#allregion option:selected').length;
+	   			
+	   			if (region_selected == 0) {
+	   				$('.toast-body').text('Select specific region');
+	           		$('.toast').toast('show');
+
+	           		event.preventDefault();
+	   			}
+	   		} else if (circle_val == 'specific') {
+	   			let circle_selected = $('#allcircle option:selected').length;
+	   			
+	   			if (circle_selected == 0) {
+	   				$('.toast-body').text('Select specific circle');
+	           		$('.toast').toast('show');
+
+	           		event.preventDefault();
+	   			}
 	   		}
 	   	});
 	   	

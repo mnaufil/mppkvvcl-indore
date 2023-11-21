@@ -129,15 +129,15 @@
 		                				<div class="row">
 										
 										 	<?php if($outputOption==1) { ?>
-		                					<div class="table-responsive mb-3 mt-3" id="package-table">
+		                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;" id="package-table">
 		                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 		                							<thead>
 		                								<tr>
 		                									<th>Package No</th>
 		                									<th>Type of Work</th>
 		                									<th>TKC</th>
-		                									<th>Award No</th>
-		                									<th>Award Date</th>
+		                									<th>Contract No</th>
+		                									<th>Contract Date</th>
 		                									<th>Supply of Goods (Ex-W Price)</th>
 		                									<th>Installation and Other Services</th>
 		                									<th>Contract Value (Without GST)</th>
@@ -184,27 +184,27 @@
 		                									<td><?php echo $report->package_no;?></td>
 		                									<td><?php echo $report->typeofwork;?></td>
 		                									<td><?php echo $report->TKC;?></td>
-		                									<td><?php echo $report->tkc_award_no;?></td>
-		                									<td><?php echo $report->award_date;?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->supplyofgoods_ex_w_price);?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->installation_and_other_services);?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->contract_value_without_gst);?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->gst_value);?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->contract_value_with_gst);?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->total_mobilisation_advanced_given);?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->total_mobilisation_advanced_adjusted);?></td>
-		                									<td class="table-td-center"><?php echo !empty($report->stage1_target) ? '&#8377;'.number_format($report->stage1_target) : '';?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->stage1_achieve);?></td>
-		                									<td class="table-td-center"><?php echo !empty($report->stage1_shortfall) ? '&#8377;'.number_format($report->stage1_shortfall) : '';?></td>
-		                									<td class="table-td-center"><?php echo !empty($report->stage2_target) ? '&#8377;'.number_format($report->stage2_target) : '';?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->stage2_achieve);?></td>
-		                									<td class="table-td-center"><?php echo !empty($report->stage2_shortfall) ? '&#8377;'.number_format($report->stage2_shortfall) : '';?></td>
-		                									<td class="table-td-center"><?php echo !empty($report->stage3_target) ? '&#8377;'.number_format($report->stage3_target) : '';?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->stage3_achieve);?></td>
-		                									<td class="table-td-center"><?php echo !empty($report->stage3_shortfall) ? '&#8377;'.number_format($report->stage3_shortfall) : '';?></td>
-		                									<td class="table-td-center"><?php echo !empty($report->stage4_target) ? '&#8377;'.number_format($report->stage4_target) : '';?></td>
-		                									<td class="table-td-center"><?php echo '&#8377;'.number_format($report->stage4_achieve);?></td>
-		                									<td class="table-td-center"><?php echo !empty($report->stage4_shortfall) ? '&#8377;'.number_format($report->stage4_shortfall) : '';?></td>
+		                									<td class="table-td-center"><?php echo $report->tkc_award_no;?></td>
+		                									<td style="text-align:right;"><?php echo $report->award_date;?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->supplyofgoods_ex_w_price, 2);?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->installation_and_other_services, 2);?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->contract_value_without_gst, 2);?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->gst_value, 2);?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->contract_value_with_gst, 2);?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->total_mobilisation_advanced_given, 2);?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->total_mobilisation_advanced_adjusted, 2);?></td>
+		                									<td style="text-align:right;"><?php echo !empty($report->stage1_target) ? '&#8377;'.number_format($report->stage1_target, 2) : '';?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->stage1_achieve, 2);?></td>
+		                									<td style="text-align:right;"><?php echo !empty($report->stage1_shortfall) ? '&#8377;'.number_format($report->stage1_shortfall, 2) : '';?></td>
+		                									<td style="text-align:right;"><?php echo !empty($report->stage2_target) ? '&#8377;'.number_format($report->stage2_target, 2) : '';?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->stage2_achieve, 2);?></td>
+		                									<td style="text-align:right;"><?php echo !empty($report->stage2_shortfall) ? '&#8377;'.number_format($report->stage2_shortfall, 2) : '';?></td>
+		                									<td style="text-align:right;"><?php echo !empty($report->stage3_target) ? '&#8377;'.number_format($report->stage3_target, 2) : '';?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->stage3_achieve, 2);?></td>
+		                									<td style="text-align:right;"><?php echo !empty($report->stage3_shortfall) ? '&#8377;'.number_format($report->stage3_shortfall, 2) : '';?></td>
+		                									<td style="text-align:right;"><?php echo !empty($report->stage4_target) ? '&#8377;'.number_format($report->stage4_target, 2) : '';?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->stage4_achieve, 2);?></td>
+		                									<td style="text-align:right;"><?php echo !empty($report->stage4_shortfall) ? '&#8377;'.number_format($report->stage4_shortfall, 2) : '';?></td>
 		                								</tr>
 		                							<?php } ?>	
 													<?php } ?>

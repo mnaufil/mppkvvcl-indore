@@ -126,7 +126,7 @@
 			                				<?php } ?>
 			                				
 			                				<div class="row">
-			                					<p class="report-desc">Updated Position regarding Invoicing and Payment as on <span id="invoiceDate"></span></p>
+			                					<p class="report-desc">Updated Position regarding Invoicing and Payment as on <span id="invoiceDate"><?php echo $date; ?></span></p>
 			                				</Div>
 			                				<div class="row">
 			                					<div class="table-responsive mb-3 mt-3">
@@ -134,7 +134,7 @@
 			                							<thead>
 			                								<tr>
 			                									<th rowspan="2" style="vertical-align:top">Work Order No.</th>
-			                									<th rowspan="2" style="vertical-align:top">TKC Name</th>
+			                									<th rowspan="2" style="vertical-align:top">TKC</th>
 			                									<th rowspan="2" style="vertical-align:top">WO Date (YYYY/MM/DD)</th>
 			                									<th rowspan="2" style="vertical-align:top">Package Name</th>
 			                									<th colspan="2">Invoices Submitted by TKC</th>
@@ -158,11 +158,11 @@
 			                									<td><?php echo $report->WO_DATE;?></td>
 			                									<td class="table-td-center"><?php echo $report->package_name;?></td>
 			                									<td class="table-td-center"><?php echo $report->no_of_invoices;?></td>
-			                									<td><?php echo $report->gross_amount;?></td>
-			                									<td class="table-td-center"><?php echo $report->mobilization_advance_paid;?></td>
-			                									<td class="table-td-center"><?php echo $report->payment_made_against_supply;?></td>
-			                									<td class="table-td-center"><?php echo $report->payment_made_against_erection;?></td>
-			                									<td class="table-td-center"><?php echo $report->total_payment;?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->gross_amount, 2); ?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->mobilization_advance_paid); ?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->payment_made_against_supply); ?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->payment_made_against_erection); ?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->total_payment, 2); ?></td>
 			                									<!-- <td><?php echo $report->package_no;?></td> -->
 			                								</tr>
 			                								<?php } ?>

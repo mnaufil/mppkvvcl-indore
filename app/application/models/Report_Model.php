@@ -862,7 +862,7 @@ class Report_Model extends CI_Model
 	function generateMaterialStatusSummary()
 	{
 		$packageNo = $this->input->post('packageNo');
-		$date = $this->input->post('date');		
+		$date = $this->input->post('date');
 		
 		if($packageNo == "")
 		{
@@ -872,13 +872,15 @@ class Report_Model extends CI_Model
 		if($date == "")
 		{
 			$date = "NULL";
-		}		
+		} else {
+			$date = date('Y-m-d', strtotime($date));
+		}
 			
 		$sessionId = $_SESSION['userId'];
 		
 		//echo "CALL sp_rpt_material_status_summary($sessionId,$packageNo, $date)"; die;
 		$_SESSION['spQuery'] = "CALL sp_rpt_material_status_summary($sessionId,'$packageNo', $date)";
-		$query1 = $this->db->query("CALL sp_rpt_material_status_summary($sessionId,'$packageNo', $date)");
+		$query1 = $this->db->query("CALL sp_rpt_material_status_summary($sessionId,'$packageNo', '$date')");
 		// echo $this->db->last_query(); die();
 		
 		if($query1)

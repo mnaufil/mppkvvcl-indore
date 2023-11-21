@@ -139,7 +139,7 @@
 			                				<?php } ?>
 			                				
 			                				<div class="row">
-			                					<div class="table-responsive mb-3 mt-3">
+			                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 			                							<thead>
 			                								<tr>
@@ -159,10 +159,10 @@
 			                									<td><?php echo $report->sr_no;?></td>
 			                									<td><?php echo $report->material;?></td>
 			                									<td><?php echo $report->unit;?></td>
-			                									<td class="table-td-center"><?php echo $report->boq;?></td>
-			                									<td class="table-td-center"><?php echo $report->accepted_quantity;?></td>
-			                									<td class="table-td-center"><?php echo $report->balance_quantity;?></td>
-			                									<td class="table-td-center"><?php echo $report->scheduled_target;?></td>
+			                									<td class="table-td-center"><?php echo number_format($report->boq, 2);?></td>
+			                									<td class="table-td-center"><?php echo number_format($report->accepted_quantity, 2);?></td>
+			                									<td class="table-td-center"><?php echo number_format($report->balance_quantity, 2);?></td>
+			                									<td class="table-td-center"><?php echo number_format($report->scheduled_target, 2);?></td>
 			                									<td class="table-td-center"><?php echo $report->per_acheived;?></td>
 			                								</tr>
 			                								<?php } ?>	

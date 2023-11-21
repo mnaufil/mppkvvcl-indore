@@ -82,7 +82,7 @@
 			                					<div class="form-row">
 			                						<!-- Package No -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label for="packageNo" class="form-label">Package No.<span class="text-red">*</span></label>
+			                							<label for="packageNo" class="form-label">Package No.<!-- <span class="text-red">*</span> --></label>
 				                                       	<select class="form-control select2" id="packageNo" name="packageNo">
 				                                          	<option value="select" selected disabled>Select Package No.</option>
 				                                          	<?php foreach($packages as $package) { ?>
@@ -91,11 +91,11 @@
 				                                        </select>
 			                						</div>
 			                						<!-- Contractor (TKC) -->
-			                						<!-- <div class="col-xl-4 mb-3">
-			                							<label for="contractor" class="form-label">Contractor (TKC)<span class="text-red">*</span></label>
-				                                       	<input class="form-control" type="text" name="contractor" id="contractor" onkeyup="showtkclist(this.value)" value="<?php //echo @$contractor;?>">
+			                						<div class="col-xl-4 mb-3">
+			                							<label for="contractor" class="form-label">Contractor (TKC)<!-- <span class="text-red">*</span> --></label>
+				                                       	<input class="form-control" type="text" name="contractor" id="contractor" onkeyup="showtkclist(this.value)" value="<?php echo @$contractor;?>">
                                                         <div class="list-group list-view-contractor" id="list-view"></div>
-			                						</div> -->
+			                						</div>
 			                						<!-- Type of Work -->
 			                						<!-- <div class="col-xl-4 mb-3">
 			                							<label for="typeOfWork" class="form-label">Type of Work<span class="text-red">*</span></label>
@@ -140,14 +140,14 @@
 			                				<?php } ?>
 			                				
 			                				<div class="row">
-			                					<div class="table-responsive mb-3 mt-3">
+			                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 			                							<thead>
 			                								<tr>
 			                									<th>Package No</th>
 			                									<th>TKC</th>
-			                									<th>Award No.</th>
-			                									<th>Award Date</th>
+			                									<th>Contract No.</th>
+			                									<th>Contract Date</th>
 			                									<th>Mobilisation Type</th>
 			                									<th>Contract Value (Without GST)</th>
 			                									<th>Contractor Invoice No.</th>
@@ -161,18 +161,18 @@
 			                							<tbody>
 															<?php foreach($reportData as $report) { ?>
 			                								<tr>
-			                									<td><?php echo $report->package_no;?></td>
+			                									<td style="text-align:center;"><?php echo $report->package_no;?></td>
 			                									<td><?php echo $report->tkc;?></td>
-			                									<td><?php echo $report->tender_award_no;?></td>
-			                									<td><?php echo $report->tender_award_date;?></td>
+			                									<td style="text-align:center;"><?php echo $report->contract_no;?></td>
+			                									<td style="text-align:right;"><?php echo $report->tender_award_date;?></td>
 			                									<td><?php echo $report->mobilisation_type;?></td>
-			                									<td><?php echo $report->quoted_price_with_gst;?></td>
-			                									<td><?php echo $report->mobilisation_invoice_no;?></td>
-			                									<td><?php echo $report->mobilisation_invoice_date;?></td>
-			                									<td><?php echo $report->mobilisation_amount;?></td>
-			                									<td><?php echo $report->payment_date;?></td>
-			                									<td><?php echo $report->mobilisation_amount_adjusted;?></td>
-			                									<td><?php echo $report->balance_mobilisation_amount_to_be_adjusted;?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->quoted_price_with_gst, 2);?></td>
+			                									<td style="text-align:center;"><?php echo $report->mobilisation_invoice_no;?></td>
+			                									<td style="text-align:right;"><?php echo $report->mobilisation_invoice_date;?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->mobilisation_amount, 2);?></td>
+			                									<td style="text-align:right;"><?php echo $report->payment_date;?></td>
+			                									<td style="text-align:right;"><?php echo (!empty($report->mobilisation_amount_adjusted)) ? '&#8377;'.number_format($report->mobilisation_amount_adjusted, 2) : '';?></td>
+			                									<td style="text-align:right;"><?php echo (!empty($report->balance_mobilisation_amount_to_be_adjusted)) ? '&#8377;'.number_format($report->balance_mobilisation_amount_to_be_adjusted, 2) : '';?></td>
 			                								</tr>
 															<?php } ?>
 			                							</tbody>
@@ -369,14 +369,15 @@
 
         	let contractor = $('#contractor').val();
 
-			let typeofwork = $('#typeOfWork option:selected').val();
+			// let typeofwork = $('#typeOfWork option:selected').val();
 
-			if (package_no == 'select' && contractor == '' && typeofwork == 'select') {
-				$('.toast-body').text('Select Filters to generate the report');
+			// if (package_no == 'select' && contractor == '' && typeofwork == 'select') {
+			if (package_no == 'select' && contractor == '' /*&& typeofwork == 'select'*/) {
+				$('.toast-body').text('Select Package No or Enter Contractor (TKC)');
            		$('.toast').toast('show');
 
            		event.preventDefault();
-			} else if (package_no == 'select') {
+			} /*else if (package_no == 'select') {
 				$('.toast-body').text('Select Package No');
            		$('.toast').toast('show');
 
@@ -391,7 +392,7 @@
            		$('.toast').toast('show');
 
            		event.preventDefault();
-			}
+			}*/
         });
 	   </script>
 

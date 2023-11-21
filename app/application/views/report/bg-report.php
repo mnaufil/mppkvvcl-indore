@@ -82,8 +82,7 @@
 			                					<div class="form-row">
 			                						<!-- Package No -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label for="packageNo" class="form-label">Package No.<span class="text-red">*</span>
-				                                       	</label>
+			                							<label for="packageNo" class="form-label">Package No.<!-- <span class="text-red">*</span> --></label>
 				                                       	<select class="form-control select2" id="packageNo" name="packageNo">
 				                                          	<option value="select" selected disabled>Select Package No.</option>
 															<?php foreach($packages as $package) { ?>
@@ -93,12 +92,12 @@
 			                						</div>
 			                						<!-- Contractor (TKC) -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label for="contractor" class="form-label">Contractor (TKC)<span class="text-red">*</span></label>
+			                							<label for="contractor" class="form-label">Contractor (TKC)<!-- <span class="text-red">*</span> --></label>
 				                                       	<input class="form-control" type="text" name="contractor" id="contractor" onkeyup="showtkclist(this.value)" value="<?php echo @$contractor;?>">
                                                         <div class="list-group list-view-contractor" id="list-view"></div>
 			                						</div>
 			                						<!-- Type of Work -->
-			                						<div class="col-xl-4 mb-3">
+			                						<!-- <div class="col-xl-4 mb-3">
 			                							<label for="typeOfWork" class="form-label">Type of Work<span class="text-red">*</span></label>
 				                                       	<select class="form-control select2" id="typeOfWork" name="typeOfWork">
 				                                          	<option value="select" selected disabled>Select Type of Work</option>
@@ -106,7 +105,7 @@
 				                                          	<option value="<?php echo $type->typeofwork_id;?>" <?php if($typeOfWork == $type->typeofwork_id) { ?> selected <?php } ?>><?php echo $type->name;?></option>
 															<?php } ?>
 				                                        </select>
-			                						</div>
+			                						</div> -->
 			                					</div>
 
 			                					<button class="btn btn-success mb-3 mt-3"  type="submit">Generate</button>
@@ -141,14 +140,14 @@
 			                				<?php } ?>
 			                				
 			                				<div class="row">
-			                					<div class="table-responsive mb-3 mt-3">
+			                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 			                							<thead>
 			                								<tr>
 			                									<th>Package No</th>
 			                									<th>TKC</th>
-			                									<th>Award No</th>
-			                									<th>Award Date</th>
+			                									<th>Contract No</th>
+			                									<th>Contract Date</th>
 			                									<th>Contract Value (With GST)</th>
 			                									<th>BG Type</th>
 			                									<th>BG No</th>
@@ -163,19 +162,19 @@
 			                							<tbody>
 														<?php foreach($reportData as $report) { ?>
 			                								<tr>
-			                									<td><?php echo $report->package_no;?></td>
+			                									<td style="text-align:center;"><?php echo $report->package_no;?></td>
 			                									<td><?php echo $report->tkc;?></td>
-			                									<td><?php echo $report->tender_award_no;?></td>
-			                									<td><?php echo $report->tender_award_date;?></td>
-			                									<td><?php echo $report->quoted_price_with_gst;?></td>
+			                									<td style="text-align:center;"><?php echo $report->tender_award_no;?></td>
+			                									<td style="text-align:right;"><?php echo $report->tender_award_date;?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->quoted_price_with_gst, 2); ?></td>
 			                									<td><?php echo $report->bg_type;?></td>
 			                									<td><?php echo $report->bg_number;?></td>
-			                									<td><?php echo $report->bg_date;?></td>
-			                									<td><?php echo $report->bg_amount;?></td>
+			                									<td style="text-align:right;"><?php echo $report->bg_date;?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->bg_amount, 2); ?></td>
 			                									<td><?php echo $report->bg_bank;?></td>
-			                									<td><?php echo $report->bg_expiry_date;?></td>
+			                									<td style="text-align:right;"><?php echo $report->bg_expiry_date;?></td>
 															    <td><?php echo $report->trigger_month;?></td>
-			                									<td><?php echo $report->bg_status;?></td>
+			                									<td style="text-align:center;"><?php echo $report->bg_status;?></td>
 			                								</tr>
 			                							<?php } ?>		
 			                							</tbody>
@@ -325,8 +324,8 @@
                   	var html = '';
 
                   	let contractor_data = response.contractor_data;
-                  	console.log("contractor_data: ");
-                  	console.log(contractor_data);
+                  	/*console.log("contractor_data: ");
+                  	console.log(contractor_data);*/
                   	if ($.isEmptyObject(contractor_data)) {
                      	html += 'No Contractor Found';
                   	} else {
@@ -372,14 +371,16 @@
 
         	let contractor = $('#contractor').val();
 
-        	let typeofwork = $('#typeOfWork option:selected').val();
+        	// let typeofwork = $('#typeOfWork option:selected').val();
 
-        	if (package_no == 'select' && contractor == '' && typeofwork == 'select') {
-        		$('.toast-body').text('Select Filters to generate the report');
+        	// if (package_no == 'select' && contractor == '' && typeofwork == 'select') {
+        	if (package_no == 'select' && contractor == '') {
+        		// $('.toast-body').text('Select filters to generate the report');
+        		$('.toast-body').text('Select Package No or Enter Contractor (TKC)');
            		$('.toast').toast('show');
 
            		event.preventDefault();
-        	} else if (package_no == 'select') {
+        	} /*else if (package_no == 'select') {
         		$('.toast-body').text('Select Package No');
            		$('.toast').toast('show');
 
@@ -394,7 +395,7 @@
            		$('.toast').toast('show');
 
            		event.preventDefault();
-        	}
+        	}*/
         });
 	   </script>
 

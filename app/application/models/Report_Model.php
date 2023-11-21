@@ -55,6 +55,7 @@ class Report_Model extends CI_Model
 	{
 		$contract_status_list = $this->getContractStatusList();
 		$query = $this->db->query("SELECT DISTINCT package_no FROM contract where status_id = ".$contract_status_list['Open']);
+		// echo $this->db->last_query(); die();
 		if($query)
 		{
 			$result = $query->result();
@@ -717,8 +718,10 @@ class Report_Model extends CI_Model
 		$sessionId = $_SESSION['userId'];
 		
 		//echo "CALL sp_rpt_bg_summary($sessionId,$packageNo, $contractor, $typeOfWork)"; die;
-		$_SESSION['spQuery'] = "CALL sp_rpt_bg_summary($sessionId,'$packageNo', '$contractor', $typeOfWork)";
-		$query1 = $this->db->query("CALL sp_rpt_bg_summary($sessionId, '$packageNo', '$contractor', $typeOfWork)");
+		// $_SESSION['spQuery'] = "CALL sp_rpt_bg_summary($sessionId,'$packageNo', '$contractor', $typeOfWork)";
+		$_SESSION['spQuery'] = "CALL sp_rpt_bg_summary($sessionId,'$packageNo', '$contractor')";
+		// $query1 = $this->db->query("CALL sp_rpt_bg_summary($sessionId, '$packageNo', '$contractor', $typeOfWork)");
+		$query1 = $this->db->query("CALL sp_rpt_bg_summary($sessionId, '$packageNo', '$contractor')");
 		// echo $this->db->last_query(); die();
 		
 		if($query1)
@@ -757,9 +760,11 @@ class Report_Model extends CI_Model
 		
 		//echo "CALL sp_rpt_mobilisation_summary($sessionId,$packageNo, $contractor, $typeOfWork)"; die;
 		// $_SESSION['spQuery'] = "CALL sp_rpt_mobilisation_summary($sessionId, $packageNo, $contractor, $typeOfWork)";
-		$_SESSION['spQuery'] = "CALL sp_rpt_mobilisation_summary($sessionId, '$packageNo')";
+		$_SESSION['spQuery'] = "CALL sp_rpt_mobilisation_summary($sessionId, $packageNo, $contractor)";
+		// $_SESSION['spQuery'] = "CALL sp_rpt_mobilisation_summary($sessionId, '$packageNo')";
 		// $query1 = $this->db->query("CALL sp_rpt_mobilisation_summary($sessionId, $packageNo, '$contractor', $typeOfWork)");
-		$query1 = $this->db->query("CALL sp_rpt_mobilisation_summary($sessionId, '$packageNo')");
+		$query1 = $this->db->query("CALL sp_rpt_mobilisation_summary($sessionId, '$packageNo', '$contractor')");
+		// $query1 = $this->db->query("CALL sp_rpt_mobilisation_summary($sessionId, '$packageNo')");
 		// echo $this->db->last_query(); die();
 		
 		if($query1)

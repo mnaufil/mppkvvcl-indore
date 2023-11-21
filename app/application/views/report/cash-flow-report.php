@@ -80,9 +80,10 @@
 			                				<!-- Form -->
 			                				<form id="generateCashFlowReport" name="generateCashFlowReport" method="post" action="<?php echo base_url('generate-cash-flow-report'); ?>">
 			                					<div class="form-row">
+			                						<!-- Package No -->
 			                						<div class="col-xl-3 mb-3">
 			                							<label for="packageNo" class="form-label">Package No.
-				                                          	<span class="text-red">*</span>
+				                                          	<!-- <span class="text-red">*</span> -->
 				                                       	</label>
 				                                       	<select class="form-control select2" id="packageNo" name="packageNo">
 				                                          	<option value="select" selected disabled>Select Package No.</option>
@@ -90,6 +91,12 @@
 				                                          	<option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
 															<?php } ?>
 				                                        </select>
+			                						</div>
+			                						<!-- Contractor (TKC) -->
+			                						<div class="col-xl-4 mb-3">
+			                							<label for="contractor" class="form-label">Contractor (TKC)<!-- <span class="text-red">*</span> --></label>
+				                                       	<input class="form-control" type="text" name="contractor" id="contractor" onkeyup="showtkclist(this.value)" value="<?php echo @$contractor;?>">
+                                                        <div class="list-group list-view-contractor" id="list-view"></div>
 			                						</div>
 			                					</div>
 
@@ -123,14 +130,14 @@
 			                				</div>	
 			                				<?php } ?>
 			                				<div class="row">
-			                					<div class="table-responsive mb-3 mt-3">
+			                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;">
 			                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 			                							<thead>
 			                								<tr>
 			                									<th>Package No.</th>
 			                									<th>TKC</th>
-			                									<th>Award No.</th>
-			                									<th>Award Date</th>
+			                									<th>Contract No.</th>
+			                									<th>Contract Date</th>
 			                									<th>Invoice No</th>
 			                									<th>Invoice Date</th>
 			                									<th>Gross Amount (with GST)</th>
@@ -156,16 +163,15 @@
 			                								<tr>
 			                									<td><?php echo $report->PACKAGE_NO;?></td>
 			                									<td><?php echo $report->TKC;?></td>
-			                									<td><?php echo $report->AWARD_NO;?></td>
-			                									
-			                									<td><?php echo $report->AWARD_DATE;?></td>
+			                									<td style="text-align:center;"><?php echo $report->AWARD_NO;?></td>
+			                									<td style="text-align:right;"><?php echo date('d-m-Y', strtotime($report->AWARD_DATE));?></td>
 			                									<td><?php echo $report->INVOICE_NO;?></td>
-			                									<td><?php echo $report->INVOICE_DATE;?></td>
-			                									<td><?php echo $report->GROSS_AMOUNT_WITH_GST;?></td>
-			                									<td><?php echo $report->MOBILISATION;?></td>
-			                									<td><?php echo $report->SUPPLY;?></td>
-			                									<td><?php echo $report->ERECTION;?></td>
-			                									<td><?php echo $report->TOTAL;?></td>
+			                									<td style="text-align:right;"><?php echo date('d-m-Y', strtotime($report->INVOICE_DATE));?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->GROSS_AMOUNT_WITH_GST, 2);?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->MOBILISATION, 2);?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->SUPPLY, 2);?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->ERECTION, 2);?></td>
+			                									<td style="text-align:right;"><?php echo '&#8377;'.number_format($report->TOTAL, 2);?></td>
 			                								
 			                								</tr>
 			                								<?php } ?>	
@@ -295,11 +301,70 @@
 	   		$('#report-table').removeAttr('hidden');
 	   	}
 
+	   	//Ajax Call to get Contractor Details
+        function showtkclist(tkcValue) {
+            $.ajax({
+               	type: 'POST',
+               	url: '<?php echo base_url('search-contractor') ?>',
+               	dataType: 'json',
+               	data: {contractor: tkcValue},
+               	success: function(response){
+                  	// console.log(response);
+
+                  	$('#list-view').show();
+                  	$('#list-view').empty();
+
+                  	var html = '';
+
+                  	let contractor_data = response.contractor_data;
+                  	/*console.log("contractor_data: ");
+                  	console.log(contractor_data);*/
+                  	if ($.isEmptyObject(contractor_data)) {
+                     	html += 'No Contractor Found';
+                  	} else {
+                     	$.each(contractor_data, function(index, value){
+                        	// console.log(value);
+                        	html += '<a href="javascript:void(0)" class="list-group-item list-group-item-action flex-column align-items-start" data-typeofwork-id="'+value.typeofwork_id+'" data-contract-id="'+value.contract_id+'" onclick=applyContractorDetails(this)>';
+                        	html += '<div class="d-flex w-100 justify-content-between">';
+                        	html += '<h4 class="mb-1 contractor-name"><strong>'+value.contractor_name+'</strong></h4>';
+                        	html += '<small class="text-muted contract-date">Contract Date : <span class="text-primary"> '+value.tender_award_date+'</span></small>';
+                        	html += '</div>';
+                        	html += '<p class="mb-1 type-of-work">Type Of Work: <span class="text-primary"> '+value.typeofwork_name+'</span></p>';
+                        	html += '<small class="text-muted contract-no">Contract No: <span class="text-primary">'+value.tender_award_no+'</span></small>';
+                        	html += '</a>';
+                     	});
+                  	}
+
+                  	$('#list-view').append(html);
+               	},
+               	error: function(xhr, status, error){
+                  	console.log(xhr.responseText);
+               	}
+            });
+        }
+
+        $(document).click(function() {
+            var list_view = $('#list-view');
+            if (!list_view.is(event.target) && !list_view.has(event.target).length) {
+               list_view.hide();
+            }
+        });
+
+        //Applying selected contractor values
+     	function applyContractorDetails(anchor) {
+            $('#list-view').hide();
+
+            let contractor_name = $(anchor).find('.contractor-name').text();
+
+            $('input[name="contractor"]').val(contractor_name);
+        }
+
         $('#generateCashFlowReport').submit(function(event) {
         	let package_no = $('#packageNo option:selected').val();
+        	let contractor = $('#contractor').val();
 
-        	if (package_no == 'select') {
-        		$('.toast-body').text('Select Package No');
+        	if (package_no == 'select' && contractor == '') {
+        		$('.toast-body').text('Select Package No or Enter Contractor (TKC)');
            		$('.toast').toast('show');
 
            		event.preventDefault();

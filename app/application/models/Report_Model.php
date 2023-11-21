@@ -562,9 +562,25 @@ class Report_Model extends CI_Model
 				
 					array_Push($feederIdArray,"-");
 					array_Push($feederNameArray, "-");
-					array_Push($regionArray, "-");
-					array_Push($circleArray, "-");
-					array_Push($divisionArray, "-");
+
+					if (!empty($this->input->post('region'))) {
+						array_Push($regionArray, $res->region_name);	
+					} else {
+						array_Push($regionArray, "-");	
+					}
+
+					if (!empty($this->input->post('circle'))) {
+						array_Push($circleArray, $res->circle_name);
+					} else {
+						array_Push($circleArray, "-");	
+					}
+
+					if (!empty($this->input->post('division'))) {
+						array_Push($divisionArray, $res->division_name);
+					} else {
+						array_Push($divisionArray, "-");
+					}
+					
 					array_Push($awardNoArray, $res->award_no);
 					array_Push($contractNameArray, $res->contractor_name);
 					array_Push($dateTimeArray, "-");
@@ -664,7 +680,7 @@ class Report_Model extends CI_Model
 		//echo "CALL sp_rpt_physical_progres($sessionId,$package,$feederId)"; die;
 	 	$_SESSION['spQuery'] = "CALL sp_rpt_physical_progres($sessionId,$package,$feederId)";
 
-		$query1 = $this->db->query("CALL sp_rpt_physical_progres($sessionId,$package,$feederId)");		
+		$query1 = $this->db->query("CALL sp_rpt_physical_progres($sessionId,$package,$feederId)");
 		
 		if($query1)
 		{

@@ -213,15 +213,15 @@
 		                					</div>
 											<?php } ?>
 											<?php if($outputOption==2) { ?>
-		                					<div class="table-responsive mb-3 mt-3" id="work-table">
+		                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;" id="work-table">
 		                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 		                							<thead>
 		                								<tr>
-		                									<th>Type of Work</th>
 		                									<th>Package No</th>
+		                									<th>Type of Work</th>
 		                									<th>TKC</th>
-		                									<th>Award No</th>
-		                									<th>Award Date</th>
+		                									<th>Contract No</th>
+		                									<th>Contract Date</th>
 		                									<th>Supply of Goods (Ex-W Price)</th>
 		                									<th>Installation and Other Services</th>
 		                									<th>Contract Value (Without GST)</th>
@@ -267,28 +267,28 @@
 		                								<tr>
 		                									<td><?php echo $report->package_no;?></td>
 		                									<td><?php echo $report->typeofwork;?></td>
-		                									<td><?php echo $report->package_no;?></td>
-		                									<td><?php echo $report->tkc_award_no;?></td>
-		                									<td><?php echo $report->award_date;?></td>
-		                									<td><?php echo $report->supplyofgoods_ex_w_price;?></td>
-		                									<td><?php echo $report->installation_and_other_services;?></td>
-		                									<td><?php echo $report->contract_value_without_gst;?></td>
-		                									<td><?php echo $report->gst_value;?></td>
-		                									<td><?php echo $report->contract_value_with_gst;?></td>
-		                									<td><?php echo $report->total_mobilisation_advanced_given;?></td>
-		                									<td><?php echo $report->total_mobilisation_advanced_adjusted;?></td>
-		                									<td><?php echo $report->stage1_target;?></td>
-		                									<td><?php echo $report->stage1_achieve;?></td>
-		                									<td><?php echo $report->stage1_shortfall;?></td>
-		                									<td><?php echo $report->stage2_target;?></td>
-		                									<td><?php echo $report->stage2_achieve;?></td>
-		                									<td><?php echo $report->stage2_shortfall;?></td>
-		                									<td><?php echo $report->stage3_target;?></td>
-		                									<td><?php echo $report->stage3_achieve;?></td>
-		                									<td><?php echo $report->stage3_shortfall;?></td>
-		                									<td><?php echo $report->stage4_target;?></td>
-		                									<td><?php echo $report->stage4_achieve;?></td>
-		                									<td><?php echo $report->stage4_shortfall;?></td>
+		                									<td><?php echo $report->TKC;?></td>
+		                									<td style="text-align:center;"><?php echo $report->tkc_award_no;?></td>
+		                									<td style="text-align:right;"><?php echo date('d-m-Y', strtotime($report->award_date));?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->supplyofgoods_ex_w_price;?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->installation_and_other_services;?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->contract_value_without_gst;?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->gst_value;?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->contract_value_with_gst;?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->total_mobilisation_advanced_given;?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->total_mobilisation_advanced_adjusted;?></td>
+		                									<td style="text-align:right;"><?php echo (!empty($report->stage1_target)) ? '&#8377;'.$report->stage1_target : '';?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->stage1_achieve;?></td>
+		                									<td style="text-align:right;"><?php echo (!empty($report->stage1_shortfall)) ? '&#8377;'.$report->stage1_shortfall : '';?></td>
+		                									<td style="text-align:right;"><?php echo (!empty($report->stage2_target)) ? '&#8377;'.$report->stage2_target : '';?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->stage2_achieve;?></td>
+		                									<td style="text-align:right;"><?php echo (!empty($report->stage2_shortfall)) ? '&#8377;'.$report->stage2_shortfall : '';?></td>
+		                									<td style="text-align:right;"><?php echo (!empty($report->stage3_target)) ? '&#8377;'.$report->stage3_target : '';?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->stage3_achieve;?></td>
+		                									<td style="text-align:right;"><?php echo (!empty($report->stage3_shortfall)) ? '&#8377;'.$report->stage3_shortfall : '';?></td>
+		                									<td style="text-align:right;"><?php echo (!empty($report->stage4_target)) ? '&#8377;'.$report->stage4_target : '';?></td>
+		                									<td style="text-align:right;"><?php echo '&#8377;'.$report->stage4_achieve;?></td>
+		                									<td  style="text-align:right;"><?php echo (!empty($report->stage4_shortfall)) ? '&#8377;'.$report->stage4_shortfall : '';?></td>
 		                								</tr>
 		                							<?php } ?>	
 													<?php } ?>

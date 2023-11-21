@@ -161,7 +161,7 @@
 			                							<tbody>
 															<?php foreach($reportData as $report) { ?>
 			                								<tr>
-			                									<td style="text-align:center;"><?php echo $report->package_no;?></td>
+			                									<td><?php echo $report->package_no;?></td>
 			                									<td><?php echo $report->tkc;?></td>
 			                									<td style="text-align:center;"><?php echo $report->contract_no;?></td>
 			                									<td style="text-align:right;"><?php echo $report->tender_award_date;?></td>

@@ -418,7 +418,7 @@ class Report_Model extends CI_Model
 		else if($employee == "specific" && !empty($this->input->post('allemployee')))
 		{
 			$allEmployee = implode(",",  $this->input->post('allemployee'));
-			$spEmployee = $allEmployee;
+			$spEmployee = "'".$allEmployee."'";
 		}
 		
 		if($package == "all")
@@ -428,7 +428,7 @@ class Report_Model extends CI_Model
 		else if($package == "specific" && !empty($this->input->post('allpackage')))
 		{
 			$allPackage = implode(",",  $this->input->post('allpackage'));
-			$spPackage = $allPackage;
+			$spPackage = "'".$allPackage."'";
 		}
 
 		if($region == "all")
@@ -438,7 +438,7 @@ class Report_Model extends CI_Model
 		else if($region == "specific" && !empty($this->input->post('allregion')))
 		{
 			$allRegion = implode(",",  $this->input->post('allregion'));
-			$spRegion = $allRegion;
+			$spRegion = "'".$allRegion."'";
 		}
 
 		if($circle == "all")
@@ -448,7 +448,7 @@ class Report_Model extends CI_Model
 		else if($circle == "specific" && !empty($this->input->post('allcircle')))
 		{
 			$allCircle = implode(",",  $this->input->post('allcircle'));
-			$spCircle = $allCircle;
+			$spCircle = "'".$allCircle."'";
 		}
 
 		if($status == "All" || $status == "")
@@ -472,7 +472,8 @@ class Report_Model extends CI_Model
 		
 	    $query = $this->db->query("CALL sp_rpt_ncr_data($sessionId,'$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)");
 		
-		$_SESSION['spQuery'] = "CALL sp_rpt_ncr_data($sessionId,'$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)";
+		$_SESSION['spQuery'] = "CALL sp_rpt_ncr_data($sessionId,'$physicalProgressFromDate', '$physicalProgressToDate', '$spEmployee', '$spPackage', '$spRegion', '$spCircle', '$spStatus', '$spReportType')";
+		// echo $this->db->last_query(); die();
 		
 		if($query)
 		{

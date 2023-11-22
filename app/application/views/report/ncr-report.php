@@ -275,7 +275,7 @@
 				                				<?php } ?>
 				                				<div class="row">
 													<?php if($reportType=='1' && $reportType != "") { ?>
-				                					<div class="table-responsive mb-3 mt-3" id="package-wise-table">
+				                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;" id="package-wise-table">
 				                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 				                							<thead>
 				                								<tr>
@@ -303,7 +303,7 @@
 				                					</div>
 													<?php } ?>
 													<?php if($reportType=='2' && $reportType != "") { ?>
-				                					<div class="table-responsive mb-3 mt-3" id="circle-wise-table">
+				                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;" id="circle-wise-table">
 				                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 				                							<thead>
 				                								<tr>
@@ -333,7 +333,7 @@
 				                					</div>
 													<?php } ?>
 													<?php if($reportType=='3' && $reportType != "") { ?>
-				                					<div class="table-responsive mb-3 mt-3" id="feeder-wise-table" >
+				                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;" id="feeder-wise-table" >
 				                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 				                							<thead>
 				                								<tr>
@@ -369,7 +369,7 @@
 				                					</div>
 													<?php } ?>
 													<?php if($reportType=='4' && $reportType != "") { ?>
-				                					<div class="table-responsive mb-3 mt-3" id="ncr-data-table">
+				                					<div class="table-responsive mb-3 mt-3" style="max-height: 500px;overflow: auto;" id="ncr-data-table">
 				                						<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 				                							<thead>
 				                								<tr>
@@ -398,27 +398,25 @@
 
 				                								<tr>
 				                									<td><?php echo $report->ncr_id;?></td>
-				                									<td><?php echo date('d-m-Y', strtotime($report->ncr_date));?></td>
-																	<td><?php echo $report->package_no;?></td>
-				                									<td><?php echo $report->contractor_name;?></td>
-				                									<td><?php echo $report->region_name;?></td>
-				                									<td><?php echo $report->circle_name;?></td>
-																	<td><?php echo $report->division_name;?></td>
-																	<td><?php echo $report->feeder_id;?></td>
-																	<td><?php echo $report->feeder_name;?></td>
-																	<td><?php echo $report->substation;?></td>
-																	<td><?php echo $report->Inspected_by;?></td>
-																	<td><?php echo $report->observation_type;?></td>
-																	<td><?php echo $report->observation;?></td>
-																	<td><?php echo $report->status;?></td>
-																	<td><?php echo $report->closed_date;?></td>
-																	<td><?php echo $report->delay_time;?></td>
-																	<td><?php echo $report->action_taken;?></td>
-																	
+				                									<td><?php echo date('d-m-Y', strtotime($report->ncr_date)); ?></td>
+																	<td><?php echo $report->package_no; ?></td>
+				                									<td><?php echo $report->contractor_name; ?></td>
+				                									<td><?php echo $report->region_name; ?></td>
+				                									<td><?php echo $report->circle_name; ?></td>
+																	<td><?php echo $report->division_name; ?></td>
+																	<td><?php echo $report->feeder_id; ?></td>
+																	<td><?php echo $report->feeder_name; ?></td>
+																	<td><?php echo $report->substation; ?></td>
+																	<td><?php echo $report->Inspected_by; ?></td>
+																	<td><?php echo $report->observation_type; ?></td>
+																	<td><?php echo $report->observation; ?></td>
+																	<td><?php echo $report->status; ?></td>
+																	<td><?php echo (!empty($report->closed_date)) ? date('d-m-Y', strtotime($report->closed_date)) : ''; ?></td>
+																	<td><?php echo $report->delay_time; ?></td>
+																	<td><?php echo $report->action_taken; ?></td>
 				                								</tr>
 																<?php } ?>
 																<?php } ?>
-				                								
 				                							</tbody>
 				                						</table>
 				                					</div>
@@ -744,7 +742,9 @@
 
 	           		event.preventDefault();
 	   			}
-	   		} else if (package_val == 'specific') {
+	   		}
+
+	   		if (package_val == 'specific') {
 	   			let package_selected = $('#allpackage option:selected').length;
 	   			
 	   			if (package_selected == 0) {
@@ -753,7 +753,9 @@
 
 	           		event.preventDefault();
 	   			}
-	   		} else if (region_val == 'specific') {
+	   		}
+
+	   		if (region_val == 'specific') {
 	   			let region_selected = $('#allregion option:selected').length;
 	   			
 	   			if (region_selected == 0) {
@@ -762,8 +764,10 @@
 
 	           		event.preventDefault();
 	   			}
-	   		} else if (circle_val == 'specific') {
-	   			let circle_selected = $('#allcircle option:selected').length;
+	   		}
+
+	   		if (circle_val == 'specific') {
+	   			let circle_selected = $('#allcircle option:selected').length;	   			
 	   			
 	   			if (circle_selected == 0) {
 	   				$('.toast-body').text('Select specific circle');

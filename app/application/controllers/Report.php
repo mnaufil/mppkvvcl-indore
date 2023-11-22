@@ -415,6 +415,8 @@ class Report extends CI_Controller
 		$data['regions'] = $this->Report_Model->loadRegions();
 		$data['circles'] = $this->Report_Model->loadCircles();	
 		$data['status'] = $this->Report_Model->loadPhysicalStatus();
+		$circle_data = $this->Report_Model->getRegionCircleData();
+		$data['circle_data'] = $this->modifyCircleData($circle_data);
 		$data['reportType'] = 	$this->input->post('reportType');		
 		
 		$data['allEmployee'] = array();	
@@ -432,19 +434,29 @@ class Report extends CI_Controller
 		}
 
 		$data['package'] = $this->input->post('package');
-		if(!empty($this->input->post('allPackage')))
+		if(!empty($this->input->post('allpackage')))
 		{
 			$data['allPackage'] = $this->input->post('allpackage');
 		}
 
 		$data['region'] = $this->input->post('region');
-		if(!empty($this->input->post('allRegion')))
+		if(!empty($this->input->post('allregion')))
 		{
 		  $data['allRegion'] = $this->input->post('allregion');
+		  $selected_circles = [];
+		  foreach ($data['allRegion'] as $region_id) {
+		  	foreach ($circle_data as $circle) {
+		  		if ($circle['region_id'] == $region_id) {
+		  			array_push($selected_circles, (object) $circle);
+		  		}
+		  	}
+		  }
+
+		  $data['circles'] = $selected_circles;
 		}
 
 		$data['circle'] = $this->input->post('circle');
-		if(!empty($this->input->post('allCircle')))
+		if(!empty($this->input->post('allcircle')))
 		{
 		  $data['allCircle'] = $this->input->post('allcircle');
 		}

@@ -159,7 +159,7 @@
 	                        					<!-- Row2 -->
 	                        					<div class="form-row">
 	                        						<div class="col-xl-3 mb-3">
-	                        							<label class="form-label" for="packageNo">Package No.
+	                        							<label class="form-label" for="packageNo">Lot No.
 	                        								<span class="text-red">*</span>
 	                        							</label>
 	                        							<input class="form-control" type="text" name="packageNo" id="packageNo" required onblur="charlimit('packageNo', 20)">

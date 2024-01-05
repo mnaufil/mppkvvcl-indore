@@ -65,7 +65,7 @@
 
 	            			<!-- PAGE-HEADER -->
 	            			<div class="page-header">
-	            				<h1 class="page-title">PKG Wise Cash Flow- RDSS Project, MPPKVVCL Jabalpur Status</h1>
+	            				<h1 class="page-title">Lot Wise Cash Flow- RDSS Project, MPPKVVCL Jabalpur Status</h1>
 	            				<div class="col-md-2 milestone-border">
 	            					<div class="form-group">
                                         <input class="form-control" type="date" name="monthdate" onchange="changepp(this.value);" value="<?php echo $date; ?>"/>
@@ -85,7 +85,7 @@
 	            										<tr>
 	            											<!-- <th></th> -->
 	            											<th>Sr No.</th>
-	            											<th>PKG No.</th>
+	            											<th>Lot No.</th>
 	            											<th>Name of TKC</th>
 	            											<th>Type of Work</th>
 	            											<th>Contract Price (Rs. In cr.)</th>
@@ -138,7 +138,8 @@
 	            										<?php foreach ($contract_data as $key => $value) { ?>
 	            											<tr>
 	            												<td><?php echo ++$key; ?></td>
-	            												<td style="text-align: left;"><?php echo 'PKG - '.$value['package_no']; ?></td>
+	            												<!-- <td style="text-align: left;"><?php //echo 'Lot - '.$value['package_no']; ?></td> -->
+	            												<td style="text-align: left;"><?php echo $value['package_no']; ?></td>
 	            												<td style="text-align: left;"><?php echo $value['contractor_name']; ?></td>
 	            												<td style="text-align: left;"><?php echo $value['type_of_work']; ?></td>
 	            												<td style="text-align: center;"><?php echo '&#8377;'.$value['contract_price']; ?></td>

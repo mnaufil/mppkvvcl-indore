@@ -79,7 +79,7 @@
 	            								<table class="table border text-wrap text-md-nowrap table-bordered mb-0" id="physical-verification-table">
 	            									<thead>
 	            										<tr>
-	            											<th>Package No.</th>
+	            											<th>Lot No.</th>
 	            											<th>Name of TKC</th>
 	            											<th>Type of Work</th>
 	            											<th colspan="2">Total Provision As Per LOA</th>

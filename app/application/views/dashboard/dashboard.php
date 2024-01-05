@@ -6,7 +6,7 @@
     <!-- META DATA -->
     <meta charset="UTF-8">
     <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="CRM - Benchmark IT Solutions">
     <meta name="author" content="Benchmark IT Solutions">
     <meta name="keywords" content="Benchmark IT Solutions">
@@ -44,7 +44,6 @@
 
 <body class="app sidebar-mini ltr light-mode">
 
-
     <!-- GLOBAL-LOADER -->
     <div id="global-loader">
         <img src="<?php echo base_url('assets/images/loader.svg'); ?>" class="loader-img" alt="Loader">
@@ -55,14 +54,13 @@
     <div class="page">
         <div class="page-main">
 
-                      <!-- App-Header -->
-                <?php $this->load->view('include/header');?>
-                <!-- App-Header Ends -->
+            <!-- App-Header -->
+            <?php $this->load->view('include/header');?>
+            <!-- App-Header Ends -->
 
-                <!-- App-Sidebar -->
-                <?php $this->load->view('include/side-bar');?>
-                <!-- App-Sidebar Ends -->
-
+            <!-- App-Sidebar -->
+            <?php $this->load->view('include/side-bar');?>
+            <!-- App-Sidebar Ends -->
 
             <!--app-content open-->
             <div class="main-content app-content mt-0" style="background-color: #f4f4f4;">
@@ -80,14 +78,12 @@
                                 <p class="list-ico"><a href="<?php echo base_url();?>statistics"><i class="fa fa-th-large for-card" style="color:  #20146a;"></i></a></p>
                                 <div class="d-flex">
                                     <!--h6 class="" style="margin-top: 5px; margin-right: 10px; margin-left: 25px;"><strong>Filter By:</strong> </h6>
-                                <p style="font-weight: bold;" class="list-ico"><i class="fa fa-filter"></i></p-->
+                                    <p style="font-weight: bold;" class="list-ico"><i class="fa fa-filter"></i></p-->
                                 </div>
                             </div>
-                            <div>
-                            </div>
+                            <div></div>
                         </div>
                         <!-- PAGE-HEADER END -->
-
 
                         <!-- ROW-2 -->
                         <div class="row">

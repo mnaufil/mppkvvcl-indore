@@ -25,14 +25,10 @@ class Dashboard extends CI_Controller
 		$rolesData = $this->session->rolesData;
 		$menusData = $this->session->menusData;
         $totalData = $this->session->totalData;
-	/*	echo '<pre>';
-		print_r($totalData); die;*/
+	   
 		// $data['menus'] = $rolesData;
 
-        
-        
-
-
+        // echo '<pre>'; print_r($data); echo '</pre>'; die();
         $this->load->view('dashboard/dashboard', $data); 
     }
 

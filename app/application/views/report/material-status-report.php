@@ -82,9 +82,9 @@
 			                					<div class="form-row">
 			                						<!-- Package No -->
 			                						<div class="col-xl-4 mb-3">
-			                							<label for="packageNo" class="form-label">Package No.<span class="text-red">*</span></label>
+			                							<label for="packageNo" class="form-label">Lot No.<span class="text-red">*</span></label>
 			                							<select class="form-control select2" id="packageNo" name="packageNo">
-			                								<option value="select" selected disabled>Select Package</option>
+			                								<option value="select" selected disabled>Select Lot</option>
 													      	<?php foreach($packages as $package) { ?>
 													        <option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
 															<?php } ?>

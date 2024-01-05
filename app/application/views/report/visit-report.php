@@ -126,7 +126,7 @@
 			                						</div>
 			                						<!-- Package -->
 			                						<div class="col-xl-2 mb-3">
-			                							<label class="form-label" for="package">Package
+			                							<label class="form-label" for="package">Lot
 				                						</label>
 				                						<div class="form-group">
 				                                       		<div class="custom-controls">

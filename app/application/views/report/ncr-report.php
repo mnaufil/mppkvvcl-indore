@@ -125,7 +125,7 @@
 													<?php //} ?>
 			                						<!-- Package -->
 			                						<div class="col-xl-2 mb-3">
-			                							<label class="form-label" for="package">Package</label>
+			                							<label class="form-label" for="package">Lot</label>
 				                						<div class="form-group">
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
@@ -224,7 +224,7 @@
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
 				                                       				<input type="radio" class="custom-control-input" name="reportType" value="1" <?php if($reportType=='1') { ?> checked <?php } ?>>
-				                                       				<span class="custom-control-label">Package wise NCR Summary</span>
+				                                       				<span class="custom-control-label">Lot wise NCR Summary</span>
 				                                       			</label>
 				                                       			<label class="custom-control custom-radio status-radio">
 				                                       				<input type="radio" class="custom-control-input" name="reportType" value="2" <?php if($reportType=='2') { ?> checked <?php } ?>>

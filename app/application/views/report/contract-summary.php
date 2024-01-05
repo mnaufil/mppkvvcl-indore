@@ -88,7 +88,7 @@
 				                                       		<div class="custom-controls">
 				                                       			<label class="custom-control custom-radio status-radio">
 				                                       				<input type="radio" class="custom-control-input" name="outputOption" value="1" <?php echo (isset($outputOption) && $outputOption == 1) ? 'checked' : ''; ?>>
-				                                       				<span class="custom-control-label">Package Wise</span>
+				                                       				<span class="custom-control-label">Lot Wise</span>
 				                                       			</label>
 				                                       			<label class="custom-control custom-radio status-radio">
 				                                       				<input type="radio" class="custom-control-input" name="outputOption" value="2" <?php echo (isset($outputOption) && $outputOption == 2) ? 'checked' : ''; ?>>

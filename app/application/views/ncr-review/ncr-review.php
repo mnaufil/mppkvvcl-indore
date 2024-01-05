@@ -118,7 +118,7 @@
 						                          					<!-- Package No -->
 						                          					<div class="col-md-2">
 						                          						<div class="form-group">
-						                          							<label class="form-label m-0" for="packageNo">Package No.</label>
+						                          							<label class="form-label m-0" for="packageNo">Lot No.</label>
 						                          							<input class="form-control" type="text" name="packageNo" id="packageNo" onpaste="changeFormStatus()" oninput="changeFormStatus()" value="<?php echo (isset($filter_data) && !empty($filter_data['package_no']['value'])) ? $filter_data['package_no']['value'] : ''; ?>">
 						                          						</div>
 						                          					</div>

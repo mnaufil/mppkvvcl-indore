@@ -69,7 +69,7 @@ class Dashboard extends CI_Controller
     public function physicalachievement($mileStoneId =null)
     {
         $data['regions'] = $this->Dashboard_Model->loadRegions();
-        if($mileStoneId==null)
+        if($mileStoneId == null)
         {
            $mileStoneId = date('Y-m-d');
         }
@@ -78,19 +78,14 @@ class Dashboard extends CI_Controller
             $mileStoneId = $mileStoneId;
         }
 
-         $previousMonth = date('M y', strtotime($mileStoneId. '-1 month'));
-         $actualMonth = date('M y', strtotime($mileStoneId));
-        //echo $mileStoneId; die;
+        $previousMonth = date('M y', strtotime($mileStoneId. '-1 month'));
+        $actualMonth = date('M y', strtotime($mileStoneId));
 
         $data['stages'] = $this->Dashboard_Model->loadStagesDash();
         $data['physicals'] = $this->Dashboard_Model->physicalprogress($mileStoneId);
         $data['previousMonth'] = $previousMonth;
         $data['actualMonth'] = $actualMonth;
-       /* echo '<pre>';
-        print_r($data); die;*/
         $data['milestoneid'] = $mileStoneId;
-
-
 
         $this->load->view('dashboard/physical-achievement', $data); 
     }

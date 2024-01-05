@@ -94,13 +94,13 @@
                                                     <thead>
                                                         <tr>
                                                             <!--th>Sr No.</th-->  
-                                                            <th>Package No</th> 
+                                                            <th>Lot No</th> 
                                                             <th>TKC</th> 
                                                             <th>Type of Work</th> 
                                                             <th colspan=2>Total Provision as per LoA</th> 
-                                                          <!--   <th colspan=2>As per Milestone</th> -->
-                                                          <th>Completed Till - <?php echo $previousMonth;?></th> 
-                                                          <th>Target Upto - <?php echo $actualMonth;?></th> 
+                                                            <!-- <th colspan=2>As per Milestone</th> -->
+                                                            <th>Completed Till - <?php echo $previousMonth;?></th> 
+                                                            <th>Target Upto - <?php echo $actualMonth;?></th> 
                                                             <th>Physical Achievement - <?php echo $actualMonth;?></th> 
                                                             <th>Cummulative Physical Achievment</th> 
                                                             <th>Status of Commissioning (%)</th> 
@@ -129,16 +129,16 @@
                                                         <tr>
                                                             <!--td><?php //echo $key->srno;?></td-->   
                                                             <!--td class="text-nowrap"><a href="javascript:;" data-bs-target="#package-modal" data-bs-toggle="modal"><?php echo $key->package_no;?></a></td-->
-                                                              <td class="text-nowrap"><a href="javascript:;" onclick="showModal('<?php echo $key->contractor_name ?>', <?php echo $key->package_no;?>)"><?php echo $key->package_no;?></a></td>
+                                                            <td class="text-nowrap">
+                                                                <a href="javascript:;" onclick="showModal('<?php echo $key->contractor_name ?>', <?php echo $key->package_no;?>)"><?php echo $key->package_no;?></a></td>
                                                             <td class="text-nowrap" style="text-align: left"><?php echo $key->contractor_name;?></td>
                                                             <td class="text-nowrap" style="text-align: left"><?php echo $key->typeofwork;?></td>
                                                             <td style="text-align: center;" ><?php echo $key->ss;?></td>
                                                             <td style="text-align: center;"><?php echo $key->feeders;?></td>
                                                             <!-- <td><?php echo $key->target_upto;?></td>
                                                            <td class="text-nowrap"><?php echo date('d-m-Y', strtotime($key->date));?></td> -->
-                                                           <td style="text-align: center;"><?php echo $key->completed_till;?></td>
-                                                           <td style="text-align: center;"><?php echo $key->target_upto;?></td>
-
+                                                            <td style="text-align: center;"><?php echo $key->completed_till;?></td>
+                                                            <td style="text-align: center;"><?php echo $key->target_upto;?></td>
                                                             <td style="text-align: center;"><?php echo $key->physical_achievement_during_the_month;?></td>
                                                             <td style="text-align: center;"><?php echo $key->cummulative_physical_achievement;?></td>
                                                             <td style="text-align: center;"><?php echo $key->status_of_commissioning;?></td>

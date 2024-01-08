@@ -61,7 +61,7 @@
 
 	            			<!-- PAGE-HEADER -->
 	            			<div class="page-header">
-	            				<h1 class="page-title">Physical Progress (% Completion wise) in RDSS Project MPPKVVCL, Jabalpur</h1>
+	            				<h1 class="page-title">Physical Progress (% Completion wise) in RDSS Project MPPKVVCL, Indore</h1>
 	            				<div class="col-md-2 milestone-border">
 	            					<div class="form-group">
                                         <input class="form-control" type="date" name="monthdate" onchange="changepp(this.value);" value="<?php echo $date; ?>"/>

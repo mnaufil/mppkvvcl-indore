@@ -66,7 +66,7 @@
 
                             <!-- PAGE-HEADER -->
                             <div class="page-header">
-                                <h1 class="page-title">Physical Progress in RDSS Project MPPKVVCL, Jabalpur</h1>
+                                <h1 class="page-title">Physical Progress in RDSS Project MPPKVVCL, Indore</h1>
                                 <div class="col-md-2 milestone-border">
                                     <div class="form-group">
                                        <!--  <select class="form-control form-select select2 select2-hidden-accessible" name="status" data-bs-placeholder="Select Status" tabindex="-1" aria-hidden="true" onchange="changepp(this.value);">

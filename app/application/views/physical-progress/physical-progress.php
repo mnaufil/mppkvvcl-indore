@@ -69,7 +69,7 @@
 
               <!-- Page-Header -->
               <div class="page-header">
-                <h1 class="page-title">Physical Progress</h1>
+                <h1 class="page-title">Physical Verification</h1>
               </div>
               <!-- Page-Header Ends -->
 
@@ -87,7 +87,7 @@
                                   $clear_btn_visibility = (isset($filters)) ? '' : 'hidden';
                             ?>
                             <button class="accordion-button collapsed active prog-btn <?php echo $accordion_btn_class; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" <?php echo $accordion_btn_style; ?>>
-                              Search Physical Progress Sheet
+                              Search Physical Verification Sheet
                             </button>
                           </h2>
                           <div class="clear-data" <?php echo $clear_btn_visibility; ?>>

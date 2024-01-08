@@ -65,7 +65,7 @@
 
 	            			<!-- PAGE-HEADER -->
 	            			<div class="page-header">
-	            				<h1 class="page-title">Lot Wise Cash Flow- RDSS Project, MPPKVVCL Jabalpur Status</h1>
+	            				<h1 class="page-title">Lot Wise Cash Flow- RDSS Project, MPPKVVCL Indore Status</h1>
 	            				<div class="col-md-2 milestone-border">
 	            					<div class="form-group">
                                         <input class="form-control" type="date" name="monthdate" onchange="changepp(this.value);" value="<?php echo $date; ?>"/>

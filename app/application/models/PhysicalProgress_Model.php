@@ -1961,7 +1961,7 @@ class PhysicalProgress_Model extends CI_Model
 		$this->db->select('mst_status.status_id');
 		$this->db->from('mst_status');
 		$this->db->join('mst_module', 'mst_status.module_id = mst_module.module_id', 'INNER');
-		$this->db->where(array('mst_module.name' => 'Physical Progress', 'mst_module.icon !=' => ''));
+		$this->db->where(array('mst_module.name' => 'Physical Verification', 'mst_module.icon !=' => ''));
 		$this->db->where_in('mst_status.name',$where_in_array);
 
 		$query = $this->db->get();
@@ -2102,7 +2102,7 @@ class PhysicalProgress_Model extends CI_Model
 		$this->db->join('mst_role_module_access', 'mst_user.role_id = mst_role_module_access.role_id', 'INNER');
 		$this->db->join('mst_module_access', 'mst_role_module_access.module_access_id = mst_module_access.module_access_id', 'INNER');
 		$this->db->join('mst_module', 'mst_module_access.module_id = mst_module.module_id', 'INNER');
-		$this->db->where(array('mst_module.name' => 'Physical Progress', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
+		$this->db->where(array('mst_module.name' => 'Physical Verification', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
 		$this->db->where(array('mst_role_module_access.is_active' => 1, 'mst_module_access.is_active' => 1, 'mst_module.is_active' => 1));
 
 		$query = $this->db->get();

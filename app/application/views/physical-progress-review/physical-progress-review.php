@@ -66,7 +66,7 @@
 		        			
 		        			<!-- Page-Header -->
 				            <div class="page-header">
-				            	<h1 class="page-title">Physical Progress Review</h1>
+				            	<h1 class="page-title">Physical Verification Review</h1>
 				            </div>
 				            <!-- Page-Header Ends -->
 
@@ -83,7 +83,7 @@
 						                                  		$accordion_btn_style = (isset($filters)) ? 'style="height:57px;"' : '';
 						                                  		$clear_btn_visibility = (isset($filters)) ? '' : 'hidden';
 					                            		?>
-					                            		<button class="accordion-button collapsed active prog-btn <?php echo $accordion_btn_class; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" <?php echo $accordion_btn_style; ?>>Search Physical Progress Review</button>
+					                            		<button class="accordion-button collapsed active prog-btn <?php echo $accordion_btn_class; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" <?php echo $accordion_btn_style; ?>>Search Physical Verification Review</button>
 				            						</h2>
 				            						<div class="clear-data" <?php echo $clear_btn_visibility; ?>>
 				                            			<a href="#" class="text-danger clear-search-filters" id="clear-btn"> Clear</a>

@@ -83,7 +83,7 @@
                                                     </div>
                                                 </div>
                                                 <button class="btn btn-success mb-3" type="submit">Submit</button>
-                                                <a class="btn btn-primary mb-3" href="<?php echo base_url('work-type'); ?>">Back</a>
+                                                <a class="btn btn-primary mb-3" href="<?php echo base_url('typeofwork'); ?>">Back</a>
                                             </form>
                                         </div>   
 

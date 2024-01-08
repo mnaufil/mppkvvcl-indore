@@ -79,7 +79,7 @@ class PhysicalProgress extends CI_Controller
           $user_access_data = $this->pp_model->getUserModuleAccess();
           $user_access = $this->sortUserModuleAccess($user_access_data);
 
-          $data['title'] = 'Physical Progress';
+          $data['title'] = 'Physical Verification';
           $data['result'] = $result;
           $data['work_list'] = $type_of_work;
           $data['region_list'] = $region_list;
@@ -267,8 +267,8 @@ class PhysicalProgress extends CI_Controller
                }
 
                $data['sheet_data'] = $sheet_result;
-               $data['title'] = 'Physical Progress';
-               $data['page_title'] = 'Physical Progress - Feeder ID['.$sheet_result['feeder_id'].']';
+               $data['title'] = 'Physical Verification';
+               $data['page_title'] = 'Physical Verification - Feeder ID['.$sheet_result['feeder_id'].']';
 
                $data['userdata'] = $this->getUserData();
                // echo 'data: <pre>'; print_r($data); echo '</pre>'; die();

@@ -37,7 +37,7 @@ class PhysicalProgressReview extends CI_Controller
         $user_access_data = $this->ppreview_model->getUserModuleAccess();
         $user_access = $this->sortUserModuleAccess($user_access_data);
 
-		$data['title'] = 'Physical Progress Review';
+		$data['title'] = 'Physical Verification Review';
 		$data['result'] = $result;
         $data['work_list'] = $type_of_work;
         $data['region_list'] = $region_list;

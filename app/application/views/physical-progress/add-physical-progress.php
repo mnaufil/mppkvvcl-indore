@@ -185,7 +185,7 @@
 	                      <div class="form-row">
               						<!-- Package No -->
               						<div class="col-xl-3 mb-3">
-						                <label class="form-label" for="packageNo">Package No.
+						                <label class="form-label" for="packageNo">Lot No.
 						                    <span class="text-red">*</span>
 						                </label>
 						                <input class="form-control" type="text" id="packageNo" required name="packageNo" value="<?php echo $sheet_data['package_no']; ?>" readonly>
@@ -471,6 +471,10 @@
 																												<span class="custom-control-label">Yes</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="wip">
+																												<span class="custom-control-label">WIP</span>
+																											</label>
+																											<label class="custom-control custom-radio status-radio">
 																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" checked>
 																												<span class="custom-control-label">No</span>
 																											</label>
@@ -483,6 +487,10 @@
 																											<label class="custom-control custom-radio status-radio">
 																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?>>
 																												<span class="custom-control-label">Yes</span>
+																											</label>
+																											<label class="custom-control custom-radio status-radio">
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?>>
+																												<span class="custom-control-label">WIP</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
 																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" <?php echo ($v2['status_id'] == 0) ? 'checked' : ''; ?>>
@@ -582,6 +590,10 @@
 																												<span class="custom-control-label">Yes</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="wip">
+																												<span class="custom-control-label">WIP</span>
+																											</label>
+																											<label class="custom-control custom-radio status-radio">
 																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" checked>
 																												<span class="custom-control-label">No</span>
 																											</label>
@@ -594,6 +606,10 @@
 																											<label class="custom-control custom-radio status-radio">
 																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?>>
 																												<span class="custom-control-label">Yes</span>
+																											</label>
+																											<label class="custom-control custom-radio status-radio">
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?>>
+																												<span class="custom-control-label">WIP</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
 																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" <?php echo ($v2['status_id'] == 0) ? 'checked' : ''; ?>>
@@ -722,7 +738,8 @@
 																										<?php $progress = '';
 																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) {
 																														$erected_qty = (int)$v2['erected_qty'];
-																														$progress = round(($erected_qty / $v2['boq']) * 100);
+																														// $progress = round(($erected_qty / $v2['boq']) * 100);
+																														$progress = number_format((float)($erected_qty / $v2['boq']) * 100, 2, '.', '');
 																													}
 																										?>
 																										<td class="progress-percent"><?php echo $progress; ?></td>
@@ -847,7 +864,8 @@
 																										<?php $progress = '';
 																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) {
 																														$erected_qty = (int)$v2['erected_qty'];
-																														$progress = round(($erected_qty / $v2['boq']) * 100);
+																														// $progress = round(($erected_qty / $v2['boq']) * 100);
+																														$progress = number_format((float)($erected_qty / $v2['boq']) * 100, 2, '.', '');
 																													}
 																										?>
 																										<td class="progress-percent"><?php echo $progress; ?></td>
@@ -939,6 +957,10 @@
 																											<span class="custom-control-label">Yes</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">
+																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="wip">
+																											<span class="custom-control-label">WIP</span>
+																										</label>
+																										<label class="custom-control custom-radio status-radio">
 																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" checked>
 																											<span class="custom-control-label">No</span>
 																										</label>
@@ -951,6 +973,10 @@
 																										<label class="custom-control custom-radio status-radio">
 																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?>>
 																											<span class="custom-control-label">Yes</span>
+																										</label>
+																										<label class="custom-control custom-radio status-radio">
+																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?>>
+																											<span class="custom-control-label">WIP</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">
 																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" <?php echo ($v2['status_id'] == 0) ? 'checked' : ''; ?>>
@@ -1080,7 +1106,8 @@
 																										<?php $progress = '';
 																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) { 
 																														$erected_qty = (int)$v2['erected_qty'];
-																														$progress = round(($erected_qty / $v2['boq']) * 100);
+																														// $progress = round(($erected_qty / $v2['boq']) * 100);
+																														$progress = number_format((float)($erected_qty / $v2['boq']) * 100, 2, '.', '');
 																													}
 																										?>
 																										<td class="progress-percent"><?php echo $progress; ?></td>
@@ -1202,7 +1229,8 @@
 																										<?php $progress = '';
 																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) {
 																														$erected_qty = (int)$v2['erected_qty'];
-																														$progress = round(($erected_qty / $v2['boq']) * 100);
+																														// $progress = round(($erected_qty / $v2['boq']) * 100);
+																														$progress = number_format((float)($erected_qty / $v2['boq']) * 100, 2, '.', '');
 																													}
 																										?>
 																										<td class="progress-percent"><?php echo $progress; ?></td>
@@ -2167,7 +2195,7 @@
       function getObservationsForWithoutBOQ(radio) {
       	//Getting tab name
 				let table_name = getTableName($(radio));
-				console.log('table_name:' + table_name);
+				// console.log('table_name:' + table_name);
 
 				//Getting table row
 				let tr = $(radio).closest('tr');
@@ -2279,7 +2307,8 @@
 						//Calculating Progress in %
 						let boq_qty = $(tr).find('td').eq(3).text();
 						let progress = (parseInt(erected_qty) / parseInt(boq_qty)) * 100;
-						$(tr).find('td').eq(5).text(Math.round(progress));
+						// $(tr).find('td').eq(5).text(Math.round(progress));
+						$(tr).find('td').eq(5).text(parseFloat(progress).toFixed(2));
 
 						//Getting selected activity details
 						let activity = getActivityDetails(table_name, table_row, activity_index);

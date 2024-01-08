@@ -954,6 +954,9 @@ class PhysicalProgress extends CI_Controller
                case 'na':
                     $status_id = 3;
                     break;
+               case 'wip':
+                    $status_id = 4;
+                    break;
                default:
                     $status_id = 0;
                     break;

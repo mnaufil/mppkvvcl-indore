@@ -75,7 +75,7 @@ $route['statistics'] = 'Dashboard/index';
 $route['statistics-table'] = 'Dashboard/statstable';
 $route['logout'] = 'Dashboard/logout';
 $route['pert-chart'] = 'Dashboard/pertchart';
-$route['physical'] = 'Dashboard/physicalachievement';
+$route['progress'] = 'Dashboard/physicalachievement';
 $route['getlocations/(:num)'] = 'Dashboard/getlocations/$1';
 $route['getcircles/(:num)'] = 'Dashboard/getcircles/$1';
 $route['getdivisions/(:num)'] = 'Dashboard/getdivisions/$1';
@@ -88,15 +88,15 @@ $route['weekdatedropdownload/(:any)/(:any)'] = 'Dashboard/weekdatedropdownload/$
 $route['showgraph/(:any)'] = 'Dashboard/showgraph/$1';
 
 
-$route['physical/(:any)'] = 'Dashboard/physicalachievement/$1';
+$route['progress/(:any)'] = 'Dashboard/physicalachievement/$1';
 $route['financial'] = 'Dashboard/financialachievement';
 $route['financial/(:any)'] = 'Dashboard/financialachievement/$1';
-$route['physical-verification'] = 'Dashboard/physicalVerification';
-$route['physical-verification/(:any)'] = 'Dashboard/physicalVerification/$1';
+$route['verification'] = 'Dashboard/physicalVerification';
+$route['verification/(:any)'] = 'Dashboard/physicalVerification/$1';
 $route['get-feeders-list'] = 'Dashboard/getFeedersList';
 
 /*Physical Progress Module*/
-$route['physical-progress'] = 'PhysicalProgress/index';
+$route['physical-verification'] = 'PhysicalProgress/index';
 $route['search-physical-progress-sheet'] = 'PhysicalProgress/searchSheet';
 $route['add-physical-progress/(:any)/(:num)/(:num)/(:num)'] = 'PhysicalProgress/editSheet/$1/$2/$3/$4';
 $route['save-observation'] = 'PhysicalProgress/saveObservation';
@@ -120,7 +120,7 @@ $route['update-NCR-details'] = 'NCRReview/updateNCR';
 $route['send-ncr-mail'] = 'NCRReview/sendNCREmail';
 
 /*Physical Progress Review Module*/
-$route['physical-progress-review'] = 'PhysicalProgressReview/index';
+$route['physical-verification-review'] = 'PhysicalProgressReview/index';
 $route['search-physical-progress-review'] = 'PhysicalProgressReview/searchReviewSheet';
 
 /*Material Status Module*/
@@ -181,7 +181,7 @@ $route['convert-pdf'] = 'Report/convertPdf';
 $route['show-feeders/(:num)'] = 'Report/showfeeders/$1';
 
 /*TypeofWork Module*/
-$route['work-type'] = 'Setup/worktype';
+$route['typeofwork'] = 'Setup/worktype';
 $route['add-typeofwork'] = 'Setup/addtypeofwork';
 $route['edit-typeofwork'] = 'Setup/edittypeofwork';
 $route['save-typeofwork'] = 'Setup/savetypeofwork';

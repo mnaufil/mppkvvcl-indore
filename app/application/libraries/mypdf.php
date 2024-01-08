@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . '/fpdf/fpdf.php';
 class Mypdf extends FPDF
 {
   
-  protected $DPI;
+    protected $DPI;
  public $MM_IN_INCH;
  public $A4_HEIGHT;
  public $A4_WIDTH;

@@ -403,7 +403,7 @@
 																								<!-- <th style="width: 150px;">Status</th> -->
 																								<th>Unit</th>
 																								<th>BOQ Qty</th>
-																								<th>Erected Qty</th>
+																								<th>Verified Qty</th>
 																								<th>Progress in %</th>
 																								<th>Observation Type</th>
 																								<th>Observation</th>
@@ -414,7 +414,7 @@
 																								<!-- <th style="width: 150px;">Status</th> -->
 																								<th>Unit</th>
 																								<th>BOQ Qty</th>
-																								<th>Erected Qty</th>
+																								<th>Verified Qty</th>
 																								<th>Progress in %</th>
 																								<th>Observation Type</th>
 																								<th>Observation</th>
@@ -432,7 +432,7 @@
 																								<!-- <th style="width: 150px;">Status</th> -->
 																								<th>Unit</th>
 																								<th>BOQ Qty</th>
-																								<th>Erected Qty</th>
+																								<th>Verified Qty</th>
 																								<th>Progress in %</th>
 																								<th>Observation Type</th>
 																								<th>Observation</th>
@@ -443,7 +443,7 @@
 																								<!-- <th style="width: 150px;">Status</th> -->
 																								<th>Unit</th>
 																								<th>BOQ Qty</th>
-																								<th>Erected Qty</th>
+																								<th>Verified Qty</th>
 																								<th>Progress in %</th>
 																								<th>Observation Type</th>
 																								<th>Observation</th>

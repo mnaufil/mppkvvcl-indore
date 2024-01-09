@@ -100,9 +100,9 @@ class Login extends CI_Controller
 					$data['totalDisburse'] = $this->Login_Model->totalDisburse();
 
 					$this->session->set_userdata('totalData', $data['totalDisburse']);
-        //$totalData = $this->session->totalData;
+        			//$totalData = $this->session->totalData;
 					// echo '<pre>'; print_r($_SESSION); echo '</pre>'; die();
-					redirect('dashboard');
+					redirect('statistics');
 				}
 				else
 				{

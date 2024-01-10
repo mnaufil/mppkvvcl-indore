@@ -72,8 +72,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 // $active_group = 'default';
-$active_group = 'mpp';
-// $active_group = 'mpp_prod';
+// $active_group = 'mpp';
+$active_group = 'mpp_prod';
 $query_builder = TRUE;
 
 $db['default'] = array(
@@ -104,7 +104,8 @@ $db['mpp'] = array(
 	'hostname' => '192.168.3.14',
 	'username' => 'mpp',
 	'password' => 'mPp@203#',
-	'database' => 'MPPKVVCL_DEV_INDORE',
+	// 'database' => 'MPPKVVCL_DEV_INDORE',
+	'database' => 'MPPKVVCL_DEV',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -127,7 +128,7 @@ $db['mpp_prod'] = array(
 	'hostname' => '43.204.12.108',
 	'username' => 'root',
 	'password' => '6V%D6A@@uuX0RDGt',
-	'database' => 'MPPKVVCL_PROD_Indore',
+	'database' => 'MPPKVVCL_PROD_INDORE',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

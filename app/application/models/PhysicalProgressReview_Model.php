@@ -271,7 +271,7 @@ class PhysicalProgressReview_Model extends CI_Model
 		$this->db->select('mst_module.module_id, mst_module.name, mst_status.status_id, mst_status.name, mst_status.seqno');
 		$this->db->from('mst_module');
 		$this->db->join('mst_status', 'mst_module.module_id = mst_status.module_id', 'INNER');
-		$this->db->where(array('mst_module.name' => 'Physical Progress', 'mst_module.icon !=' => ''));
+		$this->db->where(array('mst_module.name' => 'Physical Verification', 'mst_module.icon !=' => ''));
 		$this->db->order_by('mst_status.seqno', 'ASC');
 
 		$query = $this->db->get();

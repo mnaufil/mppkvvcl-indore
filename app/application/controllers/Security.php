@@ -41,6 +41,9 @@ class Security extends CI_Controller
 		$data['regions'] = $this->Security_Model->loadRegions();
 		$data['circles'] = $this->Security_Model->loadCircles();
 		$data['divisions'] = $this->Security_Model->loadDivisions();
+		$data['packages'] = $this->Security_Model->loadPackages();
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('security/user/add-user', $data);
 	}
 

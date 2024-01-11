@@ -140,6 +140,27 @@ class Security_Model extends CI_Model
         return $result;
     }
 
+    public function loadPackages()
+    {
+        $this->db->select('package_no');
+        $query = $this->db->get_where('contract', array('status_id' => 14));
+        // echo $this->db->last_query(); die();
+
+        if (!$query) {
+            $error = $this->db->error();
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {
+            $query_result = [];
+
+            if ($query->num_rows() > 0) {
+                $query_result = $query->result_array();
+            }
+
+            return $query_result;
+        }
+    }
+
     function userslist()
     {
         $result = [];

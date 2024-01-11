@@ -655,7 +655,7 @@
         	}
 
         	function changepp(date) {
-        		window.location.href = '<?php echo base_url(); ?>' + "physical-verification/" + date;
+        		window.location.href = '<?php echo base_url(); ?>' + "verification/" + date;
         	}
         </script>
 	</body>

@@ -20,7 +20,7 @@
 
                         <?php //echo '<pre>'; print_r($this->session->totalData);?>
                          <div class="d-flex order-lg-2">
-                        <?php  foreach ($this->session->totalData as $key ) { 
+                        <?php  foreach ($this->session->totalData as $key) { 
                             if($key->keyword=="Total")
                             {
                                 $var = "green";

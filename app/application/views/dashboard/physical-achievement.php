@@ -337,7 +337,7 @@
         <script>
             function changepp(stageId)
             {
-                window.location.href = baseUrl+"physical/"+stageId;
+                window.location.href = baseUrl+"progress/"+stageId;
             }
 
             function showModal(name, package_no)

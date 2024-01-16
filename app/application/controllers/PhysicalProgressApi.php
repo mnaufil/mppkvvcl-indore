@@ -104,7 +104,13 @@ class PhysicalProgressApi extends REST_Controller
             $award_date = date("d-m-Y", strtotime($sheet_result['tender_award_date']));
             $sheet_result['tender_award_date'] = $award_date;
 
-            $sheet_result['task_ratio'] = $this->calculateTaskRatio($sheet_result, $mode);
+            $sheet_result['task_ratio'] = $task_ratio = $this->calculateTaskRatio($sheet_result, $mode);
+            $task_arr = explode('/', $task_ratio);
+            $task['cc_task'] = $task_arr[0];
+            $task['tt_task'] = $task_arr[1];
+
+            $work_completion = ($task['tt_task'] != 0) ? ((int)$task['cc_task'] / (int)$task['tt_task']) * 100 : '';
+            $sheet_result['work_completion'] = ($work_completion == 0 || $work_completion == 100 || $work_completion == '') ? $work_completion : round($work_completion);
             
             if (!empty($sheet_result['activities_list'])) {
                 $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);

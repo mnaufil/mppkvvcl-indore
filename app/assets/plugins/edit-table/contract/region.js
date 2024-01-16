@@ -220,43 +220,61 @@ class BSTable1 {
 				input = '<div id="loaddivisions"><select class="form-control"><option value="Select">Select Division</option></select></div>';
 				$td.html(input)
 			}
-			  else if(i=='3')
+            else if (i == '3')
+            {
+                var inputElement = "'dynamicdistrictregion'";
+                input = '<input class="form-control input-sm" id="dynamicdistrictregion'+rowIndex+'" data-original-value="' + content + '" value="' + content + '" onblur="charlimitwithrow(this.value, '+inputElement+', '+rowIndex+', 50)">';
+                $td.html(div + input)
+            }
+            else if (i == '4')
+            {
+                var inputElement = "'dynamicvidhansabharegion'";
+                input = '<input class="form-control input-sm" id="dynamicvidhansabharegion'+rowIndex+'" data-original-value="' + content + '" value="' + content + '" onblur="charlimitwithrow(this.value, '+inputElement+', '+rowIndex+', 50)">';
+                $td.html(div + input)
+            }
+            else if (i == '5')
+            {
+                var inputElement = "'dynamicloksabharegion'";
+                input = '<input class="form-control input-sm" id="dynamicloksabharegion'+rowIndex+'" data-original-value="' + content + '" value="' + content + '" onblur="charlimitwithrow(this.value, '+inputElement+', '+rowIndex+', 50)">';
+                $td.html(div + input)
+            }
+			else if(i=='6')
             {
              var inputElement = "'dynamiclocationregion'";
             input = '<input class="form-control input-sm" id="dynamiclocationregion'+rowIndex+'"   data-original-value="' + content + '" value="' + content + '" onblur="charlimitwithrow(this.value, '+inputElement+', '+rowIndex+', 100)">';
                 $td.html(div + input)
             }
-            else if(i=='4')
+            else if(i=='7')
             {
              var inputElement = "'dynamicfeedernameregion'";
             input = '<input class="form-control input-sm" id="dynamicfeedernameregion'+rowIndex+'"   data-original-value="' + content + '" value="' + content + '" onblur="charlimitwithrow(this.value, '+inputElement+', '+rowIndex+', 100)">';
                 $td.html(div + input)
             }
-            else if(i=='5')
+            else if(i=='8')
             {
              var inputElement = "'dynamicfeederidregion'";
             input = '<input class="form-control input-sm" id="dynamicfeederidregion'+rowIndex+'"   data-original-value="' + content + '" value="' + content + '" onblur="charlimitwithrow(this.value, '+inputElement+', '+rowIndex+', 50)">';
                 $td.html(div + input)
             }
-            else if(i=='6')
+            else if(i=='9')
             {
              var inputElement = "'dynamicprojectidregion'";
             input = '<input class="form-control input-sm" id="dynamicprojectidregion'+rowIndex+'"   data-original-value="' + content + '" value="' + content + '" onblur="charlimitwithrow(this.value, '+inputElement+', '+rowIndex+', 50)">';
                 $td.html(div + input)
             }
-            else if(i=='7')
+            else if(i=='10')
             {
              var inputElement = "'dynamicgeocoderegion'";
             input = '<input class="form-control input-sm" id="dynamicgeocoderegion'+rowIndex+'"   data-original-value="' + content + '" value="' + content + '" onblur="charlimitwithrow(this.value, '+inputElement+', '+rowIndex+', 50)">';
                 $td.html(div + input)
             }
-            else if(i=='8')
+            else if(i=='11')
             {
              var inputElement = "'dynamicqtyregion'";
             input = '<input type="number" class="form-control input-sm" id="dynamicqtyregion'+rowIndex+'"   data-original-value="' + content + '" value="' + content + '" onblur="charlimitwithrow(this.value, '+inputElement+', '+rowIndex+', 7)">';
                 $td.html( div + input)
             }
-            else if(i=='9')
+            else if(i=='12')
             {
                  input = '';
                  $.ajax({url: baseUrl+"checktypeofworkboq/", success: function(result){
@@ -311,7 +329,7 @@ class BSTable1 {
     _rowAccept(button) {
         // Accept the changes to the row
         let $currentRow = $(button).parents('tr'); // access the row
-$("#table2-new-row-button-region").show();
+        $("#table2-new-row-button-region").show();
          var rowIndex = $(button).closest("tr").index();
         //alert(rowIndex);
          var data = {};
@@ -375,65 +393,86 @@ $("#table2-new-row-button-region").show();
         }
         else
         {
-               cont = $td.find('input').val(); // read through each input
-               if(i==3)
-               {
+            cont = $td.find('input').val(); // read through each input
+            if (i == 3)
+            {
+                data.district = cont;
+            }
+
+            if (i == 4)
+            {
+                data.vidhansabha = cont;
+            }
+
+            if (i == 5)
+            {
+                data.loksabha = cont;
+            }
+
+            if(i==6)
+            {
 				var   isOk = requiredvalid("region", "dynamiclocationregion", cont, rowIndex);
 				checkErrors.push(isOk);
 				if(isOk==false)
 				{
-				  exit();
+				    exit();
 				}	    
                 data.location = cont;
-               }
-               if(i==4)
-               {
+            }
+
+            if(i==7)
+            {
 				var   isOk = requiredvalid("region", "dynamicfeedernameregion", cont, rowIndex);
 				checkErrors.push(isOk);
 				if(isOk==false)
 				{
-				  exit();
+				    exit();
 				}	 
                 data.feedername = cont;
-               }
-               if(i==5) 
-               {
+            }
+
+            if(i==8) 
+            {
 				var   isOk = requiredvalid("region", "dynamicfeederidregion", cont, rowIndex);
 				checkErrors.push(isOk);
 				if(isOk==false)
 				{
-				  exit();
+				    exit();
 				}	    
                 data.feederid = cont;
-               }
-               if(i==6)
-               {
+            }
+
+            if(i==9)
+            {
 				var   isOk = requiredvalid("region", "dynamicprojectidregion", cont, rowIndex);
 				checkErrors.push(isOk);
 				if(isOk==false)
 				{
-				  exit();
+				    exit();
 				}	   
                 data.projectid = cont;
-               }
-               if(i==7)
-               {
+            }
+            
+            if(i==10)
+            {
                 data.geocode = cont;
-               }
-               if(i==8)
-               {
+            }
+
+            if(i==11)
+            {
 				var   isOk = requiredvalid("region", "dynamicqtyregion", cont, rowIndex);
 				checkErrors.push(isOk);
 				if(isOk==false)
 				{
-				  exit();
+				    exit();
 				}
                 data.quantity = cont;
-               }
-               if(i==9)
-               {
+            }
+
+            if(i==12)
+            {
                 data.boq = cont;
-               }
+            }
         } 
 		 
 		 //$td.html(cont); // set the content and remove the input fields
@@ -442,6 +481,9 @@ $("#table2-new-row-button-region").show();
 				$("#td_dynamicregion"+rowIndex).html(data.region_text);
 				$("#td_dynamiccircle"+rowIndex).html(data.circle_text);
 				$("#td_dynamicdivision"+rowIndex).html(data.division_text);
+                $("#td_dynamicdistrict"+rowIndex).html(data.district);
+                $("#td_dynamicvidhansabha"+rowIndex).html(data.vidhansabha);
+                $("#td_dynamicloksabha"+rowIndex).html(data.loksabha);
 				$("#td_dynamiclocationregion"+rowIndex).html(data.location);
 				$("#td_dynamicfeedernameregion"+rowIndex).html(data.feedername);
 				$("#td_dynamicfeederidregion"+rowIndex).html(data.feederid);
@@ -531,56 +573,68 @@ $("#table2-new-row-button-region").show();
                 } 
 				else {
 					
-						// $(column).html(''); // clear the text
+					// $(column).html(''); // clear the text
 						
-						if(e==1)
-						 {
-							  $(column).attr('id', 'td_dynamicregion'+rowIndex);
-						      $(column).html(''); // clear the text
-						 }
-						 else if(e==2)
-						 {
-							 $(column).attr('id', 'td_dynamiccircle'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 else if(e==3)
-						 {
-							 $(column).attr('id', 'td_dynamicdivision'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 else if(e==4)
-						 {
-							 $(column).attr('id', 'td_dynamiclocationregion'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 else if(e==5)
-						 {
-							 $(column).attr('id', 'td_dynamicfeedernameregion'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 else if(e==6)
-						 {
-							 $(column).attr('id', 'td_dynamicfeederidregion'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 else if(e==7)
-						 {
-							 $(column).attr('id', 'td_dynamicprojectidregion'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 else if(e==8)
-						 {
-							 $(column).attr('id', 'td_dynamicgeocoderegion'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 else if(e==9)
-						 {
-							 $(column).attr('id', 'td_dynamicqtyregion'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 
-					
-                   
+					if(e==1)
+					{
+				        $(column).attr('id', 'td_dynamicregion'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+					else if(e==2)
+					{
+					    $(column).attr('id', 'td_dynamiccircle'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+					else if(e==3)
+					{
+					    $(column).attr('id', 'td_dynamicdivision'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+                    else if (e == 4)
+                    {
+                        $(column).attr('id', 'td_dynamicdistrict'+rowIndex);
+                        $(column).html(''); // clear the text
+                    }
+                    else if (e == 5)
+                    {
+                        $(column).attr('id', 'td_dynamicvidhansabha'+rowIndex);
+                        $(column).html(''); // clear the text
+                    }
+                    else if (e == 6)
+                    {
+                        $(column).attr('id', 'td_dynamicloksabha'+rowIndex);
+                        $(column).html(''); // clear the text
+                    }
+					else if(e==7)
+					{
+					    $(column).attr('id', 'td_dynamiclocationregion'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+					else if(e==8)
+					{
+					    $(column).attr('id', 'td_dynamicfeedernameregion'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+					else if(e==9)
+					{
+					    $(column).attr('id', 'td_dynamicfeederidregion'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+					else if(e==10)
+					{
+					    $(column).attr('id', 'td_dynamicprojectidregion'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+					else if(e==11)
+					{
+					    $(column).attr('id', 'td_dynamicgeocoderegion'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+					else if(e==12)
+					{
+					    $(column).attr('id', 'td_dynamicqtyregion'+rowIndex);
+						$(column).html(''); // clear the text
+					}
                 }
             });
         }

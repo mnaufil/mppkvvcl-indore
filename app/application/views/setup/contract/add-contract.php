@@ -373,6 +373,9 @@
 	                        											<th>Region</th>
 	                        											<th>Circle</th>
 	                        											<th>Division</th>
+	                        											<th>District</th>
+	                        											<th>Vidhansabha</th>
+	                        											<th>Loksabha</th>
 	                        											<th>Location/Referance Name</th>
 	                        											<th>Feeder Name</th>
 	                        											<th>Feeder ID</th>
@@ -387,6 +390,9 @@
 	                        											<td id="td_dynamicregion0"></td>
 	                        											<td id="td_dynamiccircle0"></td>
 	                        											<td id="td_dynamicdivision0"></td>
+	                        											<td id="td_dynamicdistrict0"></td>
+	                        											<td id="td_dynamicvidhansabha0"></td>
+	                        											<td id="td_dynamicloksabha0"></td>
 	                        											<td id="td_dynamiclocationregion0"></td>
 	                        											<td id="td_dynamicfeedernameregion0"></td>
 	                        											<td id="td_dynamicfeederidregion0"></td>

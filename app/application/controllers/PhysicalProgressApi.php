@@ -51,6 +51,11 @@ class PhysicalProgressApi extends REST_Controller
 
             $result = $this->pp_model->getPhysicalProgressSheets($pp_list_status_ids, $user_id, $offset, $limit);
 
+            foreach ($result as $key => $value) {
+                $work_completion = ($value['tt_task'] != 0) ? ((int)$value['cc_task'] / (int)$value['tt_task']) * 100 : '';
+                $result[$key]['work_completion'] = ($work_completion == 0 || $work_completion == 100 || $work_completion == '') ? $work_completion : round($work_completion);
+            }
+
             $data['title'] = 'Physical Progress';
             $data['result'] = $result;
 

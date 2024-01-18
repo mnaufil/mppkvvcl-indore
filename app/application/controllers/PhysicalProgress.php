@@ -531,7 +531,7 @@ class PhysicalProgress extends CI_Controller
                     }                    
                }
 
-               redirect('physical-progress');
+               redirect('physical-verification');
           }
      }
 

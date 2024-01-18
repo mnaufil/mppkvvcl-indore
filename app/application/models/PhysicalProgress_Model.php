@@ -29,7 +29,7 @@ class PhysicalProgress_Model extends CI_Model
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
 
-		if (! $query) {
+		if (!$query) {
 			$error = $this->db->error();
 			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
 			die();
@@ -1962,7 +1962,7 @@ class PhysicalProgress_Model extends CI_Model
 		$this->db->from('mst_status');
 		$this->db->join('mst_module', 'mst_status.module_id = mst_module.module_id', 'INNER');
 		// $this->db->where(array('mst_module.name' => 'Physical Verification', 'mst_module.icon !=' => '')); //Uncomment Later
-		$this->db->where(array('mst_module.name' => 'Physical Progress', 'mst_module.icon !=' => '')); //Delete Later
+		$this->db->where(array('mst_module.name' => 'Physical Verification', 'mst_module.icon !=' => '')); //Delete Later
 		$this->db->where_in('mst_status.name',$where_in_array);
 
 		$query = $this->db->get();

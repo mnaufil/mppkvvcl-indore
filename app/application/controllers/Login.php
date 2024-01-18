@@ -111,7 +111,9 @@ class Login extends CI_Controller
 					$this->session->set_userdata('totalData', $data['totalDisburse']);
         			//$totalData = $this->session->totalData;
 					// echo '<pre>'; print_r($_SESSION); echo '</pre>'; die();
-					redirect('statistics');
+
+					($validate['userdetails']->role_id == 8) ? redirect('ncr-review') : redirect('statistics');
+					
 				}
 				else
 				{

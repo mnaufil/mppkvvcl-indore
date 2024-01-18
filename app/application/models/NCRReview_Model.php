@@ -7,7 +7,7 @@ class NCRReview_Model extends CI_Model
 		parent::__construct();
 	}
 
-	public function getNCRs($pending_id, $reviewed_id)
+	public function getNCRs($pending_id, $reviewed_id, $contract_location_ids)
 	{
 		$ncr_status = array($pending_id, $reviewed_id);
 		$user_id = $this->getLoggedInUserID();
@@ -15,14 +15,25 @@ class NCRReview_Model extends CI_Model
 		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.last_email_details, ppao.status_id, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name, contract.contractor_email, contract.package_no, mst_status.name AS observation_status');
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('contract_location', 'ppao.contract_location_id = contract_location.contract_location_id', 'INNER');
-		$this->db->join('mst_user_data_access AS muda', 'muda.region_id = contract_location.region_id AND muda.circle_id = contract_location.circle_id AND muda.division_id = contract_location.division_id', 'LEFT');
+
+		if (empty($contract_location_ids)) {
+			$this->db->join('mst_user_data_access AS muda', 'muda.region_id = contract_location.region_id AND muda.circle_id = contract_location.circle_id AND muda.division_id = contract_location.division_id', 'LEFT');
+		}
+
 		$this->db->join('mst_region', 'contract_location.region_id = mst_region.region_id', 'INNER');
 		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
 		$this->db->join('mst_division', 'contract_location.division_id = mst_division.division_id', 'INNER');
+		
 		$this->db->join('contract', 'contract_location.contract_id = contract.contract_id', 'INNER');
 		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
 		$this->db->where_in('ppao.status_id', $ncr_status);
-		$this->db->where(array('ppao.is_active' => 1, 'ppao.deletedby' => NULL, 'muda.user_id' => $user_id));
+		$this->db->where(array('ppao.is_active' => 1, 'ppao.deletedby' => NULL));
+
+		if (!empty($contract_location_ids)) {
+			$this->db->where_in('ppao.contract_location_id', $contract_location_ids);
+		} else {
+			$this->db->where(array('muda.user_id' => $user_id));
+		}
 		$this->db->order_by('ppao.ncr_date', 'ASC');
 
 		$query = $this->db->get();
@@ -668,6 +679,35 @@ class NCRReview_Model extends CI_Model
 			} else {
 				return 'Not Found';
 			}
+		}
+	}
+
+	public function getContractLocationIDsByPackage($package_no)
+	{
+		$this->db->select('contract_location.contract_location_id');
+		$this->db->from('contract_location');
+		$this->db->join('contract', 'contract_location.contract_id = contract.contract_id', 'INNER');
+		$this->db->where(array('contract.package_no' => $package_no));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['contract_location_id']);	
+				}
+			}
+
+			return $query_result;
 		}
 	}
 

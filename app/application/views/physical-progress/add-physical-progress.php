@@ -1402,9 +1402,9 @@
               										 	} 
               							?>
               							<?php if ($sheet_data['sheet_status'] == 'Reviewed' && strpos($_SERVER['REQUEST_URI'], 'edit-review')) { 
-              											$back_url = 'physical-progress-review';
+              											$back_url = 'physical-verification-review';
               										} else {
-              											$back_url = 'physical-progress';
+              											$back_url = 'physical-verification';
               										}
               							?>
               							<a href="<?php echo base_url($back_url); ?>" type="button" class="btn btn-primary">Back</a>

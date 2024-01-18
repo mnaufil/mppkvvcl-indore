@@ -37,9 +37,12 @@ class Login extends CI_Controller
 				$password = $this->input->post('password');
 
 				$validate = $this->Login_Model->index($email,$password);
-				$access = $this->Login_Model->getRegionCircleDivisionWiseAccess($validate['userdetails']->user_id);
-				/*echo '<pre>';
-				print_r($access); die;*/
+
+				if ($validate['userdetails']->role_id != 8) {
+					$access = $this->Login_Model->getRegionCircleDivisionWiseAccess($validate['userdetails']->user_id);
+					/*echo '<pre>';
+					print_r($access); die;*/	
+				}				
 				
 
 				$allModule = $this->Login_Model->allModule();
@@ -70,8 +73,14 @@ class Login extends CI_Controller
 					$rolesData = $validate['roles'];
 					$menuArray = array();
 					$moduleAccess = array();
-					for($i=0;$i<count($rolesData)-1;$i++)
+
+					// for($i=0;$i<count($rolesData)-1;$i++)
+					for($i=0; $i< count($rolesData); $i++)
 					{
+						if ($rolesData[$i]->parent_menu_name == 'Logout') {
+							continue;
+						}
+
 						$role = $rolesData[$i]->access_key;
 						/******code for user module********/
 

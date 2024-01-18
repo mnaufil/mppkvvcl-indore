@@ -70,7 +70,7 @@ class Security extends CI_Controller
 
 			$inserted_user_id = $this->Security_Model->adduser($user_name, $user_email, $user_contact, $user_designation, $user_location, $user_role_id, $user_reporting_id, $package_access, $full_site_access);
 
-			if ($inserted_user_id) {
+			if ($inserted_user_id && $user_role_id != 8) {
 				$regionsArray = $this->input->post('regions');
 
 				for ($i=0; $i < count($regionsArray); $i++) { 

@@ -201,7 +201,7 @@
                                                             <td><?php echo $list->contact_no;?></td>
                                                             <td><?php echo $list->designation;?></td>
                                                             <td><?php echo $list->location;?></td>
-                                                            <td>John Doe</td>
+                                                            <td><?php echo $list->reportingto_user_name;?></td>
                                                             <td><?php echo $list->rolename;?></td>
                                                             <td>Active </td>
                                                         </tr>

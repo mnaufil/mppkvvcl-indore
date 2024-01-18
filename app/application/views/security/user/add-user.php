@@ -57,7 +57,6 @@
         .treeview > li:first-child > label {
           /* style for the root element - IE8 supports :first-child
           but not :last-child ..... */
-          
         }
 
         .treeview li.last {
@@ -119,7 +118,7 @@
 </head>
 
 <body class="app sidebar-mini ltr light-mode">
-    <div id="toasts"></div>
+    <!-- <div id="toasts"></div> -->
     <!-- GLOBAL-LOADER -->
     <div id="global-loader">
       <img src="<?php echo base_url('assets/images/loader.svg');?>" class="loader-img" alt="Loader">
@@ -142,13 +141,6 @@
                         <!-- PAGE-HEADER -->
                         <div class="page-header">
                             <h1 class="page-title">Users</h1>
-                            <!-- <div>
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page"><a href="user.php">User list</a></li>
-                                     <li class="breadcrumb-item active" aria-current="page">Add User</li>
-                                </ol>
-                            </div> -->
                         </div>
                         <!-- PAGE-HEADER END -->
 
@@ -171,65 +163,53 @@
                                     <?php } ?>
 
                                     <div class="card-body mt-3">
-                                        <form class="needs-validation" novalidate action="<?php echo base_url('add-users')?>" method="POST">
+                                        <form action="<?php echo base_url('add-users')?>" method="POST" id="saveUser">
                                             <div class="form-row">
                                                 <!-- Name -->
                                                 <div class="col-xl-4 mb-3">
-                                                    <label for="validationCustom01" class="form-label">Name <span class="text-red">*</span></label>
+                                                    <label for="name" class="form-label">Name <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control" id="name"
-                                                        value="" required name="name" onblur="charlimit('name', 100)">
-                                                    <div class="valid-feedback">Looks good!</div>
+                                                        value="" name="name" onblur="charlimit('name', 100)">
                                                 </div>
                                                 <!-- Email Address -->
                                                 <div class="col-xl-4 mb-3">
-                                                    <label for="validationCustom02" class="form-label">Email Address  <span class="text-red">*</span></label>
-                                                    <input type="text" class="form-control" id="email"
-                                                        value="" required name="email" onblur="charlimit('email', 100)" onfocusout ="ValidateEmail(this.value)">
-                                                    <div class="valid-feedback">Looks good!</div>
+                                                    <label for="email" class="form-label">Email Address  <span class="text-red">*</span></label>
+                                                    <input type="text" class="form-control" id="email" value="" name="email" onblur="charlimit('email', 100)">
                                                 </div>
                                                 <!-- Contact No -->
                                                 <div class="col-xl-4 mb-3">
-                                                    <label for="validationCustom02" class="form-label">Contact No  <span class="text-red">*</span></label>
-                                                    <input type="number" class="form-control" id="contact"
-                                                        value="" required name="contact" onblur="charlimit('contact', 10)" onkeyup="intOnly('contact',this.value);">
-                                                    <div class="valid-feedback">Looks good!</div>
+                                                    <label for="contact" class="form-label">Contact No  <span class="text-red">*</span></label>
+                                                    <input type="tel" class="form-control" id="contact" value="" name="contact" onblur="charlimit('contact', 10)" onkeyup="intOnly('contact',this.value);">
                                                 </div>
                                                 <!-- Designation -->
                                                 <div class="col-xl-4 mb-3">
-                                                    <label for="validationCustom02" class="form-label">Designation  <span class="text-red">*</span></label>
-                                                    <input type="text" class="form-control" id="designation"
-                                                        value="" required name="designation" onblur="charlimit('designation', 100)">
-                                                    <div class="valid-feedback">Looks good!</div>
+                                                    <label for="designation" class="form-label">Designation  <span class="text-red">*</span></label>
+                                                    <input type="text" class="form-control" id="designation" value="" name="designation" onblur="charlimit('designation', 100)">
                                                 </div>
                                                 <!-- Location -->
                                                 <div class="col-xl-4 mb-3">
-                                                    <label for="validationCustom02" class="form-label">Location<span class="text-red">*</span></label>
-                                                    <input type="text" class="form-control" id="location"
-                                                        value="" required name="location"  onblur="charlimit('location', 100)">
-                                                    <div class="valid-feedback">Looks good!</div>
+                                                    <label for="location" class="form-label">Location<span class="text-red">*</span></label>
+                                                    <input type="text" class="form-control" id="location" value="" name="location"  onblur="charlimit('location', 100)">
                                                 </div>
                                                 <!-- Reporting Manager -->
                                                 <div class="col-xl-4 mb-3">
-                                                    <label for="validationCustom02" class="form-label">Reporting Manager </label>
+                                                    <label for="reportingManager" class="form-label">Reporting Manager </label>
                                                     <select class="form-control select2-show-search form-select select2-hidden-accessible" id="reportingManager" name="reportingManager">
-                                                        <option selected disabled value="">Select</option>
+                                                        <option selected disabled value="">Select Reporting Manager</option>
                                                         <?php foreach($users as $user) { ?>
                                                         <option value="<?php echo $user->user_id;?>"><?php echo $user->username;?></option>
                                                         <?php } ?>
                                                     </select>
-                                                    <div class="invalid-feedback">Please Select</div>
                                                 </div>
                                                 <!-- Role -->
                                                 <div class="col-xl-4 mb-3">
-                                                    <label for="validationCustom04" class="form-label">Role  <span class="text-red">*</span></label>
-                                                    <select class="form-control select2" id="role" required name="role">
+                                                    <label for="role" class="form-label">Role  <span class="text-red">*</span></label>
+                                                    <select class="form-control select2" id="role" name="role">
                                                         <option selected disabled value="">Select Role</option>
-                                                        <option value="">Select Role</option>
                                                         <?php foreach($roles as $role) { ?>
                                                         <option value="<?php echo $role->role_id;?>"><?php echo $role->name;?></option>
                                                             <?php } ?>
                                                     </select>
-                                                    <div class="invalid-feedback">Please select Role</div>
                                                 </div>
                                                 <!-- Package Grant Access -->
                                                 <div class="col-xl-4 mb-3" id="package_access_div" hidden>
@@ -245,14 +225,6 @@
                                                 <div class="col-xl-12 mb-3" id="site_access_div" hidden>
                                                     <label for="validationCustom02" class="form-label">Site Grant Access <span class="text-red">*</span></label>
                                                     <div class="form-row">
-                                                        <!--div class="col-xl-4 mb-3">
-                                                            <label class="custom-control custom-radio-md"> 
-                                                            <input type="radio" class="custom-control-input" name="example-radios1" value="single"> <span class="custom-control-label">Single</span> </label>
-                                                        </div>
-                                                        <div class="col-xl-4 mb-3">
-                                                            <label class="custom-control custom-radio-md"> 
-                                                            <input type="radio" class="custom-control-input" name="example-radios1" value="multiple"> <span class="custom-control-label">Multiple</span> </label>
-                                                        </div-->
                                                         <ul class="treeview">
                                                             <?php foreach ($regions as $region) {?>
                                                             <li>
@@ -290,6 +262,7 @@
                                                             <?php } ?>
                                                         </ul>
                                                     </div>
+                                                    <input type="hidden" name="full_site_access" value="0">
                                                 </div>
                                             </div>
                                            
@@ -397,9 +370,12 @@
     
     <script>
     $(function() {
+        var form_change = false;
+        var email_exists = false;
 
         $('input[type="checkbox"]').change(checkboxChanged);
 
+        // Site Grant Access Script
         function checkboxChanged() {
             var $this = $(this),
                 checked = $this.prop("checked"),
@@ -462,6 +438,7 @@
                 .addClass('custom-indeterminate');
             }
         }
+        // Site Grant Access Script Ends
 
         $('#role').on('change', function() {
             let selected_role = $('#role').find('option:selected').text();
@@ -483,7 +460,155 @@
                     $('#package_access_div').attr('hidden', true);
                 }
             }
+
+            // form_change = true;
         });
+
+        $('input[name="email"]').focusout(function() {
+            let user_email = $(this).val();
+            if (user_email != '' && isEmail(user_email)) {
+                checkEmailExist(user_email);
+                setTimeout(function() {
+                    if (email_exists == true) {
+                        $('.toast-body').text('Email already exist');
+                        $('.toast').toast('show');
+                    }
+                }, 1000);
+            }
+        });
+
+        $('#saveUser').on('submit', function(event) {
+            let user_name = $('input[name="name"]').val();
+            let user_email = $('input[name="email"]').val();
+            let user_contact = $('input[name="contact"]').val();
+            let user_designation = $('input[name="designation"]').val();
+            let user_location = $('input[name="location"]').val();
+            let user_role = $('#role').find('option:selected').text();
+
+            if (user_email != '' && !isEmail(user_email)) {
+                $('.toast-body').text('Enter valid email');
+                $('.toast').toast('show');
+                return false;
+                event.preventDefault();
+            } 
+
+            if (user_contact != '') {
+                if (!isMobileNumber(user_contact)) {
+                    $('.toast-body').text('Enter valid contact number. Only digits allowed.');
+                    $('.toast').toast('show');
+                    return false;
+                    event.preventDefault();
+                } else if (user_contact.length != 10) {
+                    $('.toast-body').text('Enter 10 digit contact number.');
+                    $('.toast').toast('show');
+                    return false;
+                    event.preventDefault();
+                }
+            }
+
+            if (user_name == '') {
+                $('.toast-body').text('Enter Name');
+                $('.toast').toast('show');
+                event.preventDefault();
+            } else if (user_email == '') {
+                $('.toast-body').text('Enter Email');
+                $('.toast').toast('show');
+                event.preventDefault();
+            } else if (user_contact == '') {
+                $('.toast-body').text('Enter Contact');
+                $('.toast').toast('show');
+                event.preventDefault();
+            } else if (user_designation == '') {
+                $('.toast-body').text('Enter Designation');
+                $('.toast').toast('show');
+                event.preventDefault();
+            } else if (user_location == '') {
+                $('.toast-body').text('Enter Location');
+                $('.toast').toast('show');
+                event.preventDefault();
+            } else if (user_role == 'Select Role') {
+                $('.toast-body').text('Select Role');
+                $('.toast').toast('show');
+                event.preventDefault();
+            } else if (user_role != '' && user_role == 'TKC') {
+                let tkc_package = $('#package_access').find('option:selected').text();
+                if (tkc_package == 'Select Package') {
+                    $('.toast-body').text('Grant Package Access');
+                    $('.toast').toast('show');
+                    return false;
+                    event.preventDefault();
+                }
+            } else if (user_role != '' && user_role != 'TKC') {
+                let region_checkboxes = $('input[name="regions[]"]');
+                let region_checkboxes_selected = $('input[name="regions[]"]:checked');
+
+                let circle_checkboxes = $('input[name^="circles"]');
+                let circle_checkboxes_selected = $('input[name^="circles"]:checked');
+
+                let division_checkboxes = $('input[name^="divisions"]');
+                let division_checkboxes_selected = $('input[name^="divisions"]:checked');
+
+                if (region_checkboxes_selected.length == 0) {
+                    $('.toast-body').text('Grant Site Access');
+                    $('.toast').toast('show');
+                    return false;
+                    event.preventDefault();
+                }
+
+                if ((region_checkboxes.length == region_checkboxes_selected.length) && (circle_checkboxes.length == circle_checkboxes_selected.length) && (division_checkboxes.length == division_checkboxes_selected.length)) 
+                {
+                    $('input[name="full_site_access"]').val(1);
+
+                }
+            }
+
+            if (form_change === false) {
+                checkEmailExist(user_email);
+
+                if (email_exists == true) {
+                    $('.toast-body').text('Email already exist');
+                    $('.toast').toast('show');
+
+                    return false;
+                    event.preventDefault();    
+                }
+                
+            }
+        });
+
+        function checkEmailExist(user_email) {
+            // Ajax call to check if email already exists
+            $.ajax({
+                type: 'POST',
+                url: '<?php echo base_url('check-user-exists'); ?>',
+                dataType: 'json',
+                data: {email:user_email},
+                success: function(response) {                        
+                    if (!$.isEmptyObject(response)) {
+                        form_change = false;
+                        email_exists = true;
+                    } else {
+                        form_change = true;
+                        email_exists = false;
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.responseText);
+                    return false;
+                    event.preventDefault();
+                }
+            });
+        }
+
+        function isEmail(email) {
+            var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            return regex.test(email);
+        }
+
+        function isMobileNumber(number) {
+            var regex = /^\d*(?:\.\d{1,2})?$/;
+            return regex.test(number);
+        }
     });
     </script>
 </body>

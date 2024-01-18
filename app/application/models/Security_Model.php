@@ -26,77 +26,73 @@ class Security_Model extends CI_Model
     }
 
 
-     function addusers()
+    public function adduser($user_name, $user_email, $user_contact, $user_designation, $user_location, $user_role_id, $user_reporting_id, $package_access, $full_site_access)
     {
-        $returnArray = array();
-        $insertArray = array(
-            "username" => $this->input->post('name'),
-            "email" => $this->input->post('email'),
-            "password" => md5('Password'),
-            "contact_no" => $this->input->post('contact'),
-            "designation" => $this->input->post('designation'),
-            "location" => $this->input->post('location'),
-            "reportingto_user_id" => $this->input->post('reportingManager'),
-            "role_id" => $this->input->post('role'),
-            "is_active" => 1,
-            "createdby" => $_SESSION['loggedData']->user_id,
-            "createddate" => date ('Y-m-d H:i:s')
+        $data = array(
+            'username' => $user_name,
+            'email' => $user_email,
+            'password' => md5('Password'),
+            'contact_no' => $user_contact,
+            'designation' => $user_designation,
+            'location' => $user_location,
+            'reportingto_user_id' => $user_reporting_id,
+            'role_id' => $user_role_id,
+            'is_full_data_access' => $full_site_access,
+            'package_access' => (!empty($package_access)) ? $package_access : NULL,
+            'is_active' => 1,
+            'createdby' => $_SESSION['loggedData']->user_id,
+            'createddate' => date ('Y-m-d H:i:s')
         );
 
-		//check duplicate records
-		$this->db->where("email",$this->input->post('email'));
-        $query = $this->db->get("mst_user");
-        $result = $query->row();
-		
-		if($result!="")
-		{
-			$this->session->set_flashdata('error','Email Address already in use');
-            redirect('users/add');
-            return;
-		}
+        $query = $this->db->insert('mst_user', $data);
 
-        $this->db->insert("mst_user", $insertArray);
-        //echo $this->db->last_query(); die;
-        $last_id = $this->db->insert_id(); 
-
-        if($last_id == 0 )
-        {
-            $this->session->set_flashdata('error','Error in Adding User');
-            redirect('users/add');
-            return;
+        if (!$query) {
+            $error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {
+            $insert_id = $this->db->insert_id();
+            return $insert_id;
         }
-        else
-        {
+    }
 
-            $regionsArray = $_POST['regions'];
-            for($i=0;$i<count($regionsArray);$i++)
-            {
-                $region =  $regionsArray[$i];
-                $circleArray = $_POST['circles'.$region];
-                for($j=0;$j<count($_POST['circles'.$region]);$j++)
-                {
-                    $circle =  $circleArray[$j];
-                    $divisionArray =  $_POST['divisions'.$circle];
-                    for($k=0;$k<count($_POST['divisions'.$circle]);$k++)
-                    {
-                        $division = $divisionArray[$k];
-                        $insertGrantArray = array(
-                            "user_id" => $last_id,
-                            "region_id" => $region,
-                            "circle_id" => $circle,
-                            "division_id" => $division
-                        );
+    public function checkEmailExists($email)
+    {
+        $query = $this->db->get_where('mst_user', array('email' => $email));
 
-                        $this->db->insert("mst_user_data_access", $insertGrantArray);
-                    }
-                }
+        if (!$query) {
+            $error = $this->db->error();
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {
+            $query_result = [];
+
+            if ($query->num_rows() > 0) {
+                $query_result = $query->row_array();
             }
-            return true;
+
+            return $query_result;
         }
+    }
 
+    public function saveRegionCircleDivision($inserted_user_id, $region, $circle, $division)
+    {
+        $data = array(
+            'user_id' => $inserted_user_id,
+            'region_id' => $region,
+            'circle_id' => $circle,
+            'division_id' => $division
+        );
 
-       // return $returnArray;
+        $query = $this->db->insert('mst_user_data_access', $data);
 
+        if (!$query) {
+            $error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {            
+            return $this->db->affected_rows();
+        }
     }
 
 
@@ -210,7 +206,7 @@ class Security_Model extends CI_Model
             $this->db->where("mst_user.is_active", "1");    
         }
         
-        $this->db->where("mst_user.createdby", $_SESSION['loggedData']->user_id);
+        // $this->db->where("mst_user.createdby", $_SESSION['loggedData']->user_id);
         //$this->db->where("mst_status.module_id", 18);
         $this->db->select('mst_user.*, mst_user.username as reportingto_user_name, mst_role.name as rolename');
         //$this->db->where("mst_region.contract_id", $contractID);         

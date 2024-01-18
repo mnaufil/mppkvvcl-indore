@@ -50,46 +50,62 @@ class Security extends CI_Controller
 
 	public function addusers()
 	{
-		try
-	 	{	
-	 		$this->form_validation->set_rules('name', 'Name of User', 'required'); 
-			$this->form_validation->set_rules('email', 'Email', 'required'); 
-			$this->form_validation->set_rules('contact', 'Contact', 'required'); 
-			$this->form_validation->set_rules('designation', 'Designation', 'required'); 
-			$this->form_validation->set_rules('location', 'Location', 'required');
+		if (!empty($_POST)) {
+			$user_name = $this->input->post('name');
+			$user_email = $this->input->post('email');
+			$user_contact = $this->input->post('contact');
+			$user_designation = $this->input->post('designation');
+			$user_location = $this->input->post('location');
+			$user_role_id = $this->input->post('role');
+			$user_reporting_id = (isset($_POST['reportingManager'])) ? $this->input->post('reportingManager') : '';
 
-			$this->form_validation->set_rules('reportingManager', 'Reporting Manager', 'required');
-			$this->form_validation->set_rules('role', 'Role', 'required');
+			$full_site_access = false;
+			$package_access = '';
 
-			/*echo '<pre>';
-			print_r($_POST); die;*/
+			if ($user_role_id == 8) {
+				$package_access = $this->input->post('package_access');
+			} else {
+				$full_site_access = ($this->input->post('full_site_access') == 0) ? false : true;
+			}
 
-			if($this->form_validation->run())
-			{
-				$return = $this->Security_Model->addusers();
-				if($return)
-				{
-					$this->session->set_flashdata('success','User Added Successfully');
-					redirect('users/add');
+			$inserted_user_id = $this->Security_Model->adduser($user_name, $user_email, $user_contact, $user_designation, $user_location, $user_role_id, $user_reporting_id, $package_access, $full_site_access);
+
+			if ($inserted_user_id) {
+				$regionsArray = $this->input->post('regions');
+
+				for ($i=0; $i < count($regionsArray); $i++) { 
+					$region =  $regionsArray[$i];
+
+					$circleArray = $this->input->post('circles'.$region);
+					
+					for ($j=0; $j < count($circleArray); $j++) { 
+						$circle =  $circleArray[$j];
+					
+						$divisionArray = $this->input->post('divisions'.$circle);
+
+						for ($k=0; $k < count($divisionArray); $k++) { 
+							$division = $divisionArray[$k];
+
+							$this->Security_Model->saveRegionCircleDivision($inserted_user_id, $region, $circle, $division);
+						}
+					}
 				}
 			}
-			else 
-			{
-					$this->session->set_flashdata('error',validation_errors());
-					redirect('users/add');
-			}
-	 	}
 
-	 	catch (Exception $e)
-		{
-        		log_message('error: ',$e->getMessage());
-        		//return;
+			redirect('users');			
 		}
+	}
 
-	 }
+	public function checkUserExists()
+	{
+        if (!empty($_POST)) {
+        	$email = $this->input->post('email');
 
-
-
+        	$result = $this->Security_Model->checkEmailExists($email);
+        	
+        	echo json_encode($result);
+        }
+	}
 
 	public function edituserspage($userID)	
 	{

@@ -258,12 +258,14 @@ $route['edit-role/(:num)'] = 'Security/editRole/$1';
 $route['update-role'] = 'Security/updateRole';
 $route['delete-role'] = 'Security/deleteRole';
 
+/*Security / User Module*/
 $route['users'] = 'Security/users';
 $route['users/add'] = 'Security/adduserspage';
 $route['add-users'] = 'Security/addusers';
 $route['users/(:num)'] = 'Security/edituserspage/$1';
 $route['update-users'] = 'Security/updateusers';
 $route['delete-user/(:num)'] = 'Security/deleteuser/$1';
+$route['check-user-exists'] = 'Security/checkUserExists';
 
 /*Change Password*/
 $route['change-password'] = 'Security/viewChangePassword';

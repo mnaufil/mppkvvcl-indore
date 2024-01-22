@@ -54,6 +54,9 @@ class PhysicalProgressApi extends REST_Controller
             foreach ($result as $key => $value) {
                 $work_completion = ($value['tt_task'] != 0) ? ((int)$value['cc_task'] / (int)$value['tt_task']) * 100 : '';
                 $result[$key]['work_completion'] = ($work_completion == 0 || $work_completion == 100 || $work_completion == '') ? $work_completion : round($work_completion);
+
+                $submitted_by_tkc_ncr = $this->pp_model->getNCRSubmittedByTKCList($value['contract_location_id']);
+                $result[$key]['ncr_submitted_by_tkc_count'] = count($submitted_by_tkc_ncr);
             }
 
             $data['title'] = 'Physical Progress';
@@ -67,8 +70,7 @@ class PhysicalProgressApi extends REST_Controller
             $message = 'GET Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
-		
+        }		
 
         $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
 	}
@@ -148,11 +150,12 @@ class PhysicalProgressApi extends REST_Controller
             $sheet_remark = $this->post('sheet_remark');
             $activities = $this->post('activities');
             $sheet_completion_file = $this->post('sheet_completion_file');
+            $status_id = $this->post('status_id');
 
             //Fetching sheet details using prev_pp_id
             $prev_sheet_data = $this->pp_model->getPreviousSheetDataAPI($prev_pp_id);
 
-            $status_id = 2;
+            // $status_id = 2;
             $is_draft = 0;
             
             //In case sheet is being saved, without saving any observations
@@ -171,7 +174,7 @@ class PhysicalProgressApi extends REST_Controller
                         $erected_qty = (isset($act_value['erected_qty']) && is_numeric($act_value['erected_qty'])) ? $act_value['erected_qty'] : NULL;
 
                         //Calculating the pending activities
-                        if ($act_value['status_id'] == 0 || $act_value['status_id'] == 2) {
+                        if ($act_value['status_id'] == 0 || $act_value['status_id'] == 2 || $act_value['status_id'] == 4) {
                             $remaining_activity_count++;
                         }
 

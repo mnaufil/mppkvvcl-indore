@@ -56,6 +56,11 @@ class PhysicalProgress extends CI_Controller
           
           $result = $this->pp_model->getPhysicalProgressSheets($pp_list_status_ids);
 
+          foreach ($result as $key => $value) {
+               $submitted_by_tkc_ncr = $this->pp_model->getNCRSubmittedByTKCList($value['contract_location_id']);
+               $result[$key]['ncr_submitted_by_tkc_count'] = count($submitted_by_tkc_ncr);
+          }
+
           $type_of_work = $this->pp_model->getTypeOfWorkList();
 
           $region_list = $this->pp_model->getRegionList();
@@ -233,7 +238,7 @@ class PhysicalProgress extends CI_Controller
                $sheet_result['work_completion'] = round(((int)$task_ratio_arr[0] / (int)$task_ratio_arr[1]) * 100);
 
                if (!empty($sheet_result['activities_list'])) {
-                    $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);
+                    $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);                    
                     $sheet_result['activities_list'] = $activities_list;
                }
 

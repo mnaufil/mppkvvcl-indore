@@ -170,7 +170,7 @@ class PhysicalProgress_Model extends CI_Model
 
 				if ($mode == 'edit-new') {
 					if ($type == 'API') {
-						$activities_list = $this->getActivitiesListAPI($ppsheet_id, $query_result['typeofwork_id'], $contract_location_id, $reported_date);							
+						$activities_list = $this->getActivitiesListAPI($ppsheet_id, $query_result['typeofwork_id'], $contract_location_id, $reported_date);
 					} else {
 						$activities_list = $this->getActivitiesList($query_result['typeofwork_id'], $contract_location_id);	
 					}
@@ -205,7 +205,7 @@ class PhysicalProgress_Model extends CI_Model
 					
 					$activities_list_by_seqno = $this->sort_array_by_key($activities_list, 'seqno');
 
-					$query_result['activities_list'] = $activities_list_by_seqno;					
+					$query_result['activities_list'] = $activities_list_by_seqno;
 
 					$group_name_arr = [];
 					$group_model_arr = [];
@@ -609,6 +609,7 @@ class PhysicalProgress_Model extends CI_Model
 							$completed_obs_count = 0;
 							$applied_obs_remark = [];
 							$applied_obs_files = [];
+							$ncr_submitted_by_tkc_count = 0;
 
 							//Temporary Code
 							$arrContextOptions = array(
@@ -643,10 +644,15 @@ class PhysicalProgress_Model extends CI_Model
 										array_push($applied_obs_files, $pending_obs_files);
 									}
 								}
+
+								if ($obs_value['observation_status'] == 'Submitted by TKC') {
+									$ncr_submitted_by_tkc_count++;
+								}
 							}
 
 							$value['observation_ratio'] = $completed_obs_count.' / '.count($applied_obs_data);
 							$value['remark'] = implode(',', $applied_obs_remark);
+							$value['ncr_submitted_by_tkc_count'] = $ncr_submitted_by_tkc_count;
 							$value['files'] = $applied_obs_files;
 						} else {
 							$value['observation_ratio'] = '';
@@ -717,6 +723,7 @@ class PhysicalProgress_Model extends CI_Model
 							$obs_data[$akey]['observation_id'] = $avalue['observation_id'];
 							$obs_data[$akey]['observation_name'] = $avalue['observation_name'];
 							$obs_data[$akey]['remark'] = $avalue['remark'];
+							$obs_data[$akey]['observation_status'] = $avalue['observation_status'];
 							$obs_data[$akey]['observation_photos'] = $avalue['observation_file_details'];
 							$obs_data[$akey]['completion_photos'] = $avalue['observation_completion_file_details'];
 						}
@@ -2416,6 +2423,31 @@ class PhysicalProgress_Model extends CI_Model
 			$query = $this->db->get();
 			// echo $this->db->last_query(); die();
 		}
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getNCRSubmittedByTKCList($contract_location_id)
+	{
+		$this->db->select('physical_progress_activity_observation.*');
+		$this->db->from('physical_progress_activity_observation');
+		$this->db->join('mst_status', 'physical_progress_activity_observation.status_id = mst_status.status_id', 'INNER');
+		$this->db->where(array('mst_status.name' => 'Submitted by TKC', 'physical_progress_activity_observation.contract_location_id' => $contract_location_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();

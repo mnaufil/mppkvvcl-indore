@@ -357,6 +357,9 @@
                                     <td style="text-align: center;">
                                       <!-- Feeder ID -->
                                       <?php echo $value['feeder_id']; ?>
+                                      <?php if ($value['ncr_submitted_by_tkc_count'] > 0) { ?>
+                                      <span class="badge ms-2 bg-danger"><?php echo $value['ncr_submitted_by_tkc_count']; ?></span>  
+                                      <?php } ?>
                                     </td> 
                                     <td style="text-align: center;">
                                       <!-- Task Ratio -->

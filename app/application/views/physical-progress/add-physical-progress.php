@@ -517,25 +517,33 @@
 																									<td class="observation"></td>
 																								<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																									<!-- Sheet Status: In Process || Completed || Reviewed -->
-																									<td class="observation">																										
+																									<td class="observation">
 																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) {
 																														$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																														$obs_list_count = count($v2['applied_observations']);
 																														$obs_complete_count = 0;
+																														$ncr_submitted_by_tkc_count = 0;
 																														foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																															if (!empty($aovalue['completion_photos'])) {
 																																$obs_complete_count++;
+																															}
+
+																															if ($aovalue['observation_status'] == 'Submitted by TKC') {
+																																$ncr_submitted_by_tkc_count++;
 																															}
 																														}
 
 																														if ($obs_list_count > 0) {
 																															$obs_ratio = $obs_complete_count.' / '.$obs_list_count;
-																														}					
+																														}
 																										?>
 																										<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
 																										<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withoutBOQ" onclick="showObservationsList(this)">
 																											<span class="fe fe-more-vertical"> </span>
 																										</button>
+																										<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																										<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																										<?php } ?>
 																										<?php } ?>
 																									</td>
 																								<?php } ?>
@@ -641,9 +649,14 @@
 																														$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																														$obs_list_count = count($v2['applied_observations']);
 																														$obs_complete_count = 0;
+																														$ncr_submitted_by_tkc_count = 0;
 																														foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																															if (!empty($aovalue['completion_photos'])) {
 																																$obs_complete_count++;
+																															}
+
+																															if ($aovalue['observation_status'] == 'Submitted by TKC') {
+																																$ncr_submitted_by_tkc_count++;
 																															}
 																														}
 
@@ -655,6 +668,9 @@
 																										<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withoutBOQ" onclick="showObservationsList(this)">
 																											<span class="fe fe-more-vertical"> </span>
 																										</button>
+																										<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																										<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																										<?php } ?>
 																										<?php } ?>
 																									</td>
 																								<?php } ?>
@@ -707,7 +723,8 @@
 																									<?php if (isset($v2['applied_observations']) && !empty($v2['applied_observations'])) {
 																													$obs_list_count = count($v2['applied_observations']);
 																													$obs_complete_count = 0;
-																													foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																													foreach ($v2['applied_observations'] as $aokey => $aovalue)
+																													{
 																														if (!empty($aovalue['completion_photos'])) {
 																															$obs_complete_count++;
 																														}
@@ -764,9 +781,15 @@
 																															$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																															$obs_list_count = count($v2['applied_observations']);
 																															$obs_complete_count = 0;
+																															$ncr_submitted_by_tkc_count = 0;
 																															foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																																if (!empty($aovalue['completion_photos'])) {
 																																	$obs_complete_count++;
+																																}
+
+																																if ($aovalue['observation_status'] == 'Submitted by TKC')
+																																{
+																																	$ncr_submitted_by_tkc_count++;
 																																}
 																															}
 
@@ -780,6 +803,9 @@
 																											<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
 																												<span class="fe fe-more-vertical"> </span>
 																											</button>
+																											<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																											<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																											<?php } ?>
 																											<?php } ?>																											
 																										</td>
 																									<?php } ?>
@@ -889,9 +915,15 @@
 																												<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																															$obs_list_count = count($v2['applied_observations']);
 																															$obs_complete_count = 0;
+																															$ncr_submitted_by_tkc_count = 0;
 																															foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																																if (!empty($aovalue['completion_photos'])) {
 																																	$obs_complete_count++;
+																																}
+
+																																if ($aovalue['observation_status'] == 'Submitted by TKC')
+																																{
+																																	$ncr_submitted_by_tkc_count++;
 																																}
 																															}
 
@@ -903,6 +935,9 @@
 																												<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
 																													<span class="fe fe-more-vertical"> </span>
 																												</button>
+																												<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																												<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																												<?php } ?>
 																											<?php } ?>
 																										</td>
 																									<?php } ?>
@@ -1008,9 +1043,15 @@
 																														$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																														$obs_list_count = count($v2['applied_observations']);
 																														$obs_complete_count = 0;
+																														$ncr_submitted_by_tkc_count = 0;
 																														foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																															if (!empty($aovalue['completion_photos'])) {
 																																$obs_complete_count++;
+																															}
+
+																															if ($aovalue['observation_status'] == 'Submitted by TKC')
+																															{
+																																$ncr_submitted_by_tkc_count++;
 																															}
 																														}
 
@@ -1021,7 +1062,10 @@
 																										<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
 																										<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withoutBOQ" onclick="showObservationsList(this)">
 																											<span class="fe fe-more-vertical"> </span>
-																										</button>	
+																										</button>
+																										<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																										<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																										<?php } ?>
 																										<?php } ?>
 																									</td>
 																								<?php } ?>
@@ -1131,9 +1175,15 @@
 																												<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																															$obs_list_count = count($v2['applied_observations']);
 																															$obs_complete_count = 0;
+																															$ncr_submitted_by_tkc_count = 0;
 																															foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																																if (!empty($aovalue['completion_photos'])) {
 																																	$obs_complete_count++;
+																																}
+
+																																if ($aovalue['observation_status'] == 'Submitted by TKC')
+																																{
+																																	$ncr_submitted_by_tkc_count++;
 																																}
 																															}
 
@@ -1145,6 +1195,9 @@
 																												<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
 																													<span class="fe fe-more-vertical"> </span>
 																												</button>
+																												<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																												<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																												<?php } ?>
 																											<?php } ?>
 																										</td>
 																									<?php } ?>
@@ -1254,9 +1307,15 @@
 																												<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																															$obs_list_count = count($v2['applied_observations']);
 																															$obs_complete_count = 0;
+																															$ncr_submitted_by_tkc_count = 0;
 																															foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																																if (!empty($aovalue['completion_photos'])) {
 																																	$obs_complete_count++;
+																																}
+
+																																if ($aovalue['observation_status'] == 'Submitted by TKC')
+																																{
+																																	$ncr_submitted_by_tkc_count++;
 																																}
 																															}
 
@@ -1268,6 +1327,9 @@
 																												<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
 																													<span class="fe fe-more-vertical"> </span>
 																												</button>
+																												<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																												<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																												<?php } ?>
 																											<?php } ?>
 																										</td>
 																									<?php } ?>
@@ -2424,6 +2486,7 @@
 					data: {pp_id: pp_id, activity_id: activity_id, contract_location_id: contract_location_id, prev_pp_id: prev_pp_id},
 					success:function(response){
 						let activity_details = response.activity_details;
+						
 						if (!$.isEmptyObject(activity_details)) {
 							//Enabling the Save Changes button
 							$('#btn-save-list').removeClass('disabled');

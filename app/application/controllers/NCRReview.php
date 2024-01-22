@@ -190,9 +190,9 @@ class NCRReview extends CI_Controller
 		$observation_remark = $this->input->post('remark');
 		$completion_date = (!empty($this->input->post('completionDate'))) ? date('Y-m-d', strtotime($this->input->post('completionDate'))) : NULL;
 		$changed_obs_status = $this->input->post('changed_observation_status');
-		$obs_deleted_file_id = explode(',', $this->input->post('obs_deleted_file_id'));
-		$obs_tkc_deleted_file_id = explode(',', $this->input->post('obs_tkc_deleted_file_id'));
-		$obs_completion_deleted_file_id = explode(',', $this->input->post('obs_completion_deleted_file_id'));
+		$obs_deleted_file_id = (!empty($this->input->post('obs_deleted_file_id'))) ? explode(',', $this->input->post('obs_deleted_file_id')) : '';
+		$obs_tkc_deleted_file_id = (!empty($this->input->post('obs_tkc_deleted_file_id'))) ? explode(',', $this->input->post('obs_tkc_deleted_file_id')) : '';
+		$obs_completion_deleted_file_id = (!empty($this->input->post('obs_completion_deleted_file_id'))) ? explode(',', $this->input->post('obs_completion_deleted_file_id')) : '';
 
 		$logged_user_role_id = $_SESSION['loggedData']->role_id;
 
@@ -211,7 +211,6 @@ class NCRReview extends CI_Controller
 
 		//Updating record in physical_progress_activity_observation table
 		$result = $this->ncr_model->updateNCRDetails($pp_activity_obs_id, $observation_id, $observation_name, $observation_remark, $completion_date, $changed_obs_status_ID);
-
 		if (!empty($obs_deleted_file_id)) {
 			// Changing delete flag of deleted observation files
 			foreach ($obs_deleted_file_id as $key => $value) {

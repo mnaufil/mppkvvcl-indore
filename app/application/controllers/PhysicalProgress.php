@@ -163,6 +163,11 @@ class PhysicalProgress extends CI_Controller
 
                $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by_id, $formatted_reported_date, $feeder_id, $status);
 
+               foreach ($search_result as $key => $value) {
+                    $submitted_by_tkc_ncr = $this->pp_model->getNCRSubmittedByTKCList($value['contract_location_id']);
+                    $search_result[$key]['ncr_submitted_by_tkc_count'] = count($submitted_by_tkc_ncr);
+               }
+
                $user_access_data = $this->pp_model->getUserModuleAccess();
                $user_access = $this->sortUserModuleAccess($user_access_data);
 

@@ -174,6 +174,23 @@
                   									</div>
 					            				</div>
 					            				<!-- Row4 -->
+					            				<?php if ($logged_user_role_id == 8) { ?>
+					            				<div class="row">
+					            					<!-- TKC Observation Photos -->
+					            					<div class="col-xl-12">
+					            						<label class="form-label" for="obs_photo_tkc">Observation Photos By TKC
+                    									</label>
+                    									<input class="form-control" type="file" id="obs_photo_tkc" name="obs_photo_tkc[]" multiple="">
+                    									<input type="hidden" name="obs_tkc_deleted_file_id" value="">
+					            					</div>
+					            					<!-- Uploaded Images -->
+					            					<div class="col-xl-12">
+					            						<div class="text-wrap mt-2" id="preview-img-obs-tkc">
+					            						</div>
+					            					</div>
+					            				</div>	
+					            				<?php } ?>
+					            				<!-- Row5 -->
 					            				<div class="row">
 					            					<!-- Completion Photos -->
 					            					<div class="col-xl-8">
@@ -181,6 +198,7 @@
                     									<?php $obs_completion_photos_disabled = ($ncr_data['observation_status'] == 'Closed') ? 'disabled' : '';?>
                     									<input class="form-control" type="file" id="completion_photo" name="completion_photo[]" multiple="" <?php echo $obs_completion_photos_disabled; ?>>
                     									<input type="hidden" name="obs_completion_deleted_file_id" value="">
+                    									<!-- Uploaded Images -->
                   										<div class="text-wrap mt-2" id="preview-img-complete">
               											<?php 	if (!empty($ncr_data['observation_completion_files'])) {
               														foreach ($ncr_data['observation_completion_files'] as $key => $value) { ?>
@@ -211,16 +229,20 @@
                       									</div>
                   									</div>
 					            				</div>
-					            				<!-- Row5 -->
+					            				<!-- Row6 -->
 					            				<div class="row">
 					            					<!-- Submit -->
 					            					<div class="col-xl-6 mt-5 mb-3">
+					            						<?php if ($logged_user_role_id == 8) { ?>
+					            						<button class="btn btn-success" type="submit">Update</button>
+					            						<?php } else { ?>
 					            						<?php if ($ncr_data['observation_status'] == 'Pending') { ?>
 					            						<input type="hidden" name="changed_observation_status" value="Forwarded">
 					            						<button class="btn btn-success" type="submit">Mark as Forwarded</button>	
 					            						<?php } elseif ($ncr_data['observation_status'] == 'Reviewed') { ?>
 					            						<input type="hidden" name="changed_observation_status" value="Closed">
 					            						<button class="btn btn-success" type="submit">Mark as Closed</button>
+					            						<?php } ?>
 					            						<?php } ?>
 					            						
 					            						<a type="button" class="btn btn-primary" href="<?php echo base_url('ncr-review'); ?>">Back</a>	
@@ -316,8 +338,10 @@
 	    <script type="text/javascript">
 	    	var obs_photo_file_list = [];
 	    	var obs_completion_photo_file_list = [];
+	    	var obs_tkc_photo_file_list = [];
 	    	var obs_deleted_file_id = [];
 	    	var obs_completion_deleted_file_id = [];
+	    	var obs_tkc_deleted_file_id = [];
 
 	    	let ncr_date = '<?php echo $ncr_data['ncr_date']; ?>';
 	    	let current_date = new Date();
@@ -444,6 +468,18 @@
 
 		      			$('input[name="obs_completion_deleted_file_id"]').val(obs_completion_deleted_file_id);
 		      		}
+		      	} else if (photo_for == 'observation_tkc') {
+		      		// Removing file from observation tkc photo file list
+		      		delete obs_tkc_photo_file_list[file_index];
+
+		      		if (photo_action == 'add') {
+		      			$('#obs_photo_tkc')[0].files = FileListItem(obs_tkc_photo_file_list);
+		      		} else if (photo_action == 'edit') {
+		      			let deleted_file_id = $(anchor).closest('.file-image-1').attr('data-ppao-file_id');
+		      			obs_tkc_deleted_file_id.push(deleted_file_id);
+
+		      			$('input[name="obs_tkc_deleted_file_id"]').val(obs_tkc_deleted_file_id);
+		      		}
 		      	}
 
 		      	// Deleting uploaded image from the modal
@@ -512,6 +548,57 @@
 
 		      			$('#preview-img-complete').append(html_img);
 	    			}
+		  		}
+		  	});
+
+		  	$('#obs_photo_tkc').on('change', function(event) {
+		  		obs_tkc_photo_file_list = [];
+
+		  		// Get the selected image files
+		  		let files = $(this)[0].files;
+
+		  		if (files.length > 0) {
+		  			if (files.length > 5) {
+		  				$('.toast-body').text('Only 5 images can be uploaded.');
+	     				$('.toast').toast('show');
+		      			return false;
+		  			}
+
+		  			if ($('#preview-img-obs-tkc').find('.file-image-1').length > 0) {
+		  				let previous_uploaded_photos = $('#preview-img-obs-tkc').find('.file-image-1').length;
+
+		  				if (previous_uploaded_photos + files.length > 5) {
+		  					$('.toast-body').text('Only 5 images can be uploaded.');
+	     					$('.toast').toast('show');
+		      				return false;
+		  				}
+		  			}
+
+		  			// Loop through all the selected images
+		  			for (var i = 0; i < files.length; i++) {
+		  				// Pushing each file in an array
+	    				obs_tkc_photo_file_list.push(files[i]);
+
+	    				let obs_file_id = 'image-'+i;
+						let file_name = files[i].name;
+
+						let html_img = '';
+	          			html_img += '<div class="file-image-1">';
+		      			html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
+		      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="">';
+		      			html_img += '</a>';
+		      			html_img += '<ul class="icons">';
+		      			html_img += '<li>';
+		      			html_img += '<a href="javascript:void(0)" data-photo-for="observation_tkc" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="'+obs_file_id+'" data-photo-action="add">';
+		      			html_img += '<i class="fe fe-trash"></i>';
+		      			html_img += '</a>';
+		      			html_img += '</li>';
+		      			html_img += '</ul>';
+		      			// html_img += '<span class="file-name-1">'+file.name+'</span>';
+		      			html_img += '</div>';
+
+		      			$('#preview-img-obs-tkc').append(html_img);
+		  			}
 		  		}
 		  	});
 

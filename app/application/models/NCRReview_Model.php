@@ -54,20 +54,30 @@ class NCRReview_Model extends CI_Model
 		}
 	}
 
-	public function searchNCRs($contractor, $package_no, $feeder_id, $circle, $division, $status)
+	public function searchNCRs($contractor, $package_no, $feeder_id, $circle, $division, $status, $contract_location_ids)
 	{
 		$user_id = $this->getLoggedInUserID();
 
 		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.status_id, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name, contract.package_no, mst_status.name AS observation_status');
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('contract_location', 'ppao.contract_location_id = contract_location.contract_location_id', 'INNER');
-		$this->db->join('mst_user_data_access AS muda', 'muda.region_id = contract_location.region_id AND muda.circle_id = contract_location.circle_id AND muda.division_id = contract_location.division_id', 'LEFT');
+
+		if (empty($contract_location_ids)) {
+			$this->db->join('mst_user_data_access AS muda', 'muda.region_id = contract_location.region_id AND muda.circle_id = contract_location.circle_id AND muda.division_id = contract_location.division_id', 'LEFT');	
+		}
+		
 		$this->db->join('mst_region', 'contract_location.region_id = mst_region.region_id', 'INNER');
 		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
 		$this->db->join('mst_division', 'contract_location.division_id = mst_division.division_id', 'INNER');
 		$this->db->join('contract', 'contract_location.contract_id = contract.contract_id', 'INNER');
 		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
-		$this->db->where(array('ppao.is_active' => 1, 'ppao.deletedby' => NULL, 'muda.user_id' => $user_id));
+		$this->db->where(array('ppao.is_active' => 1, 'ppao.deletedby' => NULL));
+
+		if (!empty($contract_location_ids)) {
+			$this->db->where_in('ppao.contract_location_id', $contract_location_ids);
+		} else {
+			$this->db->where(array('muda.user_id' => $user_id));
+		}
 
 		if (!empty($contractor)) {
 			$this->db->like('contract.contractor_name', $contractor);
@@ -238,6 +248,73 @@ class NCRReview_Model extends CI_Model
 			}
 
 			return $query_result;
+		}
+	}
+
+	public function saveObservationFileByTKC($pp_activity_obs_id, $file_path)
+	{
+		$data = array(
+			'physical_progress_activity_observation_id' => $pp_activity_obs_id,
+			'file_path' => $file_path,
+			'is_active' => 1,
+			'createdby' => $this->getLoggedInUserID(),
+			'createddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->insert('physical_progress_activity_observation_tkc_file', $data);
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$insert_id = $this->db->insert_id();
+			return $insert_id;
+		}
+	}
+
+	public function getLastObservationFileByTKCData($pp_activity_obs_id)
+	{
+		$this->db->select('file_path');
+		$this->db->where(array('physical_progress_activity_observation_id' => $pp_activity_obs_id));
+		$this->db->order_by('physical_progress_activity_observation_tkc_file_id', 'DESC');
+		$this->db->limit(1);
+
+		$query = $this->db->get('physical_progress_activity_observation_tkc_file');
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+				$query_result = $result['file_path'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function deleteObservationTKCFile($ppao_file_id)
+	{
+		$data = array(
+			'is_active' => 0,
+			'deletedby' => $this->getLoggedInUserID(),
+			'deleteddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('physical_progress_activity_observation_tkc_file', $data, array('physical_progress_activity_observation_file_id' => $ppao_file_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
 		}
 	}
 

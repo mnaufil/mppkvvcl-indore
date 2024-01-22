@@ -110,7 +110,16 @@ class NCRReview extends CI_Controller
             $filter_arr['status']['value'] = (!empty($status_values)) ? implode(', ', $status_values) : '';
            	$filter_arr['status']['id'] = $this->input->post('status');
 
-           	$search_result = $this->ncr_model->searchNCRs($contractor, $package_no, $feeder_id, $circle, $division, $status);
+           	$logged_user_role_id = $_SESSION['loggedData']->role_id;
+           	$contract_location_ids = [];
+
+			if ($logged_user_role_id == 8) {
+			 	$package_access_no = $_SESSION['loggedData']->package_access;
+
+			 	$contract_location_ids = $this->ncr_model->getContractLocationIDsByPackage($package_access_no);
+			}
+
+           	$search_result = $this->ncr_model->searchNCRs($contractor, $package_no, $feeder_id, $circle, $division, $status, $contract_location_ids);
 
            	// Formatting Dates
            	foreach ($search_result as $key => $value) {
@@ -160,6 +169,7 @@ class NCRReview extends CI_Controller
 
 		$data['ncr_data'] = $obs_result;
 		$data['activity_observations'] = $activity_observations;
+		$data['logged_user_role_id'] = $_SESSION['loggedData']->role_id;
 		$data['title'] = 'NCR Review';
 
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();
@@ -181,14 +191,23 @@ class NCRReview extends CI_Controller
 		$completion_date = (!empty($this->input->post('completionDate'))) ? date('Y-m-d', strtotime($this->input->post('completionDate'))) : NULL;
 		$changed_obs_status = $this->input->post('changed_observation_status');
 		$obs_deleted_file_id = explode(',', $this->input->post('obs_deleted_file_id'));
+		$obs_tkc_deleted_file_id = explode(',', $this->input->post('obs_tkc_deleted_file_id'));
 		$obs_completion_deleted_file_id = explode(',', $this->input->post('obs_completion_deleted_file_id'));
 
+		$logged_user_role_id = $_SESSION['loggedData']->role_id;
+
 		$ncr_status_ids = $this->getNCRStatusIDs();
-		if ($changed_obs_status == 'Forwarded') {
-			$changed_obs_status_ID = $ncr_status_ids['Forwarded'];	
-		} elseif ($changed_obs_status == 'Closed') {
-			$changed_obs_status_ID = $ncr_status_ids['Closed'];
-		}		
+
+		if ($logged_user_role_id == 8) {
+			$changed_obs_status_ID = $ncr_status_ids['Submitted by TKC'];
+		} else {
+			
+			if ($changed_obs_status == 'Forwarded') {
+				$changed_obs_status_ID = $ncr_status_ids['Forwarded'];	
+			} elseif ($changed_obs_status == 'Closed') {
+				$changed_obs_status_ID = $ncr_status_ids['Closed'];
+			}	
+		}				
 
 		//Updating record in physical_progress_activity_observation table
 		$result = $this->ncr_model->updateNCRDetails($pp_activity_obs_id, $observation_id, $observation_name, $observation_remark, $completion_date, $changed_obs_status_ID);
@@ -207,9 +226,16 @@ class NCRReview extends CI_Controller
          	}
 		}
 
+		if (!empty($obs_tkc_deleted_file_id)) {
+			// Changing delete flag of deleted observation tkc files
+			foreach ($obs_tkc_deleted_file_id as $key => $value) {
+				$deleted_prev_files = $this->ncr_model->deleteObservationTKCFile($value);
+			}
+		}
+
 		if ($result && !empty($_FILES)) {
 			// Getting last physical_progress_sheet_id
-			if ((isset($_FILES['obs_photo']) && $_FILES['obs_photo']['error'][0] != 4) || (isset($_FILES['completion_photo']) && $_FILES['completion_photo']['error'][0] != 4)) {
+			if ((isset($_FILES['obs_photo']) && $_FILES['obs_photo']['error'][0] != 4) || (isset($_FILES['completion_photo']) && $_FILES['completion_photo']['error'][0] != 4) || (isset($_FILES['obs_photo_tkc']) && $_FILES['obs_photo_tkc']['error'][0] != 4)) {
 				$pp_data = $this->ncr_model->getPhysicalProgressSheetID($contract_location_id);
 				$pp_id = $pp_data['physical_progress_id'];
 			}
@@ -249,6 +275,47 @@ class NCRReview extends CI_Controller
                     	$error_msg = 'Only '.implode(',', $allowTypes).' files are allowed to upload';
                     	array_push($errors, $error_msg);
                     }
+				}
+			}
+
+			// Updating observation tkc files
+			if (isset($_FILES['obs_photo_tkc']) && $_FILES['obs_photo_tkc']['error'][0] != 4) {
+				$observation_tkc_files = $_FILES['obs_photo_tkc'];
+
+				$allowTypes = array('jpg', 'png', 'jpeg');
+				$uploadDir = 'assets/uploads/observation_files_by_tkc/';
+
+				$last_file_data = $this->ncr_model->getLastObservationFileByTKCData($pp_activity_obs_id);
+
+				if ($last_file_data) {
+					$last_file_data = explode('/', $last_file_data);
+	              	$last_file_data = end($last_file_data);
+	              	$last_file_no = explode('_', $last_file_data);
+	              	$last_file_no = current($last_file_no);
+				} else {
+					$last_file_no = 0;
+				}
+
+				foreach ($observation_tkc_files['name'] as $key => $value) {
+					$ext = pathinfo($value, PATHINFO_EXTENSION);
+					$last_file_no++;
+
+					// File upload path
+					$fileName = $last_file_no.'_observation_tkc_'.$observation_id.'_'.$ncr_id.'.'.$ext;
+					$targetFilePath = $uploadDir . $fileName;
+
+					if (in_array($ext, $allowTypes)) {
+						// Upload file to server
+						if (move_uploaded_file($observation_tkc_files['tmp_name'][$key], $targetFilePath)) {
+							$obs_file_result = $this->ncr_model->saveObservationFileByTKC($pp_activity_obs_id, $targetFilePath);
+						} else {
+							$error_msg = 'Failed to upload observation photo';
+                    		array_push($errors, $error_msg);
+						}
+					} else {
+						$error_msg = 'Only '.implode(',', $allowTypes).' files are allowed to upload';
+                    	array_push($errors, $error_msg);
+					}
 				}
 			}
 

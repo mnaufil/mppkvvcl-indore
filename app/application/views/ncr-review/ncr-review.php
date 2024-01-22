@@ -292,6 +292,8 @@
 				            													$text_color_class = 'text-red';
 				            												} elseif ($value['observation_status'] == 'Closed') {
 				            													$text_color_class = 'text-success';
+				            												} elseif ($value['observation_status'] == 'Submitted by TKC') {
+				            													$text_color_class = 'text-info';
 				            												}
 				            										?>
 				            										<td><h6 class="<?php echo $text_color_class; ?>"><?php echo $value['observation_status']; ?></h6></td>

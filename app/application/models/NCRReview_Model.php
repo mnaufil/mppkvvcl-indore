@@ -150,6 +150,11 @@ class NCRReview_Model extends CI_Model
 					$query_result['observation_files'] = $observation_files;
 				}
 
+				$observation_tkc_files = $this->getObservationTKCFile($pp_activity_obs_id);
+				if (!empty($observation_tkc_files)) {
+					$query_result['observation_tkc_files'] = $observation_tkc_files;
+				}
+
 				if (!empty($query_result['completion_date'])) {
 					$completion_files = $this->getObservationCompletionFile($pp_activity_obs_id);
 					if (!empty($completion_files)) {
@@ -245,6 +250,28 @@ class NCRReview_Model extends CI_Model
 			if ($query->num_rows() > 0) {
 				$result = $query->row_array();
 				$query_result = $result['file_path'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getObservationTKCFile($pp_activity_obs_id)
+	{
+		$this->db->select('physical_progress_activity_observation_tkc_file_id, file_path');
+		$this->db->where(array('physical_progress_activity_observation_id' => $pp_activity_obs_id, 'is_active' => 1, 'deletedby' => NULL));
+		$query = $this->db->get('physical_progress_activity_observation_tkc_file');
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
 			}
 
 			return $query_result;

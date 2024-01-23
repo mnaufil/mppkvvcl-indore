@@ -186,6 +186,23 @@
 					            					<!-- Uploaded Images -->
 					            					<div class="col-xl-12">
 					            						<div class="text-wrap mt-2" id="preview-img-obs-tkc">
+					            						<?php 	if (!empty($ncr_data['observation_tkc_files'])) {
+					            									foreach ($ncr_data['observation_tkc_files'] as $key => $value) { ?>
+					            							<div class="file-image-1" data-ppao-file-id="<?php echo $value['physical_progress_activity_observation_tkc_file_id'];?>">
+					            								<a href="javascript:void(0)" onclick="showImageModal(this)">
+					            									<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="">
+					            								</a>
+					            								<?php if ($ncr_data['completion_date'] == NULL) { ?>
+					            								<ul class="icons">
+					            									<li>
+					            										<a href="javascript:void(0)" data-photo-for="observation_tkc" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="image-<?php echo $key; ?>" data-photo-action="edit"><i class="fe fe-trash"></i></a>
+					            									</li>
+					            								</ul>
+					            								<?php } ?>
+					            							</div>
+					            						<?php 		}
+					            								}
+					            						?>
 					            						</div>
 					            					</div>
 					            				</div>	

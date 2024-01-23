@@ -174,13 +174,15 @@
                   									</div>
 					            				</div>
 					            				<!-- Row4 -->
-					            				<?php if ($logged_user_role_id == 8) { ?>
+					            				<?php if ($logged_user_role == 'TKC' || $logged_user_role == 'Admin') { ?>
 					            				<div class="row">
 					            					<!-- TKC Observation Photos -->
 					            					<div class="col-xl-12">
 					            						<label class="form-label" for="obs_photo_tkc">Observation Photos By TKC
                     									</label>
-                    									<input class="form-control" type="file" id="obs_photo_tkc" name="obs_photo_tkc[]" multiple="">
+                    									<?php if ($logged_user_role == 'TKC') { ?>
+                    									<input class="form-control" type="file" id="obs_photo_tkc" name="obs_photo_tkc[]" multiple="">	
+                    									<?php } ?>
                     									<input type="hidden" name="obs_tkc_deleted_file_id" value="">
 					            					</div>
 					            					<!-- Uploaded Images -->
@@ -250,12 +252,12 @@
 					            				<div class="row">
 					            					<!-- Submit -->
 					            					<div class="col-xl-6 mt-5 mb-3">
-					            						<?php if ($logged_user_role_id == 8) { ?>
+					            						<?php if ($logged_user_role == 'TKC') { ?>
 					            						<button class="btn btn-success" type="submit">Update</button>
 					            						<?php } else { ?>
 					            						<?php if ($ncr_data['observation_status'] == 'Pending') { ?>
 					            						<input type="hidden" name="changed_observation_status" value="Forwarded">
-					            						<button class="btn btn-success" type="submit">Mark as Forwarded</button>	
+					            						<button class="btn btn-success" type="submit">Mark as Forwarded</button>
 					            						<?php } elseif ($ncr_data['observation_status'] == 'Reviewed') { ?>
 					            						<input type="hidden" name="changed_observation_status" value="Closed">
 					            						<button class="btn btn-success" type="submit">Mark as Closed</button>

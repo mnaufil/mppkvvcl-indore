@@ -170,6 +170,7 @@ class NCRReview extends CI_Controller
 		$data['ncr_data'] = $obs_result;
 		$data['activity_observations'] = $activity_observations;
 		$data['logged_user_role_id'] = $_SESSION['loggedData']->role_id;
+		$data['logged_user_role'] = $this->ncr_model->getUserRole($_SESSION['loggedData']->role_id);
 		$data['title'] = 'NCR Review';
 
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();

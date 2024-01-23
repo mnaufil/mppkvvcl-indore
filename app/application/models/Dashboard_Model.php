@@ -358,7 +358,6 @@ class Dashboard_Model extends CI_Model
          //print_r($result[1]);   
         //print_r(array_keys($result[1]));
 
-        
         $allValues = $result[1];
         $allKeys = array_keys($result[1]);
         $mainHeaders = array();
@@ -431,7 +430,14 @@ class Dashboard_Model extends CI_Model
           {
            //$valueTd .= '<td>'.$allValues[$val].'('.$allValues[$val.'_Percent'].')</td>';
             $valueTd .= '<td align="center">'.$allValues[$val].'</td>';
-        $valueTd .= '<td align="center">'.$allValues[$val.'_Percent'].'</td>';
+            
+        // $valueTd .= '<td align="center">'.$allValues[$val.'_Percent'].'</td>'; //Original Code
+
+            if (isset($allValues[$val.'_Percent'])) {
+                $valueTd .= '<td align="center">'.$allValues[$val.'_Percent'].'</td>';
+            } else {
+                $valueTd .= '<td align="center">0.00%</td>';
+            }
       /* if(!str_contains($val, "week") || !str_contains($val, "month"))
           {
             $valueTd .= '<td>'.$allValues[$val.'_Percent'].'</td>';

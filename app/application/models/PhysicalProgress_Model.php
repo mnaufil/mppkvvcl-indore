@@ -1576,6 +1576,7 @@ class PhysicalProgress_Model extends CI_Model
 				$obs_data['remark'] = $query_result['remark'];
 				$obs_data['completion_date'] = '';
 				$obs_data['observation_files'] = [];
+				$obs_data['observation_files_by_tkc'] = [];
 				$obs_data['completion_files'] = [];
 				$obs_data['observation_status_id'] = $query_result['observation_status_id'];
 				$obs_data['observation_status'] = $query_result['observation_status'];
@@ -1585,6 +1586,15 @@ class PhysicalProgress_Model extends CI_Model
 				if (!empty($obs_file_result)) {
 					foreach ($obs_file_result as $key => $value) {
 						array_push($obs_data['observation_files'], $value);
+					}
+
+					// Fetching observations files by TKC 
+					$obs_by_tkc_file_result = $this->getObservationFileByTKC($obs_id);
+
+					if (!empty($obs_by_tkc_file_result)) {
+						foreach ($obs_by_tkc_file_result as $key => $value) {
+							array_push($obs_data['observation_files_by_tkc'], $value);
+						}
 					}
 				}
 
@@ -1678,6 +1688,28 @@ class PhysicalProgress_Model extends CI_Model
 		$this->db->where(array('physical_progress_activity_observation_id' => $obs_id, 'is_active' => 1, 'deletedby' => NULL));
 
 		$query = $this->db->get('physical_progress_activity_completion_file');
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else  {
+			$query_result = [];
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+
+				return $query_result;
+			}
+		}
+	}
+
+	public function getObservationFileByTKC($obs_id)
+	{
+		$this->db->select('physical_progress_activity_observation_tkc_file_id, physical_progress_activity_observation_id, file_path');
+		$this->db->where(array('physical_progress_activity_observation_id' => $obs_id, 'is_active' => 1, 'deletedby' => NULL));
+
+		$query = $this->db->get('physical_progress_activity_observation_tkc_file');
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {

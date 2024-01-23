@@ -642,7 +642,7 @@ class PhysicalProgressApi extends REST_Controller
             $sheet_date = ''; //will be used later to fetch submitted sheet applied observations
 
             //Fetching observation details
-            $applied_obs_data = $this->pp_model->getAppliedObservationData($pp_activity_obs_id, $sheet_date);            
+            $applied_obs_data = $this->pp_model->getAppliedObservationData($pp_activity_obs_id, $sheet_date);
 
             if ($applied_obs_data) {
                 //Getting Activity Name
@@ -660,7 +660,7 @@ class PhysicalProgressApi extends REST_Controller
                 );
 
                 foreach ($applied_obs_data['observation_files'] as $key => $value) {
-                    $obs_files =  [];
+                    $obs_files = [];
                     $ext = pathinfo($value['file_path'], PATHINFO_EXTENSION);
 
                     // Get the image and convert into string
@@ -677,6 +677,28 @@ class PhysicalProgressApi extends REST_Controller
 
                 $applied_obs_data['observation_files'] = [];
                 $applied_obs_data['observation_files'] = $observation_files;
+
+                if (!empty($applied_obs_data['observation_files_by_tkc'])) {
+                    $observation_files_by_tkc = [];
+
+                    foreach ($applied_obs_data['observation_files_by_tkc'] as $key => $value) {
+                        $obs_files_by_tkc = [];
+                        $ext = pathinfo($value['file_path'], PATHINFO_EXTENSION);
+
+                        // Get the image and convert into string
+                        $file_path = base_url($value['file_path']);
+                        $image = file_get_contents($file_path, false, stream_context_create($arrContextOptions));
+
+                        // Encode the image string data into base64
+                        $image_base64 = 'data:image/'.$ext.';base64,'.base64_encode($image);
+
+                        array_push($obs_files_by_tkc, $image_base64);
+                        array_push($observation_files_by_tkc, $obs_files_by_tkc);
+                    }
+
+                    $applied_obs_data['observation_files_by_tkc'] = [];
+                    $applied_obs_data['observation_files_by_tkc'] = $observation_files_by_tkc;
+                }
 
                 if (!empty($applied_obs_data['completion_files'])) {
                     $completion_files = [];

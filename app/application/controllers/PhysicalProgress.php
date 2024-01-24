@@ -54,7 +54,7 @@ class PhysicalProgress extends CI_Controller
           $pp_list_status_ids = $this->pp_model->getStatusIDsForList();
           $pp_list_status_ids = implode(',', $pp_list_status_ids);
           
-          $result = $this->pp_model->getPhysicalProgressSheets($pp_list_status_ids);
+          $result = $this->pp_model->getPhysicalProgressSheets($pp_list_status_ids, NULL, 0, 1000);
 
           foreach ($result as $key => $value) {
                $submitted_by_tkc_ncr = $this->pp_model->getNCRSubmittedByTKCList($value['contract_location_id']);

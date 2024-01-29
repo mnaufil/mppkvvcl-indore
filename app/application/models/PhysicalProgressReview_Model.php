@@ -459,7 +459,7 @@ class PhysicalProgressReview_Model extends CI_Model
 		$this->db->join('mst_role_module_access', 'mst_user.role_id = mst_role_module_access.role_id', 'INNER');
 		$this->db->join('mst_module_access', 'mst_role_module_access.module_access_id = mst_module_access.module_access_id', 'INNER');
 		$this->db->join('mst_module', 'mst_module_access.module_id = mst_module.module_id', 'INNER');
-		$this->db->where(array('mst_module.name' => 'Physical Progress Review', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
+		$this->db->where(array('mst_module.name' => 'Physical Verification Review', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
 		$this->db->where(array('mst_role_module_access.is_active' => 1, 'mst_module_access.is_active' => 1, 'mst_module.is_active' => 1));
 
 		$query = $this->db->get();

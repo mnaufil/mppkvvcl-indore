@@ -1411,7 +1411,7 @@
 		                              <a href="javascript:void(0)" class="btn btn-success btn-add" id="markComplete">Mark as Complete</a>
 		                           </div>
 			                    	</div>	
-	                    		<?php } ?>	                    		
+	                    		<?php } ?>
 	                    	<?php } ?>
               					<!-- Row8 Upload Completion File -->
               					<?php $hidden_upload_photo = ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) ? '' : 'hidden'; ?>
@@ -2036,7 +2036,7 @@
       		processData: false,
       		contentType: false,
       		success: function(response) {
-      			let url = '<?php echo base_url('physical-progress-review') ?>';
+      			let url = '<?php echo base_url('physical-verification-review') ?>';
       			window.location.replace(url);
       		},
       		error: function(xhr, status, error) {

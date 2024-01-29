@@ -58,7 +58,8 @@ class Security_Model extends CI_Model
 
     public function checkEmailExists($email)
     {
-        $query = $this->db->get_where('mst_user', array('email' => $email));
+        $query = $this->db->get_where('mst_user', array('email' => $email, 'is_active' => 1, 'deletedby' => NULL));
+        // echo $this->db->last_query(); die();
 
         if (!$query) {
             $error = $this->db->error();

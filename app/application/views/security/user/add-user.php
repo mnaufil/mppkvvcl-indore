@@ -583,7 +583,7 @@
                 url: '<?php echo base_url('check-user-exists'); ?>',
                 dataType: 'json',
                 data: {email:user_email},
-                success: function(response) {                        
+                success: function(response) {
                     if (!$.isEmptyObject(response)) {
                         form_change = false;
                         email_exists = true;

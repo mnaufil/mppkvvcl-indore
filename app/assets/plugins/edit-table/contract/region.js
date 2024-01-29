@@ -330,13 +330,12 @@ class BSTable1 {
         // Accept the changes to the row
         let $currentRow = $(button).parents('tr'); // access the row
         $("#table2-new-row-button-region").show();
-         var rowIndex = $(button).closest("tr").index();
+        var rowIndex = $(button).closest("tr").index();
         //alert(rowIndex);
-         var data = {};
+        var data = {};
         data.sessionName = 'addcontract';
         data.action = 'acceptregion';
         data.rowId = rowIndex
-
 
         console.log($currentRow);
         let $cols = $currentRow.find('td'); // read fields
@@ -346,137 +345,142 @@ class BSTable1 {
 		const checkErrors = [];
         // Finish editing the row & save edits
         this._modifyEachColumn(this.options.editableColumns, $cols, function($td) { // modify each column
-           // let cont = $td.find('input').val(); // read through each input
-           // $td.html(cont); // set the content and remove the input fields
-		   let cont = '';
+            // let cont = $td.find('input').val(); // read through each input
+            // $td.html(cont); // set the content and remove the input fields
+		    let cont = '';
 		    var isOk = true;
 			
-		  // if(i==0 || i==1 || i==2)
-        if(i==0)
-        {
-            cont = $td.find('option:selected').text();			
-			var   isOk = requiredvalid("region", "dynamicregion", cont, rowIndex);
-            checkErrors.push(isOk);
-		    if(isOk==false)
-		    {
-			  exit();
-		    }	   
-            data.region  = $td.find('select').val();
-            data.region_text = $td.find('option:selected').text();
-						
-        }
-        else if(i==1)
-        {
-            cont = $td.find('option:selected').text();
-			var   isOk = requiredvalid("region", "dynamiccircleregion", cont, rowIndex);
-            checkErrors.push(isOk);
-		    if(isOk==false)
-		    {
-			  exit();
-		    }	 
-			
-            data.circle  = $td.find('select').val();
-            data.circle_text = $td.find('option:selected').text();
-        }
-        else if(i==2)
-        {
-            cont = $td.find('option:selected').text();
-			var   isOk = requiredvalid("region", "dynamicdivisionregion", cont, rowIndex);
-            checkErrors.push(isOk);
-		    if(isOk==false)
-		    {
-			  exit();
-		    }	 
-			
-            data.division  = $td.find('select').val();
-            data.division_text = $td.find('option:selected').text();
-        }
-        else
-        {
-            cont = $td.find('input').val(); // read through each input
-            if (i == 3)
+		    // if(i==0 || i==1 || i==2)
+            if(i==0)
             {
-                data.district = cont;
-            }
+                cont = $td.find('option:selected').text();			
+    			var isOk = requiredvalid("region", "dynamicregion", cont, rowIndex);
+                checkErrors.push(isOk);
 
-            if (i == 4)
-            {
-                data.vidhansabha = cont;
-            }
+    		    if(isOk==false)
+    		    {
+    			  exit();
+    		    }
 
-            if (i == 5)
-            {
-                data.loksabha = cont;
+                data.region  = $td.find('select').val();
+                data.region_text = $td.find('option:selected').text();
             }
+            else if(i==1)
+            {
+                cont = $td.find('option:selected').text();
+    			var   isOk = requiredvalid("region", "dynamiccircleregion", cont, rowIndex);
+                checkErrors.push(isOk);
 
-            if(i==6)
-            {
-				var   isOk = requiredvalid("region", "dynamiclocationregion", cont, rowIndex);
-				checkErrors.push(isOk);
-				if(isOk==false)
-				{
-				    exit();
-				}	    
-                data.location = cont;
+    		    if(isOk==false)
+    		    {
+    			  exit();
+    		    }	 
+    			
+                data.circle  = $td.find('select').val();
+                data.circle_text = $td.find('option:selected').text();
             }
+            else if(i==2)
+            {
+                cont = $td.find('option:selected').text();
+    			var   isOk = requiredvalid("region", "dynamicdivisionregion", cont, rowIndex);
+                checkErrors.push(isOk);
 
-            if(i==7)
-            {
-				var   isOk = requiredvalid("region", "dynamicfeedernameregion", cont, rowIndex);
-				checkErrors.push(isOk);
-				if(isOk==false)
-				{
-				    exit();
-				}	 
-                data.feedername = cont;
+    		    if(isOk==false)
+    		    {
+    			  exit();
+    		    }	 
+    			
+                data.division  = $td.find('select').val();
+                data.division_text = $td.find('option:selected').text();
             }
+            else
+            {
+                cont = $td.find('input').val(); // read through each input
+                if (i == 3)
+                {
+                    data.district = cont;
+                }
 
-            if(i==8) 
-            {
-				var   isOk = requiredvalid("region", "dynamicfeederidregion", cont, rowIndex);
-				checkErrors.push(isOk);
-				if(isOk==false)
-				{
-				    exit();
-				}	    
-                data.feederid = cont;
-            }
+                if (i == 4)
+                {
+                    data.vidhansabha = cont;
+                }
 
-            if(i==9)
-            {
-				var   isOk = requiredvalid("region", "dynamicprojectidregion", cont, rowIndex);
-				checkErrors.push(isOk);
-				if(isOk==false)
-				{
-				    exit();
-				}	   
-                data.projectid = cont;
-            }
-            
-            if(i==10)
-            {
-                data.geocode = cont;
-            }
+                if (i == 5)
+                {
+                    data.loksabha = cont;
+                }
 
-            if(i==11)
-            {
-				var   isOk = requiredvalid("region", "dynamicqtyregion", cont, rowIndex);
-				checkErrors.push(isOk);
-				if(isOk==false)
-				{
-				    exit();
-				}
-                data.quantity = cont;
-            }
+                if(i==6)
+                {
+                    
+    				var   isOk = requiredvalid("region", "dynamiclocationregion", cont, rowIndex);
+    				checkErrors.push(isOk);
+    				if(isOk==false)
+    				{
+    				    exit();
+    				}	    
+                    data.location = cont;
+                }
 
-            if(i==12)
-            {
-                data.boq = cont;
-            }
-        } 
+                if(i==7)
+                {
+    				var   isOk = requiredvalid("region", "dynamicfeedernameregion", cont, rowIndex);
+    				checkErrors.push(isOk);
+    				if(isOk==false)
+    				{
+    				    exit();
+    				}	 
+                    data.feedername = cont;
+                }
+
+                if(i==8) 
+                {
+    				var   isOk = requiredvalid("region", "dynamicfeederidregion", cont, rowIndex);
+    				checkErrors.push(isOk);
+    				if(isOk==false)
+    				{
+    				    exit();
+    				}	    
+                    data.feederid = cont;
+                }
+
+                if(i==9)
+                {
+    				/*var   isOk = requiredvalid("region", "dynamicprojectidregion", cont, rowIndex);
+    				checkErrors.push(isOk);
+    				if(isOk==false)
+    				{
+    				    exit();
+    				}*/	   //Uncomment Later
+                    data.projectid = cont;
+                }
+                
+                if(i==10)
+                {
+                    data.geocode = cont;
+                }
+
+                if(i==11)
+                {
+    				var   isOk = requiredvalid("region", "dynamicqtyregion", cont, rowIndex);
+    				checkErrors.push(isOk);
+    				if(isOk==false)
+    				{
+    				    exit();
+    				}
+                    data.quantity = cont;
+                }
+
+                if(i==12)
+                {
+                    data.boq = cont;
+                }
+            } 
 		 
-		 //$td.html(cont); // set the content and remove the input fields
-			if(checkErrors.filter(Boolean).length ==8)
+		    //$td.html(cont); // set the content and remove the input fields
+			// if(checkErrors.filter(Boolean).length ==8) //Original
+            if(checkErrors.filter(Boolean).length == 7) //Delete Later
             {
 				$("#td_dynamicregion"+rowIndex).html(data.region_text);
 				$("#td_dynamiccircle"+rowIndex).html(data.circle_text);

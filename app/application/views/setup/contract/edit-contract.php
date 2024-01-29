@@ -428,14 +428,16 @@
 	                        					<!-- Row10-->
 	                        					<div class="form-row">
 	                        						<div class="col-lg-12">
-
-	 <div class="table-responsive" id="region_table">
+	 													<div class="table-responsive" id="region_table">
 	                        								<table class="table table-bordered border text-nowrap mb-0" id="new-edit-region">
 	                        									<thead>
 	                        										<tr>
 	                        											<th>Region</th>
 	                        											<th>Circle</th>
 	                        											<th>Division</th>
+	                        											<th>District</th>
+	                        											<th>Vidhansabha</th>
+	                        											<th>Loksabha</th>
 	                        											<th>Location/Referance Name</th>
 	                        											<th>Feeder Name</th>
 	                        											<th>Feeder ID</th>
@@ -447,11 +449,14 @@
 	                        									</thead>
 	                        									<tbody>
 	                        										<?php if(!empty($contractregionsdetails)) { ?>	
-																<?php foreach($contractregionsdetails as $region) { ?>
+																	<?php foreach($contractregionsdetails as $region) { ?>
 	                        										<tr>
 	                        											<td id="td_dynamicregion<?php echo $region['rowId'];?>"><?php echo $region['region_text'];?></td>
 	                        											<td id="td_dynamiccircle<?php echo $region['rowId'];?>"><?php echo $region['circle_text'];?></td>
 	                        											<td id="td_dynamicdivision<?php echo $region['rowId'];?>"><?php echo $region['division_text'];?></td>
+	                        											<td id="td_dynamicdistrict<?php echo $region['rowId'];?>"><?php echo $region['district'] ?></td>
+	                        											<td id="td_dynamicvidhansabha<?php echo $region['rowId'];?>"><?php echo $region['vidhansabha']; ?></td>
+	                        											<td id="td_dynamicloksabha<?php echo $region['rowId']; ?>"><?php echo $region['loksabha']; ?></td>
 	                        											<td id="td_dynamiclocationregion<?php echo $region['rowId'];?>"><?php echo $region['location'];?></td>
 	                        											<td id="td_dynamicfeedernameregion<?php echo $region['rowId'];?>"><?php echo $region['feedername'];?></td>
 	                        											<td id="td_dynamicfeederidregion<?php echo $region['rowId'];?>"><?php echo $region['feederid'];?></td>
@@ -462,11 +467,11 @@
 	                        											<td>
 	                        												<button id="bEdit" type="button" class="btn btn-sm btn-obs" ><span class="fe fe-more-vertical"> </span> </button>
 	                        											</td>
-	                        										<?php } ?>
+	                        											<?php } ?>
 	                        										</tr>
-	                        									<?php } ?>	
-	                        									<?php } else { ?>	
-	                        									<tr>
+	                        										<?php } ?>	
+	                        										<?php } else { ?>	
+	                        										<tr>
 	                        											<td></td>
 	                        											<td></td>
 	                        											<td></td>
@@ -476,8 +481,12 @@
 	                        											<td></td>
 	                        											<td></td>
 	                        											<td></td>
-	                        											</tr>		
-	                        									<?php } ?>
+	                        											<td></td>
+	                        											<td></td>
+	                        											<td></td>
+	                        											<td></td>
+	                        										</tr>		
+	                        										<?php } ?>
 	                        									</tbody>
 	                        								</table>
 	                        							</div>

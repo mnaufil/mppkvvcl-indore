@@ -1,18 +1,18 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); 
 
 class Setup extends CI_Controller
-{
+{	
 	function __construct()
     {
 		parent::__construct();
 
-        	$this->load->library('form_validation'); 
-        	$this->load->model('Setup_Model');
-        
-        	if(!$this->session->isUserLoggedIn)
-        	{ 
-             	redirect('login'); 
-        	}
+    	$this->load->library('form_validation'); 
+    	$this->load->model('Setup_Model');
+    
+    	if(!$this->session->isUserLoggedIn)
+    	{ 
+         	redirect('login'); 
+    	}
 	}
 	
 	public function loadMilestones($rowIndex)
@@ -137,17 +137,16 @@ class Setup extends CI_Controller
 
 	public function editcontractpage($contractID)	
 	{
-		$data['contractdetails'] =  $this->Setup_Model->loadSingleContract($contractID);	
-		$data['contractmilestonesdetails'] = $this->Setup_Model->loadSingleContractMilestones($contractID);
+		$data['contractdetails'] =  $this->Setup_Model->loadSingleContract($contractID);
+		$data['contractmilestonesdetails'] = $this->Setup_Model->loadSingleContractMilestones($contractID);		
 		
-		$data['contractregionsdetails'] = $this->Setup_Model->loadSingleContractRegions($contractID);	
+		$data['contractregionsdetails'] = $this->Setup_Model->loadSingleContractRegions($contractID);
 		$data['contractinstallationsdetails'] = $this->Setup_Model->loadSingleContractInstallations($contractID);	
 		$data['contractbanksdetails'] = $this->Setup_Model->loadSingleContractBanks($contractID);	 	   
 		$data['worktypes'] = $this->Setup_Model->loadworktypes();	
 		$data['materialdetails'] = $this->Setup_Model->loadMaterials($contractID);
 
-		/*echo '<pre>';
-		print_r($data); die;*/
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('setup/contract/edit-contract', $data); 
 	}
 

@@ -321,15 +321,22 @@
 							                              		<tbody>
 							                              			<?php foreach ($result as $key => $value) { ?>
 							                              			<tr>
-							                              				<?php $mode = 'edit-review'; ?>
 							                              				<td name="bstable-actions">
 							                              					<!-- Action Buttons -->
 							                              					<div class="btn-list">
-							                              						<?php if (!empty($user_access) && isset($user_access['update'])) { ?>
+							                              						<?php if (!empty($user_access) && isset($user_access['update']) && $value['sheet_status'] != 'Completed') { 
+							                              								$mode = 'edit-review';
+							                              						?>
 							                              						<a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('add-physical-progress/'.$mode.'/'.$value['physical_progress_id'].'/'.$value['contract_id'].'/'.$value['contract_location_id']); ?>">
 										                                          	<span class="fe fe-edit fa-lg action-btn-table"></span>
 										                                        </a>	
-							                              						<?php } ?>	
+							                              						<?php } elseif (!empty($user_access) && isset($user_access['update']) && $value['sheet_status'] == 'Completed') { 
+							                              								$mode = 'view';
+							                              						?>
+							                              						<a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('add-physical-progress/'.$mode.'/'.$value['physical_progress_id'].'/'.$value['contract_id'].'/'.$value['contract_location_id']); ?>">
+										                                          	<span class="fa fa-eye fa-lg action-btn-table"></span>
+										                                        </a>
+							                              						<?php } ?>
 							                              					</div>
 							                              				</td>
 							                              				<td>

@@ -139,6 +139,9 @@ class PhysicalProgressReview extends CI_Controller
 	        $status_list = $this->ppreview_model->getStatusList();
 	        $status_list = $this->modifyStatusList($status_list);
 
+            $user_access_data = $this->ppreview_model->getUserModuleAccess();
+            $user_access = $this->sortUserModuleAccess($user_access_data);
+
 	        $data['title'] = 'Physical Progress Review';
             $data['result'] = $search_result;
 
@@ -148,6 +151,7 @@ class PhysicalProgressReview extends CI_Controller
 	        $data['region_circle_data'] = $region_circle_data;
            	$data['circle_division_data'] = $circle_division_data;	        
 	        $data['status_list'] = $status_list;
+            $data['user_access'] = $user_access;
 
 	        // echo '<pre>'; print_r($data); echo '</pre>'; die();
 			$this->load->view('physical-progress-review/physical-progress-review', $data);

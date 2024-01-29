@@ -109,10 +109,6 @@ class Security extends CI_Controller
 
 	public function edituserspage($userID)	
 	{
-		
-
-		/*echo '<pre>';
-		print_r($data); die;*/
 		$data['singleUser']= $this->Security_Model->loadSingleUsers($userID);
 		$data['roles'] = $this->Security_Model->loadRoles();
 		$data['users'] = $this->Security_Model->loadUsers();
@@ -126,13 +122,12 @@ class Security extends CI_Controller
 		if($checkRegionsUsersInData) //check for regions in user data access table
 		{
 			$selectedregions = $this->Security_Model->loadSelectedRegions($userID);
-			
-			//print_r($selectedregions); die;
+
 			foreach($selectedregions as $region)
 			{
 				array_push($selectedRegionsArray, $region->region_id);
+			}
 
-			}	
 			$selectedcircles = $this->Security_Model->loadSelectedRegions($userID);
 			foreach($selectedcircles as $circle)
 			{
@@ -144,14 +139,8 @@ class Security extends CI_Controller
 			{
 				array_push($selectedDivisionsArray, $division->division_id);
 			}
-				
 		}
-		
-		
-		
 
-		/*echo '<pre>'; 
-            print_r(); die;*/
 		$data['regions'] = $this->Security_Model->loadRegions($userID);	
 		$data['circles'] = $this->Security_Model->loadCircles();
 		$data['divisions'] = $this->Security_Model->loadDivisions();

@@ -168,7 +168,7 @@ class Security_Model extends CI_Model
 
         if(!empty($userName))
         {
-            $this->db->like("mst_user.username", $userName);
+            $this->db->like("mu1.username", $userName);
 
             $result['filters']['userName']['label'] = 'Name';
             $result['filters']['userName']['value'] = $userName;
@@ -176,7 +176,7 @@ class Security_Model extends CI_Model
 
         if(!empty($userEmail))
         {
-            $this->db->where("mst_user.email", $userEmail);
+            $this->db->where("mu1.email", $userEmail);
 
             $result['filters']['userEmail']['label'] = 'Email';
             $result['filters']['userEmail']['value'] = $userEmail;
@@ -188,7 +188,7 @@ class Security_Model extends CI_Model
             $result['filters']['userRole']['value'] = $this->getRole($userRole);
             $result['filters']['userRole']['id'] = $userRole;
 
-            $this->db->where("mst_user.role_id", $userRole);            
+            $this->db->where("mu1.role_id", $userRole);            
         }
 
         if(!empty($status))
@@ -201,17 +201,18 @@ class Security_Model extends CI_Model
             $result['filters']['status']['value'] = implode(', ', $status_values);
             $result['filters']['status']['id'] = $status;
 
-            $this->db->where_in("mst_user.is_active", $status);
+            $this->db->where_in("mu1.is_active", $status);
         } else {
-            $this->db->where("mst_user.is_active", "1");    
+            $this->db->where("mu1.is_active", "1");    
         }
         
         // $this->db->where("mst_user.createdby", $_SESSION['loggedData']->user_id);
         //$this->db->where("mst_status.module_id", 18);
-        $this->db->select('mst_user.*, mst_user.username as reportingto_user_name, mst_role.name as rolename');
+        $this->db->select('mu1.*, mu2.username AS reportingto_user_name, mst_role.name as rolename');
         //$this->db->where("mst_region.contract_id", $contractID);         
-        $this->db->from('mst_user');
-        $this->db->join('mst_role', 'mst_role.role_id  = mst_user.role_id', 'inner');
+        $this->db->from('mst_user mu1');
+        $this->db->join('mst_role', 'mst_role.role_id  = mu1.role_id', 'inner');
+        $this->db->join('mst_user mu2', 'mu1.reportingto_user_id = mu2.user_id', 'INNER');
        // $this->db->join('mst_status', 'mst_status.status_id  = mst_user.is_active AND mst_status.module_id = 18', 'inner');
         $query = $this->db->get();
         // echo $this->db->last_query(); die;

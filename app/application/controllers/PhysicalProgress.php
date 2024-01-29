@@ -1219,7 +1219,7 @@ class PhysicalProgress extends CI_Controller
 
           if (!empty($activities_result)) {
                $activities_count = count($activities_result);
-               $pp_id = (($mode == 'edit-prev' || $mode == 'view') && empty($reported_date)) ? $site['prev_physical_progress_id'] : $site['physical_progress_id'] ;
+               $pp_id = (($mode == 'edit-prev' || $mode == 'view' || $mode == 'edit-review') && empty($reported_date)) ? $site['prev_physical_progress_id'] : $site['physical_progress_id'];
 
                $applied_activities_result = $this->pp_model->getAppliedActivitiesList($pp_id, $site['contract_location_id']);
                $applied_activities_count = 0;

@@ -543,7 +543,7 @@
 	      	$(status_select).find('.ms-choice span').text('');
 	      	$('#clear-btn').hide();
 
-	      	window.location.replace('<?php echo base_url("physical-progress-review") ?>');
+	      	window.location.replace('<?php echo base_url("physical-verification-review") ?>');
 	    });
 
 	    $('#region').on('change', function(event) {

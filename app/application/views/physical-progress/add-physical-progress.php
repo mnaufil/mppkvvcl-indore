@@ -388,7 +388,7 @@
 																								<th style="width: 200px;">Activity</th>
 																								<th style="width: 150px;">
 																									Status
-																									<a class="me-4" href="javascript:void(0)" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-secondary only-body" data-bs-content="No - Activity not started, WIP - Activity work in progress, Yes - Activity completed with/without NCR(s), NA - Activity not applicable">
+																									<a class="me-4" href="javascript:void(0)" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-secondary only-body" data-bs-content="Yes - Completed with/without NCR(s), No - Not yet started, NA - Not applicable, WIP - Work in progress">
 																										<svg xmlns="http://www.w3.org/2000/svg" class="svg-secondary" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
 																											<path d="M0 0h24v24H0V0z" fill="none"/>
 																											<path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
@@ -401,7 +401,15 @@
 																								<?php } elseif ($k1 == 'Sub-station Items') { ?>
 																								<th style="width: 10px;">Sr.No</th>
 																								<th style="width: 200px;">Activity</th>
-																								<th style="width: 150px;">Status</th>
+																								<th style="width: 150px;">
+																									Status
+																									<a class="me-4" href="javascript:void(0)" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-secondary only-body" data-bs-content="Yes - Completed with/without NCR(s), No - Not yet started, NA - Not applicable, WIP - Work in progress">
+																										<svg xmlns="http://www.w3.org/2000/svg" class="svg-secondary" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+																											<path d="M0 0h24v24H0V0z" fill="none"/>
+																											<path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+																										</svg>
+																									</a>
+																								</th>
 																								<th>Observation Type</th>
 																								<th>Observation</th>
 																								<th>File Upload</th>
@@ -430,7 +438,15 @@
 																								<?php } elseif ($k1 == 'Electrical') { ?>
 																								<th style="width: 10px;">Sr.No</th>
 																								<th style="width: 200px;">Activity</th>
-																								<th style="width: 150px;">Status</th>
+																								<th style="width: 150px;">
+																									Status
+																									<a class="me-4" href="javascript:void(0)" data-bs-toggle="popover" data-bs-placement="right" data-bs-custom-class="popover-secondary only-body" data-bs-content="Yes - Completed with/without NCR(s), No - Not yet started, NA - Not applicable, WIP - Work in progress">
+																										<svg xmlns="http://www.w3.org/2000/svg" class="svg-secondary" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+																											<path d="M0 0h24v24H0V0z" fill="none"/>
+																											<path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+																										</svg>
+																									</a>
+																								</th>
 																								<th>Observation Type</th>
 																								<th>Observation</th>
 																								<th>File Upload</th>

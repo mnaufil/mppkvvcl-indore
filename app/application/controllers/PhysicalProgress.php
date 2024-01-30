@@ -161,7 +161,7 @@ class PhysicalProgress extends CI_Controller
                $filter_arr['status']['value'] = (!empty($status_values)) ? implode(', ', $status_values) : '';
                $filter_arr['status']['id'] = $this->input->post('status');
 
-               $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by_id, $formatted_reported_date, $feeder_id, $status);
+               $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by_id, $formatted_reported_date, $feeder_id, $status, NULL, 0, 1000);
 
                foreach ($search_result as $key => $value) {
                     $submitted_by_tkc_ncr = $this->pp_model->getNCRSubmittedByTKCList($value['contract_location_id']);

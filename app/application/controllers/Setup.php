@@ -169,11 +169,10 @@ class Setup extends CI_Controller
 
 
 
-		public function updatecontract()
+	public function updatecontract()
 	{
 		try
-	 	{		 
-		 	
+	 	{	
 			$this->form_validation->set_rules('nameOfContractor', 'Name of Contractor', 'required'); 
 			$this->form_validation->set_rules('tenderAwardNo', 'Tender Award No', 'required'); 
 			$this->form_validation->set_rules('tenderAwardDate', 'Tender Award Date', 'required'); 
@@ -186,8 +185,7 @@ class Setup extends CI_Controller
 			$this->form_validation->set_rules('priceBidOpeningDate', 'Price Bid Opening Date', 'required');
 			$this->form_validation->set_rules('systemRefNo', 'System Reference No', 'required');
 			$this->form_validation->set_rules('estimatedCostWithoutGST', 'Estimated Cost (Without GST)', 'required');
-			$this->form_validation->set_rules('estimatedCostWithGST', '
-	Estimated Cost (With GST)', 'required');
+			$this->form_validation->set_rules('estimatedCostWithGST', 'Estimated Cost (With GST)', 'required');
 			$this->form_validation->set_rules('quotedPriceWithoutGST', 'Quoted Price(Without GST)', 'required');
 			$this->form_validation->set_rules('quotedPriceWithGST', 'Quoted Price (With GST)', 'required');
 			$this->form_validation->set_rules('supplyOfGoods', 'Supply of Goods', 'required');
@@ -197,49 +195,32 @@ class Setup extends CI_Controller
 
 			$contractId = $this->input->post('contractID');
 			if($this->form_validation->run())
-			{ //die("fdfdf");
+			{
 				$return = $this->Setup_Model->updatecontract();
 				foreach($return as $key=>$val)
 				{
 					if($val!==false)
 					{
-							$this->session->set_flashdata('success','Contract Updated Successfully');
+						$this->session->set_flashdata('success','Contract Updated Successfully');
 					}
 					else
 					{
-							$this->session->set_flashdata('error','Problem in updating Contract data.');
-
+						$this->session->set_flashdata('error','Problem in updating Contract data.');
 					}
 				}
-				/*if($return)
-				{
-					$this->session->set_flashdata('success','Contract Added Successfully');
-					redirect('contract-management/add');
-				}*/
 			}
 			else 
 			{
-				//print_r(validation_errors());
-				//die("ffffff");
-					$this->session->set_flashdata('error',validation_errors());
+				$this->session->set_flashdata('error',validation_errors());
 
 			}
-					//			redirect('contract-management/'.$contractId);
-					redirect('contract-management');
-
-
+			
+			redirect('contract-management');
 		}
 		catch (Exception $e)
 		{
-			
         	log_message('error: ',$e->getMessage());
-
-        	//return;
 		}
-
-	
-	
-		 
 	}
 
 

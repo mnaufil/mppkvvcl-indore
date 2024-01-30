@@ -602,14 +602,19 @@ class Setup_Model extends CI_Model
 	
 	
 	
-	 function updatecontract()
+	function updatecontract()
     {
 		$returnArray = array();
 		$contractId = $this->input->post('contractID');
-		/*echo '<pre>';
-		print_r($_POST); die;*/
-    	$insertArray = array(
 
+		$contract_status_list = $this->getContractStatusList();
+
+		$contract_status = [];
+		foreach ($contract_status_list as $key => $value) {
+			$contract_status[$value['name']] = $value['status_id'];
+		}
+
+    	$insertArray = array(
     		"contractor_name" => $this->input->post('nameOfContractor'),
     		"contractor_email" => $this->input->post('contractEmail'),
     		"tender_award_no" => $this->input->post('tenderAwardNo'),
@@ -632,27 +637,25 @@ class Setup_Model extends CI_Model
     		"GST" => $this->input->post('gst'),
     		"modifiedby" => $_SESSION['loggedData']->user_id,
     		"modifieddate" => date ('Y-m-d H:i:s'),
-    		"status_id" => 1
+    		"status_id" => $contract_status['Open']
     	);
-
-
 
 		$this->db->where("contract_id", $contractId);
         $query = $this->db->update("contract", $insertArray);
-        //echo $this->db->last_query();
-        /*echo '<pre>';
-    	print_r($insertArray); die;*/
+
         if(!$query)
         {
         	$this->session->set_flashdata('error','Error in Updating Contract');
 			redirect('contract-management');
 			return;
         }
+
         $last_id = $contractId; 
         //$last_id = 3;
         //code to insert milestones
-       //$mileStones = $this->input->post('milestonehiddentable');
-         if(isset($_SESSION['acceptstage']))
+       	//$mileStones = $this->input->post('milestonehiddentable');
+
+        if(isset($_SESSION['acceptstage']))
         {
             $mileStonesReturn = $this->SetupInner_Model->updateMilestones($last_id, "update");
                     
@@ -681,8 +684,8 @@ class Setup_Model extends CI_Model
 			}
         }
 
-       // $installations = $this->input->post('installationhiddentable');
-         if(isset($_SESSION['acceptmaterial']))
+       	// $installations = $this->input->post('installationhiddentable');
+        if(isset($_SESSION['acceptmaterial']))
         {
             $installationsReturn = $this->SetupInner_Model->updateMaterial($last_id, "update");
             
@@ -711,7 +714,7 @@ class Setup_Model extends CI_Model
         }
 
         //$banks = $this->input->post('bankhiddentable');
-       if(isset($_SESSION['acceptbank']))
+       	if(isset($_SESSION['acceptbank']))
         {
             $banksRetrun = $this->SetupInner_Model->updateBanks($last_id, "update");
             
@@ -724,9 +727,8 @@ class Setup_Model extends CI_Model
 				$returnArray['returnbank'] = false;
 			}
         }
-
         
-        	return $returnArray;
+        return $returnArray;
     }
 	
 	

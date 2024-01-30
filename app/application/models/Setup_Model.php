@@ -146,6 +146,13 @@ class Setup_Model extends CI_Model
 
     function addcontract()
     {
+    	$contract_status_list = $this->getContractStatusList();
+
+		$contract_status = [];
+		foreach ($contract_status_list as $key => $value) {
+			$contract_status[$value['name']] = $value['status_id'];
+		}
+
 		$returnArray = array();
     	$insertArray = array(
 
@@ -171,8 +178,7 @@ class Setup_Model extends CI_Model
     		"GST" => $this->input->post('gst'),
     		"createdby" => $_SESSION['loggedData']->user_id,
     		"createddate" => date ('Y-m-d H:i:s'),
-    		"status_id" => 1
-    		
+    		"status_id" => $contract_status['Open']
     	);
 
         $this->db->insert("contract", $insertArray);

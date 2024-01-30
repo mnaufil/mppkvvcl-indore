@@ -150,12 +150,12 @@ class PhysicalProgressApi extends REST_Controller
             $sheet_remark = $this->post('sheet_remark');
             $activities = $this->post('activities');
             $sheet_completion_file = $this->post('sheet_completion_file');
-            $status_id = $this->post('status_id');
+            // $status_id = $this->post('status_id');
 
             //Fetching sheet details using prev_pp_id
             $prev_sheet_data = $this->pp_model->getPreviousSheetDataAPI($prev_pp_id);
 
-            // $status_id = 2;
+            $status_id = 2;
             $is_draft = 0;
             
             //In case sheet is being saved, without saving any observations

@@ -63,7 +63,7 @@ class TKCWeeklyPlanApi extends REST_Controller
         $message = (empty($result)) ? 'No TKC Weekly Plans' : null;
         $status_code = 200;
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'result' => $data], REST_Controller::HTTP_OK);
 	}
 }
 

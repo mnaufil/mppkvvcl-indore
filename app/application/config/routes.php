@@ -248,6 +248,10 @@ $route['edit-division/(:num)'] = 'Division/editDivision/$1';
 $route['update-division'] = 'Division/updateDivision';
 $route['delete-division'] = 'Division/deleteDivision';
 
+/*TKC Weekly Plan*/
+$route['tkc-weekly-plan'] = 'TKCWeeklyPlan/index';
+$route['add-tkc-weekly-plan'] = 'TKCWeeklyPlan/addTKCWeeklyPlan';
+$route['save-tkc-weekly-plan'] = 'TKCWeeklyPlan/saveTKCWeeklyPlan';
 
 /*Security / Roles Module*/
 $route['roles'] = 'Security/roles';
@@ -287,7 +291,7 @@ $route['checkdatelessthan/(:any)/(:num)/(:any)'] = 'Setup/checkdatelessthan/$1/$
 /******** Api Routes Start ***************/
 $route['api/check-login'] = 'Api/checklogin';
 
-
+/*Physical Verification API*/
 $route['api/physical-progress'] = 'PhysicalProgressApi/index';
 $route['api/get-sheet-details'] = 'PhysicalProgressApi/get_ppsheet_details';
 $route['api/get-last-ncr-id'] = 'PhysicalProgressApi/get_last_ncr_id';
@@ -303,6 +307,9 @@ $route['api/get-prev-sheet-dates'] = 'PhysicalProgressApi/get_previous_sheet_dat
 $route['api/search-sheets'] = 'PhysicalProgressApi/search_sheets';
 $route['api/filter-data'] = 'PhysicalProgressApi/filter_data';
 $route['api/change-password'] = 'PhysicalProgressApi/change_password';
+
+/*TKC Weekly Plan API*/
+$route['api/tkc-weekly-plan-list'] = 'TKCWeeklyPlanApi/index';
 
 
 

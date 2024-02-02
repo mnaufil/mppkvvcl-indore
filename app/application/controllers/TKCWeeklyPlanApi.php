@@ -40,27 +40,24 @@ class TKCWeeklyPlanApi extends REST_Controller
 	{
 		$tkc_plan_result = $this->twp_model->getTKCWeeklyPlans();
 
-		$tkc_plan_data = [];
+		$data = [];
 		foreach ($tkc_plan_result as $key => $value) {
 			if ($key == 0) {
-				$tkc_plan_data['from_date'] = date('d-m-Y', strtotime($value['from_date']));
-				$tkc_plan_data['to_date'] = date('d-m-Y', strtotime($value['to_date']));
+				$data['from_date'] = date('d-m-Y', strtotime($value['from_date']));
+				$data['to_date'] = date('d-m-Y', strtotime($value['to_date']));
 			}
 			
-			$tkc_plan_data['daily_plan'][$key]['date'] = date('d-m-Y', strtotime($value['plan_date']));
-			$tkc_plan_data['daily_plan'][$key]['formatted_date'] = date('d M Y', strtotime($value['plan_date']));
-			$tkc_plan_data['daily_plan'][$key]['day'] = date('D', strtotime($value['plan_date']));
-			$tkc_plan_data['daily_plan'][$key]['lot_no'] = $value['package_no'];
-			$tkc_plan_data['daily_plan'][$key]['tkc'] = $value['contractor_name'];
-			$tkc_plan_data['daily_plan'][$key]['circle'] = $value['circle_name'];
-			$tkc_plan_data['daily_plan'][$key]['division'] = $value['division_name'];
-			$tkc_plan_data['daily_plan'][$key]['feeder'] = '123456';
-			$tkc_plan_data['daily_plan'][$key]['description'] = $value['description'];
-			$tkc_plan_data['daily_plan'][$key]['remark'] = $value['remark'];
+			$data['daily_plan'][$key]['date'] = date('d-m-Y', strtotime($value['plan_date']));
+			$data['daily_plan'][$key]['formatted_date'] = date('d M Y', strtotime($value['plan_date']));
+			$data['daily_plan'][$key]['day'] = date('D', strtotime($value['plan_date']));
+			$data['daily_plan'][$key]['lot_no'] = $value['package_no'];
+			$data['daily_plan'][$key]['tkc'] = $value['contractor_name'];
+			$data['daily_plan'][$key]['circle'] = $value['circle_name'];
+			$data['daily_plan'][$key]['division'] = $value['division_name'];
+			$data['daily_plan'][$key]['feeder'] = '123456';
+			$data['daily_plan'][$key]['description'] = $value['description'];
+			$data['daily_plan'][$key]['remark'] = $value['remark'];
 		}
-
-		$data['title'] = 'TKC Weekly Plan';
-		$data['result'] = $tkc_plan_data;
 
 		$errors = null;
         $message = (empty($result)) ? 'No TKC Weekly Plans' : null;

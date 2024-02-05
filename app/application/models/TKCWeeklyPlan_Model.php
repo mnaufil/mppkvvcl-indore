@@ -235,7 +235,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$this->db->join('tkc_plan_detail', 'tkc_plan_detail.tkc_plan_id = tkc_plan.tkc_plan_id', 'INNER');
 		$this->db->join('contract', 'contract.contract_id = tkc_plan_detail.contract_id', 'INNER');
 		$this->db->join('mst_circle', 'mst_circle.circle_id = tkc_plan_detail.circle_id', 'INNER');
-		$this->db->join('mst_division', 'mst_division.division_id = tkc_plan_detail.division_id', 'INNER')
+		$this->db->join('mst_division', 'mst_division.division_id = tkc_plan_detail.division_id', 'INNER');
 		$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1));
 
 		$query = $this->db->get();

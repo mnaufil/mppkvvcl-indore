@@ -26,7 +26,8 @@ class BSTableTKCWeeklyPlan {
             $addButton: null, // Jquery object of "Add" button
             onEdit: function() {}, // Called after editing (accept button clicked)
             onBeforeDelete: function() {}, // Called before deletion
-            onDelete: function() {}, // Called after deletion
+            onDelete: function() {
+            }, // Called after deletion
             onAdd: function() {}, // Called when added a new row
             advanced: { // Do not override advanced unless you know what youre doing
                 columnLabel: 'Actions',
@@ -229,20 +230,119 @@ class BSTableTKCWeeklyPlan {
             $('.toast').toast('show');
         } else {
             let $currentRow = $(button).parents('tr'); // access the row
-            // console.log($currentRow);
-            // return false;
-
-            // console.log(this.currentlyEditingRow($currentRow));
+            
             if (this.currentlyEditingRow($currentRow)) return; // not currently editing, return
 
-            /*let status = $currentRow.data('status');
-            console.log('status: ' + status);*/
-
-            // let row_id = $currentRow.data('row-id');
             let row_id = $currentRow.attr('data-row-id');
-            // console.log('row_id: ' + row_id); 
+
+            // Getting data of row being edited if previously filled
+            let currentRow_tds = $currentRow.find('td');
+
+            let lot_no, day, date_of_work, circle, division, feeder, description_of_work, remark;
+            $(currentRow_tds).each(function(index, value) {
+                if (index == 0 || index == 1) {
+                    return
+                }
+
+                let td_class = $(value).attr('class');
+
+                switch (td_class) {
+                    case 'lot-no':
+                        lot_no = $(value).text();
+                        break;
+                    case 'day':
+                        day = $(value).text();
+                        break;
+                    case 'date-of-work':
+                        date_of_work = $(value).text();
+                        break;
+                    case 'circle':
+                        circle = $(value).text();
+                        break;
+                    case 'division':
+                        division = $(value).text();
+                        break;
+                    case 'feeder':
+                        feeder = $(value).text();
+                        break;
+                    case 'description-of-work':
+                        description_of_work = $(value).text();
+                        break;
+                    case 'remark':
+                        remark = $(value).text();
+                        break;
+                }
+            });
+
+            if (lot_no) {
+                $('select[name="lotNo"] option[value="'+lot_no+'"]').prop('selected', true);
+            }
+
+            if (date_of_work) {
+                $('input[name="weekDates"]').val(date_of_work);
+            }
+
+            if (day) {
+                $('input[name="weekDay"]').val(day);
+            }
+
+            if (circle) {
+                $('select[name="circle"] option[value="'+circle+'"]').prop('selected', true);
+            }
+
+            if (division) {
+                $('select[name="division"] option[value="'+division+'"]').prop('selected', true);
+
+                getFeedersList(circle, division);
+            }
+
+            if (feeder) {
+                console.log(feeder);
+                let feeder_arr = feeder.split(',');
+                // let feeders_options = $('select[name="feeder[]"]');
+                // console.log($('select[name="feeder[]"]'));
+                // console.log(feeders_options);
+
+                setTimeout(function() {
+                    $.each(feeder_arr, function(index, value) {
+                        console.log(value);
+                        /*console.log($('feeder option[value="20674"]'));
+                        $('select[name="feeder[]"] option[value="'+value+'"]').attr('selected', 'selected');*/
+                        console.log($('.filter-multi').eq(1).find('input[value="20674"]'));
+                        let input = $('.filter-multi').eq(1).find('input[value="20674"]');
+                        let li = $(input).parent('label').parent('li');
+                        $(li).addClass('selected');
+
+                        console.log($(li).addClass('selected'));
+
+                        $('select[name="feeder[]').multipleSelect();
+                    });
+                }, 1000);
+
+
+
+                
+
+                // $('#feeder').val(feeder_arr);
+                /*$('select[name="feeder[]').multipleSelect('setSelects', feeder_arr);
+                $('select[name="feeder[]').multipleSelect('refresh');*/
+                console.log(feeder_arr);
+
+
+                // $('input[name="feeder"]').val(feeder);
+            }
+
+            if (description_of_work) {
+                $('textarea[name="description_of_work"]').val(description_of_work);
+            }
+
+            if (remark) {
+                $('input[name="remark"]').val(remark);
+            }
 
             $('#dailyPlanModal').attr('data-row-id', row_id);
+
+            initializeModalDaterangepicker();
 
             $('#dailyPlanModal').modal('show');
 
@@ -255,6 +355,12 @@ class BSTableTKCWeeklyPlan {
         this.options.onBeforeDelete($currentRow);
         $currentRow.remove();
         this.options.onDelete();
+
+        let table_rows = $('#new-add-weekly-tkc-plan-details tbody').find('tr');
+
+        if (table_rows.length == 0) {
+            form_change == false;
+        }
     }
     _rowAccept(button) {
         // Accept the changes to the row
@@ -295,26 +401,26 @@ class BSTableTKCWeeklyPlan {
         this._actionsModeNormal(button);
     }
     _actionAddRow() {
-        // console.log('here');
         // Add row to this table
 
         let $allRows = this.table.find('tbody tr');
         // console.log($allRows); return false;
         if ($allRows.length == 0) { // there are no rows. we must create them
             let $currentRow = this.table.find('thead tr'); // find header
+
             let $cols = $currentRow.find('th'); // read each header field
+
             // create the new row
             let newColumnHTML = '';
+            let actionsButtonsColumnHTML = this.actionsColumnHTML;
             $cols.each(function(e) {
                 let column = this; // Inner function this (column object)
 				// console.log("Add row = "+e);
                 if ($(column).attr('name') == 'bstable-actions') {
-                    newColumnHTML = newColumnHTML + actionsColumnHTML; // add action buttons
+                    newColumnHTML = newColumnHTML + actionsButtonsColumnHTML; // add action buttons
                 } else {
-					
-						newColumnHTML = newColumnHTML + '<td></td>';
-					}
-                                  
+					newColumnHTML = newColumnHTML + '<td></td>';
+				}
             });
             this.table.find('tbody').append('<tr>' + newColumnHTML + '</tr>');
         } else { // there are rows in the table. We will clone the last row

@@ -137,7 +137,7 @@
                                                                             <td class="date-of-work"></td>
                                                                             <td class="circle"></td>
                                                                             <td class="division"></td>
-                                                                            <td class="site-location"></td>
+                                                                            <td class="feeder"></td>
                                                                             <td class="description-of-work"></td>
                                                                             <td class="remark"></td>
                                                                         </tr>
@@ -150,9 +150,9 @@
                                                     <!-- Row4 -->
                                                     <div class="row">
                                                         <!-- Submit Button -->
-                                                        <div class="col-xl-12 mt-3 mb-3">
-                                                            <button type="submit" class="btn btn-warning" id="draft-plan">Save as draft</button>
-                                                            <button type="submit" class="btn btn-success" id="save-plan">Submit</button>
+                                                        <div class="col-xl-12 mt-3 mb-3" id="weekly-tkc-plan-form-btns">
+                                                            <button type="submit" class="btn btn-warning" id="draft-plan" data-type="draft">Save as draft</button>
+                                                            <button type="submit" class="btn btn-success" id="save-plan" data-type="submit">Submit</button>
                                                             <a href="<?php echo base_url('tkc-weekly-plan'); ?>" type="button" class="btn btn-primary">Back</a>
                                                         </div>
                                                     </div>
@@ -170,7 +170,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h6 class="modal-title" id="dailyPlanModalLabel">Daily Plan</h6>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close btn-close-modal" data-bs-dismiss="modal" aria-label="Close"></button>
 
                                             <!-- Toaster Alert -->
                                             <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-animation="true" id="daily-plan-alert">
@@ -235,15 +235,16 @@
                                                         <label class="form-label" for="division">Select Division</label>
                                                         <select name="division" id="division" class="form-control form-select" data-bs-placeholder="Select Division">
                                                             <option value="select" selected disabled>Select Division</option>
-                                                            <?php foreach ($divisions as $key => $value) { ?>
-                                                            <option value="<?php echo $value['division_name']; ?>"><?php echo $value['division_name']; ?></option>    
-                                                            <?php } ?>
+                                                            <?php //foreach ($divisions as $key => $value) { ?>
+                                                            <!-- <option value="<?php //echo $value['division_name']; ?>"><?php //echo $value['division_name']; ?></option>     -->
+                                                            <?php //} ?>
                                                         </select>
                                                     </div>
-                                                    <!-- Site Location / Feeder Name -->
+                                                    <!-- Feeder ID -->
                                                     <div class="col-xl-4">
-                                                        <label class="form-label" for="site_location">Site Location / Feeder Name</label>
-                                                        <input type="text" class="form-control" name="site_location" id="site_location" value="">  
+                                                        <label class="form-label" for="feeder">Feeder ID</label>
+                                                        <!-- <input type="text" class="form-control" name="feeder" id="feeder" value=""> -->
+                                                        <select name="feeder[]" id="feeder" multiple="multiple" class="filter-multi" data-bs-placeholder="Select Feeder"></select>
                                                     </div>
                                                 </div>
                                                 <!-- Row3 -->
@@ -262,7 +263,7 @@
                                             </form>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary btn-close-modal" data-bs-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary" id="btn-saveDailyPlan">Save</button>
                                         </div>
                                     </div>
@@ -360,9 +361,18 @@
         <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
+        <!-- MULTI JS -->
+        <script src="<?php echo base_url('assets/plugins/multi/multi.min.js'); ?>"></script>
+
+        <!-- MULTIPLE SELECT JS -->
+        <script src="<?php echo base_url('assets/plugins/multipleselect/multiple-select.js'); ?>"></script>
+        <script src="<?php echo base_url('assets/plugins/multipleselect/multi-select.js'); ?>"></script>
+
         <script type="text/javascript">
             let from_date, to_date;
             let weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
+            let division_data = <?php echo json_encode($divisions) ?>;
+            var form_change = false;            
 
             $('input[name="weeklyPlanDateRange"]').daterangepicker({
                 autoUpdateInput: false,
@@ -387,17 +397,7 @@
                     $(this).val(picker.startDate.format('DD-MM-YYYY') +' - '+ picker.endDate.format('DD-MM-YYYY'));
                     $('#weeklyPlanHeading').find('h4 > span').text(picker.startDate.format('DD-MM-YYYY') +' To '+ picker.endDate.format('DD-MM-YYYY'));
 
-                    // Initializing the daterangepicker on modal
-                    $('input[name="weekDates"]').daterangepicker({
-                        singleDatePicker: true,
-                        parentEl: '#dailyPlanModal',
-                        autoUpdateInput: false,
-                        minDate: from_date,
-                        maxDate: to_date,
-                        locale: {
-                            format: 'DD-MM-YYYY'
-                        }
-                    });
+                    initializeModalDaterangepicker();
 
                     $('#weeklyPlan').attr('hidden', false);
                 } else {
@@ -411,19 +411,75 @@
                 }
             });
 
-            $('input[name="weekDates"]').on('apply.daterangepicker', function(ev, picker) {
-                let selected_date = picker.startDate.format('DD-MM-YYYY');
-                $(this).val(selected_date);
+            function initializeModalDaterangepicker() {
+                let start_date = $('input[name="weeklyPlanDateRange"]').data('daterangepicker').startDate._d;
+                let end_date = $('input[name="weeklyPlanDateRange"]').data('daterangepicker').endDate._d;
 
-                let day = getModifiedDate(selected_date).getDay(); //Returns day of the week
-                let day_name = weekDays[day];
-                $('input[name="weekDay"]').val(day_name);
-                $('input[name="weekDay"]').prop('readonly', true);
+                $('input[name="weekDates"]').daterangepicker({
+                    singleDatePicker: true,
+                    parentEl: '#dailyPlanModal',
+                    autoUpdateInput: false,
+                    minDate: start_date,
+                    maxDate: end_date,
+                    locale: {
+                        format: 'DD-MM-YYYY'
+                    }
+                });
+
+                $('input[name="weekDates"]').on('apply.daterangepicker', function(ev, picker) {
+                    let selected_date = picker.startDate.format('DD-MM-YYYY');
+                    $(this).val(selected_date);
+
+                    let day = getModifiedDate(selected_date).getDay(); //Returns day of the week
+                    let day_name = weekDays[day];
+                    $('input[name="weekDay"]').val(day_name);
+                    $('input[name="weekDay"]').prop('readonly', true);
+                });
+            }
+
+            $('select[name="circle"]').on('change', function(event) {
+                let selected_circle = $(this).val();
+
+                let division_arr = division_data[selected_circle];
+
+                let option_html = '';
+                option_html += '<option value="select" selected disabled>Select Division</option>';
+
+                $.each(division_arr, function(index, value) {
+                    option_html += '<option value="'+value+'">'+value+'</option>';
+                });
+
+                $('select[name="division"]').empty().append(option_html);
             });
 
-            /*$('#addDailyPlan').submit(function(event) {
-                alert('here');
-            });*/
+            $('select[name="division"]').on('change', function(event) {
+                let selected_division = $(this).val();
+                let selected_cirlce = $('select[name="circle"] option:selected').val();
+
+                getFeedersList(selected_cirlce, selected_division);
+            });
+
+            function getFeedersList(circle_name, division_name) {
+                // Ajax call to get list of feeders belonging to selected circle and division
+                $.ajax({
+                    type: 'POST',
+                    url: '<?php echo base_url('get-feeders-list') ?>',
+                    dataType: 'json',
+                    data: {circle_name: circle_name, division_name: division_name},
+                    success: function(response) {
+                        let feeder_html = '';
+
+                        $.each(response.feeder_list, function(index, value) {
+                            feeder_html += '<option value="'+value.feeder_id+'">'+value.feeder_id+'</option>';
+                        });
+
+                        $('select[name="feeder[]"]').empty().append(feeder_html).multipleSelect();
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr);
+                    }
+                });
+            }
 
             $('#table2-new-row-button-weekly-tkc-plan-details').click(function(event) {
                 event.preventDefault();
@@ -447,7 +503,13 @@
                     let day = $('input[name="weekDay"]').val();
                     let circle = $('select[name="circle"] option:selected').val();
                     let division = $('select[name="division"] option:selected').val();
-                    let site_location = $('input[name="site_location"]').val();
+
+                    let selected_feeders = $('select[name="feeder[]"] option:selected');
+                    let feeders_arr = [];
+                    $.each(selected_feeders, function(index, value) {
+                        feeders_arr.push($(value).attr('value'));
+                    });
+
                     let work_description = $('textarea[name="description_of_work"]').val();
                     let remark = $('input[name="remark"]').val();
 
@@ -467,8 +529,8 @@
                         $(tr).find('.division').text(division);
                     }
 
-                    if (site_location != '') {
-                        $(tr).find('.site-location').text(site_location);
+                    if (!$.isEmptyObject(feeders_arr)) {
+                        $(tr).find('.feeder').text(feeders_arr.join(','));
                     }
 
                     if (work_description != '') {
@@ -480,112 +542,164 @@
                     }
 
                     $('#dailyPlanModal').modal('hide');
+                    $('select[name="feeder[]"]').empty().multipleSelect();
                     $('#addDailyPlan').trigger('reset');
 
                     let tr_btn = $(tr).find('#bEdit');
                     _actionsModeNormal(tr_btn);
+
+                    form_change = true;
                 }
             });
 
-            $('#addTKCWeeklyPlan').submit(function(event) {
-                // console.log($(this)); return false;
-                // alert('here');
+            $('#addTKCWeeklyPlan button[type="submit"]').click(function(event) {
+                let selected_submit_btn = $(this).data('type');
+                // console.log(selected_submit_btn); return false;
                 let weekly_plan_form = $('#addTKCWeeklyPlan')[0];
-                // console.log(weekly_plan_form); 
+
+                let selected_date_range = $('input[name="weeklyPlanDateRange"]').val();
+
+                let table_rows = $('#new-add-weekly-tkc-plan-details tbody').find('tr');
+
+                if (selected_date_range == '') {
+                    $('.toast-body').text('Select a date range of 7 days starting from Monday');
+                    $('.toast').toast('show');
+
+                    return false;
+                } else if (form_change == false || table_rows.length == 0) {
+                    $('.toast-body').text('Kindly enter weekly plan before submitting.');
+                    $('.toast').toast('show');
+
+                    return false;
+                } else if (selected_submit_btn == 'submit') {
+                    let no_values_count = 0;
+                    let days_count = 7;
+                    // console.log(table_rows);
+
+                    let days_arr = [];
+                    $(table_rows).each(function(index, value){
+                        days_arr.push($(value).find('td:eq(3)').text());
+                    });
+
+                    $.each(weekDays, function(index, value) {
+                        if ($.inArray(value, days_arr) == -1) {
+                            days_count--;
+                        }
+                    });
+
+                    if (days_count != 7) {
+                        $('.toast-body').text('Kindly enter weekly plan for the entire week before submitting.');
+                        $('.toast').toast('show');
+
+                        return false;
+                    } else if (days_count == 7) {
+                        $(table_rows).each(function(index, value) {
+                            $(value).find('td').each(function(ind, val){
+                                if (ind == 0 || ind == 1 || ind == 2 || ind == 3 || ind == 4) {
+                                    return
+                                }
+
+                                if ($(val).text() == '') {
+                                    no_values_count++;
+                                }
+                            });
+                        });
+
+                        /*console.log('no_values_count:');
+                        console.log(no_values_count);*/
+                        if (no_values_count > 0) {
+                            $('.toast-body').text('Kindly fill data for weekly plan for the entire week before submitting.');
+                            $('.toast').toast('show');
+
+                            return false;
+                        } else if (no_values_count == 0) {
+                            saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
+                        }
+                    }
+                } else if (selected_submit_btn == 'draft') {
+                    saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
+                }
+
+                event.preventDefault();
+            });
+
+            function saveWeeklyPlan(weekly_plan_form, selected_submit_btn) {
+                let form_btns = $(weekly_plan_form).find('#weekly-tkc-plan-form-btns .btn');
+                // console.log(form_btns); return false;
+
+                $(form_btns).each(function(index, value) {
+                    $(value).prop('disabled', true);
+                });
 
                 let formData = new FormData(weekly_plan_form);
-                /*console.log('formData:');
-                console.log(formData);*/
 
                 let trs = $('#new-add-weekly-tkc-plan-details tbody').find('tr');
 
                 let weekly_plan_array = [];
-
+                
                 $(trs).each(function(index, value) {
                     let tds = $(value).find('td');
 
-                    // let plan_array = [];
                     let plan_array = new Object();
-                    // let sr_no, lot_no, day, date_of_work, circle, division, site_location, work_description, remark;
+
                     $(tds).each(function(ind, val) {
                         if (ind == 0) {
                             return;
                         }
 
                         let field = $(val).attr('class').replace(/-/g,'_');
-                        /*field.replace(/-/g,'_');
-                        console.log('field: ' +field);
-                        console.log(field.replace(/-/g,'_'));*/
-                        // console.log('field: ' +field);
-                        
-
-                        /*if (field == 'sr-no') {
-                            sr_no = $(val).text();
-                        } else if (field == 'lot-no') {
-                            lot_no = $(val).text();
-                        } else if (field == 'day') {
-                            day = $(val).text();
-                        } else if (field == 'date-of-work') {
-                            date_of_work = $(val).text();
-                        } else if (field == 'circle') {
-                            circle = $(val).text();
-                        } else if (field == 'division') {
-                            division = $(val).text();
-                        } else if (field == 'site-location') {
-                            site_location = $(val).text();
-                        } else if (field == 'description-of-work') {
-                            work_description = $(val).text();
-                        } else if (field == 'remark') {
-                            remark = $(val).text();
-                        }*/
-
                         plan_array[field] = $(val).text();
-                        
-                        // return false;
                     });
 
-                    /*console.log('plan_array:');
-                    console.log(plan_array);*/
-
-                    /*console.log('plan_array stringify:');
-                    console.log(JSON.stringify(plan_array));*/
-
-                    // return false;
-
-                    // weekly_plan_array.push({'sr_no':sr_no, 'lot_no':lot_no, 'day':day, 'date_of_work':date_of_work, 'circle':circle, 'division':division, 'site_location':site_location, 'work_description':work_description, 'remark':remark});
                     weekly_plan_array.push(plan_array);
-                    // formData.append('weekly_plan_array[]', JSON.stringify(plan_array));
                 });
 
-                /*console.log('weekly_plan_array:');
-                console.log(weekly_plan_array);*/
-
-                // return false;
-
                 formData.append('weekly_plan_array', JSON.stringify(weekly_plan_array));
-                /*console.log('formData:');
-                console.log(formData);*/
+
+                if (selected_submit_btn == 'submit') {
+                    formData.append('is_draft', 0);
+                } else if (selected_submit_btn == 'draft') {
+                    formData.append('is_draft', 1);
+                }
 
                 let form_url = $(weekly_plan_form).attr('action');
-                // console.log('form_url: ' + form_url);
 
                 // Ajax call to save the weekly plan
                 $.ajax({
                     type: 'POST',
                     url: form_url,
-                    // dataType: 'json',
+                    dataType: 'json',
                     data: formData,
                     processData: false,
                     contentType: false,
                     success: function(response) {
                         console.log(response);
+
+                        /*if (response) {
+                            window.location.replace('<?php echo base_url('tkc-weekly-plan') ?>');    
+                        }*/
+                        $('.toast-body').text(response.message);
+                        $('.toast').toast('show');
+
+                        setTimeout(function() {
+                            window.location.replace('<?php echo base_url('tkc-weekly-plan') ?>');
+                        }, 2000);
+
                     },
                     error: function(xhr, status, error) {
 
                     }
                 });
+            }
 
-                event.preventDefault();
+            $('.btn-close-modal').click(function(event) {
+                let current_tr = $('#new-add-weekly-tkc-plan-details tbody').find('tr[data-status="editing"]');
+                let btn_accept = $(current_tr).find('#bAcep');
+
+                $('select[name="feeder[]"]').empty().multipleSelect();
+                $('#addDailyPlan').trigger('reset');
+
+                _actionsModeNormal(btn_accept);
             });
 
             function _actionsModeNormal(button) {

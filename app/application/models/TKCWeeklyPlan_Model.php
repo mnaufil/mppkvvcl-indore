@@ -85,11 +85,60 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getDivisionsAssignedToUser($division_ids)
+	/*public function getDivisionsAssignedToUser($division_ids)
 	{
 		$this->db->select('division_id, division_name');
 		$this->db->where_in('division_id', $division_ids);
-		$query = $this->db->get_where('mst_division');
+		$query = $this->db->get('mst_division');
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+		} else {
+			$query_result = [];
+			
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}*/
+
+	public function getCircleWiseDivision($division_ids)
+	{
+		$this->db->select('mst_division.division_name, mst_circle.circle_name');
+		$this->db->from('mst_division');
+		$this->db->join('mst_circle', 'mst_division.circle_id = mst_circle.circle_id', 'INNER');
+		$this->db->where_in('mst_division.division_id', $division_ids);
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+		} else {
+			$query_result = [];
+			
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getCircleDivisionWiseFeederList($circle_id, $division_id)
+	{
+		$this->db->select('feeder_id');
+		$this->db->where(array('circle_id' => $circle_id, 'division_id' => $division_id));
+		$this->db->order_by('feeder_id', 'ASC');
+
+		$query = $this->db->get('contract_location');
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -112,7 +161,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$data = array(
 			'from_date' => date('Y-m-d', strtotime($from_date)),
 			'to_date' => date('Y-m-d', strtotime($to_date)),
-			'is_draft' => $is_draft,
+			'is_draft' => (int) $is_draft,
 			'is_active' => 1,
 			'createdby' => $this->getLoggedInUserID(),
 			'createddate' => date('Y-m-d H:i:s')
@@ -122,7 +171,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 		if (!$query) {
 			$error = $this->db->error();	
-			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			echo 'hereError Code: '.$error['code'].'<br> Error Message: '.$error['message'];
 			die();
 		} else {
 			$insert_id = $this->db->insert_id();
@@ -181,13 +230,12 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 	public function getTKCWeeklyPlans()
 	{
-		$this->db->select('tkc_plan.from_date, tkc_plan.to_date, tkc_plan_detail.contract_id, tkc_plan_detail.plan_date, tkc_plan_detail.circle_id, tkc_plan_detail.division_id, tkc_plan_detail.description, tkc_plan_detail.remark, tkc_plan_detail_feeder.contract_location_id, contract.contractor_name, contract.package_no, mst_circle.circle_name, mst_division.division_name');
+		$this->db->select('tkc_plan.from_date, tkc_plan.to_date, tkc_plan_detail.tkc_plan_detail_id, tkc_plan_detail.contract_id, tkc_plan_detail.plan_date, tkc_plan_detail.circle_id, tkc_plan_detail.division_id, tkc_plan_detail.description, tkc_plan_detail.remark, contract.contractor_name, contract.package_no, mst_circle.circle_name, mst_division.division_name');
 		$this->db->from('tkc_plan');
 		$this->db->join('tkc_plan_detail', 'tkc_plan_detail.tkc_plan_id = tkc_plan.tkc_plan_id', 'INNER');
-		$this->db->join('tkc_plan_detail_feeder', 'tkc_plan_detail_feeder.tkc_plan_detail_id = tkc_plan_detail.tkc_plan_detail_id', 'INNER');
 		$this->db->join('contract', 'contract.contract_id = tkc_plan_detail.contract_id', 'INNER');
 		$this->db->join('mst_circle', 'mst_circle.circle_id = tkc_plan_detail.circle_id', 'INNER');
-		$this->db->join('mst_division', 'mst_division.division_id = tkc_plan_detail.division_id', 'INNER');
+		$this->db->join('mst_division', 'mst_division.division_id = tkc_plan_detail.division_id', 'INNER')
 		$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1));
 
 		$query = $this->db->get();
@@ -202,6 +250,40 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 			if ($query->num_rows() > 0) {
 				$query_result = $query->result_array();
+
+				foreach ($query_result as $key => $value) {
+					$feeders_data = $this->getTKCWeeklyPlansFeederDetails($value['tkc_plan_detail_id']);
+					$query_result[$key]['feeders'] = implode(',', $feeders_data);
+				}
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getTKCWeeklyPlansFeederDetails($tkc_plan_detail_id)
+	{
+		$this->db->select('contract_location.feeder_id');
+		$this->db->from('tkc_plan_detail_feeder');
+		$this->db->join('contract_location', 'tkc_plan_detail_feeder.contract_location_id = contract_location.contract_location_id', 'INNER');
+		$this->db->where(array('tkc_plan_detail_feeder.tkc_plan_detail_id' => $tkc_plan_detail_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['feeder_id']);
+				}
 			}
 
 			return $query_result;
@@ -274,10 +356,10 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getContractLocationIDBySite($site_location)
+	public function getContractLocationIDByFeederID($feeder)
 	{
 		$this->db->select('contract_location_id');
-		$query = $this->db->get_where('contract_location', array('location_name' => $site_location));
+		$query = $this->db->get_where('contract_location', array('feeder_id' => $feeder));
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {

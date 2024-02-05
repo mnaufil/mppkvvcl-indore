@@ -7,6 +7,11 @@ class TKCWeeklyPlan extends CI_Controller
 		parent::__construct();
 
 		$this->load->model('TKCWeeklyPlan_Model', 'twp_model');
+
+		if(!$this->session->isUserLoggedIn)
+        { 
+        	redirect('login'); 
+        }
 	}
 
 	public function index()
@@ -24,11 +29,13 @@ class TKCWeeklyPlan extends CI_Controller
 		$data['circles'] = $this->twp_model->getCirclesAssignedToUser($user_circles_ids);
 
 		$user_divisions_ids = $_SESSION['myDivision'];
-		$data['divisions'] = $this->twp_model->getDivisionsAssignedToUser($user_divisions_ids);
+		// $data['divisions'] = $this->twp_model->getDivisionsAssignedToUser($user_divisions_ids);
+		$circle_wise_division_data = $this->twp_model->getCircleWiseDivision($user_divisions_ids);
+		$data['divisions'] = $this->sortCircleWiseDivisionData($circle_wise_division_data);
 
 		$data['contractor_name'] = $_SESSION['loggedData']->username;
-		// echo '<pre>'; print_r($_SESSION); echo '</pre>'; die();
 
+		$data['title'] = 'TKC Weekly Plan';
 
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('tkc-weekly-plan/add-tkc-weekly-plan', $data);
@@ -36,16 +43,17 @@ class TKCWeeklyPlan extends CI_Controller
 
 	public function saveTKCWeeklyPlan()
 	{
+		// echo '<pre>'; print_r($_POST); echo '</pre>'; die();
 		// Default Response
 		http_response_code(200);
-      	$response['message'] = 'Save TKC Weekly Plan success';
+      	$response['message'] = 'Saved TKC Weekly Plan successfully';
 
       	if (!empty($_POST)) {
       		$week_date_range = $this->input->post('weeklyPlanDateRange');
       		$contractor = $this->input->post('contractorTKC');
       		$weekly_plan_array = json_decode($this->input->post('weekly_plan_array'));
 
-      		$is_draft = 0;
+      		$is_draft = $this->input->post('is_draft');
 
       		$week_date_arr = explode(' - ', $week_date_range);
       		$from_date = $week_date_arr[0];
@@ -69,22 +77,28 @@ class TKCWeeklyPlan extends CI_Controller
       				$tkc_plan_detail_id = $this->twp_model->saveTKCWeeklyPlanDetails($tkc_plan_id, $contract_id, $date_of_work, $circle_id, $division_id, $work_description, $remark);
 
       				if ($tkc_plan_detail_id) {
-      					$site_location = $value->site_location;
-      					$contract_location_id = $this->twp_model->getContractLocationIDBySite($site_location);
+      					$feeder = $value->feeder;
 
-      					// Saving data in tkc_plan_detail_feeder
-      					$tkc_plan_detail_feeder_id = $this->twp_model->saveTKCWeeklyPlanFeederDetails($tkc_plan_detail_id, $contract_location_id);
+      					if ($feeder) {
+      						$feeders_list = explode(',', $feeder);
 
-      					if (!$tkc_plan_detail_feeder_id) {
-      						http_response_code(400);
-	      					$response['message'] = 'Error saving data in tkc_plan_detail_feeder';	
+      						foreach ($feeders_list as $key => $value) {
+      							$contract_location_id = $this->twp_model->getContractLocationIDByFeederID($value);
+
+      							// Saving data in tkc_plan_detail_feeder
+		      					$tkc_plan_detail_feeder_id = $this->twp_model->saveTKCWeeklyPlanFeederDetails($tkc_plan_detail_id, $contract_location_id);
+
+		      					if (!$tkc_plan_detail_feeder_id) {
+		      						http_response_code(400);
+			      					$response['message'] = 'Error saving data in tkc_plan_detail_feeder';	
+		      					}
+      						}
       					}
       				} else {
       					http_response_code(400);
       					$response['message'] = 'Error saving data in tkc_plan_detail';
       				}
       			}
-      			
       		} else {
       			http_response_code(400);
       			$response['message'] = 'Error saving data in tkc_plan';
@@ -93,6 +107,35 @@ class TKCWeeklyPlan extends CI_Controller
       		http_response_code(400);
       		$response['message'] = 'No Input';
       	}
+
+      	echo json_encode($response);
+	}
+
+	public function sortCircleWiseDivisionData($circle_wise_division_data)
+	{
+		$sorted_circle_wise_division_data = [];
+		foreach ($circle_wise_division_data as $key => $value) {
+			$sorted_circle_wise_division_data[$value['circle_name']][] = $value['division_name'];
+		}
+
+		return $sorted_circle_wise_division_data;
+	}
+
+	public function getFeedersList()
+	{
+		$response['feeder_list'] = [];
+
+		if (!empty($_POST)) {
+			$circle_name = $this->input->post('circle_name');
+			$division_name = $this->input->post('division_name');
+
+			$circle_id = $this->twp_model->getCircleID($circle_name);
+			$division_id = $this->twp_model->getDivisionID($division_name);
+
+			$response['feeder_list'] = $this->twp_model->getCircleDivisionWiseFeederList($circle_id, $division_id);
+		}
+
+		echo json_encode($response);
 	}
 }
 

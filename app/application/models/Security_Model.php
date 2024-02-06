@@ -213,16 +213,14 @@ class Security_Model extends CI_Model
         //$this->db->where("mst_region.contract_id", $contractID);         
         $this->db->from('mst_user mu1');
         $this->db->join('mst_role', 'mst_role.role_id  = mu1.role_id', 'inner');
-        $this->db->join('mst_user mu2', 'mu1.reportingto_user_id = mu2.user_id', 'INNER');
+        $this->db->join('mst_user mu2', 'mu1.reportingto_user_id = mu2.user_id', 'LEFT');
        // $this->db->join('mst_status', 'mst_status.status_id  = mst_user.is_active AND mst_status.module_id = 18', 'inner');
         $query = $this->db->get();
         // echo $this->db->last_query(); die;
-
                 
         $result['userslist'] = $query->result();
 
         return $result;
-
     }
 
     function loadSingleUsers($userId)

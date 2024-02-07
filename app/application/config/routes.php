@@ -312,6 +312,9 @@ $route['api/change-password'] = 'PhysicalProgressApi/change_password';
 /*TKC Weekly Plan API*/
 $route['api/tkc-weekly-plan-list'] = 'TKCWeeklyPlanApi/index';
 
+/*PS Dashboard API*/
+$route['api/authentication-token'] = 'PSDashboardApi/authenticateUser';
+$route['api/physical-verification-data'] = 'PSDashboardApi/getFeedersData';
 
 
 /******** Api Routes End ***************/

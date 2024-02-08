@@ -39,14 +39,9 @@ class PSDashboardApi extends REST_Controller
 		$this->load->model('PSDashboardApi_Model', 'psdashboard_model');
 
 		$path = base_url().'app/';
-		echo 'path: <pre>'; print_r($path); echo '</pre>';
 
-		echo '<pre>'; print_r($_SERVER); echo '</pre>';
-
-		echo 'directory path: <pre>'; print_r(__DIR__ . '/'); echo '</pre>'; die();
-
-		// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/');
-		$dotenv = Dotenv\Dotenv::createImmutable($path);
+		$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 2). '/');
+		// $dotenv = Dotenv\Dotenv::createImmutable($path);
 		$dotenv->load();
 
 		date_default_timezone_set("Asia/Calcutta");

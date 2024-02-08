@@ -38,7 +38,7 @@ class PSDashboardApi extends REST_Controller
 		parent::__construct();
 		$this->load->model('PSDashboardApi_Model', 'psdashboard_model');
 
-		$path = base_url();
+		$path = base_url().'app/';
 
 		// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/');
 		$dotenv = Dotenv\Dotenv::createImmutable($path);

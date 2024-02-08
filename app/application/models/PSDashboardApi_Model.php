@@ -32,22 +32,40 @@ class PSDashboardApi_Model extends CI_Model
 
 	public function getFeedersData($date, $lot_no)
 	{
-		$query = $this->db->query("CALL sp_api_physical_verification_data(1, '".$date."', ".$lot_no.")");
-		// echo $this->db->last_query(); die();
+		$query_result = $this->getMultipleQueryResult("CALL sp_api_physical_verification_data(1, '".$date."', ".$lot_no.")");
 
-		if (!$query) {
-			$error = $this->db->error();    
-            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
-            die();
-		} else {
-			$query_result = [];
-			
-			if ($query->num_rows() > 0) {
-				$query_result = $query->result_array();
-			}
+		return $query_result;
+	}
 
-			return $query_result;
+	public function getMultipleQueryResult($query)
+	{
+		if (empty($query)) {
+			return false;
 		}
+
+		$index = 0;
+		$query_result = [];
+		$query_result1 = [];
+
+		// execute multi result query
+		if (mysqli_multi_query($this->db->conn_id, $query)) {
+			do {				
+				if (false != $result = mysqli_store_result($this->db->conn_id)) {
+
+					$rowID = 0;
+					while ($row = $result->fetch_assoc()) {
+						$query_result1[$rowID] = $row;
+						$rowID++;
+					}
+
+					$query_result[$index] = $query_result1;
+				}
+
+				$index++;
+			} while (mysqli_next_result($this->db->conn_id));
+		}
+
+		return $query_result;
 	}
 }
 

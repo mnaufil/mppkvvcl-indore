@@ -1,4 +1,5 @@
 <?php error_reporting(E_ERROR | E_PARSE);
+ini_set('max_execution_time', '0'); 
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
 	header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -41,9 +42,7 @@ class PSDashboardApi extends REST_Controller
 
 		// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/');
 		$dotenv = Dotenv\Dotenv::createImmutable($path);
-		// echo 'dotenv<pre>'; print_r(__DIR__ . '/'); echo '</pre>'; die();
 		$dotenv->load();
-		// echo 'dotenv<pre>'; print_r($dotenv->load()); echo '</pre>'; die();
 
 		date_default_timezone_set("Asia/Calcutta");
 	}
@@ -73,10 +72,8 @@ class PSDashboardApi extends REST_Controller
 			            $status_code = 400;
 			            $data = [];
 					} else {
-						// echo 'validate_token: <pre>'; print_r($validate_token); echo '</pre>';
-
 						$date = (!empty($this->post('date'))) ? date('Y-m-d', strtotime($this->post('date'))) : date('Y-m-d');
-						$lot_no = (isset($_POST['lot_no']) && !empty($this->post('lot_no'))) ? $this->post('lot_no') : 'NULL';
+						$lot_no = (!empty($this->post('lot_no'))) ? $this->post('lot_no') : 'NULL';
 
 						/*if (empty($date)) {
 							$errors = 'Empty POST Request';
@@ -86,19 +83,37 @@ class PSDashboardApi extends REST_Controller
 						}*/
 
 						$feeders_data = $this->psdashboard_model->getFeedersData($date, $lot_no);
-						echo 'feeders_data: <pre>'; print_r($feeders_data); echo '</pre>'; die();
 
+						$feeder_details = $feeders_data[0];
+						$feeder_progress = $feeders_data[1];
+
+						foreach ($feeder_details as $fd_key => $fd_value) {
+							$data[$fd_key]['lot_no'] = $fd_value['package_group_no'];
+							$data[$fd_key]['contractor'] = $fd_value['contractor_name'];
+							$data[$fd_key]['circle'] = $fd_value['circle_name'];
+							$data[$fd_key]['vidhansabha'] = $fd_value['vidhansabha'];
+							$data[$fd_key]['district'] = $fd_value['district'];
+							$data[$fd_key]['division'] = $fd_value['division_name'];
+							$data[$fd_key]['substation'] = $fd_value['location_name'];
+							$data[$fd_key]['typeofwork'] = $fd_value['typeofwork'];
+							$data[$fd_key]['feeder_id'] = $fd_value['feeder_id'];
+							$data[$fd_key]['scope_as_per_award'] = [];
+							$data[$fd_key]['work_completed'] = [];
+
+							foreach ($feeder_progress as $fp_key => $fp_value) {
+								if ($fd_value['feeder_id'] == $fp_value['feeder_id']) {
+									$data[$fd_key]['scope_as_per_award'][$fp_value['report_head']] = $fp_value['totalAwardQty'];
+									$data[$fd_key]['work_completed'][$fp_value['report_head']] = $fp_value['workProgressQty'];
+								}
+							}
+						}
+
+						$errors = NULL;
+			            $message = NULL;
+			            $status_code = 200;
 					}
 				}
 			}
-
-			die();
-
-
-
-			
-
-
 		} else {
 			$errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
@@ -161,29 +176,17 @@ class PSDashboardApi extends REST_Controller
 	public function validate_jwt_token($jwt, $secret_key)
 	{
 		try {
-	        // return JWT::decode($jwt, $secret_key, array('HS512'));
 	        return JWT::decode($jwt, new Key($secret_key, 'HS512'));
 	    } catch (ExpiredException $e) {
 	        return new Exception('Token expired');
-	        // return get_class($e);
 	    } catch (SignatureInvalidException $e) {
-	        // throw new Exception('Invalid token signature');
 	        return new Exception('Invalid token signature');
-	        // return get_class($e);
 	    } catch (BeforeValidException $e) {
-	        // throw new Exception('Token not valid yet');
 	        return new Exception('Token not valid yet');
-	        // return get_class($e);
 	    } catch (Exception $e) {
-	        // throw new Exception('Invalid token');
 	        return new Exception('Invalid token');
-	        // return get_class($e);
 	    }
 	}
-
-
 }
-
-
 
 ?>

@@ -38,10 +38,7 @@ class PSDashboardApi extends REST_Controller
 		parent::__construct();
 		$this->load->model('PSDashboardApi_Model', 'psdashboard_model');
 
-		$path = base_url().'app/';
-
 		$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__, 2). '/');
-		// $dotenv = Dotenv\Dotenv::createImmutable($path);
 		$dotenv->load();
 
 		date_default_timezone_set("Asia/Calcutta");

@@ -104,7 +104,7 @@ class PSDashboardApi extends REST_Controller
 								}
 							}
 
-							$data[$fd_key]['BOQ_cost'] = $fd_value['BoQCost'];
+							$data[$fd_key]['BOQ_cost'] = number_format($fd_value['BoQCost'], 2);
 							$data[$fd_key]['estimated_executed_cost'] = $fd_value['EstimatedExecutedCost'];
 							$data[$fd_key]['status_of_work'] = $fd_value['status'];
 						}

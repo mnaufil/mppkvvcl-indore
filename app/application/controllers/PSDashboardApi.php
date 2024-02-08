@@ -41,6 +41,10 @@ class PSDashboardApi extends REST_Controller
 		$path = base_url().'app/';
 		echo 'path: <pre>'; print_r($path); echo '</pre>';
 
+		echo '<pre>'; print_r($_SERVER); echo '</pre>';
+
+		echo 'directory path: <pre>'; print_r(__DIR__ . '/'); echo '</pre>'; die();
+
 		// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/');
 		$dotenv = Dotenv\Dotenv::createImmutable($path);
 		$dotenv->load();

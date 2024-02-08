@@ -103,6 +103,10 @@ class PSDashboardApi extends REST_Controller
 									$data[$fd_key]['work_completed'][$fp_value['report_head']] = $fp_value['workProgressQty'];
 								}
 							}
+
+							$data[$fd_key]['BOQ_cost'] = $fd_value['BoQCost'];
+							$data[$fd_key]['estimated_executed_cost'] = $fd_value['EstimatedExecutedCost'];
+							$data[$fd_key]['status_of_work'] = $fd_value['status'];
 						}
 
 						$errors = NULL;

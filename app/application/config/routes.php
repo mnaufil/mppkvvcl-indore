@@ -280,7 +280,7 @@ $route['generatesession'] = 'Setsession/generatesession';
 $route['viewsession'] = 'Setsession/viewsession';
 $route['destroysession'] = 'Setsession/destroysession';
 $route['checkcontractstagecount'] = 'Setup/checkcontractstagecount';
-$route['checkrowboq/(:num)/(:num)'] = 'Setup/checkrowboq/$1/$2';
+$route['checkrowboq/(:num)/(:num)/(:any)'] = 'Setup/checkrowboq/$1/$2/$3';
 $route['checkdatelessthan/(:any)/(:num)/(:any)'] = 'Setup/checkdatelessthan/$1/$2/$3';
 
 

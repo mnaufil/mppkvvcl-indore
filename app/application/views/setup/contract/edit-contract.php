@@ -712,6 +712,7 @@
             			<div class="modal-body">
             				<!-- <p>Modal body text goes here.</p> -->
             				<input type="hidden" name="rowid" id="rowid">
+            				<input type="hidden" name="feeder_id" id="feeder_id">
             					<div class="panel panel-primary" id="boqtoadd">
             						
             					</div>

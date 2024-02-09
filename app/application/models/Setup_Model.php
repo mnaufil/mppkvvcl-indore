@@ -733,6 +733,10 @@ class Setup_Model extends CI_Model
 				$returnArray['returnbank'] = false;
 			}
         }
+
+        if (isset($_SESSION['contract_location_boq'])) {
+        	$contractLocationBOQReturn = $this->SetupInner_Model->updateContractLocationBOQ($last_id, 'update');
+        }
         
         return $returnArray;
     }
@@ -830,7 +834,6 @@ class Setup_Model extends CI_Model
 		echo $select .= '</select>';
 	}
 
-
 	function loadMobilisationType($rowIndex)
 	{
 		$mobilisation = "";
@@ -864,43 +867,43 @@ class Setup_Model extends CI_Model
 		echo $select .= '</select>';
 	}
 
-
-
 	function loadbanktypes($rowIndex)
 	{
 		$banks = "";
 		if(isset($_SESSION['acceptbank']))
-           {
-           		foreach($_SESSION['acceptbank'] as $bank)
+       	{
+       		foreach($_SESSION['acceptbank'] as $bank)
+            {
+                if($rowIndex == $bank['rowId'])
                 {
-                    if($rowIndex == $bank['rowId'])
-                    {
-                         $banks = $bank['bank_id'];
-                    }
+                    $banks = $bank['bank_id'];
                 }
-           }
+            }
+       	}
+
 		$this->db->where("is_active", "1");
 		$query = $this->db->get("mst_bg_type");
 		$result = $query->result();
-		//return $result;
+
 		$select = '<select class="form-control stages" ><option value="">Select Bank Type</option>';
 		foreach($result as $res)
 		{
-			 if($res->bg_type_id == $banks && !empty( $banks))
-			 {
-			 	 $select .= '<option value='.$res->bg_type_id.' selected>'.$res->name.'</option>';
-			 }
-			 else
-			 {
-			 	 $select .= '<option value='.$res->bg_type_id.'>'.$res->name.'</option>';
-			 }
+			if($res->bg_type_id == $banks && !empty( $banks))
+			{
+				$select .= '<option value='.$res->bg_type_id.' selected>'.$res->name.'</option>';
+			}
+			else
+			{
+			 	$select .= '<option value='.$res->bg_type_id.'>'.$res->name.'</option>';
+			}
+			
 			// $select .= '<option value='.$res->stage_id.'>'.$res->name.'</option>';
 		}
 		echo $select .= '</select>';
 	}
 	
-   function typeofworkboq($workId)
-   {
+   	function typeofworkboq($workId)
+   	{
    		$this->db->where("mst_activity_group.is_boq", 1);
    		$this->db->where("mst_typeofwork_activity.typeofwork_id", $workId);	
    		$this->db->select('mst_typeofwork_activity.*,mst_activity_group.name,mst_activity_group.is_boq, mst_unit.name as unitName, mst_unit.unit_id');   		
@@ -910,6 +913,7 @@ class Setup_Model extends CI_Model
 		$query = $this->db->get();
 		$result = $query->result();
 		//echo $this->db->last_query();
+
 		$html = '';				
 		if(empty($result))
 		{
@@ -920,99 +924,89 @@ class Setup_Model extends CI_Model
 			$_SESSION['boq_worktype'] = true;
 		}
 
-		$typeOdActivityGroups = $this->typeofworkboqgroup($workId);
-		
+		$typeOdActivityGroups = $this->typeofworkboqgroup($workId);		
 
 		$html = '<div class="tab-menu-heading tab-menu-heading-boxed">
-            							<div class="tabs-menu-boxed">
-            								
-            								<ul class="nav panel-tabs" role="tablist">';
-            								$j=1;
-            								foreach($typeOdActivityGroups as $activityGroup)
-            								{
-            									if($j==1)
-            									{
-            										$classname = "active";
-            									}
-            									else
-            									{
-            										$classname = "";
-            									}
-            									$html .='<li>
-            										<a href="#tab'.$activityGroup->activity_group_id.'" class="'.$classname.'" data-bs-toggle="tab" aria-selected="true" role="tab" >'.$activityGroup->name.'</a>
-            									</li>';
-            									$j++;
-            								}
+            		<div class="tabs-menu-boxed">
+            			<ul class="nav panel-tabs" role="tablist">';
+            				$j=1;
+            				foreach($typeOdActivityGroups as $activityGroup)
+            				{
+            					if($j==1)
+            					{
+            						$classname = "active";
+        						}
+            					else
+            					{
+            						$classname = "";
+        						}
+            					$html .='<li>
+            								<a href="#tab'.$activityGroup->activity_group_id.'" class="'.$classname.'" data-bs-toggle="tab" aria-selected="true" role="tab" >'.$activityGroup->name.'</a>
+            							 </li>';
+            					$j++;
+        					}
 
-            								$html .='</ul>
-            							</div>
-            						</div>
-            						<div class="panel-body tabs-menu-body">
-            							<div class="tab-content" style="height: 300px;
-    overflow-y: scroll;">';
-        						
-            									
-            							$i=1;
-            							foreach($typeOdActivityGroups as $activityGroup1)
-            								{
-            								if($i==1)
-            									{
-            										$classname = "active show";
-            									}
-            									else
-            									{
-            										$classname = "";
-            									}
-            						$html .= '<div class="tab-pane '.$classname.' " id="tab'.$activityGroup1->activity_group_id.'" role="tabpanel">
-            									<div class="table-responsive">
-													<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
-														<thead>
-															<tr>
-																<th>Sr No.</th>
-																<th>Name of Activity</th>
-																<th style="width: 10px;">Unit</th>
-																<th>BOQ</th>
-															</tr>
-														</thead>
-														<tbody>';
-														$k=1;
-														foreach($result as $res)
-            								{
-            									if($activityGroup1->activity_group_id == $res->activity_group_id ) { 
-														$html .=	'<tr>
-																<td>'.$k.'</td>
-																<td>'.$res->activity.'</td>
-																<td>'.$res->unitName.'</td>
-																<td>
-																<input class="form-control" type="hidden" name="unitid'.$res->typeofwork_activity_id.'" value="'.$res->unit_id.'">
-																<input class="form-control" type="hidden" name="typeofwork_activity_id[]" value="'.$res->typeofwork_activity_id.'">
-																	<input class="form-control addinputsboq" type="text" name="boq'.$res->typeofwork_activity_id.'" placeholder="Enter Value" >
-																</td>
-															</tr>';
+            				$html .='</ul>
+            		</div>
+            	 </div>
+            	 <div class="panel-body tabs-menu-body">
+            		<div class="tab-content" style="height: 300px;overflow-y: scroll;">';
+            			$i=1;
+            			foreach($typeOdActivityGroups as $activityGroup1)
+            			{
+            				if($i==1)
+            				{
+            					$classname = "active show";
+        					}
+            				else
+        					{
+            					$classname = "";
+        					}
+
+            				$html .= '<div class="tab-pane '.$classname.' " id="tab'.$activityGroup1->activity_group_id.'" role="tabpanel">
+            							<div class="table-responsive">
+											<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
+												<thead>
+													<tr>
+														<th>Sr No.</th>
+														<th>Name of Activity</th>
+														<th style="width: 10px;">Unit</th>
+														<th>BOQ</th>
+													</tr>
+												</thead>
+												<tbody>';
+													$k=1;
+													foreach($result as $res)
+            										{
+            											if($activityGroup1->activity_group_id == $res->activity_group_id) { 
+															$html .= '<tr>
+																		<td>'.$k.'</td>
+																		<td>'.$res->activity.'</td>
+																		<td>'.$res->unitName.'</td>
+																		<td>
+																			<input class="form-control" type="hidden" name="unitid'.$res->typeofwork_activity_id.'" value="'.$res->unit_id.'">
+																			<input class="form-control" type="hidden" name="typeofwork_activity_id[]" value="'.$res->typeofwork_activity_id.'">
+																			<input class="form-control addinputsboq" type="text" name="boq'.$res->typeofwork_activity_id.'" placeholder="Enter Value" >
+																		</td>
+																	 </tr>';
+														}
+														$k++;
+													}
 															
-											}
-											$k++;
-										}
-															
-														$html .= '</tbody>
-													</table>
-												</div>
-            								</div>
-            								';
-            								
-            							}
+													$html .= '</tbody>
+											</table>
+										</div>
+        							 </div>';            								
+						}
 
-            							$html .= '</div>
-            						</div>
-            						';
+            			$html .= '</div>
+            	 </div>';
 
-            						echo $html;
-   }
+        echo $html;
+   	}
 
-
-
-   function checktypeofworkboq()
-   {
+   	function checktypeofworkboq()
+   	{
    		if($_SESSION['boq_worktype']==1)
    		{
    			echo true;
@@ -1021,11 +1015,10 @@ class Setup_Model extends CI_Model
    		{
    			echo false;
    		}
-   }
+   	}
 
-
-   function  typeofworkboqgroup($workId){
-
+   	function typeofworkboqgroup($workId)
+   	{
    		$this->db->group_by("mst_activity_group.name");
    		$this->db->where("mst_activity_group.is_boq", 1);
    		$this->db->where("mst_typeofwork_activity.typeofwork_id", $workId);	
@@ -1035,20 +1028,17 @@ class Setup_Model extends CI_Model
 		$query = $this->db->get();
 		$result = $query->result();
 		return $result;
+   	}
 
-   }
-
-
-   function saveboq()
+   	function saveboq()
 	{
 		$rowIndex = $this->input->post('rowid');
 		$activityids = $this->input->post('typeofwork_activity_id');
-		//print_r($activityids);
 		$contract_location_boq  = array();
 		$boq = array();
+
 		foreach($activityids as $id)
 		{
-
 			$typeofwork_activity_id = $id;
 			$unit_id = $this->input->post('unitid'.$id);
 			$boq_value = $this->input->post('boq'.$id);
@@ -1057,24 +1047,22 @@ class Setup_Model extends CI_Model
 			$boq['boq_value'] = $boq_value;
 			$boq['rowid'] = $rowIndex;
 			$contract_location_boq[$typeofwork_activity_id] = $boq;
-			
 		}
+
 		$_SESSION['contract_location_boq'][$rowIndex] = $contract_location_boq;
 		return true;
 	}
-
-
 
 	function saveboqedit()
 	{
 		$rowIndex = $this->input->post('rowid');
+		$row_feeder_id = $this->input->post('feeder_id');
 		$activityids = $this->input->post('typeofwork_activity_id');
-		//print_r($activityids);
 		$contract_location_boq  = array();
 		$boq = array();
+
 		foreach($activityids as $id)
 		{
-
 			$typeofwork_activity_id = $id;
 			$unit_id = $this->input->post('unitid'.$id);
 			$boq_value = $this->input->post('boq'.$id);
@@ -1082,21 +1070,20 @@ class Setup_Model extends CI_Model
 			$boq['unit_id'] = $unit_id;
 			$boq['boq_value'] = $boq_value;
 			$boq['rowid'] = $rowIndex;
-			if(!empty($_SESSION['contract_location_boq'][$rowIndex][$typeofwork_activity_id]['contract_location_boq_id']))
+			if(!empty($_SESSION['contract_location_boq'][$row_feeder_id][$typeofwork_activity_id]['contract_location_boq_id']))
 			{
-				$boq['contract_location_boq_id'] = $_SESSION['contract_location_boq'][$rowIndex][$typeofwork_activity_id]['contract_location_boq_id'];
+				$boq['contract_location_boq_id'] = $_SESSION['contract_location_boq'][$row_feeder_id][$typeofwork_activity_id]['contract_location_boq_id'];
 			}
+
 			$contract_location_boq[$typeofwork_activity_id] = $boq;
-			
 		}
-		$_SESSION['contract_location_boq'][$rowIndex] = $contract_location_boq;
+
+		$_SESSION['contract_location_boq'][$row_feeder_id] = $contract_location_boq;
 		return true;
 	}
 
-
-
-	 function typeofworkboqedit($workId)
-   {
+	function typeofworkboqedit($workId)
+   	{
    		$this->db->where("mst_activity_group.is_boq", 1);
    		$this->db->where("mst_typeofwork_activity.typeofwork_id", $workId);	
    		$this->db->select('mst_typeofwork_activity.*,mst_activity_group.name,mst_activity_group.is_boq, mst_unit.name as unitName, mst_unit.unit_id');   		
@@ -1120,103 +1107,97 @@ class Setup_Model extends CI_Model
 		
 
 		$html = '<div class="tab-menu-heading tab-menu-heading-boxed">
-            							<div class="tabs-menu-boxed">
-            								
-            								<ul class="nav panel-tabs" role="tablist">';
-            								$j=1;
-            								foreach($typeOdActivityGroups as $activityGroup)
-            								{
-            									if($j==1)
-            									{
-            										$classname = "active";
-            									}
-            									else
-            									{
-            										$classname = "";
-            									}
-            									$html .='<li>
-            										<a href="#tab'.$activityGroup->activity_group_id.'" class="'.$classname.'" data-bs-toggle="tab" aria-selected="true" role="tab" >'.$activityGroup->name.'</a>
-            									</li>';
-            									$j++;
-            								}
+            		<div class="tabs-menu-boxed">
+            			<ul class="nav panel-tabs" role="tablist">';
+            			$j=1;
+            			foreach($typeOdActivityGroups as $activityGroup)
+            			{
+            				if($j==1)
+            				{
+            					$classname = "active";
+            				}
+            				else
+            				{
+            					$classname = "";
+        					}
+            				$html .='<li>
+            							<a href="#tab'.$activityGroup->activity_group_id.'" class="'.$classname.'" data-bs-toggle="tab" aria-selected="true" role="tab" >'.$activityGroup->name.'</a>
+									 </li>';
+            				$j++;
+        				}
 
-            								$html .='</ul>
-            							</div>
-            						</div>
-            						<div class="panel-body tabs-menu-body">
-            							<div class="tab-content" style="height: 300px;
-    overflow-y: scroll;">';
-        						
-            									
-            							$i=1;
-            							foreach($typeOdActivityGroups as $activityGroup1)
-            								{
-            								if($i==1)
-            									{
-            										$classname = "active show";
-            									}
-            									else
-            									{
-            										$classname = "";
-            									}
-            						$html .= '<div class="tab-pane '.$classname.' " id="tab'.$activityGroup1->activity_group_id.'" role="tabpanel">
-            									<div class="table-responsive">
-													<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
-														<thead>
-															<tr>
-																<th>Sr No.</th>
-																<th>Name of Activity</th>
-																<th style="width: 10px;">Unit</th>
-																<th>BOQ</th>
-															</tr>
-														</thead>
-														<tbody>';
-														$k=1;
-														foreach($result as $res)
-            								{
-            									if($activityGroup1->activity_group_id == $res->activity_group_id ) { 
-														$html .=	'<tr>
-																<td>'.$k.'</td>
-																<td>'.$res->activity.'</td>
-																<td>'.$res->unitName.'</td>
-																<td>
-																<input class="form-control" type="hidden" name="unitid'.$res->typeofwork_activity_id.'" value="'.$res->unit_id.'">
-																<input class="form-control" type="hidden" name="typeofwork_activity_id[]" value="'.$res->typeofwork_activity_id.'">
-																	<input class="form-control" type="text" name="boq'.$res->typeofwork_activity_id.'" placeholder="Enter Value">
-																</td>
-															</tr>';
-															
-											}
-											$k++;
+        $html .='       </ul>
+        			</div>
+        		 </div>
+            	 <div class="panel-body tabs-menu-body">
+            		<div class="tab-content" style="height: 300px;overflow-y: scroll;">';
+						$i=1;
+            			foreach($typeOdActivityGroups as $activityGroup1)
+            			{
+            				if($i==1)
+            				{
+            					$classname = "active show";
+        					}
+        					else
+            				{
+            					$classname = "";
+        					}
+
+       	$html .= '		<div class="tab-pane '.$classname.' " id="tab'.$activityGroup1->activity_group_id.'" role="tabpanel">
+            				<div class="table-responsive">
+								<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
+									<thead>
+										<tr>
+											<th>Sr No.</th>
+											<th>Name of Activity</th>
+											<th style="width: 10px;">Unit</th>
+											<th>BOQ</th>
+										</tr>
+									</thead>
+									<tbody>';
+									$k=1;
+									foreach($result as $res)
+            						{
+            							if($activityGroup1->activity_group_id == $res->activity_group_id)
+            							{ 
+		$html .=	'						<tr>
+												<td>'.$k.'</td>
+												<td>'.$res->activity.'</td>
+												<td>'.$res->unitName.'</td>
+												<td>
+													<input class="form-control" type="hidden" name="unitid'.$res->typeofwork_activity_id.'" value="'.$res->unit_id.'">
+													<input class="form-control" type="hidden" name="typeofwork_activity_id[]" value="'.$res->typeofwork_activity_id.'">
+													<input class="form-control" type="text" name="boq'.$res->typeofwork_activity_id.'" placeholder="Enter Value">
+												</td>
+											</tr>';
 										}
+									
+										$k++;
+									}
 															
-														$html .= '</tbody>
-													</table>
-												</div>
-            								</div>
-            								';
+		$html .= '              	</tbody>
+								</table>
+							</div>
+    					</div>';
             								
-            							}
+        				}
 
-            							$html .= '</div>
-            						</div>
-            						';
+        $html .= '</div>
+            		</div>';
 
-            						echo $html;
-   }
+        echo $html;
+   	}
 
-
-
-   function checkcontractstagecount()
-   {
+   	function checkcontractstagecount()
+   	{
    		if(isset($_SESSION['acceptstage']))
    		{
    			echo count($_SESSION['acceptstage']);
    		}
-   }
+   	}
 
-   function checkrowboq($rowIndex, $workId)
-   {
+   	function checkrowboq($rowIndex, $workId, $feeder_id)
+   	{
    		if(count($_SESSION['contract_location_boq'])==0)
    		{
    			echo '';
@@ -1224,64 +1205,61 @@ class Setup_Model extends CI_Model
    		}
    		foreach($_SESSION['contract_location_boq'] as $row=>$value)
    		{
-   			//echo $row;
-   			if($rowIndex==$row)
+   			if($feeder_id==$row)
    			{
    				$this->db->where("mst_activity_group.is_boq", 1);
-   		$this->db->where("mst_typeofwork_activity.typeofwork_id", $workId);	
-   		$this->db->select('mst_typeofwork_activity.*,mst_activity_group.name,mst_activity_group.is_boq, mst_unit.name as unitName, mst_unit.unit_id');   		
-		$this->db->from('mst_typeofwork_activity');
-		$this->db->join('mst_activity_group', 'mst_activity_group.activity_group_id  = mst_typeofwork_activity.activity_group_id', 'inner');
-		$this->db->join('mst_unit', 'mst_unit.unit_id  = mst_typeofwork_activity.unit_id', 'inner');
-		$query = $this->db->get();
-		$result = $query->result();
-		//echo $this->db->last_query();
-		$html = '';				
-		
+   				$this->db->where("mst_typeofwork_activity.typeofwork_id", $workId);	
+   				$this->db->select('mst_typeofwork_activity.*,mst_activity_group.name,mst_activity_group.is_boq, mst_unit.name as unitName, mst_unit.unit_id');   		
+				$this->db->from('mst_typeofwork_activity');
+				$this->db->join('mst_activity_group', 'mst_activity_group.activity_group_id  = mst_typeofwork_activity.activity_group_id', 'inner');
+				$this->db->join('mst_unit', 'mst_unit.unit_id  = mst_typeofwork_activity.unit_id', 'inner');
+				$query = $this->db->get();
+				$result = $query->result();
+				//echo $this->db->last_query(); die();
 
-		$typeOdActivityGroups = $this->typeofworkboqgroup($workId);
-		
+				$html = '';
 
-		$html = '<div class="tab-menu-heading tab-menu-heading-boxed">
-            							<div class="tabs-menu-boxed">
+				$typeOdActivityGroups = $this->typeofworkboqgroup($workId);
+		
+				$html = '<div class="tab-menu-heading tab-menu-heading-boxed">
+            				<div class="tabs-menu-boxed">
             								
-            								<ul class="nav panel-tabs" role="tablist">';
-            								$j=1;
-            								foreach($typeOdActivityGroups as $activityGroup)
-            								{
-            									if($j==1)
-            									{
-            										$classname = "active";
-            									}
-            									else
-            									{
-            										$classname = "";
-            									}
-            									$html .='<li>
-            										<a href="#tab'.$activityGroup->activity_group_id.'" class="'.$classname.'" data-bs-toggle="tab" aria-selected="true" role="tab" >'.$activityGroup->name.'</a>
-            									</li>';
-            									$j++;
-            								}
+            					<ul class="nav panel-tabs" role="tablist">';
+            					$j=1;
+            					foreach($typeOdActivityGroups as $activityGroup)
+            					{
+            						if($j==1)
+            						{
+            							$classname = "active";
+        							}
+            						else
+            						{
+            							$classname = "";
+        							}
 
-            								$html .='</ul>
-            							</div>
-            						</div>
-            						<div class="panel-body tabs-menu-body">
-            							<div class="tab-content" style="height: 300px;
-    overflow-y: scroll;">';
-        						
-            									
-            							$i=1;
-            							foreach($typeOdActivityGroups as $activityGroup1)
-            								{
-            								if($i==1)
-            									{
-            										$classname = "active show";
-            									}
-            									else
-            									{
-            										$classname = "";
-            									}
+            						$html .='<li>
+            									<a href="#tab'.$activityGroup->activity_group_id.'" class="'.$classname.'" data-bs-toggle="tab" aria-selected="true" role="tab" >'.$activityGroup->name.'</a>
+            								 </li>';
+    								$j++;
+            					}
+
+            					$html .='</ul>
+            				</div>
+            			 </div>
+            			 <div class="panel-body tabs-menu-body">
+            				<div class="tab-content" style="height: 300px;overflow-y: scroll;">';
+        						$i=1;
+            					foreach($typeOdActivityGroups as $activityGroup1)
+            					{
+            						if($i==1)
+            						{
+            							$classname = "active show";
+    								}
+            						else
+            						{
+            							$classname = "";
+            						}
+
             						$html .= '<div class="tab-pane '.$classname.' " id="tab'.$activityGroup1->activity_group_id.'" role="tabpanel">
             									<div class="table-responsive">
 													<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
@@ -1294,103 +1272,96 @@ class Setup_Model extends CI_Model
 															</tr>
 														</thead>
 														<tbody>';
-														$k=1;
-														foreach($result as $res)
-            								{
-            									if($activityGroup1->activity_group_id == $res->activity_group_id ) { 
-														$html .=	'<tr>
-																<td>'.$k.'</td>
-																<td>'.$res->activity.'</td>
-																<td>'.$res->unitName.'</td>
-																<td>
-																<input class="form-control" type="hidden" name="unitid'.$res->typeofwork_activity_id.'" value="'.$res->unit_id.'">
-																<input class="form-control" type="hidden" name="typeofwork_activity_id[]" value="'.$res->typeofwork_activity_id.'">
-																	<input class="form-control addinputsboq" type="text" name="boq'.$res->typeofwork_activity_id.'" value="'.$_SESSION['contract_location_boq'][$rowIndex][$res->typeofwork_activity_id]['boq_value'].'">
-																</td>
-															</tr>';
-															
-											}
-											$k++;
-										}
+														 	$k=1;
+															foreach($result as $res)
+            												{
+            													if($activityGroup1->activity_group_id == $res->activity_group_id ) { 
+																$html .='<tr>
+																			<td>'.$k.'</td>
+																			<td>'.$res->activity.'</td>
+																			<td>'.$res->unitName.'</td>
+																			<td>
+																				<input class="form-control" type="hidden" name="unitid'.$res->typeofwork_activity_id.'" value="'.$res->unit_id.'">
+																				<input class="form-control" type="hidden" name="typeofwork_activity_id[]" value="'.$res->typeofwork_activity_id.'">
+																				<input class="form-control addinputsboq" type="text" name="boq'.$res->typeofwork_activity_id.'" value="'.$_SESSION['contract_location_boq'][$feeder_id][$res->typeofwork_activity_id]['boq_value'].'">
+																			</td>
+																		 </tr>';
+																}
+																$k++;
+															}
 															
 														$html .= '</tbody>
 													</table>
 												</div>
             								</div>
             								';
-            								
-            							}
+            					}
 
-            							$html .= '</div>
-            						</div>
-            						';
-
-            						echo $html;
+            					$html .= '</div>
+            			 </div>';
+            	echo $html;
    			}
    			else
    			{
    				echo "";
    			}
-   		}
-   	
-   }
+   		}   	
+   	}
 
-
-   function loadSetSessionBoqDetails($contractID, $rowID)
-   {
+   	function loadSetSessionBoqDetails($contractID, $rowID)
+   	{
    		$this->db->where("contract_location.contract_id", $contractID);
    		$this->db->where("contract_location.is_active", 1);	
-   		$this->db->select('contract_location_boq.boq,contract_location_boq.typeofwork_activity_id,contract_location_boq.unit_id,contract_location_boq.contract_location_boq_id');   		
+   		$this->db->select('contract_location.feeder_id,contract_location.contract_location_id,contract_location_boq.boq,contract_location_boq.typeofwork_activity_id,contract_location_boq.unit_id,contract_location_boq.contract_location_boq_id');   		
 		$this->db->from('contract_location');
 		$this->db->join('contract_location_boq', 'contract_location_boq.contract_location_id  = contract_location.contract_location_id', 'inner');
 		$query = $this->db->get();
 		$result = $query->result();
+		// echo $this->db->last_query(); die();
+
 		if(!empty($result))
 		{
 			foreach($result as $val)
-		{
-
-			$typeofwork_activity_id = $val->typeofwork_activity_id;
-			
-			$boq['typeofwork_activity_id'] = $val->typeofwork_activity_id;
-			$boq['unit_id'] = $val->unit_id;
-			$boq['boq_value'] = $val->boq;
-			$boq['contract_location_boq_id'] = $val->contract_location_boq_id;
-			$boq['rowid'] = $rowID;
-			$contract_location_boq[$typeofwork_activity_id] = $boq;
-			
+			{
+				$typeofwork_activity_id = $val->typeofwork_activity_id;
+				
+				$boq['typeofwork_activity_id'] = $val->typeofwork_activity_id;
+				$boq['unit_id'] = $val->unit_id;
+				$boq['boq_value'] = $val->boq;
+				$boq['contract_location_boq_id'] = $val->contract_location_boq_id;
+				$boq['rowid'] = $rowID;
+				$boq['feeder_id'] = $val->feeder_id;
+				$contract_location_boq[$val->feeder_id][$typeofwork_activity_id] = $boq;
+			}
+		
+			// $_SESSION['contract_location_boq'][$rowID] = $contract_location_boq;
+			$_SESSION['contract_location_boq'] = $contract_location_boq;
 		}
-		$_SESSION['contract_location_boq'][$rowID] = $contract_location_boq;
-		}
-   }
+   	}
 
-
-   function checkdatelessthan($inputField, $rowIndex, $dateField)
-   {
+   	function checkdatelessthan($inputField, $rowIndex, $dateField)
+   	{
    		$rowIndexArray = array();
 
    		foreach($_SESSION['acceptstage'] as $stage)
    		{
    			if($stage['rowId'] < $rowIndex && $rowIndex !=0)
    			{
-   				//echo "sahe".$stage['rowId'];
 				$earlierDate = date("d-m-Y", strtotime($stage['date']));
 				$thisDate = date("d-m-Y", strtotime($dateField));
-				
 				
    				//if($dateField <= $stage['date'])
 					if($thisDate <= $earlierDate)
    				{
-   					//echo "here";
    					array_push($rowIndexArray, $stage['rowId']);
    				}
    			}
    		}
-   		//print_r($rowIndexArray);
+
    		if(count($rowIndexArray) > 0)
    		{
    			echo "Entered Date is less than rest of Stage dates.";
    		}
-   }
+   	}
 	
 }

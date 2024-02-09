@@ -117,7 +117,7 @@ class Session_Model extends CI_Model
                       'projectid' => $postData['projectid'],
                       'geocode' => $postData['geocode'],
                       'quantity' => $postData['quantity'],
-                      'boq' => $postData['boq']
+                      // 'boq' => $postData['boq']
                 );
                 foreach($_SESSION['acceptregion'] as $stage => $rowId)
                 {

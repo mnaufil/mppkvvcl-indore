@@ -22,12 +22,12 @@ class Setup extends CI_Controller
 	
 	public function loadRegions($rowIndex)
 	{
-		 $result = $this->Setup_Model->loadRegions($rowIndex);		 
+		$result = $this->Setup_Model->loadRegions($rowIndex);		 
 	}
 	
 	public function loadCircle($regionId, $rowIndex)
 	{
-		 $result = $this->Setup_Model->loadCircle($regionId, $rowIndex);		 
+		$result = $this->Setup_Model->loadCircle($regionId, $rowIndex);		 
 	}
 	
 	public function loadDivision($circleId, $rowIndex)
@@ -37,15 +37,13 @@ class Setup extends CI_Controller
 
 	public function loadSessionCircle($regionId)
 	{
-		 $result = $this->Setup_Model->loadSessionCircle($regionId);		 
+		$result = $this->Setup_Model->loadSessionCircle($regionId);		 
 	}
 
 	public function loadSessionDivision($regionId)
 	{
-		 $result = $this->Setup_Model->loadSessionDivision($regionId);		 
-	}
-		
-		
+		$result = $this->Setup_Model->loadSessionDivision($regionId);		 
+	}	
 
 	public function contractmanagement()
 	{
@@ -96,7 +94,6 @@ class Setup extends CI_Controller
 			$this->form_validation->set_rules('bidOpeningDate', 'Bid Opening Date', 'required');
 			$this->form_validation->set_rules('priceBidOpeningDate', 'Price Bid Opening Date', 'required');
 			$this->form_validation->set_rules('systemRefNo', 'System Reference No', 'required');
-
 			$this->form_validation->set_rules('estimatedCostWithoutGST', 'Estimated Cost (Without GST)', 'required');
 			$this->form_validation->set_rules('estimatedCostWithGST', 'Estimated Cost (With GST)', 'required');
 			$this->form_validation->set_rules('quotedPriceWithoutGST', 'Quoted Price(Without GST)', 'required');
@@ -105,8 +102,6 @@ class Setup extends CI_Controller
 			$this->form_validation->set_rules('installationServices', 'Installation and Other Services ', 'required');
 			$this->form_validation->set_rules('quantity', 'Quantity', 'required');
 			$this->form_validation->set_rules('gst', 'GST', 'required');
-
-			//print_r($_POST); die;
 
 			if($this->form_validation->run())
 			{
@@ -120,26 +115,22 @@ class Setup extends CI_Controller
 			}
 			else 
 			{
-				//print_r(validation_errors());
-				//die("fdhfjdfh");
-					$this->session->set_flashdata('error',validation_errors());
-					redirect('contract-management/add');
-					//redirect('contract-management');
+				$this->session->set_flashdata('error',validation_errors());
+				redirect('contract-management/add');
+				//redirect('contract-management');
 			}
 		}
 		catch (Exception $e)
 		{
-        		log_message('error: ',$e->getMessage());
-        		//return;
+    		log_message('error: ',$e->getMessage());
+    		//return;
 		}
 	}
-
 
 	public function editcontractpage($contractID)	
 	{
 		$data['contractdetails'] =  $this->Setup_Model->loadSingleContract($contractID);
-		$data['contractmilestonesdetails'] = $this->Setup_Model->loadSingleContractMilestones($contractID);		
-		
+		$data['contractmilestonesdetails'] = $this->Setup_Model->loadSingleContractMilestones($contractID);
 		$data['contractregionsdetails'] = $this->Setup_Model->loadSingleContractRegions($contractID);
 		$data['contractinstallationsdetails'] = $this->Setup_Model->loadSingleContractInstallations($contractID);	
 		$data['contractbanksdetails'] = $this->Setup_Model->loadSingleContractBanks($contractID);	 	   
@@ -149,25 +140,19 @@ class Setup extends CI_Controller
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('setup/contract/edit-contract', $data); 
 	}
-
 	
 	public function viewcontractpage($contractID)	
 	{
 		$data['contractdetails'] =  $this->Setup_Model->loadSingleContract($contractID);	
 		$data['contractmilestonesdetails'] = $this->Setup_Model->loadSingleContractMilestones($contractID);
-		
 		$data['contractregionsdetails'] = $this->Setup_Model->loadSingleContractRegions($contractID);	
 		$data['contractinstallationsdetails'] = $this->Setup_Model->loadSingleContractInstallations($contractID);	
 		$data['contractbanksdetails'] = $this->Setup_Model->loadSingleContractBanks($contractID);	 	   
 		$data['worktypes'] = $this->Setup_Model->loadworktypes();	
 		$data['materialdetails'] = $this->Setup_Model->loadMaterials($contractID);
 
-		/*echo '<pre>';
-		print_r($data); die;*/
 		$this->load->view('setup/contract/view-contract', $data); 
 	}
-
-
 
 	public function updatecontract()
 	{
@@ -223,12 +208,10 @@ class Setup extends CI_Controller
 		}
 	}
 
-
 	public function deletecontract($contractID)
 	{
-		 echo $result = $this->Setup_Model->deletecontract($contractID);		 
+		echo $result = $this->Setup_Model->deletecontract($contractID);		 
 	}
-
 
 	public function worktype()
 	{
@@ -310,23 +293,20 @@ class Setup extends CI_Controller
 		$result = $this->Setup_Model->saveboqedit();	
 	}
 
-
 	public function typeofworkboqedit($workId)
 	{
 		$result = $this->Setup_Model->typeofworkboqedit($workId);	
 	}
-
 
 	public function checkcontractstagecount()
 	{
 		$this->Setup_Model->checkcontractstagecount();	
 	}
 
-	public function checkrowboq($rowIndex, $workId)
+	public function checkrowboq($rowIndex, $workId, $feeder_id)
 	{
-		$this->Setup_Model->checkrowboq($rowIndex, $workId);	
+		$this->Setup_Model->checkrowboq($rowIndex, $workId, $feeder_id);
 	}
-
 
 	public function checkdatelessthan($inputField, $rowIndex, $dateField)
 	{

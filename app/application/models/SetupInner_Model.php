@@ -670,7 +670,28 @@ class SetupInner_Model extends CI_Model
         
     }
 
+    public function updateContractLocationBOQ($last_id, $actionItem)
+    {
+        try {
+            foreach ($_SESSION['contract_location_boq'] as $key => $value) {
+                foreach ($value as $k => $v) {
+                    $data = array(
+                        'boq' => $v['boq_value']
+                    );
 
+                    $this->db->update('contract_location_boq', $data, array('contract_location_boq_id' => $v['contract_location_boq_id'], 'typeofwork_activity_id' => $v['typeofwork_activity_id']));
+                    // echo $this->db->last_query(); die();
+                }
+
+                unset($_SESSION['contract_location_boq'][$key]);
+            }
+
+            return true;
+        } catch (Exception $e) {
+            log_message('error: ',$e->getMessage());
+            return;
+        }
+    }
 
     function updateMaterial($last_id, $actionItem)
     {

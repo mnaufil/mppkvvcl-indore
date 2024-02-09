@@ -257,6 +257,7 @@ function saveboq()
 function saveboqedit()
 {
 	var data = $('#boqform').serialize();
+	// console.log(data); return false;
 	 $.ajax({
          type: "POST",
          url: baseUrl+"saveboqedit",
@@ -324,14 +325,16 @@ function addcontractpricewithgst()
 }
 
 
-function showmodal(rowId)
+function showmodal(rowId, feeder_id)
 {
 	var workId = $("#typeOfWork").val();
-	 $.ajax({url: baseUrl+"checkrowboq/"+rowId+"/"+workId, success: function(result){
+	 $.ajax({url: baseUrl+"checkrowboq/"+rowId+"/"+workId+"/"+feeder_id, success: function(result){
+	 	// console.log(result); return false;
 						//$("#boq-modal-text").text($("#typeOfWork option:selected").text());	
 	 	//alert(result)
 	 				if(result != '')
 	 				{
+	 					$('#boq-modal').find('#feeder_id').val(feeder_id);
 						$("#boqtoadd").html(result);
 	 				}
 	 				else

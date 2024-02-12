@@ -158,23 +158,23 @@
 	                        				<h3 class="card-title">Edit Contract</h3>
 	                        			</div> -->
 										
-										<?php   if($this->session->flashdata('error')) {   ?>
-	                        			<div class="alert alert-primary" role="alert"> 
+										<?php   //if($this->session->flashdata('error')) {   ?>
+	                        			<!-- <div class="alert alert-primary" role="alert"> 
 	                        				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button> 	                        				
-										<p style="color:red"><?php  echo $this->session->flashdata('error');?></p>  
+										<p style="color:red"><?php  //echo $this->session->flashdata('error');?></p>  
 										
 
-	                        				</div>
-										<?php } ?>
+	                        				</div> -->
+										<?php //} ?>
 
-										<?php   if($this->session->flashdata('success')) {   ?>
-	                        			<div class="alert alert-primary" role="alert"> 
+										<?php   //if($this->session->flashdata('success')) {   ?>
+	                        			<!-- <div class="alert alert-primary" role="alert"> 
 	                        				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-hidden="true">×</button> 	                        				
-										<p style="color:green"><?php  echo $this->session->flashdata('success');?></p>  
+										<p style="color:green"><?php  //echo $this->session->flashdata('success');?></p>  
 										
 
-	                        				</div>
-										<?php } ?>
+	                        				</div> -->
+										<?php //} ?>
 
 	                        			<!-- <form class="needs-validation" novalidate> -->
 	                        			<form id="addContract"  action="<?php echo base_url('update-contract-management')?>" method="POST">
@@ -811,7 +811,24 @@
         <script src="<?php echo base_url('assets/plugins/edit-table/contract/contract-edit-table.js');?>"></script>
         <script src="<?php echo base_url('assets/plugins/edit-table/contract/contract-session.js');?>"></script>
 
-        
+        <?php if(!empty($this->session->flashdata('success'))) { ?>
+        <script>
+            $(function() {
+          		$.toast("success", '<?php  echo $this->session->flashdata('success');?>');   
+            });
+        </script>
+        <?php } ?>
+
+
+        <?php   if(!empty($this->session->flashdata('error'))) {   ?>
+        <?php $error = preg_replace("/\n/", '\n', $this->session->flashdata('error')); ?> 
+        <script>
+            $(function(){
+            	// $.toast("error", '<?php echo $error;?>'); 
+            	$.toast({type : 'error', autoDismiss: true, autoDismissDelay: 3000, message: '<?php echo $error;?>'}); 
+            });
+        </script>
+        <?php } ?>        
 
        
         <!-- SWEET-ALERT JS -->

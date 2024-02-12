@@ -193,14 +193,15 @@ class Setup extends CI_Controller
 						$this->session->set_flashdata('error','Problem in updating Contract data.');
 					}
 				}
+
+				redirect('contract-management');
 			}
 			else 
 			{
 				$this->session->set_flashdata('error',validation_errors());
 
+				redirect('contract-management/'.$contractId);
 			}
-			
-			redirect('contract-management');
 		}
 		catch (Exception $e)
 		{

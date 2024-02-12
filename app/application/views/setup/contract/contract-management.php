@@ -647,10 +647,10 @@ echo date('d-m-Y', strtotime($list->effective_date))." - ".date('d-m-Y', strtoti
 
 
             <?php   if(!empty($this->session->flashdata('error'))) {   ?>
+            <?php $error = preg_replace("/\n/", '\n', $this->session->flashdata('error')); ?> 
             <script>
             $(function(){
-              
-             $.toast("error", '<?php  echo $this->session->flashdata('error');?>');   
+             $.toast("error", '<?php echo $error;?>'); 
             });
             </script>
                                         <?php } ?>

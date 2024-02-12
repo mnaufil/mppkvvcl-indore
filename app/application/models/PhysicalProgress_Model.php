@@ -1750,7 +1750,8 @@ class PhysicalProgress_Model extends CI_Model
 	public function getBOQ($typeofwork_activity_id, $contract_location_id)
 	{
 		$this->db->select('boq');
-		$query = $this->db->get_where('contract_location_boq', array('typeofwork_activity_id' => $typeofwork_activity_id, 'contract_location_id' => $contract_location_id));
+		$query = $this->db->get_where('contract_location_boq', array('typeofwork_activity_id' => $typeofwork_activity_id, 'contract_location_id' => $contract_location_id, 'is_active' => 1));
+		// echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();

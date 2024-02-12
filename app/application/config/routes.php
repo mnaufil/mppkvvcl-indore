@@ -252,7 +252,7 @@ $route['delete-division'] = 'Division/deleteDivision';
 $route['tkc-weekly-plan'] = 'TKCWeeklyPlan/index';
 $route['add-tkc-weekly-plan'] = 'TKCWeeklyPlan/addTKCWeeklyPlan';
 $route['save-tkc-weekly-plan'] = 'TKCWeeklyPlan/saveTKCWeeklyPlan';
-$route['get-feeders-list'] = 'TKCWeeklyPlan/getFeedersList';
+$route['get-feeders-list-tkc'] = 'TKCWeeklyPlan/getFeedersList';
 
 /*Security / Roles Module*/
 $route['roles'] = 'Security/roles';

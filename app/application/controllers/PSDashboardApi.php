@@ -69,7 +69,7 @@ class PSDashboardApi extends REST_Controller
 			            $status_code = 400;
 			            $data = [];
 					} else {
-						$date = (!empty($this->post('date'))) ? date('Y-m-d', strtotime($this->post('date'))) : date('Y-m-d');
+						$date = $this->post('date');
 						$lot_no = $this->post('lot_no');
 
 						if (empty($lot_no)) {
@@ -78,54 +78,56 @@ class PSDashboardApi extends REST_Controller
 				            $status_code = 400;
 				            $data = [];
 						} else {
-							// $date_result = $this->isValidDate($date);
+							$date_result = $this->isValidDate($date);
 
-							/*if (empty($date)) {
-								$errors = 'Empty POST Request';
-					            $message = 'No date provided';
+							if (!$date_result) {
+								$errors = 'Invalid Parameters';
+					            $message = 'Provide valid date in d-m-Y format';
 					            $status_code = 400;
 					            $data = [];
-							}*/
-
-							$feeders_data = $this->psdashboard_model->getFeedersData($date, $lot_no);
-
-							if (empty($feeders_data)) {
-								$errors = NULL;
-					            $message = 'No data found';
-					            $status_code = 200;
-					            $data = [];
 							} else {
+								$formatted_date = date('Y-m-d', strtotime($date));
+
+								$feeders_data = $this->psdashboard_model->getFeedersData($formatted_date, $lot_no);
+
 								$feeder_details = $feeders_data[0];
 								$feeder_progress = $feeders_data[1];
 
-								foreach ($feeder_details as $fd_key => $fd_value) {
-									$data[$fd_key]['lot_no'] = $fd_value['package_group_no'];
-									$data[$fd_key]['contractor'] = $fd_value['contractor_name'];
-									$data[$fd_key]['circle'] = $fd_value['circle_name'];
-									$data[$fd_key]['vidhansabha'] = $fd_value['vidhansabha'];
-									$data[$fd_key]['district'] = $fd_value['district'];
-									$data[$fd_key]['division'] = $fd_value['division_name'];
-									$data[$fd_key]['substation'] = $fd_value['location_name'];
-									$data[$fd_key]['typeofwork'] = $fd_value['typeofwork'];
-									$data[$fd_key]['feeder_id'] = $fd_value['feeder_id'];
-									$data[$fd_key]['scope_as_per_award'] = [];
-									$data[$fd_key]['work_completed'] = [];
+								if (empty($feeder_details) && empty($feeder_progress)) {
+									$errors = NULL;
+						            $message = 'No data found';
+						            $status_code = 200;
+						            $data = [];
+								} else {
+									foreach ($feeder_details as $fd_key => $fd_value) {
+										$data[$fd_key]['lot_no'] = $fd_value['package_group_no'];
+										$data[$fd_key]['contractor'] = $fd_value['contractor_name'];
+										$data[$fd_key]['circle'] = $fd_value['circle_name'];
+										$data[$fd_key]['vidhansabha'] = $fd_value['vidhansabha'];
+										$data[$fd_key]['district'] = $fd_value['district'];
+										$data[$fd_key]['division'] = $fd_value['division_name'];
+										$data[$fd_key]['substation'] = $fd_value['location_name'];
+										$data[$fd_key]['typeofwork'] = $fd_value['typeofwork'];
+										$data[$fd_key]['feeder_id'] = $fd_value['feeder_id'];
+										$data[$fd_key]['scope_as_per_award'] = [];
+										$data[$fd_key]['work_completed'] = [];
 
-									foreach ($feeder_progress as $fp_key => $fp_value) {
-										if ($fd_value['feeder_id'] == $fp_value['feeder_id']) {
-											$data[$fd_key]['scope_as_per_award'][$fp_value['report_head']] = $fp_value['totalAwardQty'];
-											$data[$fd_key]['work_completed'][$fp_value['report_head']] = $fp_value['workProgressQty'];
+										foreach ($feeder_progress as $fp_key => $fp_value) {
+											if ($fd_value['feeder_id'] == $fp_value['feeder_id']) {
+												$data[$fd_key]['scope_as_per_award'][$fp_value['report_head']] = $fp_value['totalAwardQty'];
+												$data[$fd_key]['work_completed'][$fp_value['report_head']] = $fp_value['workProgressQty'];
+											}
 										}
+
+										$data[$fd_key]['BOQ_cost'] = number_format($fd_value['BoQCost'], 2);
+										$data[$fd_key]['estimated_executed_cost'] = $fd_value['EstimatedExecutedCost'];
+										$data[$fd_key]['status_of_work'] = $fd_value['status'];
 									}
 
-									$data[$fd_key]['BOQ_cost'] = number_format($fd_value['BoQCost'], 2);
-									$data[$fd_key]['estimated_executed_cost'] = $fd_value['EstimatedExecutedCost'];
-									$data[$fd_key]['status_of_work'] = $fd_value['status'];
+									$errors = NULL;
+						            $message = NULL;
+						            $status_code = 200;	
 								}
-
-								$errors = NULL;
-					            $message = NULL;
-					            $status_code = 200;	
 							}
 						}
 					}
@@ -141,15 +143,11 @@ class PSDashboardApi extends REST_Controller
 		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
 	}
 
-	/*public function isValidDate($date, $format = 'd-m-Y')
-	// public function isValidDate($date)
+	public function isValidDate($date, $format = 'd-m-Y')
 	{
-		// echo 'format: <pre>'; print_r($format); echo '</pre>'; die();
 		$dateTime = DateTime::createFromFormat($format, $date);
-		// echo 'dateTime: <pre>'; print_r($dateTime); echo '</pre>'; die();
 		return $dateTime && $dateTime->format($format) === $date;
-		// return (strtotime($date) !== false);
-	}*/
+	}
 
 	public function authenticateUser_post()
 	{

@@ -159,6 +159,8 @@ class PSDashboardApi extends REST_Controller
 											$data[$fd_key]['substation'] = $fd_value['location_name'];
 											$data[$fd_key]['typeofwork'] = $fd_value['typeofwork'];
 											$data[$fd_key]['feeder_id'] = $fd_value['feeder_id'];
+											$data[$fd_key]['charging_status'] = $fd_value['charging_status'];
+											$data[$fd_key]['estimate_status'] = $fd_value['estimate_value'];
 											$data[$fd_key]['scope_as_per_award'] = [];
 											$data[$fd_key]['work_completed'] = [];
 

@@ -118,7 +118,7 @@ class PSDashboardApi_Model extends CI_Model
 	{
 		$data = array(
 			'charging_status' => $charging_status,
-			'estimate_value' => $estimate_value,
+			'estimate_created' => $estimate_value,
 			'modifiedby' => $user_id,
 			'modifieddate' => date('Y-m-d H:i:s')
 		);

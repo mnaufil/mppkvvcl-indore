@@ -160,7 +160,7 @@ class PSDashboardApi extends REST_Controller
 											$data[$fd_key]['typeofwork'] = $fd_value['typeofwork'];
 											$data[$fd_key]['feeder_id'] = $fd_value['feeder_id'];
 											$data[$fd_key]['charging_status'] = $fd_value['charging_status'];
-											$data[$fd_key]['estimate_status'] = $fd_value['estimate_value'];
+											$data[$fd_key]['estimate_created'] = $fd_value['estimate_created'];
 											$data[$fd_key]['scope_as_per_award'] = [];
 											$data[$fd_key]['work_completed'] = [];
 
@@ -243,7 +243,7 @@ class PSDashboardApi extends REST_Controller
 								$not_updated_feeders = [];
 
 								foreach ($feeder_data as $key => $value) {
-									$result = $this->psdashboard_model->updateFeederDetails($value['feeder_id'], $value['charging_status'], $value['estimate_value'], $validate_token->user_id);
+									$result = $this->psdashboard_model->updateFeederDetails($value['feeder_id'], $value['charging_status'], $value['estimate_created'], $validate_token->user_id);
 
 									$result_arr = [];
 									if ($result) {

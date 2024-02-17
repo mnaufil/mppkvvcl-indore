@@ -20,8 +20,8 @@ class Migration_Add_chargingstatus_estimatevalue_fields_to_contract_location_tab
 				'after' => 'geo_code'
 			),
 			'estimate_value' => array(
-				'type' => 'DECIMAL',
-				'constraint' => '18,2',
+				'type' => 'VARCHAR',
+				'constraint' => 25,
 				'null' => TRUE,
 				'after' => 'charging_status'
 			)

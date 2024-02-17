@@ -30,11 +30,108 @@ class PSDashboardApi_Model extends CI_Model
 		}
 	}
 
+	public function saveJWTTokenDetails($jwt, $user_id)
+	{
+		$data = array(
+			'createddate' => date('Y-m-d H:i:s'),
+			'token' => $jwt,
+			'user_id' => $user_id
+		);
+
+		$query = $this->db->insert('auth_token', $data);
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$insert_id = $this->db->insert_id();
+			return $insert_id;
+		}
+	}
+
+	public function updateJWTTokenDetails($jwt, $user_id)
+	{
+		$data = array(
+			'createddate' => date('Y-m-d H:i:s'),
+			'token' => $jwt,
+			'user_id' => $user_id
+		);
+
+		$query = $this->db->update('auth_token', $data, array('user_id' => $user_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
+		}
+	}
+
+	public function getUserTokenDetails($user_id, $jwt)
+	{
+		$query = $this->db->get_where('auth_token', array('user_id' => $user_id, 'token' => $jwt));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function checkTokenExistsForUser($user_id)
+	{
+		$query = $this->db->get_where('auth_token', array('user_id' => $user_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function getFeedersData($date, $lot_no)
 	{
 		$query_result = $this->getMultipleQueryResult("CALL sp_api_physical_verification_data(1, '".$date."', ".$lot_no.")");
 
 		return $query_result;
+	}
+
+	public function updateFeederDetails($feeder_id, $charging_status, $estimate_value, $user_id)
+	{
+		$data = array(
+			'charging_status' => $charging_status,
+			'estimate_value' => $estimate_value,
+			'modifiedby' => $user_id,
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('contract_location', $data, array('feeder_id' => $feeder_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
+		}
 	}
 
 	public function getMultipleQueryResult($query)

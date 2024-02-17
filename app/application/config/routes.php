@@ -315,6 +315,7 @@ $route['api/tkc-weekly-plan-list'] = 'TKCWeeklyPlanApi/index';
 /*PS Dashboard API*/
 $route['api/authentication-token'] = 'PSDashboardApi/authenticateUser';
 $route['api/get-physical-verification-data'] = 'PSDashboardApi/getFeedersData';
+$route['api/update-feeders-data'] = 'PSDashboardApi/updateFeederData';
 
 
 /******** Api Routes End ***************/

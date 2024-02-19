@@ -120,14 +120,15 @@ class PSDashboardApi extends REST_Controller
 				            $data = [];
 						} else {
 							$date = $this->post('date');
-							$lot_no = $this->post('lot_no');
+							// $lot_no = $this->post('lot_no');
+							$lot_no = (!empty($this->post('lot_no'))) ? $this->post('lot_no') : 'NULL';
 
-							if (empty($lot_no)) {
+							/*if (empty($lot_no)) {
 								$errors = 'Invalid Parameters';
 					            $message = 'No Lot No. provided';
 					            $status_code = 400;
 					            $data = [];
-							} else {
+							} else {*/
 								$date_result = $this->isValidDate($date);
 
 								if (!$date_result) {
@@ -181,7 +182,7 @@ class PSDashboardApi extends REST_Controller
 							            $status_code = 200;	
 									}
 								}
-							}
+							/*}*/
 						}
 					}
 				}

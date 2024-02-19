@@ -38,7 +38,10 @@ class TKCWeeklyPlanApi extends REST_Controller
 
 	public function index_get()
 	{
-		$tkc_plan_result = $this->twp_model->getTKCWeeklyPlans();
+		$from_date = (date('D') != 'Mon') ? date('Y-m-d', strtotime('last Monday')) : date('Y-m-d');
+		$to_date = (date('D') != 'Sun') ? date('Y-m-d', strtotime('next Sunday')) : date('Y-m-d');
+
+		$tkc_plan_result = $this->twp_model->getTKCWeeklyPlans($from_date, $to_date);
 
 		$data = [];
 		foreach ($tkc_plan_result as $key => $value) {

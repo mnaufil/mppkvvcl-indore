@@ -214,7 +214,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getTKCWeeklyPlans()
+	public function getTKCWeeklyPlans($from_date = '', $to_date = '')
 	{
 		$this->db->select('tkc_plan.from_date, tkc_plan.to_date, tkc_plan_detail.tkc_plan_detail_id, tkc_plan_detail.contract_id, tkc_plan_detail.plan_date, tkc_plan_detail.circle_id, tkc_plan_detail.division_id, tkc_plan_detail.description, tkc_plan_detail.remark, contract.contractor_name, contract.package_no, mst_circle.circle_name, mst_division.division_name');
 		$this->db->from('tkc_plan');
@@ -223,6 +223,10 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$this->db->join('mst_circle', 'mst_circle.circle_id = tkc_plan_detail.circle_id', 'INNER');
 		$this->db->join('mst_division', 'mst_division.division_id = tkc_plan_detail.division_id', 'INNER');
 		$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1));
+
+		if (!empty($from_date) && !empty($to_date)) {
+			$this->db->where(array('tkc_plan.from_date' => $from_date, 'tkc_plan.to_date' => $to_date));
+		}
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();

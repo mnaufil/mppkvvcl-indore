@@ -17,33 +17,38 @@ class TKCWeeklyPlan extends CI_Controller
 	public function index()
 	{
 		$data['title'] = 'TKC Weekly Plan';
+
+		$result = $this->twp_model->getTKCWeeklyPlanDateRanges();
+
+
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('tkc-weekly-plan/tkc-weekly-plan', $data);
 	}
 
 	public function addTKCWeeklyPlan()
 	{
-		$data['packages'] = $this->twp_model->getPackages();
+		// $data['packages'] = $this->twp_model->getPackages();
+		$data['packages'] = $packages = $_SESSION['loggedData']->package_access;
+		$packages_arr = explode(',', $packages);
 
-		$user_circles_ids = $_SESSION['myCircles'];
-		$data['circles'] = $this->twp_model->getCirclesAssignedToUser($user_circles_ids);
+		$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages_arr);
+		$divisions = $this->twp_model->getCircleWiseDivision($circles);
 
-		$user_divisions_ids = $_SESSION['myDivision'];
-		// $data['divisions'] = $this->twp_model->getDivisionsAssignedToUser($user_divisions_ids);
-		$circle_wise_division_data = $this->twp_model->getCircleWiseDivision($user_divisions_ids);
-		$data['divisions'] = $this->sortCircleWiseDivisionData($circle_wise_division_data);
+		$divisions_arr = [];
+		foreach ($divisions as $key => $value) {
+			$divisions_arr[$value['circle_name']][] = $value['division_name'];
+		}
 
-		$data['contractor_name'] = $_SESSION['loggedData']->username;
+		$data['divisions'] = $divisions_arr;
 
 		$data['title'] = 'TKC Weekly Plan';
 
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();
-		$this->load->view('tkc-weekly-plan/add-tkc-weekly-plan', $data);
+		$this->load->view('tkc-weekly-plan/add-tkc-weekly-plan-new', $data);
 	}
 
 	public function saveTKCWeeklyPlan()
 	{
-		// echo '<pre>'; print_r($_POST); echo '</pre>'; die();
 		// Default Response
 		http_response_code(200);
       	$response['message'] = 'Saved TKC Weekly Plan successfully';
@@ -80,7 +85,7 @@ class TKCWeeklyPlan extends CI_Controller
       					$feeder = $value->feeder;
 
       					if ($feeder) {
-      						$feeders_list = explode(',', $feeder);
+      						$feeders_list = explode(', ', $feeder);
 
       						foreach ($feeders_list as $key => $value) {
       							$contract_location_id = $this->twp_model->getContractLocationIDByFeederID($value);

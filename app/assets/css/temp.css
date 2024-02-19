@@ -248,7 +248,7 @@ float: right;
 .material-input, .invoice-input {
     padding: 8px !important;
 }
-.email-loader-message{
+.email-loader-message, .plan-loader-message{
     
     padding: 8px;
 }

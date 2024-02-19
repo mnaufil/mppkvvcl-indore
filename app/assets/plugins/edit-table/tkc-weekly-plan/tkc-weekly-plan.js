@@ -153,201 +153,120 @@ class BSTableTKCWeeklyPlan {
     // --------------------------------------------------
 
     _rowEdit(button) {
-        // alert('here'); return false;
         // Indicate user is editing the row
-        /*let $currentRow = $(button).parents('tr'); // access the row
-        console.log("currentRow="+JSON.stringify($currentRow));
-        let $cols = $currentRow.find('td'); // read rows
-        console.log("cols="+JSON.stringify($cols));
-        if (this.currentlyEditingRow($currentRow)) return; // not currently editing, return*/
-        //Pone en modo de edición
-		/*var i = 0;
-        this._modifyEachColumn(this.options.editableColumns, $cols, function($td) { // modify each column
-            let content = $td.html(); // read content
-            console.log("i="+i);
-			console.log("content="+content);
-			console.log("cols row="+$cols);
-            let div = '<div style="display: none;">' + content + '</div>'; // hide content (save for later use)
-			let input;
-			
-			if(i=='1')
-			{
-				if (content) {
-                   if(content=='Civil')
-                    {
-                        input = '<select class="form-control"><option>Select Activity Type</option><option selected>Civil</option><option>Electrical<option></select>';
-                    }
-                    else if(content=='Electrical')
-                    {
-                        input = '<select class="form-control"><option>Select Activity Type</option><option selected>Civil</option><option selected>Electrical<option></select>';
-                    }
-                    else 
-                    {
-                        input = '<select class="form-control"><option>Select Activity Type</option><option selected>Civil</option><option>Electrical<option></select>';
-                    } 
-                } else {
-                    input = '<input class="form-control input-sm"  data-original-value="' + content + '" value="' + content + '">';
-                }
-			}
-			else if(i=='3')
-			{
-				if (content) {
-                    if(content=='Yes')
-                    {
-                        input = '<select class="form-control"><option>Select Control Type</option><option selected>Yes</option><option>No<option></select>';
-                    }
-                    else if(content=='No')
-                    {
-                        input = '<select class="form-control"><option>Select Control Type</option><option selected>Yes</option><option selected>No<option></select>';
-                    }
-                    else 
-                    {
-                        input = '<select class="form-control"><option>Select Control Type</option><option selected>Yes</option><option selected>No<option></select>';
-                    }
-                } else {
-                    input = '<input class="form-control input-sm"  data-original-value="' + content + '" value="' + content + '">';
-                }
-			}
-			else if(i=='4')
-			{
-				console.log("In console 4");
-				return;
-			}
-			else
-			{
-				 input = '<input class="form-control input-sm"  data-original-value="' + content + '" value="' + content + '">';
+        let $currentRow = $(button).parents('tr'); // access the row
 
-			}
-		
+        let $cols = $currentRow.find('td'); // read rows
+
+        if (this.currentlyEditingRow($currentRow)) return; // not currently editing, return
+        //Pone en modo de edición
+
+		var i = 0;
+        this._modifyEachColumn(this.options.editableColumns, $cols, function($td) { // modify each column
+            let div = '<div style="display: none;">' + content + '</div>'; // hide content (save for later use)
+			let input = '';
+
+            var content = '';
+
+			if (i == 0) {
+                content = $td.text();
+
+                if (content != '') {
+                    input = content;
+                }
+            } else if (i == 1) {
+                content = $td.text();
+
+                input = '<select name="lotNo" id="lotNo" class="form-control form-select" data-bs-placeholder="Select Lot No.">';
+                input += '<option value="select" selected disabled>Select Lot No.</option>';
+                $.each(packages_arr, function(index, value) {
+                    let selected = (content != '' && content == value) ? 'selected' : '';
+                    input += '<option value="'+value+'" '+selected+'>'+value+'</option>';
+                });
+                input += '</select>';
+			} else if (i == 2) {
+                content = $td.text();
+
+                let selected_date = (content != '') ? content : '';
+
+                input = '<div class="input-group">';
+                input += '<div class="input-group-text">';
+                input += '<i class="fa fa-calendar tx-16 lh-0 op-6"></i>';
+                input += '</div>';
+                input += '<input type="text" class="form-control" name="weekDates" id="weekDates" value="'+selected_date+'">';
+                input += '</div>';
+
+                setTimeout(initializeDatepicker, 1000);
+            } else if (i == 3) {
+                content = $td.text();
+
+                let selected_day = (content != '') ? content : '';
+                let readonly_attr = (selected_day != '') ? 'readonly' : '';
+
+                input = '<input type="text" class="form-control" name="weekDay" id="weekDay" value="'+selected_day+'" '+readonly_attr+'>';
+            } else if (i == 4) {
+                content = $td.text();
+
+                input = '<select name="circle" id="circle" class="form-control form-select" data-bs-placeholder="Select Circle">';
+                input += '<option value="select" selected disabled>Select Circle</option>';
+                $.each(circles, function(index, value){
+                    let selected = (content != '' && content == value) ? 'selected' : '' ;
+                    input += '<option value="'+value+'" '+selected+'>'+value+'</option>';
+                })
+                input += '</select>';
+            } else if (i == 5) {
+                content = $td.text();
+
+                input = '<select name="division" id="division" class="form-control form-select" data-bs-placeholder="Select Division">';
+
+                if (content != '') {
+                    let selected_circle = $('select[name="circle"]').val();
+                    $.each(divisions[selected_circle], function(index, value) {
+                        let selected = (content == value) ? 'selected' : '';
+                        input += '<option value="'+value+'" '+selected+'>'+value+'</option>';
+                    });
+                } else {
+                    input += '<option value="select" selected disabled>Select Division</option>';    
+                }
+                
+                input += '</select>';
+            } else if (i == '6') {
+                content = $td.text();
+
+                if (content != '') {
+                    let selected_circle = $('select[name="circle"]').val();
+                    let selected_division = $('select[name="division"]').val();
+
+                    getFeedersList(selected_circle, selected_division);
+
+                    let selected_feeders = content.split(', ');
+
+                    setTimeout(function() {
+                        $('select[name="feeder"]').multipleSelect('setSelects', selected_feeders);
+                    }, 1000);
+                } else {
+                    input = '<select name="feeder" id="feeder" class="form-control form-select" data-bs-placeholder="Select Feeder">';
+                    input += '<option value="select" selected disabled>Select Feeder</option>';
+                    input += '</select>';    
+                }
+            } else if (i == '7') {
+                content = $td.text();
+
+                let work_description = (content != '') ? content : '';
+                input = '<textarea class="form-control" id="description_of_work" name="description_of_work" rows="2">'+work_description+'</textarea>';
+            } else if (i == '8') {
+                content = $td.text();
+
+                let remark = (content != '') ? content : '';
+
+                input = '<input type="text" class="form-control" name="remark" id="remark" value="'+remark+'">';
+            }
+
             $td.html(div + input); // set content
 			i++;
-        });*/
+        });        
 
-        let date_range = $('input[name="weeklyPlanDateRange"]').val();
-
-        if (date_range == '') {
-            $('.toast-body').text('Select a date range of 7 days starting from Monday');
-            $('.toast').toast('show');
-        } else {
-            let $currentRow = $(button).parents('tr'); // access the row
-            
-            if (this.currentlyEditingRow($currentRow)) return; // not currently editing, return
-
-            let row_id = $currentRow.attr('data-row-id');
-
-            // Getting data of row being edited if previously filled
-            let currentRow_tds = $currentRow.find('td');
-
-            let lot_no, day, date_of_work, circle, division, feeder, description_of_work, remark;
-            $(currentRow_tds).each(function(index, value) {
-                if (index == 0 || index == 1) {
-                    return
-                }
-
-                let td_class = $(value).attr('class');
-
-                switch (td_class) {
-                    case 'lot-no':
-                        lot_no = $(value).text();
-                        break;
-                    case 'day':
-                        day = $(value).text();
-                        break;
-                    case 'date-of-work':
-                        date_of_work = $(value).text();
-                        break;
-                    case 'circle':
-                        circle = $(value).text();
-                        break;
-                    case 'division':
-                        division = $(value).text();
-                        break;
-                    case 'feeder':
-                        feeder = $(value).text();
-                        break;
-                    case 'description-of-work':
-                        description_of_work = $(value).text();
-                        break;
-                    case 'remark':
-                        remark = $(value).text();
-                        break;
-                }
-            });
-
-            if (lot_no) {
-                $('select[name="lotNo"] option[value="'+lot_no+'"]').prop('selected', true);
-            }
-
-            if (date_of_work) {
-                $('input[name="weekDates"]').val(date_of_work);
-            }
-
-            if (day) {
-                $('input[name="weekDay"]').val(day);
-            }
-
-            if (circle) {
-                $('select[name="circle"] option[value="'+circle+'"]').prop('selected', true);
-            }
-
-            if (division) {
-                $('select[name="division"] option[value="'+division+'"]').prop('selected', true);
-
-                getFeedersList(circle, division);
-            }
-
-            if (feeder) {
-                console.log(feeder);
-                let feeder_arr = feeder.split(',');
-                // let feeders_options = $('select[name="feeder[]"]');
-                // console.log($('select[name="feeder[]"]'));
-                // console.log(feeders_options);
-
-                setTimeout(function() {
-                    $.each(feeder_arr, function(index, value) {
-                        console.log(value);
-                        /*console.log($('feeder option[value="20674"]'));
-                        $('select[name="feeder[]"] option[value="'+value+'"]').attr('selected', 'selected');*/
-                        console.log($('.filter-multi').eq(1).find('input[value="20674"]'));
-                        let input = $('.filter-multi').eq(1).find('input[value="20674"]');
-                        let li = $(input).parent('label').parent('li');
-                        $(li).addClass('selected');
-
-                        console.log($(li).addClass('selected'));
-
-                        $('select[name="feeder[]').multipleSelect();
-                    });
-                }, 1000);
-
-
-
-                
-
-                // $('#feeder').val(feeder_arr);
-                /*$('select[name="feeder[]').multipleSelect('setSelects', feeder_arr);
-                $('select[name="feeder[]').multipleSelect('refresh');*/
-                console.log(feeder_arr);
-
-
-                // $('input[name="feeder"]').val(feeder);
-            }
-
-            if (description_of_work) {
-                $('textarea[name="description_of_work"]').val(description_of_work);
-            }
-
-            if (remark) {
-                $('input[name="remark"]').val(remark);
-            }
-
-            $('#dailyPlanModal').attr('data-row-id', row_id);
-
-            initializeModalDaterangepicker();
-
-            $('#dailyPlanModal').modal('show');
-
-            this._actionsModeEdit(button);
-        }
+        this._actionsModeEdit(button);
     }
     _rowDelete(button) {
         // Remove the row
@@ -365,21 +284,40 @@ class BSTableTKCWeeklyPlan {
     _rowAccept(button) {
         // Accept the changes to the row
         let $currentRow = $(button).parents('tr'); // access the row
-        console.log($currentRow);
         let $cols = $currentRow.find('td'); // read fields
         if (!this.currentlyEditingRow($currentRow)) return; // not currently editing, return
 
         // Finish editing the row & save edits
 		var i = 0;
         this._modifyEachColumn(this.options.editableColumns, $cols, function($td) { // modify each column
-		let cont;
-		if(i==1 || i==3)
-		{
-			cont = $td.find('select').val();
-		}
-         else{
-			   cont = $td.find('input').val(); // read through each input
-		 } 
+    		let cont;
+            if (i == 0) {
+                let row_id = $currentRow.attr('data-row-id');
+                cont = ++row_id;
+            } else if (i == 1) {
+                cont = $td.find('select[name="lotNo"]').val();
+            } else if (i == 2) {
+                cont = $td.find('input[name="weekDates"]').val();
+            } else if (i == 3) {
+                cont = $td.find('input[name="weekDay"]').val();
+            } else if (i == 4) {
+                cont = $td.find('select[name="circle"]').val();
+            } else if (i == 5) {
+                cont = $td.find('select[name="division"]').val();
+            } else if (i == 6) {
+                let select = $td.find('select[name="feeder"]');
+                let multiple_attr = $(select).attr('multiple');
+
+                cont = '';
+                if (typeof multiple_attr !== 'undefined' && multiple_attr !== false) {
+                    let selected_feeders = $td.find('select[name="feeder"]').multipleSelect('getSelects', 'value');
+                    cont = selected_feeders.join(', ');
+                }
+            } else if (i == 7) {
+                cont = $td.find('textarea[name="description_of_work"]').val();
+            } else if (i == 8) {
+                cont = $td.find('input[name="remark"]').val();
+            } 
 			
             $td.html(cont); // set the content and remove the input fields
 			i++;
@@ -402,9 +340,7 @@ class BSTableTKCWeeklyPlan {
     }
     _actionAddRow() {
         // Add row to this table
-
         let $allRows = this.table.find('tbody tr');
-        // console.log($allRows); return false;
         if ($allRows.length == 0) { // there are no rows. we must create them
             let $currentRow = this.table.find('thead tr'); // find header
 
@@ -415,7 +351,6 @@ class BSTableTKCWeeklyPlan {
             let actionsButtonsColumnHTML = this.actionsColumnHTML;
             $cols.each(function(e) {
                 let column = this; // Inner function this (column object)
-				// console.log("Add row = "+e);
                 if ($(column).attr('name') == 'bstable-actions') {
                     newColumnHTML = newColumnHTML + actionsButtonsColumnHTML; // add action buttons
                 } else {
@@ -427,40 +362,19 @@ class BSTableTKCWeeklyPlan {
             let $lastRow = this.table.find('tr:last');
             $lastRow.clone().appendTo($lastRow.parent());
             $lastRow = this.table.find('tr:last');
-            /*console.log('$lastRow:');
-            console.log($lastRow);*/
 
             let row_id = $lastRow.data('row-id');
-            // console.log('row_id:' + row_id);
             $lastRow.attr('data-row-id', ++row_id);
-            /*console.log('$lastRow:');
-            console.log($lastRow);*/
+
             let $cols = $lastRow.find('td'); //lee campos
             $cols.each(function(e) {
-                let column = this; // Inner function this (column object)
-								/*console.log("e = "+e);
-								console.log("common = "+JSON.stringify(column));*/
+                let column = this; // Inner function this (column object)				
 
                 if ($(column).attr('name') == 'bstable-actions') {
                     // action buttons column. change nothing
-                } 
-				/*else if (e == '2')
-				{
-					$(column).html('<select class="form-control"><option>Select Activity Type</option><option selected>Civil</option><option>Electrical<option></select>')
-				}
-				else if (e == '4')
-				{
-					$(column).html('<select class="form-control"><option>Select Control Type</option><option selected>Yes</option><option selected>No<option></select>')
-				}
-				else if(e=='5')
-				{
-					$(column).html('<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#input-modal_new" data-bs-whatever="@mdo"><span class="fe fe-more-vertical"> </span></button>')
-				}*/
-				else {
-					
-						 $(column).html(''); // clear the text
-					
-                   
+                }
+				else {					
+				    $(column).html(''); // clear the text
                 }
             });
         }

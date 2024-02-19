@@ -63,56 +63,14 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getCirclesAssignedToUser($circle_ids)
+	public function getCirclesAssignedToTKC($packages_arr)
 	{
-		$this->db->select('circle_id, circle_name');
-		$this->db->where_in('circle_id', $circle_ids);
-		$query = $this->db->get_where('mst_circle');
-		// echo $this->db->last_query(); die();
-
-		if (!$query) {
-			$error = $this->db->error();    
-            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
-            die();
-		} else {
-			$query_result = [];
-			
-			if ($query->num_rows() > 0) {
-				$query_result = $query->result_array();
-			}
-
-			return $query_result;
-		}
-	}
-
-	/*public function getDivisionsAssignedToUser($division_ids)
-	{
-		$this->db->select('division_id, division_name');
-		$this->db->where_in('division_id', $division_ids);
-		$query = $this->db->get('mst_division');
-		// echo $this->db->last_query(); die();
-
-		if (!$query) {
-			$error = $this->db->error();    
-            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
-            die();
-		} else {
-			$query_result = [];
-			
-			if ($query->num_rows() > 0) {
-				$query_result = $query->result_array();
-			}
-
-			return $query_result;
-		}
-	}*/
-
-	public function getCircleWiseDivision($division_ids)
-	{
-		$this->db->select('mst_division.division_name, mst_circle.circle_name');
-		$this->db->from('mst_division');
-		$this->db->join('mst_circle', 'mst_division.circle_id = mst_circle.circle_id', 'INNER');
-		$this->db->where_in('mst_division.division_id', $division_ids);
+		$this->db->select('mst_circle.circle_name');
+		$this->db->distinct();
+		$this->db->from('contract');
+		$this->db->join('contract_location', 'contract.contract_id = contract_location.contract_id', 'INNER');
+		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
+		$this->db->where_in('contract.package_no', $packages_arr);
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -124,6 +82,34 @@ class TKCWeeklyPlan_Model extends CI_Model
 		} else {
 			$query_result = [];
 			
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['circle_name']);
+				}
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getCircleWiseDivision($circles)
+	{
+		$this->db->select('mst_circle.circle_name, mst_division.division_name');
+		$this->db->from('mst_circle');
+		$this->db->join('mst_division', 'mst_circle.circle_id = mst_division.circle_id', 'INNER');
+		$this->db->where_in('mst_circle.circle_name', $circles);
+
+		$query = $this->db->get();
+
+		if (!$query) {
+			$error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+		} else {
+			$query_result = [];
+
 			if ($query->num_rows() > 0) {
 				$query_result = $query->result_array();
 			}
@@ -255,6 +241,27 @@ class TKCWeeklyPlan_Model extends CI_Model
 					$feeders_data = $this->getTKCWeeklyPlansFeederDetails($value['tkc_plan_detail_id']);
 					$query_result[$key]['feeders'] = implode(',', $feeders_data);
 				}
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getTKCWeeklyPlanDateRanges()
+	{
+		$this->db->select('tkc_plan_id, from_date, to_date, is_draft');
+		$query = $this->db->get_where('tkc_plan', array('is_active' => 1, 'deletedby' => NULL));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
 			}
 
 			return $query_result;

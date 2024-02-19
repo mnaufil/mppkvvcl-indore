@@ -118,6 +118,27 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
+	public function getDivisionList()
+	{
+		$this->db->select('circle_id, division_id, division_name');
+		$query = $this->db->get_where('mst_division', array('is_active' => 1, 'deletedby' => NULL));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function getCircleDivisionWiseFeederList($circle_id, $division_id)
 	{
 		$this->db->select('feeder_id');
@@ -251,7 +272,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function searchTKCWeeklyPlans()
+	public function searchTKCWeeklyPlans($from_date, $to_date, $contractor, $circle, $division, $feeder_id)
 	{
 		
 	}
@@ -421,7 +442,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 	public function getCircleList()
 	{
-		$this->db->select('circle_name');
+		$this->db->select('circle_id, circle_name');
 		$query = $this->db->get_where('mst_circle', array('is_active' => 1, 'deletedby' => NULL));
 		// echo $this->db->last_query(); die();
 
@@ -433,11 +454,11 @@ class TKCWeeklyPlan_Model extends CI_Model
 			$query_result = [];
 			
 			if ($query->num_rows() > 0) {
-				$result = $query->result_array();
+				$query_result = $query->result_array();
 
-				foreach ($result as $key => $value) {
+				/*foreach ($result as $key => $value) {
 					array_push($query_result, $value['circle_name']);
-				}
+				}*/
 			}
 
 			return $query_result;

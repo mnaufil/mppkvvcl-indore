@@ -75,15 +75,30 @@ class TKCWeeklyPlanApi extends REST_Controller
 
 		$circle_list = $this->twp_model->getCircleList();
 
-		$division_list = $this->twp_model->getCircleWiseDivision($circle_list);		
+		$circle_arr = [];
+		foreach ($circle_list as $key => $value) {
+			$circle_arr[$key]['name'] = $value['circle_name'];
+			$circle_arr[$key]['value'] = $value['circle_id'];
+		}
+
+		$division_list = $this->twp_model->getDivisionList();
+
+		$divisions_arr_temp = [];
+		foreach ($division_list as $key => $value) {
+			$divisions_arr_temp[$value['circle_id']][$key]['value'] = $value['division_id'];
+			$divisions_arr_temp[$value['circle_id']][$key]['name'] = $value['division_name'];
+		}
 
 		$divisions_arr = [];
-		foreach ($division_list as $key => $value) {
-			$divisions_arr[$value['circle_name']][] = $value['division_name'];
+		foreach ($divisions_arr_temp as $key => $value) {
+			$div_arr['circle_id'] = $key;
+			$div_arr['divisions_list'] = array_values($value);
+
+			array_push($divisions_arr, $div_arr);
 		}
 
 		$data['tkc'] = $tkc_list;
-		$data['circles'] = $circle_list;
+		$data['circles'] = $circle_arr;
 		$data['divisions'] = $divisions_arr;
 
 		$errors = null;
@@ -101,7 +116,13 @@ class TKCWeeklyPlanApi extends REST_Controller
 			$from_date = (!empty($this->post('from_date'))) ? date('Y-m-d', strtotime($this->post('from_date'))) : '';
 			$to_date = (!empty($this->post('to_date'))) ? date('Y-m-d', strtotime($this->post('to_date'))) : '';
 			$contractor = $this->post('contractor');
-			// $circle = (!empty($this->post('circle'))) ? get
+			$circle = $this->post('circle');
+			$division = $this->post('division');
+			$feeder_id = $this->post('feeder_id');
+
+			$search_result = $this->twp_model->searchTKCWeeklyPlans($from_date, $to_date, $contractor, $circle, $division, $feeder_id);
+
+
 			
 		} else {
 			$errors = 'Invalid Parameters';

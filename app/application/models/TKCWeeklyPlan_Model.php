@@ -251,6 +251,11 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
+	public function searchTKCWeeklyPlans()
+	{
+		
+	}
+
 	public function getTKCWeeklyPlanDateRanges()
 	{
 		$this->db->select('tkc_plan_id, from_date, to_date, is_draft');
@@ -383,6 +388,56 @@ class TKCWeeklyPlan_Model extends CI_Model
 			if ($query->num_rows() > 0) {
 				$result = $query->row_array();
 				$query_result = $result['contract_location_id'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getContractorList()
+	{
+		$this->db->select('mst_user.username, mst_user.user_id');
+		$this->db->from('mst_user');
+		$this->db->join('mst_role', 'mst_user.role_id = mst_role.role_id', 'INNER');
+		$this->db->where(array('mst_role.name' => 'TKC'));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+		} else {
+			$query_result = [];
+			
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getCircleList()
+	{
+		$this->db->select('circle_name');
+		$query = $this->db->get_where('mst_circle', array('is_active' => 1, 'deletedby' => NULL));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+		} else {
+			$query_result = [];
+			
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['circle_name']);
+				}
 			}
 
 			return $query_result;

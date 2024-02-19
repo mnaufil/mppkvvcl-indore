@@ -68,6 +68,50 @@ class TKCWeeklyPlanApi extends REST_Controller
 
         $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'result' => $data], REST_Controller::HTTP_OK);
 	}
+
+	public function filter_data_get()
+	{
+		$tkc_list = $this->twp_model->getContractorList();
+
+		$circle_list = $this->twp_model->getCircleList();
+
+		$division_list = $this->twp_model->getCircleWiseDivision($circle_list);		
+
+		$divisions_arr = [];
+		foreach ($division_list as $key => $value) {
+			$divisions_arr[$value['circle_name']][] = $value['division_name'];
+		}
+
+		$data['tkc'] = $tkc_list;
+		$data['circles'] = $circle_list;
+		$data['divisions'] = $divisions_arr;
+
+		$errors = null;
+		$message = null;
+		$status_code = 200
+
+		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+	}
+
+	public function filter_weekly_plan_post()
+	{
+		if (!empty($this->post())) {
+			echo '<pre>'; print_r($this->post()); echo '</pre>';
+
+			$from_date = (!empty($this->post('from_date'))) ? date('Y-m-d', strtotime($this->post('from_date'))) : '';
+			$to_date = (!empty($this->post('to_date'))) ? date('Y-m-d', strtotime($this->post('to_date'))) : '';
+			$contractor = $this->post('contractor');
+			// $circle = (!empty($this->post('circle'))) ? get
+			
+		} else {
+			$errors = 'Invalid Parameters';
+            $message = 'POST Request has no arguments';
+            $status_code = 400;
+            $data = [];
+		}
+
+		// $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+	}
 }
 
 

@@ -88,7 +88,7 @@ class TKCWeeklyPlanApi extends REST_Controller
 
 		$errors = null;
 		$message = null;
-		$status_code = 200
+		$status_code = 200;
 
 		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
 	}

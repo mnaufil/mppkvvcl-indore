@@ -111,8 +111,6 @@ class TKCWeeklyPlanApi extends REST_Controller
 	public function filter_weekly_plan_post()
 	{
 		if (!empty($this->post())) {
-			echo '<pre>'; print_r($this->post()); echo '</pre>';
-
 			$from_date = (!empty($this->post('from_date'))) ? date('Y-m-d', strtotime($this->post('from_date'))) : '';
 			$to_date = (!empty($this->post('to_date'))) ? date('Y-m-d', strtotime($this->post('to_date'))) : '';
 			$contractor = $this->post('contractor');
@@ -122,8 +120,37 @@ class TKCWeeklyPlanApi extends REST_Controller
 
 			$search_result = $this->twp_model->searchTKCWeeklyPlans($from_date, $to_date, $contractor, $circle, $division, $feeder_id);
 
+			$result = [];
+			foreach ($search_result as $key => $value) {
+				$result[$value['tkc_plan_id']][] = $value;
+			}
 
-			
+			$data = [];
+			foreach ($result as $key => $value) {
+				$temp_data = [];
+				foreach ($value as $k => $v) {
+					if ($k == 0) {
+						$temp_data['from_date'] = date('d-m-Y', strtotime($v['from_date']));
+						$temp_data['to_date'] = date('d-m-Y', strtotime($v['to_date']));
+					}
+
+					$temp_data['daily_plan'][$k]['formatted_date'] = date('d M Y', strtotime($v['plan_date']));
+					$temp_data['daily_plan'][$k]['day'] = date('D', strtotime($v['plan_date']));
+					$temp_data['daily_plan'][$k]['lot_no'] = $v['package_no'];
+					$temp_data['daily_plan'][$k]['tkc'] = $v['contractor_name'];
+					$temp_data['daily_plan'][$k]['circle'] = $v['circle_name'];
+					$temp_data['daily_plan'][$k]['division'] = $v['division_name'];
+					$temp_data['daily_plan'][$k]['feeder'] = $v['feeders'];
+					$temp_data['daily_plan'][$k]['description'] = $v['description'];
+					$temp_data['daily_plan'][$k]['remark'] = $v['remark'];
+				}
+
+				array_push($data, $temp_data);
+			}
+
+			$errors = null;
+			$message = null;
+			$status_code = 200;			
 		} else {
 			$errors = 'Invalid Parameters';
             $message = 'POST Request has no arguments';
@@ -131,7 +158,7 @@ class TKCWeeklyPlanApi extends REST_Controller
             $data = [];
 		}
 
-		// $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
 	}
 }
 

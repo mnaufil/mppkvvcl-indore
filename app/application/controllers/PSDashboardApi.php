@@ -151,6 +151,8 @@ class PSDashboardApi extends REST_Controller
 							            $data = [];
 									} else {
 										foreach ($feeder_details as $fd_key => $fd_value) {
+											$data[$fd_key]['package_no'] = $fd_value['package_no'];
+											$data[$fd_key]['package_id'] = $fd_value['package_id'];
 											$data[$fd_key]['lot_no'] = $fd_value['package_group_no'];
 											$data[$fd_key]['contractor'] = $fd_value['contractor_name'];
 											$data[$fd_key]['circle'] = $fd_value['circle_name'];

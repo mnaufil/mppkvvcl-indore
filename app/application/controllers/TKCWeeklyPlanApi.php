@@ -47,19 +47,19 @@ class TKCWeeklyPlanApi extends REST_Controller
 		foreach ($tkc_plan_result as $key => $value) {
 
 			if ($key == 0) {
-				$data['from_date'] = date('d-m-Y', strtotime($value['from_date']));
-				$data['to_date'] = date('d-m-Y', strtotime($value['to_date']));
+				$data[0]['from_date'] = date('d-m-Y', strtotime($value['from_date']));
+				$data[0]['to_date'] = date('d-m-Y', strtotime($value['to_date']));
 			}
 
-			$data['daily_plan'][$key]['formatted_date'] = date('d M Y', strtotime($value['plan_date']));
-			$data['daily_plan'][$key]['day'] = date('D', strtotime($value['plan_date']));
-			$data['daily_plan'][$key]['lot_no'] = $value['package_no'];
-			$data['daily_plan'][$key]['tkc'] = $value['contractor_name'];
-			$data['daily_plan'][$key]['circle'] = $value['circle_name'];
-			$data['daily_plan'][$key]['division'] = $value['division_name'];
-			$data['daily_plan'][$key]['feeder'] = $value['feeders'];
-			$data['daily_plan'][$key]['description'] = $value['description'];
-			$data['daily_plan'][$key]['remark'] = $value['remark'];
+			$data[0]['daily_plan'][$key]['formatted_date'] = date('d M Y', strtotime($value['plan_date']));
+			$data[0]['daily_plan'][$key]['day'] = date('D', strtotime($value['plan_date']));
+			$data[0]['daily_plan'][$key]['lot_no'] = $value['package_no'];
+			$data[0]['daily_plan'][$key]['tkc'] = $value['contractor_name'];
+			$data[0]['daily_plan'][$key]['circle'] = $value['circle_name'];
+			$data[0]['daily_plan'][$key]['division'] = $value['division_name'];
+			$data[0]['daily_plan'][$key]['feeder'] = $value['feeders'];
+			$data[0]['daily_plan'][$key]['description'] = $value['description'];
+			$data[0]['daily_plan'][$key]['remark'] = $value['remark'];
 		}
 
 		$errors = null;

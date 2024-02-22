@@ -61,6 +61,153 @@ class TKCPhysicalVerificationApi extends REST_Controller
 
 		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
 	}
+
+	public function get_tkc_ppsheet_details_post()
+	{
+		if (!empty($this->post())) {
+			$logged_user_role_id = $this->post('logged_user_role_id');
+			$tkc_ppsheet_id = $this->post('physical_progress_id');
+			$prev_tkc_ppsheet_id = $this->post('prev_tkc_physical_progress_id');
+			$contract_id = $this->post('contract_id');
+			$contract_location_id = $this->post('contract_location_id');
+			$reported_date = (!empty($this->post('reported_date'))) ? date('Y-m-d', strtotime($this->post('reported_date'))) : '';
+			$sheet_status_id = $this->post('sheet_status_id');
+            $day = $this->post('day');
+
+            $reported_date = ($sheet_status_id == 1) ? '' : $reported_date;
+
+            $mode = 'edit-new';
+            $type = 'API';
+
+            $tkc_pp_id = (empty($tkc_ppsheet_id)) ? $prev_tkc_ppsheet_id : $tkc_ppsheet_id;
+
+            $sheet_result = $this->tpv_model->getSheetDetail($mode, $tkc_pp_id, $contract_id, $contract_location_id, $reported_date, $type);
+            $sheet_result['reported_date'] = (!empty($sheet_result['reported_date'])) ? date('d-m-Y', strtotime($sheet_result['reported_date'])) : "";
+
+            $sheet_result['reported_by'] = (!empty($tkc_ppsheet_id)) ? $sheet_result['reported_by'] : '';
+            $sheet_result['reported_by_name'] = $this->tpv_model->getReportedByName($sheet_result['reported_by']);
+
+            $sheet_result['geo_location_radius'] = $this->tpv_model->getGeoLocationRadius();
+
+            /*Formatting Tender Award Date*/
+            $award_date = date("d-m-Y", strtotime($sheet_result['tender_award_date']));
+            $sheet_result['tender_award_date'] = $award_date;
+
+            $sheet_result['task_ratio'] = $task_ratio = $this->calculateTaskRatio($sheet_result, $mode);
+            $task_arr = explode('/', $task_ratio);
+            $task['cc_task'] = $task_arr[0];
+            $task['tt_task'] = $task_arr[1];
+
+            $work_completion = ($task['tt_task'] != 0) ? ((int)$task['cc_task'] / (int)$task['tt_task']) * 100 : '';
+            $sheet_result['work_completion'] = ($work_completion == 0 || $work_completion == 100 || $work_completion == '') ? $work_completion : round($work_completion);
+
+            if (!empty($sheet_result['activities_list'])) {
+                $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);
+                $sheet_result['activities_list'] = $activities_list;
+            }
+
+            $sheet_result['mode'] = (($reported_date == date('Y-m-d')) || ($reported_date == '') || $day == 'today') ? 'new' : 'previous';
+
+            $data['sheet_data'] = $sheet_result;
+            $data['userdata'] = $this->getUserData($logged_user_role_id);
+
+            $errors = null;
+            $message = null;
+            $status_code = 200;
+		} else {
+			$errors = 'Empty POST Request';
+            $message = 'POST Request has no arguments';
+            $status_code = 400;
+            $data = [];
+		}
+
+		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+	}
+
+	public function calculateTaskRatio($site, $mode, $reported_date = NULL)
+	{
+		$activities_result = $this->tpv_model->getActivitiesList($site['typeofwork_id'], NULL);
+
+		$task_ratio = '-';
+
+		if (!empty($activities_result)) {
+			$activities_count = count($activities_result);
+			$tkc_pp_id = ($mode == 'edit-prev' && empty($reported_date)) ? $site['prev_tkc_physical_progress_id'] : $site['tkc_physical_progress_id'] ;
+
+			$applied_activities_result = $this->tpv_model->getAppliedActivitiesList($tkc_pp_id, $site['contract_location_id']);
+
+			$applied_activities_count = 0;
+
+			if (!empty($applied_activities_result)) {
+				foreach ($applied_activities_result as $key => $value) {
+					if ($value['status_id'] == 3) {
+						$applied_activities_count++;
+					} elseif ($value['status_id'] == 1) {
+						$applied_activities_count++;
+					}
+				}
+			}
+
+			$task_ratio = $applied_activities_count .' / '.$activities_count;
+		}
+
+		return $task_ratio;
+	}
+
+	public function sortByActivities($list, $group_name)
+    {
+        $activities_arr = [];
+        $sorted_activities_arr = [];
+
+        foreach ($group_name as $g_key => $g_value) {
+            $activities_arr[$g_key]['is_boq'] = [];
+            $activities_arr[$g_key][$g_value['name']] = [];
+            foreach ($list as $l_key => $l_value) {
+                if ($g_value['is_boq'] == $l_value['is_boq']) {
+                    $activities_arr[$g_key]['is_boq'] = $l_value['is_boq'];
+                }
+                if ($g_value['name'] == $l_value['activity_group_name']) {
+                    array_push($activities_arr[$g_key][$g_value['name']], $l_value);
+                }
+            }
+        }
+
+        foreach ($activities_arr as $key => $value) {
+            $sorted_arr = [];
+
+                $tab_name = '';
+                foreach (array_slice($value, 1) as $k1 =>  $v1) {
+                    $tab_name = $k1;
+                    $sort_arr = $this->sort_array_by_key($v1, 'seqno');
+                    array_push($sorted_arr, $sort_arr);
+                }
+
+                $sorted_activities_arr[$key]['is_boq'] = $value['is_boq'];
+                $sorted_activities_arr[$key]['tab_name'] = $tab_name;
+                $sorted_activities_arr[$key]['tab_body'] = $sorted_arr[0];
+                // $sorted_activities_arr[$key] = $sorted_arr;
+        }
+        
+        return $sorted_activities_arr;
+    }
+
+    public function getUserData($role_id)
+    {
+        $userrole = $this->tpv_model->getUserRole($role_id);
+          
+        // $userdata['username'] = $username;
+        $userdata['role'] = $userrole;
+
+        return $userdata;
+    }
+
+    //Function to sort array by key
+    public function sort_array_by_key($array, $sort_key)
+    {
+        $key_array = array_column($array, $sort_key);
+        array_multisort($key_array, SORT_ASC, $array); //or SORT_DESC
+        return $array;
+    }
 }
 
 

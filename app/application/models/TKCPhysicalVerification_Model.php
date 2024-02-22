@@ -37,6 +37,251 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}		
 	}
 
+	public function getSheetDetail($mode, $ppsheet_id, $contract_id, $contract_location_id, $reported_date = NULL, $type = NULL)
+	{
+		$this->db->select('tkc_physical_progress.*, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.package_no, contract.typeofwork_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_name, contract_location.feeder_id, contract_location.geo_code');
+		$this->db->from('tkc_physical_progress');
+		$this->db->join('contract', 'tkc_physical_progress.contract_id = contract.contract_id', 'INNER');
+		$this->db->join('contract_location', 'tkc_physical_progress.contract_id = contract_location.contract_id AND tkc_physical_progress.contract_location_id = contract_location.contract_location_id', 'INNER');
+		$this->db->where(array('tkc_physical_progress.tkc_physical_progress_id' => $ppsheet_id));
+
+		if ($type == NULL && $reported_date != NULL) {
+			$this->db->where('tkc_physical_progress.reported_date', $reported_date);	
+		}
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();
+
+				$query_result['region_name'] = $this->getRegion($query_result['region_id']);
+				$query_result['circle_name'] = $this->getCircle($query_result['circle_id']);
+				$query_result['division_name'] = $this->getDivision($query_result['division_id']);
+				$query_result['typeofwork'] = $this->getTypeOfWork($query_result['typeofwork_id']);
+				$query_result['sheet_status'] = $this->getSheetStatus($query_result['status_id']);
+
+				if ($mode == 'edit-new') {
+					if ($type == 'API') {
+						$activities_list = $this->getActivitiesListAPI($ppsheet_id, $query_result['typeofwork_id'], $contract_location_id, $reported_date);	
+					} else {
+						$activities_list = $this->getActivitiesList($query_result['typeofwork_id'], $contract_location_id);	
+					}
+
+					$query_result['activities_list'] = $activities_list;
+
+					if (!empty($activities_list)) {
+						$activity_groups = $this->getActivitiesGroupByWork($query_result['typeofwork_id'], $type);
+						$query_result['activities_group_name'] = $activity_groups;
+					}
+				}
+
+				return $query_result;
+			}
+		}
+	}
+
+	public function getActivitiesListAPI($ppsheet_id, $work_id, $contract_location_id, $reported_date, $activity_id = NULL)
+	{
+		$status_field = ($reported_date != NULL) ? 'tkc_physical_progress_activity.status_id' : '';
+		$this->db->select('mst_typeofwork_activity.typeofwork_activity_id, mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq, mst_activity_group.name as activity_group_name, mst_typeofwork_activity.unit_id, mst_unit.name as unit_name, mst_typeofwork_activity.seqno, mst_typeofwork_activity.activity,'.$status_field);
+		$this->db->from('mst_typeofwork_activity');
+		$this->db->join('mst_activity_group', 'mst_typeofwork_activity.activity_group_id = mst_activity_group.activity_group_id', 'INNER');
+		$this->db->join('mst_unit', 'mst_typeofwork_activity.unit_id = mst_unit.unit_id', 'INNER');
+
+		if ($reported_date != NULL) {
+			$this->db->join('tkc_physical_progress_activity', 'mst_typeofwork_activity.typeofwork_activity_id = tkc_physical_progress_activity.activity_id');
+		}
+		
+		$this->db->where(array('mst_typeofwork_activity.typeofwork_id' => $work_id));
+
+		if ($reported_date != NULL) {
+			$this->db->where('tkc_physical_progress_activity.tkc_physical_progress_id', $ppsheet_id);
+		}
+
+		if ($activity_id) {
+			$this->db->where('mst_typeofwork_activity_options.typeofwork_activity_id', $activity_id);
+		}
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+
+				if (is_null($activity_id)) {
+					foreach ($query_result as $key => $value) {
+						if ($value['is_boq'] == 1) {
+							$query_result[$key]['boq'] = $this->getBOQ($value['typeofwork_activity_id'], $contract_location_id);
+							$query_result[$key]['erected_qty'] = $this->getErectedQuantity($ppsheet_id, $value['typeofwork_activity_id']);
+						}
+
+						$query_result[$key]['status_id'] = isset($value['status_id']) ? $value['status_id'] : '0';
+					}
+
+					return $query_result;
+				} else {
+					return $query_result;
+				}
+			}
+		}
+	}
+
+	public function getActivitiesList($work_id, $contract_location_id, $activity_id = NULL)
+	{
+		$this->db->select('mst_typeofwork_activity.typeofwork_activity_id, mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq, mst_activity_group.name as activity_group_name, mst_typeofwork_activity.unit_id, mst_unit.name, mst_typeofwork_activity.seqno, mst_typeofwork_activity.activity');
+		$this->db->from('mst_typeofwork_activity');
+		$this->db->join('mst_activity_group', 'mst_typeofwork_activity.activity_group_id = mst_activity_group.activity_group_id', 'INNER');
+		$this->db->join('mst_unit', 'mst_typeofwork_activity.unit_id = mst_unit.unit_id', 'INNER');
+		$this->db->where(array('mst_typeofwork_activity.typeofwork_id' => $work_id));
+
+		if ($activity_id) {
+			$this->db->where('mst_typeofwork_activity_options.typeofwork_activity_id', $activity_id);
+		}
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+
+				if (is_null($activity_id)) {
+					foreach ($query_result as $key => $value) {
+						if ($value['is_boq'] == 1) {
+							$query_result[$key]['boq'] = $this->getBOQ($value['typeofwork_activity_id'], $contract_location_id);
+						}
+					}
+
+					return $query_result;
+				} else {
+					return $query_result;
+				}
+			}
+		}
+	}
+
+	public function getActivitiesGroupByWork($work_id, $type)
+	{
+		$this->db->distinct();
+
+		if ($type === 'API') {
+			$this->db->select('mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.name, mst_activity_group.is_boq');	
+		} else {
+			$this->db->select('mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.name');	
+		}
+
+		$this->db->from('mst_typeofwork_activity');
+		$this->db->join('mst_activity_group','mst_typeofwork_activity.activity_group_id = mst_activity_group.activity_group_id','inner');
+		$this->db->where('mst_typeofwork_activity.typeofwork_id', $work_id);
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();				
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getAppliedActivitiesList($ppsheet_id, $contract_location_id, $reported_date = NULL)
+	{
+		$this->db->select('tkc_physical_progress_activity.tkc_physical_progress_activity_id, tkc_physical_progress_activity.tkc_physical_progress_id, tkc_physical_progress_activity.sr_no, tkc_physical_progress_activity.activity_id, tkc_physical_progress_activity.unit_id, tkc_physical_progress_activity.status_id, tkc_physical_progress_activity.erected_qty, tkc_physical_progress_activity.remarks, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq');
+		$this->db->from('tkc_physical_progress_activity');
+		$this->db->join('mst_typeofwork_activity', 'tkc_physical_progress_activity.activity_id = mst_typeofwork_activity.typeofwork_activity_id', 'INNER');
+		$this->db->join('mst_activity_group', 'mst_typeofwork_activity.activity_group_id = mst_activity_group.activity_group_id', 'LEFT');
+		$this->db->where(array('tkc_physical_progress_activity.tkc_physical_progress_id' => $ppsheet_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getBOQ($typeofwork_activity_id, $contract_location_id)
+	{
+		$this->db->select('boq');
+		$query = $this->db->get_where('contract_location_boq', array('typeofwork_activity_id' => $typeofwork_activity_id, 'contract_location_id' => $contract_location_id, 'is_active' => 1));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = 0;
+			if ($query->num_rows() > 0) {
+				$boq_result = $query->row_array();
+				$query_result = $boq_result['boq'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getErectedQuantity($pp_id, $activity_id)
+	{
+		$this->db->select('erected_qty');
+		$query = $this->db->get_where('tkc_physical_progress_activity', array('tkc_physical_progress_id' => $pp_id, 'activity_id' => $activity_id));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+				$query_result = $result['erected_qty'];
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function getTKCPackageAccess($tkc_user_id)
 	{
 		$this->db->select('mst_user.package_access');
@@ -169,6 +414,111 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
+	public function getRegion($region_id)
+	{
+		$query = $this->db->get_where('mst_region', array('region_id' => $region_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['region_name'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getCircle($circle_id)
+	{
+		$query = $this->db->get_where('mst_circle', array('circle_id' => $circle_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['circle_name'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getDivision($division_id)
+	{
+		$query = $this->db->get_where('mst_division', array('division_id' => $division_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['division_name'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getTypeOfWork($work_id)
+	{
+		$query = $this->db->get_where('mst_typeofwork', array('typeofwork_id' => $work_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['name'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getSheetStatus($status_id)
+	{
+		$query = $this->db->get_where('mst_status', array('status_id' => $status_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['name'];
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function getRegionList($user_id = NULL)
 	{
 		
@@ -204,10 +554,73 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
+	public function getReportedByName($reportedByID)
+	{
+		$query = $this->db->get_where('mst_user', array('user_id' => $reportedByID));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+				$query_result = $result['username'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getGeoLocationRadius()
+	{
+		$display_name = 'GEO_LOCATION_RADIUS';
+		$query = $this->db->get_where('sysconfig', array('display_name' => $display_name));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = 0;
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+				$query_result = $result['fieldvalue'];
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function getLoggedInUserID()
 	{
 		$userdata = $_SESSION['loggedData'];
 		return $userdata->user_id;
+	}
+
+	public function getUserRole($roleId)
+	{
+		$query = $this->db->get_where('mst_role', array('role_id' => $roleId));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['name'];
+			}
+
+			return $query_result;	
+		}
 	}
 }
 

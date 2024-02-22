@@ -115,7 +115,7 @@
                               					<!-- Action Buttons -->
                               					<div class="btn-list">
                               						<?php if (!empty($user_access) && (isset($user_access['view']) || isset($user_access['update']))) { ?>
-                              							<a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('add-physical-progress/'.$mode.'/'.$value['tkc_physical_progress_id'].'/'.$value['contract_id'].'/'.$value['contract_location_id']); ?>">
+                              							<a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('add-tkc-physical-verification/'.$mode.'/'.$value['tkc_physical_progress_id'].'/'.$value['contract_id'].'/'.$value['contract_location_id']); ?>">
 		                                          <span class="<?php echo ($value['sheet_status'] == 'Completed') ? 'fa fa-eye' : 'fe fe-edit'; ?> fa-lg action-btn-table"></span>
 		                                        </a>
 		                                      <?php } ?>

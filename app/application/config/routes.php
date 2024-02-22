@@ -256,6 +256,8 @@ $route['get-feeders-list-tkc'] = 'TKCWeeklyPlan/getFeedersList';
 
 /*TKC Physical Verification*/
 $route['tkc-physical-verification'] = 'TKCPhysicalVerification/index';
+$route['add-tkc-physical-verification/(:any)/(:num)/(:num)/(:num)'] = 'TKCPhysicalVerification/editSheet/$1/$2/$3/$4';
+$route['save-tkc-physical-verification'] = 'TKCPhysicalVerification/saveSheet';
 
 /*Security / Roles Module*/
 $route['roles'] = 'Security/roles';
@@ -319,6 +321,8 @@ $route['api/tkc-weekly-plan-search'] = 'TKCWeeklyPlanApi/filter_weekly_plan';
 
 /*TKC Physical Verification API*/
 $route['api/tkc-physical-verification'] = 'TKCPhysicalVerificationApi/index';
+$route['api/get-tkc-sheet-details'] = 'TKCPhysicalVerificationApi/get_tkc_ppsheet_details';
+
 
 /*PS Dashboard API*/
 $route['api/authentication-token'] = 'PSDashboardApi/authenticateUser';

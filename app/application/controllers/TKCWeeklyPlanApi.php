@@ -26,8 +26,7 @@ require APPPATH.'libraries/REST_Controller.php';
  * 
  */
 class TKCWeeklyPlanApi extends REST_Controller
-{
-	
+{	
 	function __construct()
 	{
 		parent::__construct();

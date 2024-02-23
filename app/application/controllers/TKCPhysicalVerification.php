@@ -391,14 +391,13 @@ class TKCPhysicalVerification extends CI_Controller
             $status_values = [];
             if ($status != '') {
             	foreach ($this->input->post('status') as $key => $value) {
-                	array_push($status_values, $this->pp_model->getSheetStatus($value));
+                	array_push($status_values, $this->tpv_model->getSheetStatus($value));
                 }
            	}
             $filter_arr['status']['value'] = (!empty($status_values)) ? implode(', ', $status_values) : '';
             $filter_arr['status']['id'] = $this->input->post('status');
 
             $search_result = $this->tpv_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by_id, $formatted_reported_date, $feeder_id, $status, $user_id, 0, 1000);
-            // echo 'search_result: <pre>'; print_r($search_result); echo '</pre>'; die();
 
             $user_access_data = $this->tpv_model->getUserModuleAccess();
       		$user_access = $this->sortUserModuleAccess($user_access_data);

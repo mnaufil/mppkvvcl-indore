@@ -20,21 +20,20 @@ class TKCPhysicalVerification extends CI_Controller
 		$user_id = $_SESSION['loggedData']->user_id;
 
 		$result = $this->tpv_model->getPhysicalVerificationSheets($user_id);
-		// echo 'result: <pre>'; print_r($result); echo '</pre>'; die();
 
-		/*$type_of_work = $this->tpv_model->getTypeOfWorkList();
+		$type_of_work = $this->tpv_model->getTypeOfWorkList($user_id);
 
-		$region_list = $this->tpv_model->getRegionList();
+		$region_list = $this->tpv_model->getRegionList($user_id);
       	$region_list = $this->sort_array_by_key($region_list, 'region_name');
 
-      	$status_list = $this->pp_model->getStatusList();
+      	$status_list = $this->tpv_model->getStatusList();
       	$status_list = $this->sort_array_by_key($status_list, 'seqno');
 
-      	$region_circle_data = $this->pp_model->getRegionCircleData();
-      	$region_circle_data = $this->modifyRegionCircleData($region_circle_data);
+      	$region_circle_data = $this->tpv_model->getRegionCircleData($user_id);
+      	$region_circle_data = $this->modifyRegionCircleData($region_circle_data);      	
 
-      	$circle_division_data = $this->pp_model->getCircleDivisionData();
-      	$circle_division_data = $this->modifyCircleDivisionData($circle_division_data);*/
+      	$circle_division_data = $this->tpv_model->getCircleDivisionData($user_id);
+      	$circle_division_data = $this->modifyCircleDivisionData($circle_division_data);
 
       	$user_access_data = $this->tpv_model->getUserModuleAccess();
       	$user_access = $this->sortUserModuleAccess($user_access_data);
@@ -42,7 +41,14 @@ class TKCPhysicalVerification extends CI_Controller
       	$data['title'] = 'TKC Physical Verification';
       	$data['result'] = $result;
 
+      	$data['work_list'] = $type_of_work;
+        $data['region_list'] = $region_list;
+        $data['region_circle_data'] = $region_circle_data;
+        $data['circle_division_data'] = $circle_division_data;
+        $data['status_list'] = $status_list;        
+
       	$data['user_access'] = $user_access;
+      	$data['userdata'] = $this->getUserData();
 
       	// echo '<pre>'; print_r($data); echo '</pre>'; die();
         $this->load->view('tkc-physical-verification/physical-verification', $data); 
@@ -69,6 +75,30 @@ class TKCPhysicalVerification extends CI_Controller
        	if (!empty($sheet_result['activities_list'])) {
        		$activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);
             $sheet_result['activities_list'] = $activities_list;
+       	}
+
+       	if ($mode == 'edit-prev' || $mode == 'view') {
+       		/*Formatting Reported Date*/
+       		$reported_date = date("d-m-Y", strtotime($sheet_result['reported_date']));
+            $sheet_result['reported_date'] = $reported_date;
+
+            //Getting previously edited sheet dates
+            $prev_sheet_dates = $this->tpv_model->getPrevSheetDates($sheet_result['contract_id'], $sheet_result['contract_location_id'], $sheet_result['site_location']);
+
+            if ($sheet_result['reported_date'] == date('d-m-Y')) {
+            	$sheet_result['sheet_mode'] = 'update';
+
+            	if ($mode == 'edit-prev') {
+                	array_pop($prev_sheet_dates);     
+                }
+
+                $data['prev_sheet_dates'] = $prev_sheet_dates;
+
+                //Setting physical_progress_id to latest ID
+                $sheet_result['tkc_physical_progress_id'] = $sheet_result['prev_tkc_physical_progress_id'];
+            } else {
+            	$data['prev_sheet_dates'] = $prev_sheet_dates;
+            }
        	}
 
        	$data['sheet_data'] = $sheet_result;
@@ -103,7 +133,7 @@ class TKCPhysicalVerification extends CI_Controller
            	$mode = array_slice($uriSegments, -4);
 
            	if (empty($tkc_pp_id)) {
-           		$tkc_pp_id = $this->tpv_model->saveTKCPhysicalVerificationSheet($contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, NULL, $remark, $status_id, $is_draft);
+           		$tkc_pp_id = $this->tpv_model->saveTKCPhysicalVerificationSheet($contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, $remark, $status_id, $is_draft);
 
            		if ($mode[0] == 'edit-prev') {
            			
@@ -258,7 +288,6 @@ class TKCPhysicalVerification extends CI_Controller
             }
 
             $remaining_activity_count = $this->tpv_model->getAppliedActivitiesListForSheetStatusCalculation($tkc_pp_id);
-
             if ($remaining_activity_count == 0) {
             	$pp_status_ids = $this->tpv_model->getStatusList();
 				$pp_status_ids = $this->modify_pp_status_ids($pp_status_ids);
@@ -301,6 +330,117 @@ class TKCPhysicalVerification extends CI_Controller
             }
 
             redirect('tkc-physical-verification');
+		}
+	}
+
+	public function searchSheet()
+	{
+		if (!empty($_POST)) {
+			$user_id = $_SESSION['loggedData']->user_id;
+
+			$filter_arr = [];
+
+			$contractor = $this->input->post('contractor');
+			$filter_arr['contractor']['label'] = 'Contractor (TKC)';
+            $filter_arr['contractor']['value'] = $contractor;
+
+            $tender_award_no = $this->input->post('tenderAwardNo');
+            $filter_arr['tenderAwardNo']['label'] = 'Contract No.';
+           	$filter_arr['tenderAwardNo']['value'] = $tender_award_no;
+
+           	$type_of_work = (isset($_POST['typeOfWork'])) ? $this->input->post('typeOfWork') : '';
+           	$filter_arr['typeOfWork']['label'] = 'Type Of Work';
+           	$filter_arr['typeOfWork']['value'] = (isset($_POST['typeOfWork'])) ? $this->tpv_model->getTypeOfWork($type_of_work) : '';
+            $filter_arr['typeOfWork']['id'] = $type_of_work;
+
+            $site_location = $this->input->post('siteLocation');
+           	$filter_arr['siteLocation']['label'] = 'Site Location';
+            $filter_arr['siteLocation']['value'] = $site_location;
+
+            $region = (isset($_POST['region'])) ? $this->input->post('region') : '';
+            $filter_arr['region']['label'] = 'Region';
+            $filter_arr['region']['value'] = (isset($_POST['region'])) ? $this->tpv_model->getRegion($region) : '';
+            $filter_arr['region']['id'] = $region;
+
+            $circle = (isset($_POST['circle'])) ? $this->input->post('circle') : '';
+            $filter_arr['circle']['label'] = 'Circle';
+            $filter_arr['circle']['value'] = (isset($_POST['circle'])) ? $this->tpv_model->getCircle($circle) : '';
+            $filter_arr['circle']['id'] = $circle;
+
+            $division = (isset($_POST['division'])) ? $this->input->post('division') : '';
+            $filter_arr['division']['label'] = 'Division';
+            $filter_arr['division']['value'] = (isset($_POST['division'])) ? $this->tpv_model->getDivision($division) : '';
+            $filter_arr['division']['id'] = $division;
+
+            $reported_by = $this->input->post('reportedBy');
+            $reported_by_id = (!empty($reported_by)) ? $this->tpv_model->getReportedByID($reported_by, 'LIKE') : '';
+            $filter_arr['reportedBy']['label'] = 'Reported By';
+            $filter_arr['reportedBy']['value'] = $reported_by;
+
+            $reported_date = $this->input->post('reportedDate');
+           	$formatted_reported_date = (!empty($reported_date)) ? date('Y-m-d', strtotime($reported_date)) : '';
+            $filter_arr['reportedDate']['label'] = 'Reported Date';
+            $filter_arr['reportedDate']['value'] = $reported_date;
+
+            $feeder_id = $this->input->post('feederID');
+            $filter_arr['feederID']['label'] = 'Feeder ID';
+            $filter_arr['feederID']['value'] = $feeder_id;
+
+            $status = (isset($_POST['status'])) ? implode(',', $this->input->post('status')) : '';
+            $filter_arr['status']['label'] = 'Status';
+            $status_values = [];
+            if ($status != '') {
+            	foreach ($this->input->post('status') as $key => $value) {
+                	array_push($status_values, $this->pp_model->getSheetStatus($value));
+                }
+           	}
+            $filter_arr['status']['value'] = (!empty($status_values)) ? implode(', ', $status_values) : '';
+            $filter_arr['status']['id'] = $this->input->post('status');
+
+            $search_result = $this->tpv_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by_id, $formatted_reported_date, $feeder_id, $status, $user_id, 0, 1000);
+            // echo 'search_result: <pre>'; print_r($search_result); echo '</pre>'; die();
+
+            $user_access_data = $this->tpv_model->getUserModuleAccess();
+      		$user_access = $this->sortUserModuleAccess($user_access_data);
+
+      		$type_of_work = $this->tpv_model->getTypeOfWorkList($user_id);
+
+      		$region_list = $this->tpv_model->getRegionList($user_id);
+      		$region_list = $this->sort_array_by_key($region_list, 'region_name');
+
+      		if (!empty($region)) {
+      			$circle_list = $this->tpv_model->getCircleListOfRegion($region);
+      			$data['circle_list'] = $this->sort_array_by_key($circle_list, 'circle_name');
+      		}
+
+      		if (!empty($circle)) {
+                $division_list = $this->tpv_model->getDivisionListOfCircle($circle);
+                $data['division_list'] = $this->sort_array_by_key($division_list, 'division_name');
+            }
+
+            $region_circle_data = $this->tpv_model->getRegionCircleData($user_id);
+	      	$region_circle_data = $this->modifyRegionCircleData($region_circle_data);
+
+	      	$circle_division_data = $this->tpv_model->getCircleDivisionData($user_id);
+	      	$circle_division_data = $this->modifyCircleDivisionData($circle_division_data);
+
+	      	$status_list = $this->tpv_model->getStatusList();
+      		$status_list = $this->sort_array_by_key($status_list, 'seqno');
+
+      		$data['title'] = 'TKC Physical Verification';
+      		$data['result'] = $search_result;
+
+      		$data['filters'] = $filter_arr;
+      		$data['work_list'] = $type_of_work;
+      		$data['region_list'] = $region_list;
+      		$data['region_circle_data'] = $region_circle_data;
+        	$data['circle_division_data'] = $circle_division_data;
+        	$data['status_list'] = $status_list;
+
+        	$data['user_access'] = $user_access;
+      		$data['userdata'] = $this->getUserData();
+
+        	$this->load->view('tkc-physical-verification/physical-verification', $data);
 		}
 	}
 
@@ -347,20 +487,47 @@ class TKCPhysicalVerification extends CI_Controller
 		if (!empty($activities_result)) {
 			$activities_count = count($activities_result);
 
-			$pp_id = (($mode == 'edit-prev' || $mode == 'view' || $mode == 'edit-review') && empty($reported_date)) ? $site['prev_tkc_physical_progress_id'] : $site['tkc_physical_progress_id'];
+			$pp_id = (($mode == 'edit-prev' || $mode == 'view') && empty($reported_date)) ? $site['prev_tkc_physical_progress_id'] : $site['tkc_physical_progress_id'];
 
 			$applied_activities_result = $this->tpv_model->getAppliedActivitiesList($pp_id, $site['contract_location_id']);
 
 			$applied_activities_count = 0;
 
 			if (!empty($applied_activities_result)) {
-				// code...
+				foreach ($applied_activities_result as $key => $value) {
+
+					if ($value['status_id'] == 3 || $value['status_id'] == 1) {
+						$applied_activities_count++;
+					}
+				}
 			}
 
 			$task_ratio = $applied_activities_count .' / '.$activities_count;
 		}
 
 		return $task_ratio;
+	}
+
+	public function modifyRegionCircleData($region_circle_data)
+	{
+		$modified_region_circle_arr = [];
+
+      	foreach ($region_circle_data as $key => $value) {
+        	$modified_region_circle_arr[$value['region_id']][$value['circle_id']] = $value['circle_name'];
+        }
+
+        return $modified_region_circle_arr;
+	}
+
+	public function modifyCircleDivisionData($circle_division_data)
+	{
+		$modified_circle_division_arr = [];
+
+        foreach ($circle_division_data as $key => $value) {
+        	$modified_circle_division_arr[$value['circle_id']][$value['division_id']] = $value['division_name'];
+        }
+
+        return $modified_circle_division_arr;
 	}
 
 	public function sortByActivities($list, $group_name)

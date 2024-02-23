@@ -88,6 +88,181 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
+	public function getPreviousSheetDataAPI($prev_tkc_pp_id)
+	{
+		$this->db->select('tkc_physical_progress.contract_id, tkc_physical_progress.contract_location_id, tkc_physical_progress.site_location, contract.typeofwork_id');
+		$this->db->from('tkc_physical_progress');
+		$this->db->join('contract', 'tkc_physical_progress.contract_id = contract.contract_id', 'INNER');
+		$this->db->where(array('tkc_physical_progress.tkc_physical_progress_id' => $prev_tkc_pp_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();				
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function saveTKCPhysicalVerificationSheet($contract_id, $contract_location_id, $site_location, $reported_by, $reported_date, $geo_code = NULL, $remark, $status_id, $is_draft, $user_id = NULL)
+	{
+		$data = array(
+			'contract_id' => $contract_id,
+			'contract_location_id' =>$contract_location_id,
+			'site_location' => $site_location,
+			'reported_by' => $reported_by,
+			'reported_date' => $reported_date,
+			'remark' => $remark,
+			'is_draft' => $is_draft,
+			'status_id' => $status_id,
+			'createdby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),
+			'createddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->insert('tkc_physical_progress', $data);
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$insert_id = $this->db->insert_id();
+			return $insert_id;
+		}
+	}
+
+	public function updateTKCPhysicalVerificationSheet($tkc_pp_id, $contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, $geo_code, $remark, $status_id, $is_draft, $user_id = NULL)
+	{
+		$data = array(
+			'contract_id' => $contract_id,
+			'contract_location_id' => $contract_location_id,
+			'site_location' => $site_location,
+			'reported_by' => $reported_by_id,
+			'reported_date' => $reported_date,
+			'geo_code' => $geo_code,
+			'remark' => $remark,
+			'is_draft' => $is_draft,
+			'status_id' => $status_id,
+			'modifiedby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),
+			'modifieddate' => date('Y-m-d H-i:s')
+		);
+
+		$query = $this->db->update('tkc_physical_progress', $data, array('tkc_physical_progress_id' => $pp_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {
+				return $tkc_pp_id;
+			}
+		}
+	}
+
+	public function saveActivity($tkc_pp_id, $sr_no, $activity_id, $unit_id, $status_id, $erected_qty)
+	{
+		$data = array(
+			'tkc_physical_progress_id' => $tkc_pp_id,
+			'sr_no' => $sr_no, 
+			'activity_id' => $activity_id,
+			'unit_id' => $unit_id,
+			'status_id' => $status_id,
+			'erected_qty' => $erected_qty,
+			'is_active' => 1,
+			'createdby' => $this->getLoggedInUserID(),
+			'createddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->insert('tkc_physical_progress_activity', $data);
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
+		}
+	}
+
+	public function updateActivity($tkc_pp_id, $activity_id, $status_id, $erected_qty)
+	{
+		$data = array(
+			'status_id' => $status_id,
+			'erected_qty' => $erected_qty
+		);
+
+		$query = $this->db->update('tkc_physical_progress_activity', $data, array('tkc_physical_progress_id' => $tkc_pp_id, 'activity_id' => $activity_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {
+				return $activity_id;	
+			}
+		}
+	}
+
+	public function saveTKCPhysicalProgressCompletionFile($tkc_pp_id, $file_path, $user_id = NULL)
+	{
+		$data = array(
+			'tkc_physical_progress_id' => $pp_id,
+			'file_path' => $file_path,
+			'is_active' => 1,
+			'createdby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),
+			'createddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->insert('tkc_physical_progress_file', $data);
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {
+				return $this->db->affected_rows();
+			}
+		}
+	}
+
+	public function updateSheetStatus($tkc_pp_id, $status_id, $sheet_remark = NULL)
+	{
+		$data = array(
+			'status_id' => $status_id, 
+			'modifiedby' => $this->getLoggedInUserID(), 
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		if ($sheet_remark != NULL) {
+			$data['remark'] = $sheet_remark;
+		}
+
+		$query = $this->db->update('tkc_physical_progress', $data, array('tkc_physical_progress_id' => $tkc_pp_id));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {
+				return $this->db->affected_rows();
+			}	
+		}
+	}
+
 	public function getActivitiesListAPI($ppsheet_id, $work_id, $contract_location_id, $reported_date, $activity_id = NULL)
 	{
 		$status_field = ($reported_date != NULL) ? 'tkc_physical_progress_activity.status_id' : '';
@@ -236,6 +411,92 @@ class TKCPhysicalVerification_Model extends CI_Model
 			}
 
 			return $query_result;
+		}
+	}
+
+	public function checkActivity($activity_id, $tkc_pp_id)
+	{
+		$query = $this->db->get_where('tkc_physical_progress_activity', array('activity_id' => $activity_id, 'tkc_physical_progress_id' => $tkc_pp_id));
+		// echo $this->db->last_query().'<br/>'; 
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();				
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function saveActivityAPI($tkc_pp_id, $sr_no, $activity_id, $unit_id, $status_id, $erected_qty, $user_id)
+	{
+		$data = array(
+			'tkc_physical_progress_id' => $tkc_pp_id,
+			'sr_no' => $sr_no, 
+			'activity_id' => $activity_id,
+			'unit_id' => $unit_id,
+			'status_id' => $status_id,
+			'erected_qty' => $erected_qty,
+			'is_active' => 1,
+			'createdby' => $user_id,
+			'createddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->insert('tkc_physical_progress_activity', $data);
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$insert_id = $this->db->insert_id();
+			return $insert_id;
+		}
+	}
+
+	public function getActivityData($activity_id, $column)
+	{
+		$this->db->select($column);
+		$query = $this->db->get_where('mst_typeofwork_activity', array('typeofwork_activity_id' => $activity_id));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result[$column];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getAppliedActivitiesListForSheetStatusCalculation($tkc_pp_id)
+	{
+		$this->db->select('activity_id');
+		$this->db->where('tkc_physical_progress_id', $pp_id);
+		$this->db->where_in('status_id', array(0,4));
+
+		$query = $this->db->get('tkc_physical_progress_activity');
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $query->num_rows();
 		}
 	}
 
@@ -554,6 +815,32 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
+	public function getReportedByID($reportedByName, $clause = NULL)
+	{
+		if ($clause != NULL && $clause == 'LIKE') {
+			$this->db->like('username', $reportedByName);
+			$query = $this->db->get('mst_user');
+		} elseif ($clause == NULL) {
+			$query = $this->db->get_where('mst_user', array('username' => $reportedByName));	
+		}
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['user_id'];
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function getReportedByName($reportedByID)
 	{
 		$query = $this->db->get_where('mst_user', array('user_id' => $reportedByID));
@@ -590,6 +877,31 @@ class TKCPhysicalVerification_Model extends CI_Model
 			if ($query->num_rows() > 0) {
 				$result = $query->row_array();
 				$query_result = $result['fieldvalue'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getStatusList()
+	{
+		$this->db->select('mst_module.module_id, mst_module.name, mst_status.status_id, mst_status.name, mst_status.seqno');
+		$this->db->from('mst_module');
+		$this->db->join('mst_status', 'mst_module.module_id = mst_status.module_id', 'INNER');
+		$this->db->where(array('mst_module.name' => 'Physical Verification', 'mst_module.icon !=' => ''));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();				
 			}
 
 			return $query_result;

@@ -124,6 +124,82 @@ class TKCPhysicalVerificationApi extends REST_Controller
 		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
 	}
 
+	public function save_tkc_ppsheet_details_post()
+	{
+		if (!empty($this->post())) {
+			$user_id = $this->post('user_id');
+
+			$tkc_pp_id = $this->post('tkc_physical_progress_id');
+			$prev_tkc_pp_id = $this->post('prev_tkc_physical_progress_id');
+			$reported_by = $this->post('reported_by');
+			$reported_date = date('Y-m-d', strtotime($this->post('reported_date')));
+			$geo_code = $this->post('geo_code');
+			$sheet_remark = $this->post('sheet_remark');
+			$activities = $this->post('activities');
+
+			//Fetching sheet details using prev_tkc_pp_id
+			$prev_sheet_data = $this->tpv_model->getPreviousSheetDataAPI($prev_tkc_pp_id);
+
+			$status_id = 2;
+            $is_draft = 0;
+
+            //In case sheet is being saved, without saving any observations
+            if ((empty($tkc_pp_id)) || $tkc_pp_id == NULL) {
+            	//Saving the sheet and fetching the new physical_progres_id
+            	$tkc_pp_id = $this->tpv_model->saveTKCPhysicalVerificationSheet($prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $geo_code, $sheet_remark, $status_id, $is_draft, $user_id);
+            } else {
+            	$tkc_pp_id = $this->tpv_model->updateTKCPhysicalVerificationSheet($tkc_pp_id, $prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $geo_code, $sheet_remark, $status_id, $is_draft, $user_id);
+            }
+
+            if ($tkc_pp_id) {
+            	$remaining_activity_count = 0;
+            	foreach ($activities as $value) {
+            		foreach ($value['tab_body'] as $act_key => $act_value) {
+            			$activity_id = $act_value['activity_id'];
+            			$erected_qty = (isset($act_value['erected_qty']) && is_numeric($act_value['erected_qty'])) ? $act_value['erected_qty'] : NULL;
+
+            			//Calculating the pending activities
+            			if ($act_value['status_id'] == 0 || $act_value['status_id'] == 4) {
+            				$remaining_activity_count++;
+            			}
+
+            			//Checking if activity already exists
+                        $activity_check_result = $this->tpv_model->checkActivity($activity_id, $tkc_pp_id);
+
+                        if (empty($activity_check_result)) {
+                        	//Inserting sheet activity details
+                            $affected_row = $this->tpv_model->saveActivityAPI($tkc_pp_id, $act_value['seqno'], $activity_id, $act_value['unit_id'], $act_value['status_id'], $erected_qty, $user_id);
+                        } else {
+                        	//Updating sheet activity details
+                            $affected_row = $this->tpv_model->updateActivity($tkc_pp_id, $activity_id, $act_value['status_id'], $erected_qty);
+                        }
+            		}
+            	}
+
+            	$alert_message = '';
+            	if ($remaining_activity_count == 0) {
+                	//Updating the status of physical progress sheet to Completed
+                	$pp_status_ids = $this->tpv_model->getStatusList();
+                	$pp_status_ids = $this->modify_pp_status_ids($pp_status_ids);
+
+                	$alert_message = 'Physical Progress Sheet saved and marked as completed successfully';
+                }
+
+                $errors = null;
+                $message = (empty($alert_message)) ? 'Physical Verification Sheet saved successfully' : $alert_message;
+                $status_code = 200;
+                $data = array('tkc_physical_progress_id' => $tkc_pp_id);
+            }
+		} else {
+			$errors = 'Empty POST Request';
+            $message = 'POST Request has no arguments';
+            $status_code = 400;
+            $data = [];
+		}
+
+		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+	}
+
 	public function calculateTaskRatio($site, $mode, $reported_date = NULL)
 	{
 		$activities_result = $this->tpv_model->getActivitiesList($site['typeofwork_id'], NULL);
@@ -199,6 +275,17 @@ class TKCPhysicalVerificationApi extends REST_Controller
         $userdata['role'] = $userrole;
 
         return $userdata;
+    }
+
+    public function modify_pp_status_ids($pp_status_ids)
+    {
+        $modified_status_arr = [];
+
+        foreach ($pp_status_ids as $value) {
+            $modified_status_arr[$value['name']] = $value['status_id']; 
+        }
+
+        return $modified_status_arr;
     }
 
     //Function to sort array by key

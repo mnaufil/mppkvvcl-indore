@@ -124,6 +124,30 @@ class TKCPhysicalVerificationApi extends REST_Controller
 		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
 	}
 
+	public function get_tkc_previous_sheet_dates_post()
+	{
+		if (!empty($this->post())) {
+			$contract_id = $this->post('contract_id');
+			$contract_location_id = $this->post('contract_location_id');
+			$site_location = $this->post('site_location');
+
+			$previous_sheet_data = $this->tpv_model->getPrevSheetDates($contract_id, $contract_location_id, $site_location);
+
+			$errors = null;
+            $message = 'Applied Observation Details';
+            $status_code = 200;
+
+            $data['previous_dates'] = $previous_sheet_data; 
+		} else {
+			$errors = 'Empty POST Request';
+            $message = 'POST Request has no arguments';
+            $status_code = 400;
+            $data = [];
+		}
+
+		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+	}
+
 	public function save_tkc_ppsheet_details_post()
 	{
 		if (!empty($this->post())) {

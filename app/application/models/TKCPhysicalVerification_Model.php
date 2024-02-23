@@ -543,6 +543,32 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
+	public function getPrevSheetDates($contract_id, $contract_location_id, $site_location)
+	{
+		$where_array = array('contract_id' => $contract_id, 'contract_location_id' => $contract_location_id, 'site_location' => $site_location, 'reported_date !=' => NULL);
+
+		$this->db->select('tkc_physical_progress_id, reported_date');
+		$this->db->from('tkc_physical_progress');
+		$this->db->where($where_array);
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();			
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function getTKCPackageAccess($tkc_user_id)
 	{
 		$this->db->select('mst_user.package_access');

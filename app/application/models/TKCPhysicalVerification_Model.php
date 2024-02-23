@@ -113,7 +113,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
-	public function saveTKCPhysicalVerificationSheet($contract_id, $contract_location_id, $site_location, $reported_by, $reported_date, $geo_code = NULL, $remark, $status_id, $is_draft, $user_id = NULL)
+	public function saveTKCPhysicalVerificationSheet($contract_id, $contract_location_id, $site_location, $reported_by, $reported_date, $remark, $status_id, $is_draft, $geo_code = NULL, $user_id = NULL)
 	{
 		$data = array(
 			'contract_id' => $contract_id,
@@ -485,7 +485,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 	public function getAppliedActivitiesListForSheetStatusCalculation($tkc_pp_id)
 	{
 		$this->db->select('activity_id');
-		$this->db->where('tkc_physical_progress_id', $pp_id);
+		$this->db->where('tkc_physical_progress_id', $tkc_pp_id);
 		$this->db->where_in('status_id', array(0,4));
 
 		$query = $this->db->get('tkc_physical_progress_activity');
@@ -622,9 +622,19 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
-	public function getTypeOfWorkList()
+	public function getTypeOfWorkList($user_id)
 	{
-		$query =  $this->db->select('typeofwork_id, name')->get('mst_typeofwork');
+		$package_access = $this->getTKCPackageAccess($user_id);
+		$contract_id = $this->getContractIDFromPackageAccess($package_access);
+
+		// $query =  $this->db->select('typeofwork_id, name')->get('mst_typeofwork');
+
+		$this->db->select('contract.typeofwork_id, mst_typeofwork.name');
+		$this->db->from('contract');
+		$this->db->join('mst_typeofwork', 'contract.typeofwork_id = mst_typeofwork.typeofwork_id', 'INNER');
+		$this->db->where(array('contract.contract_id' => $contract_id));
+
+		$query = $this->db->get();
 
 		if (!$query) {
 			$error = $this->db->error();
@@ -782,8 +792,90 @@ class TKCPhysicalVerification_Model extends CI_Model
 
 	public function getRegionList($user_id = NULL)
 	{
-		
+		$package_access = $this->getTKCPackageAccess($user_id);
+		$contract_id = $this->getContractIDFromPackageAccess($package_access);
+
+		$this->db->distinct();
+		$this->db->select('contract_location.region_id, mst_region.region_name');
+		$this->db->from('contract_location');
+		$this->db->join('mst_region', 'contract_location.region_id = mst_region.region_id', 'INNER');
+		$this->db->where(array('contract_location.contract_id' => $contract_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
 	}
+
+	public function getRegionCircleData($user_id)
+	{
+		$package_access = $this->getTKCPackageAccess($user_id);
+		$contract_id = $this->getContractIDFromPackageAccess($package_access);
+
+		$this->db->distinct();
+		$this->db->select('contract_location.circle_id, mst_circle.circle_name, mst_circle.region_id');
+		$this->db->from('contract_location');
+		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
+		$this->db->where(array('contract_location.contract_id' => $contract_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getCircleDivisionData($user_id)
+	{
+		$package_access = $this->getTKCPackageAccess($user_id);
+		$contract_id = $this->getContractIDFromPackageAccess($package_access);
+
+		$this->db->distinct();
+		$this->db->select('contract_location.division_id, mst_division.division_name, mst_division.circle_id');
+		$this->db->from('contract_location');
+		$this->db->join('mst_division', 'contract_location.division_id = mst_division.division_id', 'INNER');
+		$this->db->where(array('contract_location.contract_id' => $contract_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}	
 
 	public function getUserModuleAccess()
 	{
@@ -888,7 +980,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 		$this->db->select('mst_module.module_id, mst_module.name, mst_status.status_id, mst_status.name, mst_status.seqno');
 		$this->db->from('mst_module');
 		$this->db->join('mst_status', 'mst_module.module_id = mst_status.module_id', 'INNER');
-		$this->db->where(array('mst_module.name' => 'Physical Verification', 'mst_module.icon !=' => ''));
+		$this->db->where(array('mst_module.name' => 'TKC Physical Verification', 'mst_module.icon !=' => ''));
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();

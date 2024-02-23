@@ -323,6 +323,7 @@ $route['api/tkc-weekly-plan-search'] = 'TKCWeeklyPlanApi/filter_weekly_plan';
 $route['api/tkc-physical-verification'] = 'TKCPhysicalVerificationApi/index';
 $route['api/get-tkc-sheet-details'] = 'TKCPhysicalVerificationApi/get_tkc_ppsheet_details';
 $route['api/save-tkc-sheet-details'] = 'TKCPhysicalVerificationApi/save_tkc_ppsheet_details';
+$route['api/tkc-filter-data'] = 'TKCPhysicalVerificationApi/tkc_filter_data';
 
 
 /*PS Dashboard API*/

@@ -146,7 +146,7 @@ class TKCPhysicalVerificationApi extends REST_Controller
             //In case sheet is being saved, without saving any observations
             if ((empty($tkc_pp_id)) || $tkc_pp_id == NULL) {
             	//Saving the sheet and fetching the new physical_progres_id
-            	$tkc_pp_id = $this->tpv_model->saveTKCPhysicalVerificationSheet($prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $geo_code, $sheet_remark, $status_id, $is_draft, $user_id);
+            	$tkc_pp_id = $this->tpv_model->saveTKCPhysicalVerificationSheet($prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $sheet_remark, $status_id, $is_draft, $geo_code, $user_id);
             } else {
             	$tkc_pp_id = $this->tpv_model->updateTKCPhysicalVerificationSheet($tkc_pp_id, $prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $geo_code, $sheet_remark, $status_id, $is_draft, $user_id);
             }
@@ -190,6 +190,41 @@ class TKCPhysicalVerificationApi extends REST_Controller
                 $status_code = 200;
                 $data = array('tkc_physical_progress_id' => $tkc_pp_id);
             }
+		} else {
+			$errors = 'Empty POST Request';
+            $message = 'POST Request has no arguments';
+            $status_code = 400;
+            $data = [];
+		}
+
+		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+	}
+
+	public function tkc_filter_data_post()
+	{
+		if (!empty($this->post())) {
+			$user_id = $this->post('user_id');
+
+			$type_of_work = $this->tpv_model->getTypeOfWorkList($user_id);
+			$region_list = $this->tpv_model->getRegionList($user_id);
+			$region_circle_data = $this->tpv_model->getRegionCircleData($user_id);
+			$circle_list = $this->modifyRegionCircleData($region_circle_data);
+
+			$circle_division_data = $this->tpv_model->getCircleDivisionData($user_id);
+			$division_list = $this->modifyCircleDivisionData($circle_division_data);
+
+			$status_list = $this->tpv_model->getStatusList();
+
+			$data['work_list'] = (!empty($type_of_work)) ? $type_of_work : [];
+            $data['region_list'] = (!empty($region_list)) ? $region_list : [];
+            $data['circle_list'] = (!empty($circle_list)) ? $circle_list : [];
+            $data['division_list'] = (!empty($division_list)) ? $division_list : [];
+            $data['status_list'] = (!empty($status_list)) ? $status_list : [];
+
+			$errors = null;
+            $message = null;
+            $status_code = 200;
+			
 		} else {
 			$errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
@@ -275,6 +310,52 @@ class TKCPhysicalVerificationApi extends REST_Controller
         $userdata['role'] = $userrole;
 
         return $userdata;
+    }
+
+    public function modifyRegionCircleData($region_circle_data)
+    {
+    	$modified_region_circle_arr = [];
+        $final_modified_region_circle_arr = [];
+        $temp_arr = [];
+
+        foreach ($region_circle_data as $key => $value) {
+            $modified_region_circle_arr[$value['region_id']][$value['circle_id']] = $value['circle_name'];
+        }
+
+        foreach ($modified_region_circle_arr as $key => $value) {
+            $temp_arr['region_id'] = $key;
+            $temp_arr['data'] = [];
+            foreach ($value as $k => $v) {
+                array_push($temp_arr['data'], array('circle_id' => $k, 'circle_name' => $v));
+            }
+
+            array_push($final_modified_region_circle_arr, $temp_arr);
+        }
+
+        return $final_modified_region_circle_arr;
+    }
+
+    public function modifyCircleDivisionData($circle_division_data)
+    {
+    	$modified_circle_division_arr = [];
+        $final_modified_circle_division_arr = [];
+        $temp_arr = [];
+
+        foreach ($circle_division_data as $key => $value) {
+            $modified_circle_division_arr[$value['circle_id']][$value['division_id']] = $value['division_name'];
+        }
+
+        foreach ($modified_circle_division_arr as $key => $value) {
+            $temp_arr['circle_id'] = $key;
+            $temp_arr['data'] = [];
+            foreach ($value as $k => $v) {
+                array_push($temp_arr['data'], array('division_id' => $k, 'division_name' => $v));
+            }
+
+            array_push($final_modified_circle_division_arr, $temp_arr);
+        }
+
+        return $final_modified_circle_division_arr;
     }
 
     public function modify_pp_status_ids($pp_status_ids)

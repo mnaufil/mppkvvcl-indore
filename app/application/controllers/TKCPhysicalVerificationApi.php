@@ -134,10 +134,46 @@ class TKCPhysicalVerificationApi extends REST_Controller
 			$previous_sheet_data = $this->tpv_model->getPrevSheetDates($contract_id, $contract_location_id, $site_location);
 
 			$errors = null;
-            $message = 'Applied Observation Details';
+            $message = 'Previous Sheet Dates';
             $status_code = 200;
 
             $data['previous_dates'] = $previous_sheet_data; 
+		} else {
+			$errors = 'Empty POST Request';
+            $message = 'POST Request has no arguments';
+            $status_code = 400;
+            $data = [];
+		}
+
+		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+	}
+
+	public function search_tkc_sheets_post()
+	{
+		if (!empty($this->post())) {
+			$user_id = $this->post('user_id');
+
+			$contractor = $this->post('contractor');
+            $tender_award_no = $this->post('tender_award_no');
+            $type_of_work = $this->post('type_of_work');
+            $site_location = $this->post('site_location');
+            $region = $this->post('region');
+            $circle = $this->post('circle');
+            $division = $this->post('division');
+            $reported_by = $this->post('reported_by');
+            $reported_date = (!empty($this->post('reported_date'))) ? date('Y-m-d', strtotime($this->post('reported_date'))) : '';
+            $feeder_id = $this->post('feeder_id');
+            $status = $this->post('status');
+            $limit = $this->post('limit');
+            $offset = 0;
+
+            $search_result = $this->tpv_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by, $reported_date, $feeder_id, $status, $user_id, $offset, $limit);
+
+            $errors = null;
+            $message = (empty($search_result)) ? 'No results found for the specified filters' : 'Search Sheet Result';
+            $status_code = 200;
+
+            $data['search_result'] = $search_result;
 		} else {
 			$errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';

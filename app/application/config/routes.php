@@ -326,6 +326,7 @@ $route['api/get-tkc-sheet-details'] = 'TKCPhysicalVerificationApi/get_tkc_ppshee
 $route['api/save-tkc-sheet-details'] = 'TKCPhysicalVerificationApi/save_tkc_ppsheet_details';
 $route['api/tkc-filter-data'] = 'TKCPhysicalVerificationApi/tkc_filter_data';
 $route['api/get-tkc-prev-sheet-dates'] = 'TKCPhysicalVerificationApi/get_tkc_previous_sheet_dates';
+$route['api/search-tkc-sheets'] = 'TKCPhysicalVerificationApi/search_tkc_sheets';
 
 
 /*PS Dashboard API*/

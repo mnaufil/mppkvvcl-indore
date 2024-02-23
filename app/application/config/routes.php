@@ -258,6 +258,7 @@ $route['get-feeders-list-tkc'] = 'TKCWeeklyPlan/getFeedersList';
 $route['tkc-physical-verification'] = 'TKCPhysicalVerification/index';
 $route['add-tkc-physical-verification/(:any)/(:num)/(:num)/(:num)'] = 'TKCPhysicalVerification/editSheet/$1/$2/$3/$4';
 $route['save-tkc-physical-verification'] = 'TKCPhysicalVerification/saveSheet';
+$route['search-tkc-physical-verification-sheet'] = 'TKCPhysicalVerification/searchSheet';
 
 /*Security / Roles Module*/
 $route['roles'] = 'Security/roles';

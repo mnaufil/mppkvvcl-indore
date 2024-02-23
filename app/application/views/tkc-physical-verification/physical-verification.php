@@ -76,6 +76,196 @@
               		<div class="card">
               			<div class="card-body p-2">
               				<!-- Search Block -->
+              				<div class="accordion" id="accordionExample">
+              					<div class="accordion-item">
+              						<h2 class="accordion-header" id="headingOne">
+              							<?php $accordion_btn_class = (isset($filters)) ? 'filters-on' : '';
+                                  $accordion_btn_style = (isset($filters)) ? 'style="height:57px;"' : '';
+                                  $clear_btn_visibility = (isset($filters)) ? '' : 'hidden';
+                            ?>
+                            <button class="accordion-button collapsed active prog-btn <?php echo $accordion_btn_class; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" <?php echo $accordion_btn_style; ?>>
+                              Search TKC Physical Verification Sheet
+                            </button>
+              						</h2>
+              						<div class="clear-data" <?php echo $clear_btn_visibility; ?>>
+                            <a href="#" class="text-danger clear-search-filters" id="clear-btn"> Clear</a>
+                          </div>
+                          <div class="lab-value">
+                          	<ul>
+                          		<?php if (isset($filters)) {
+                          						foreach ($filters as $key => $value) {
+                          							if (!empty($value['value'])) {
+                          		?>
+                          		<li><?php echo $value['label'].' : '.$value['value']; ?></li>	
+                          		<?php			}
+                          						}
+                          		} ?>
+                          	</ul>
+                          </div>
+                          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                          	<div class="accordion-body p-1">
+                          		<form name="searchTKCPhysicalVerificationSheet" id="searchTKCPhysicalVerificationSheet" method="post" action="<?php echo base_url('search-tkc-physical-verification-sheet'); ?>">
+                          			<!-- Row1 -->
+                          			<div class="row">
+                          				<!-- Contractor (TKC) -->
+                          				<?php if ($userdata['role'] != 'TKC') { ?>
+                                  <div class="col-md-4">
+                          					<div class="form-group">
+                          						<label class="form-label m-0" for="contractor">Contractor (TKC)</label>
+                          						<input class="form-control" type="text" name="contractor" id="contractor" onkeyup="showtkclist(this.value)" value="<?php echo (isset($filters)) ? $filters['contractor']['value'] : ''; ?>">
+                          						<div class="list-group list-view-contractor" id="list-view"></div>
+                          					</div>
+                          				</div>  
+                                  <?php } ?>
+                          				<!-- Contract No -->
+                          				<?php if ($userdata['role'] != 'TKC') { ?>
+                                  <div class="col-md-2">
+                                    <div class="form-group">
+                                      <label class="form-label m-0" for="tenderAwardNo">Contract No.</label>
+                                      <input class="form-control" type="text" name="tenderAwardNo" id="tenderAwardNo" value="<?php echo (isset($filters)) ? $filters['tenderAwardNo']['value'] : ''; ?>">
+                                    </div>
+                                  </div>  
+                                  <?php } ?>
+                                  <!-- Type Of Work -->
+                                  <?php if ($userdata['role'] != 'TKC') { ?>
+                                  <div class="col-md-2">
+                                  	<div class="form-group">
+                                  		<label class="form-label m-0" for="typeOfWork">Type Of Work</label>
+                                  		<select class="form-control form-select select2 select2-hidden-accessible" name="typeOfWork" data-bs-placeholder="Select Type Of Work" tabindex="-1" aria-hidden="true" id="typeOfWork" style="width:100%">
+                                    		<option value="select" <?php echo (isset($filters) && !empty($filters['typeOfWork']['id'])) ? '' : 'selected'; ?> disabled>Select Type Of Work</option>
+                                  			<?php $selected_work = (isset($filters)) ? $filters['typeOfWork']['id'] : ''; ?>
+                                  			<?php foreach ($work_list as $key => $value) { ?>
+                                  				<?php $selected = ($value['typeofwork_id'] == $selected_work) ? 'selected' : ''; ?>
+                                  			<option value="<?php echo $value['typeofwork_id']; ?>" <?php echo $selected; ?>><?php echo $value['name']; ?></option>
+                                  			<?php } ?>
+                                  		</select>
+                                  	</div>
+                                  </div>
+                                	<?php } ?>                                  
+                                  <!-- Site Location -->
+                                  <div class="col-md-2">
+                                  	<div class="form-group">
+                                  		<label class="form-label" for="siteLocation">Site Location</label>
+                                  		<input class="form-control" type="text" name="siteLocation" id="siteLocation" value="<?php echo (isset($filters)) ? $filters['siteLocation']['value'] : ''; ?>">
+                                  	</div>
+                                  </div>
+                                  <!-- Region -->
+                                  <div class="col-md-2">
+                                  	<div class="form-group">
+                                  		<label class="form-label" for="region">Region</label>
+                                  		<select class="form-control form-select select2 select2-hidden-accessible" name="region" data-bs-placeholder="Select Region" tabindex="-1" aria-hidden="true" id="region" style="width:100%">
+                                  			<option value="select" <?php echo (isset($filters) && !empty($filters['region']['id'])) ? '' : 'selected'; ?> disabled>Select Region</option>
+                                  			<?php if (isset($region_list)) {
+                                  							foreach ($region_list as $value) {
+                                  								$selected = '';
+                                  								if (isset($filters['region']['id'])) {
+                                  									$selected = ($value['region_id'] == $filters['region']['id']) ? 'selected' : '';
+                                  								}
+                                  			?>
+                                  			<option value="<?php echo $value['region_id']; ?>" <?php echo $selected; ?>><?php echo $value['region_name']; ?></option>
+                                  			<?php 	}
+                                  						}
+                                  			?>
+                                  		</select>
+                                  	</div>
+                                  </div>
+                          			</div>
+                          			<!-- Row2 -->
+                          			<div class="row">
+                          				<!-- Circle -->
+                          				<div class="col-md-2">
+                          					<div class="form-group">
+                          						<label class="form-label" for="circle">Circle</label>
+                          						<select class="form-control form-select select2 select2-hidden-accessible" name="circle" data-bs-placeholder="Select Circle" tabindex="-1" aria-hidden="true" id="circle" style="width:100%">
+                          							<option value="select" <?php echo (isset($filters) && !empty($filters['circle']['id'])) ? '' : 'selected'; ?> disabled>Select Circle</option>
+                          							<?php if (isset($circle_list)) {
+                          											foreach ($circle_list as $value) {
+                          												if (isset($filters['circle']['id'])) {
+                          													$selected = ($value['circle_id'] == $filters['circle']['id']) ? 'selected' : '';
+                          												}
+                          							?>
+                          							<option value="<?php echo $value['circle_id']; ?>" <?php echo $selected; ?>><?php echo $value['circle_name']; ?></option>
+                          							<?php 	}
+                          										}
+                          							?>
+                          						</select>
+                          					</div>
+                          				</div>
+                          				<!-- Division -->
+                          				<div class="col-md-2">
+                          					<div class="form-group">
+                          						<label class="form-label" for="division">Division</label>
+                          						<select class="form-control form-select select2 select2-hidden-accessible" name="division" data-bs-placeholder="Select Division" tabindex="-1" aria-hidden="true" id="division" style="width:100%">
+                          							<option value="select" <?php echo (isset($filters) && !empty($filters['division']['id'])) ? '' : 'selected'; ?> disabled>Select Division</option>
+                          							<?php if (isset($division_list)) {
+                          											foreach ($division_list as $value) {
+                          												if (isset($filters['division']['id'])) {
+                          													$selected = ($value['division_id'] == $filters['division']['id']) ? 'selected' : '';
+                          												}
+                          							?>
+                          							<option value="<?php echo $value['division_id']; ?>" <?php echo $selected; ?>><?php echo $value['division_name']; ?></option>
+                          							<?php 	}
+                          										}
+                          							?>
+                          						</select>
+                          					</div>
+                          				</div>
+                          				<!-- Reported By -->
+                          				<?php if ($userdata['role'] != 'TKC') { ?>
+                                  <div class="col-md-2">
+                                    <div class="form-group">
+                                      <label class="form-label" for="reportedBy">Reported By</label>
+                                      <input class="form-control" type="text" name="reportedBy" id="reportedBy" value="<?php echo (isset($filters)) ? $filters['reportedBy']['value'] : ''; ?>">
+                                    </div>
+                                  </div>  
+                                  <?php } ?>                          				
+                                  <!-- Reported Date -->
+                                  <div class="col-md-2">
+                                    <div class="form-group">
+                                      <label class="form-label" for="reportedDate">Reported Date</label>
+                                      <div class="input-group">
+                                        <div class="input-group-text dates">
+                                          <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                                        </div>
+                                        <input type="text" class="form-control" name="reportedDate" value="<?php echo (isset($filters)) ? $filters['reportedDate']['value'] : ''; ?>" />
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <!-- Feeder ID -->
+                                  <div class="col-md-2">
+                                    <div class="form-group">
+                                      <label class="form-label" for="feederID">Feeder ID</label>
+                                      <input type="text" class="form-control" name="feederID" value="<?php echo (isset($filters)) ? $filters['feederID']['value'] : ''; ?>" />
+                                    </div>
+                                  </div>
+                                  <!-- Status -->
+                                  <div class="col-md-2">
+                                    <div class="form-group">
+                                      <label class="form-label" for="status">Status</label>                               
+                                      <select multiple="multiple" class="filter-multi" name="status[]" id="status">
+                                        <!-- <option value="All">All</option> -->
+                                        <?php $selected_status = (isset($filters)) ? $filters['status']['id'] : ''; ?>    
+                                        <?php foreach ($status_list as $value) { ?>
+                                          <?php $selected = (is_array($selected_status) && in_array($value['status_id'], $selected_status)) ? 'selected' : ''; ?>
+                                          <option value="<?php echo $value['status_id']; ?>" <?php echo $selected; ?>><?php echo $value['name']; ?></option>
+                                        <?php } ?>
+                                      </select>
+                                    </div>
+                                  </div>
+                          			</div>
+                          			<!-- Row3 -->
+                          			<div class="row">
+                          				<!-- Search Button -->
+                          				<div class="col-md-3">
+                          					<button type="submit" class="btn btn-primary mt-1 mb-1 search-physical-btn">Search</button>
+                                    <button type="button" class="btn default-clear clear-search-filters mt-1 mb-1">Clear</button>
+                          				</div>
+                          			</div>
+                          		</form>
+                          	</div>
+                          </div>
+              					</div>
+              				</div>
               				<!-- Search Block Ends -->
 
               				<!-- Table -->
@@ -288,6 +478,136 @@
     <script src="<?php echo base_url('assets/plugins/multipleselect/multiple-select.js'); ?>"></script>
     <script src="<?php echo base_url('assets/plugins/multipleselect/multi-select.js'); ?>"></script> 
 
+    <script type="text/javascript">
+    	var form_change = false;
 
+    	// Initializing daterangepicker on reportedDate input
+    	$('input[name="reportedDate"]').daterangepicker({
+	      autoUpdateInput: false,
+	      singleDatePicker: true,
+	      showDropdowns: true,
+	      locale: {
+	        format: 'DD-MM-YYYY'
+	      }
+	    });
+
+	    //Applying selected date and changing form status
+	    $('input[name="reportedDate"]').on('apply.daterangepicker', function(ev, picker) {
+	      $(this).val(picker.startDate.format('DD-MM-YYYY'));
+	      form_change = true;
+	    });
+
+	    //Changing form status on filling input fields
+	    $('input[name="contractor"], input[name="tenderAwardNo"], input[name="siteLocation"], input[name="reportedBy"], input[name="feederID"]').on('input', function() {
+	      form_change = true;
+	    });
+
+	    //Changing form status on selecting values
+	    $('select[name="typeOfWork"], select[name="region"], select[name="circle"], select[name="division"], select[name="status[]"]').on('change', function() {
+	      form_change = true;
+	    });
+
+	    //Check if there's any change in the form before submitting the form
+	    $('#searchTKCPhysicalVerificationSheet').on('submit', function(event) {
+	      let inputs = $(this).find('input.form-control');
+	      $(inputs).each(function(index, value) {        
+	        if ($(value).attr('value') != '') {
+	          form_change = true;
+	        }
+	      });
+
+	      let selects = $(this).find('select.form-control');
+	      $(selects).each(function(index, value) {
+	        let selected_data = $(value).select2('data');
+	        if (!selected_data[0].text.includes('Select')) {
+	          form_change = true;
+	        }
+	      });
+	      
+	      let multi_select = $(this).find('#status');
+	      if ($(multi_select).val().length > 0) {
+	        form_change = true;
+	      }
+	      
+	      if (form_change === false) {
+	        $('.toast-body').text('Select atleast one filter');
+	        $('.toast').toast('show');
+	        event.preventDefault(); 
+	      }
+	    });
+
+	    $('.clear-search-filters').on('click', function(event) {
+	      event.preventDefault();
+	      $('.lab-value').find('ul').empty();
+	      $('#headingOne').find('button').removeClass('filters-on');
+	      $('#headingOne').find('button').removeAttr('style');
+	      
+	      let search_form = $('#searchTKCPhysicalVerificationSheet')[0];
+	      
+	      //Clearing all input[type=text] values
+	      $(search_form).find('input.form-control:text').each(function() {
+	        $(this).val('');
+	      });
+
+	      //Clearing all select values
+	      $(search_form).find('.select2').each(function() {
+	        $(this).val('select');
+	        $(this).trigger('change');
+	      });
+
+	      //Clearing Status filter values
+	      let status_select = $(search_form).find('.filter-multi:eq(1)');
+	      $(status_select).find('li.selected').each(function() {
+	        $(this).removeClass('selected');
+	        $(this).find('input:checkbox').prop('checked', false);
+	      });
+	      $(status_select).find('.ms-choice span').text('');
+	      $('#clear-btn').hide();
+
+	      // window.location.replace('<?php echo base_url("physical-progress") ?>');
+	    });
+
+	    $('#region').on('change', function(event) {
+	      let selected_region_id = $(this).val();
+
+	      let region_circle_data = <?php echo json_encode($region_circle_data) ?>;
+	      let circle_data = region_circle_data[selected_region_id];
+
+	      let circle_html = '';
+	      circle_html += '<option value="select" selected disabled>Select Circle</option>';
+
+	      $.each(circle_data, function(index, value) {
+	        circle_html += '<option value="'+ index +'">'+ value +'</option>';
+	      });
+
+	      $('#circle').empty();
+	      $('#circle').append(circle_html);
+
+	      let division_html = '';
+	      division_html += '<option value="select" selected disabled>Select Division</option>';
+
+	      $('#division').empty();
+	      $('#division').append(division_html);
+	    });
+
+	    $('#circle').on('change', function(event) {
+	      let selected_circle_id = $(this).val();
+
+	      let circle_division_data = <?php echo json_encode($circle_division_data) ?>;
+	      let division_data = circle_division_data[selected_circle_id];
+
+	      let html = '';
+	      html += '<option value="select" selected disabled>Select Division</option>';
+
+	      $.each(division_data, function(index, value) {
+	        html += '<option value="'+ index +'">'+ value +'</option>';
+	      });
+
+	      $('#division').empty();
+	      $('#division').append(html);
+	    });
+
+
+    </script>
 	</body>
 </html>

@@ -72,7 +72,7 @@
                 		<div class="main-container container-fluid">
                 			<!-- Page Header -->
                 			<div class="page-header">
-                				<h1 class="page-title">Add TKC Weekly Plan</h1>
+                				<h1 class="page-title">Edit TKC Weekly Plan</h1>
                 			</div>
                 			<!-- Page Header Ends -->
 
@@ -81,30 +81,36 @@
                 				<div class="col-lg-12">
                 					<div class="card">
                 						<div class="card-body mt-3">
-                                            <form name="addTKCWeeklyPlan" id="addTKCWeeklyPlan" method="post" action="<?php echo base_url('save-tkc-weekly-plan'); ?>">
-                                                <!-- Row1 -->
-                                                <div class="row">
-                                                    <!-- Date Range -->
-                                                    <div class="col-xl-4">
-                                                        <label class="form-label" for="weeklyPlanDateRange">Select Date Range
+                							<form name="updateTKCWeeklyPlan" id="updateTKCWeeklyPlan" method="post" action="<?php echo base_url('update-tkc-weekly-plan'); ?>">
+                                                <!-- TKC Plan ID -->
+                                                <input type="hidden" name="tkc_plan_id" value="<?php echo $result['tkc_plan_id']; ?>">
+
+                								<!-- Row1 -->
+                								<div class="row">
+                									<!-- Date Range -->
+                									<div class="col-xl-4">
+                										<label class="form-label" for="weeklyPlanDateRange">Select Date Range
                                                             <span class="text-red">*</span>
                                                         </label>
                                                         <div class="input-group">
                                                             <div class="input-group-text">
                                                                 <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                                             </div>
-                                                            <input type="text" class="form-control" id="weeklyPlanDateRange" name="weeklyPlanDateRange">
+                                                            <?php $disabled = ($mode == 'view') ? 'disabled' : ''; ?>
+                                                            <input type="text" class="form-control" id="weeklyPlanDateRange" name="weeklyPlanDateRange" value="<?php echo $result['date_range']; ?>" <?php echo $disabled; ?>>
                                                         </div>
-                                                    </div>
-                                                </div>                                                
-                                                <div id="weeklyPlan" class="mt-3" hidden>
-                                                    <!-- Row2 -->
-                                                    <div class="row">
-                                                        <!-- Weekly Plan Title -->
-                                                        <div class="col-xl-12" style="text-align: center;" id="weeklyPlanHeading">
-                                                            <h4>Weekly Plan <span>(15-01-2024 To 21-01-2024)</span></h4>
-                                                        </div>    
-                                                    </div> 
+                									</div>
+                								</div>
+                								<!-- <div id="weeklyPlan" class="mt-3" hidden> -->
+                								<div id="weeklyPlan" class="mt-3">
+                									<!-- Row2 -->
+                									<div class="row">
+                										<!-- Weekly Plan Title -->
+                										<div class="col-xl-12" style="text-align: center;" id="weeklyPlanHeading">
+                											<?php $date_range = str_replace(' - ', ' To ', $result['date_range']); ?>
+                                                            <h4>Weekly Plan <span>(<?php echo $date_range; ?>)</span></h4>
+                                                        </div>
+                									</div>
 
                                                     <!-- Loading Spinner -->
                                                     <div class="row plan-loader m-0 mt-2 mb-2" hidden>
@@ -118,6 +124,60 @@
                                                     <!-- Row3 -->
                                                     <div class="row">
                                                         <!-- Weekly Plan Table -->
+                                                        <?php if ($mode == 'view') { ?>
+                                                        <div class="col-xl-12">
+                                                            <div class="table-responsive">
+                                                                <table class="table text-nowrap table-bordered" style="border: rgba(0, 0, 0, 0.05) !important;">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Sr No.</th>
+                                                                            <th>Lot No.</th>
+                                                                            <th>Date of Work</th>
+                                                                            <th>Day</th>
+                                                                            <th>Name of Circle</th>
+                                                                            <th>Name of Division</th>
+                                                                            <th>Name of Site/Feeder</th>
+                                                                            <th>Brief description of work to be executed</th>
+                                                                            <th>Remark</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <?php foreach ($result['weekly_plan_details'] as $key => $value) { ?>
+                                                                        <tr data-row-id=<?php echo $key; ?>>
+                                                                            <td class="sr-no">
+                                                                                <?php echo ++$key; ?>
+                                                                            </td>
+                                                                            <td class="lot-no">
+                                                                                <?php echo $value['package_no']; ?>
+                                                                            </td>
+                                                                            <td class="date-of-work">
+                                                                                <?php echo $value['plan_date']; ?>
+                                                                            </td>
+                                                                            <td class="day">
+                                                                                <?php echo $value['plan_day']; ?>
+                                                                            </td>
+                                                                            <td class="circle">
+                                                                                <?php echo $value['circle_name']; ?>
+                                                                            </td>
+                                                                            <td class="division">
+                                                                                <?php echo $value['division_name']; ?>
+                                                                            </td>
+                                                                            <td class="feeder">
+                                                                                <?php echo $value['feeders']; ?>
+                                                                            </td>
+                                                                            <td class="description-of-work">
+                                                                                <?php echo $value['description']; ?>
+                                                                            </td>
+                                                                            <td class="remark">
+                                                                                <?php echo $value['remark']; ?>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <?php } ?>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>    
+                                                        </div>
+                                                        <?php } else if ($mode == 'edit') { ?>
                                                         <div class="col-xl-12">
                                                             <div class="table-responsive">
                                                                 <!-- Table -->
@@ -136,40 +196,61 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        <tr data-row-id=0>
-                                                                            <td class="sr-no"></td>
-                                                                            <td class="lot-no"></td>
-                                                                            <td class="date-of-work"></td>
-                                                                            <td class="day"></td>
-                                                                            <td class="circle"></td>
-                                                                            <td class="division"></td>
-                                                                            <td class="feeder"></td>
-                                                                            <td class="description-of-work"></td>
-                                                                            <td class="remark"></td>
+                                                                        <?php foreach ($result['weekly_plan_details'] as $key => $value) { ?>
+                                                                        <tr data-row-id=<?php echo $key; ?> data-tkc-plan-detail-id="<?php echo $value['tkc_plan_detail_id']; ?>">
+                                                                            <td class="sr-no">
+                                                                                <?php echo ++$key; ?>
+                                                                            </td>
+                                                                            <td class="lot-no">
+                                                                                <?php echo $value['package_no']; ?>
+                                                                            </td>
+                                                                            <td class="date-of-work">
+                                                                                <?php echo $value['plan_date']; ?>
+                                                                            </td>
+                                                                            <td class="day">
+                                                                                <?php echo $value['plan_day']; ?>
+                                                                            </td>
+                                                                            <td class="circle">
+                                                                                <?php echo $value['circle_name']; ?>
+                                                                            </td>
+                                                                            <td class="division">
+                                                                                <?php echo $value['division_name']; ?>
+                                                                            </td>
+                                                                            <td class="feeder">
+                                                                                <?php echo $value['feeders']; ?>
+                                                                            </td>
+                                                                            <td class="description-of-work">
+                                                                                <?php echo $value['description']; ?>
+                                                                            </td>
+                                                                            <td class="remark">
+                                                                                <?php echo $value['remark']; ?>
+                                                                            </td>
                                                                         </tr>
+                                                                        <?php } ?>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
                                                             <button id="table2-new-row-button-weekly-tkc-plan-details" class="btn btn-primary mb-4 mt-4">Add New Row</button>
-                                                        </div>
+                                                        </div>    
+                                                        <?php } ?>
                                                     </div>
                                                     <!-- Row4 -->
                                                     <div class="row">
                                                         <!-- Submit Button -->
                                                         <div class="col-xl-12 mt-3 mb-3" id="weekly-tkc-plan-form-btns">
+                                                            <?php if ($mode == 'edit') { ?>
                                                             <button type="submit" class="btn btn-warning" id="draft-plan" data-type="draft">Save as draft</button>
-                                                            <button type="submit" class="btn btn-success" id="save-plan" data-type="submit">Submit</button>
+                                                            <button type="submit" class="btn btn-success" id="update-plan" data-type="submit">Update</button>    
+                                                            <?php } ?>
                                                             <a href="<?php echo base_url('tkc-weekly-plan'); ?>" type="button" class="btn btn-primary">Back</a>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </form>
+                								</div>
+                							</form>
                 						</div>
                 					</div>
                 				</div>
                 			</div>
-                			<!-- Row Ends -->	
-
                 		</div>
                 		<!-- Container Ends -->
 
@@ -182,6 +263,7 @@
             <?php $this->load->view('include/footer');?>
             <!-- Footer Ends -->
         </div>
+        <!-- PAGE ENDS-->
 
         <!-- BACK-TO-TOP -->
         <a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>
@@ -301,7 +383,7 @@
             });
 
             function initializeDatepicker() {
-            	let start_date = $('input[name="weeklyPlanDateRange"]').data('daterangepicker').startDate._d;
+                let start_date = $('input[name="weeklyPlanDateRange"]').data('daterangepicker').startDate._d;
                 let end_date = $('input[name="weeklyPlanDateRange"]').data('daterangepicker').endDate._d;
 
                 $('input[name="weekDates"]').daterangepicker({
@@ -328,10 +410,10 @@
             }
 
             $(document).on('change', 'select[name="circle"]', function(event) {
-            	let selected_circle = $(this).val();
-            	let division_arr = divisions[selected_circle];
+                let selected_circle = $(this).val();
+                let division_arr = divisions[selected_circle];
 
-            	let option_html = '';
+                let option_html = '';
                 option_html += '<option value="select" selected disabled>Select Division</option>';
 
                 $.each(division_arr, function(index, value) {
@@ -344,12 +426,11 @@
             });
 
             $(document).on('change', 'select[name="division"]', function(event) {
-            	let selected_division = $(this).val();
+                let selected_division = $(this).val();
 
-            	let selected_cirlce = $('select[name="circle"] option:selected').val();
-            	
-            	getFeedersList(selected_cirlce, selected_division);
-
+                let selected_cirlce = $('select[name="circle"] option:selected').val();
+                
+                getFeedersList(selected_cirlce, selected_division);
                 form_change = true;
             });
 
@@ -361,7 +442,7 @@
                     dataType: 'json',
                     data: {circle_name: circle_name, division_name: division_name},
                     success: function(response) {
-                    	// console.log(response); 
+                        // console.log(response); 
                         let feeder_td = $('#new-add-weekly-tkc-plan-details > tbody > tr[data-status="editing"]').find('.feeder');
                         $(feeder_td).empty();
 
@@ -406,9 +487,11 @@
                 event.preventDefault();
             });
 
-            $('#addTKCWeeklyPlan button[type="submit"]').click(function(event) {
+            $('#updateTKCWeeklyPlan button[type="submit"]').click(function(event) {
                 let selected_submit_btn = $(this).data('type');
-                let weekly_plan_form = $('#addTKCWeeklyPlan')[0];
+                /*console.log('selected_submit_btn: ' + selected_submit_btn);
+                console.log('form_change: ' + form_change);*/
+                let weekly_plan_form = $('#updateTKCWeeklyPlan')[0];
 
                 let selected_date_range = $('input[name="weeklyPlanDateRange"]').val();
 
@@ -476,6 +559,7 @@
             function saveWeeklyPlan(weekly_plan_form, selected_submit_btn) {
                 let form_btns = $(weekly_plan_form).find('#weekly-tkc-plan-form-btns .btn');
 
+                //Uncomment Later
                 $(form_btns).each(function(index, value) {
                     $(value).prop('disabled', true);
                 });
@@ -490,6 +574,7 @@
                 let weekly_plan_array = [];
                 
                 $(trs).each(function(index, value) {
+                    // console.log($(value));
                     let tds = $(value).find('td');
 
                     let plan_array = new Object();
@@ -503,6 +588,11 @@
                         plan_array[field] = $(val).text();
                     });
 
+                    let tkc_plan_detail_id = $(value).attr('data-tkc-plan-detail-id');
+                    // console.log(tkc_plan_detail_id); return false;
+                    plan_array['tkc_plan_detail_id'] = tkc_plan_detail_id;
+                    // console.log(plan_array); return false;
+
                     weekly_plan_array.push(plan_array);
                 });
 
@@ -514,7 +604,11 @@
                     formData.append('is_draft', 1);
                 }
 
+                /*console.log('formData: ');
+                console.log(formData);*/
+
                 let form_url = $(weekly_plan_form).attr('action');
+                // console.log('form_url:' + form_url);
 
                 // Ajax call to save the weekly plan
                 $.ajax({
@@ -525,7 +619,7 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        // console.log(response); 
+                        console.log(response);
 
                         $('.plan-loader').attr('hidden', true);
 

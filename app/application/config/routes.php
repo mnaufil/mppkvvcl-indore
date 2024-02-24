@@ -252,6 +252,8 @@ $route['delete-division'] = 'Division/deleteDivision';
 $route['tkc-weekly-plan'] = 'TKCWeeklyPlan/index';
 $route['add-tkc-weekly-plan'] = 'TKCWeeklyPlan/addTKCWeeklyPlan';
 $route['save-tkc-weekly-plan'] = 'TKCWeeklyPlan/saveTKCWeeklyPlan';
+$route['edit-tkc-weekly-plan/(:any)/(:num)'] = 'TKCWeeklyPlan/editTKCWeeklyPlan/$1/$2';
+$route['update-tkc-weekly-plan'] = 'TKCWeeklyPlan/updateTKCWeeklyPlan';
 $route['get-feeders-list-tkc'] = 'TKCWeeklyPlan/getFeedersList';
 
 /*TKC Physical Verification*/

@@ -79,9 +79,66 @@
                 				<div class="col-lg-12">
                 					<div class="card">
                 						<div class="card-body mt-3">
-                							<!-- <div class="table-responsive">
-                								<table class=""></table>
-                							</div> -->
+                							<div class="table-responsive">
+                								<div id="basic-datatable_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <table class="table table-bordered text-nowrap border-bottom dataTable no-footer" id="basic-datatable" role="grid" aria-describedby="basic-datatable_info">
+                                                                <thead>
+                                                                    <tr role="row">
+                                                                        <th class="wd-10p border-bottom-0" tabindex="0" aria-controls="basic-datatable" rowspan="1" colspan="1"style="width: 95.5156px;">Actions</th>
+                                                                        <th class="wd-10p border-bottom-0 sorting sorting_asc" tabindex="1" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Date Range: activate to sort column descending" style="width: 95.5156px;">Date Range</th>
+                                                                        <th class="wd-15p border-bottom-0 sorting" tabindex="2" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Lot No.: activate to sort column descending" style="width: 88.5469px;">Lot No.</th>
+                                                                        <th class="wd-25p border-bottom-0 sorting" tabindex="3" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Contractor(TKC): activate to sort column ascending" style="width: 178.531px;">Contractor(TKC)</th>
+                                                                        <th class="wd-25p border-bottom-0 sorting" tabindex="4" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 92.5312px;">Status</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php foreach ($result as $key => $value) { ?>
+                                                                    <tr>
+                                                                        <?php $mode = ($value['is_draft'] == '0') ? 'view' : 'edit'; ?>
+                                                                        <!-- Action Buttons -->
+                                                                        <td name="bstable-actions">
+                                                                            <div class="btn-list">
+                                                                            <?php if (!empty($user_access) && (isset($user_access['view']) || isset($user_access['update']))) { ?>
+                                                                                <a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('edit-tkc-weekly-plan/'.$mode.'/'.$value['tkc_plan_id']); ?>">
+                                                                                    <span class="<?php echo ($mode == 'view') ? 'fa fa-eye' : 'fe fe-edit'; ?> fa-lg action-btn-table"></span>
+                                                                                </a>
+                                                                            <?php } ?>
+                                                                            </div>
+                                                                        </td>
+                                                                        <!-- Date Range -->
+                                                                        <td style="text-align: center;">
+                                                                            <?php echo $value['date_range']; ?>
+                                                                        </td>
+                                                                        <!-- Lot No. -->
+                                                                        <td style="text-align: center;">
+                                                                            <?php echo $value['lot_no']; ?>
+                                                                        </td>
+                                                                        <!-- Contractor (TKC) -->
+                                                                        <td style="text-align: center;">
+                                                                            <?php echo $value['contractor_name']; ?>
+                                                                        </td>
+                                                                        <!-- Status -->
+                                                                        <td style="text-align: center;">
+                                                                            <?php   if ($value['draft_status'] == 'Draft') {
+                                                                                        $text_color = 'text-yellow';
+                                                                                    } else {
+                                                                                        $text_color = 'text-green';
+                                                                                    }
+                                                                            ?>
+                                                                            <h5 class="<?php echo $text_color; ?> text-status">
+                                                                                <?php echo $value['draft_status']; ?>
+                                                                            </h5>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>                             
+                                                </div>
+                							</div>
                 						</div>
                 					</div>
                 				</div>

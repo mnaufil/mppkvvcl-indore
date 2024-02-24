@@ -18,8 +18,18 @@ class TKCWeeklyPlan extends CI_Controller
 	{
 		$data['title'] = 'TKC Weekly Plan';
 
-		$result = $this->twp_model->getTKCWeeklyPlanDateRanges();
+		$result = $this->twp_model->getTKCWeeklyPlanDateRanges();		
 
+		foreach ($result as $key => $value) {
+			$result[$key]['date_range'] = date('d-m-Y', strtotime($value['from_date'])).' - '.date('d-m-Y', strtotime($value['to_date']));
+			$result[$key]['draft_status'] = ($value['is_draft'] == 0) ? 'Full Week Plan' : 'Draft';
+		}
+
+		$user_access_data = $this->twp_model->getUserModuleAccess();
+      	$user_access = $this->sortUserModuleAccess($user_access_data);
+
+		$data['result'] = $result;
+		$data['user_access'] = $user_access;
 
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('tkc-weekly-plan/tkc-weekly-plan', $data);
@@ -116,6 +126,103 @@ class TKCWeeklyPlan extends CI_Controller
       	echo json_encode($response);
 	}
 
+	public function editTKCWeeklyPlan($mode, $tkc_plan_id)
+	{
+		$result = $this->twp_model->getTKCWeeklyPlanDetails($tkc_plan_id);
+
+		$result['tkc_plan_id'] = $tkc_plan_id;
+		// echo 'result: <pre>'; print_r($result); echo '</pre>'; die();
+
+		$data['packages'] = $packages = $_SESSION['loggedData']->package_access;
+		$packages_arr = explode(',', $packages);
+
+		$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages_arr);
+		$divisions = $this->twp_model->getCircleWiseDivision($circles);
+
+		$divisions_arr = [];
+		foreach ($divisions as $key => $value) {
+			$divisions_arr[$value['circle_name']][] = $value['division_name'];
+		}
+
+		$data['divisions'] = $divisions_arr;
+
+		$data['result'] = $result;
+		$data['mode'] = $mode;
+		$data['title'] = 'Edit TKC Weekly Plan';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('tkc-weekly-plan/edit-tkc-weekly-plan', $data);
+	}
+
+	public function updateTKCWeeklyPlan()
+	{
+		// Default Response
+		http_response_code(200);
+      	$response['message'] = 'Updated TKC Weekly Plan successfully';
+
+      	if (!empty($_POST)) {
+      		$tkc_plan_id = $this->input->post('tkc_plan_id');
+      		$week_date_range = $this->input->post('weeklyPlanDateRange');
+      		$weekly_plan_array = json_decode($this->input->post('weekly_plan_array'));
+
+      		$is_draft = $this->input->post('is_draft');
+
+      		$week_date_arr = explode(' - ', $week_date_range);
+      		$from_date = $week_date_arr[0];
+      		$to_date = $week_date_arr[1];
+
+      		// Updating data in tkc_plan
+      		$tkc_plan_result = $this->twp_model->updateTKCWeeklyPlan($tkc_plan_id, $from_date, $to_date, $is_draft);
+
+      		if ($tkc_plan_result) {
+      			foreach ($weekly_plan_array as $key => $value) {
+      				$lot_no = $value->lot_no;
+      				$contract_id = $this->twp_model->getContractIDFromLotNo($lot_no);
+      				$date_of_work = date('Y-m-d', strtotime($value->date_of_work));
+
+      				$circle_id = (!empty($value->circle)) ? $this->twp_model->getCircleID($value->circle) : $value->circle;
+      				$division_id = (!empty($value->division)) ? $this->twp_model->getDivisionID($value->division) : $value->division;
+
+      				$work_description = $value->description_of_work;
+      				$remark = $value->remark;
+
+      				if (isset($value->tkc_plan_detail_id)) {
+      					// Updating data in tkc_plan_detail
+      					$tkc_plan_detail_id = $this->twp_model->updateTKCWeeklyPlanDetails($value->tkc_plan_detail_id, $tkc_plan_id, $contract_id, $date_of_work, $circle_id, $division_id, $work_description, $remark);	
+      				} else {
+      					// Saving data in tkc_plan_detail
+      					$tkc_plan_detail_id = $this->twp_model->saveTKCWeeklyPlanDetails($tkc_plan_id, $contract_id, $date_of_work, $circle_id, $division_id, $work_description, $remark);	
+      				}
+
+      				if ($tkc_plan_detail_id) {
+      					$feeder = $value->feeder;
+
+      					if ($feeder) {
+      						$feeders_list = explode(', ', $feeder);
+
+      						foreach ($feeders_list as $f_value) {
+      							// Check if feeder details exist in tkc_plan_detail_feeder
+      							$check_feeder_exists = $this->twp_model->checkFeederDetailsExists($tkc_plan_detail_id, $f_value);
+
+      							if (empty($check_feeder_exists)) {
+      								$contract_location_id = $this->twp_model->getContractLocationIDByFeederID($f_value);
+
+      								// Saving data in tkc_plan_detail_feeder
+									$tkc_plan_detail_feeder_id = $this->twp_model->saveTKCWeeklyPlanFeederDetails($tkc_plan_detail_id, $contract_location_id);
+      							}
+      						}
+      					}      					
+      				}
+      			}
+      		}
+      	} else {
+      		http_response_code(400);
+      		$response['message'] = 'No Input';
+      	}
+
+      	echo json_encode($response);
+	}
+
 	public function sortCircleWiseDivisionData($circle_wise_division_data)
 	{
 		$sorted_circle_wise_division_data = [];
@@ -141,6 +248,34 @@ class TKCWeeklyPlan extends CI_Controller
 		}
 
 		echo json_encode($response);
+	}
+
+	public function sortUserModuleAccess($user_access_data)
+	{
+	    $user_access = [];
+	    foreach ($user_access_data as $key => $value) {
+	    	switch ($value['event']) {
+	        	case 'view':
+	            	$user_access['view'] = 1;
+	                break;
+                case 'update':
+	            	$user_access['update'] = 1;
+	                break;
+                case 'download':
+	            	$user_access['download'] = 1;
+	                break;
+                case 'add':
+	            	$user_access['add'] = 1;
+	                break;
+                case 'delete':
+	            	$user_access['delete'] = 1;
+	                break;                    
+                default:
+	            	break;
+           	}
+	    }
+
+	    return $user_access;
 	}
 }
 

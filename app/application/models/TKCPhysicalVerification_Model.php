@@ -217,7 +217,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 			'site_location' => $site_location,
 			'reported_by' => $reported_by_id,
 			'reported_date' => $reported_date,
-			'geo_code' => $geo_code,
+			/*'geo_code' => $geo_code,*/
 			'remark' => $remark,
 			'is_draft' => $is_draft,
 			'status_id' => $status_id,

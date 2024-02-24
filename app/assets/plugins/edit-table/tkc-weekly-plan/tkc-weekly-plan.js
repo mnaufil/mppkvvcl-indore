@@ -168,14 +168,14 @@ class BSTableTKCWeeklyPlan {
 
             var content = '';
 
-			if (i == 0) {
+			if (i == 0) { //Sr.No
                 content = $td.text();
 
                 if (content != '') {
                     input = content;
                 }
-            } else if (i == 1) {
-                content = $td.text();
+            } else if (i == 1) { //Lot No.
+                content = $.trim($td.text());
 
                 input = '<select name="lotNo" id="lotNo" class="form-control form-select" data-bs-placeholder="Select Lot No.">';
                 input += '<option value="select" selected disabled>Select Lot No.</option>';
@@ -184,8 +184,8 @@ class BSTableTKCWeeklyPlan {
                     input += '<option value="'+value+'" '+selected+'>'+value+'</option>';
                 });
                 input += '</select>';
-			} else if (i == 2) {
-                content = $td.text();
+			} else if (i == 2) { //Date of Work
+                content = $.trim($td.text());
 
                 let selected_date = (content != '') ? content : '';
 
@@ -197,15 +197,15 @@ class BSTableTKCWeeklyPlan {
                 input += '</div>';
 
                 setTimeout(initializeDatepicker, 1000);
-            } else if (i == 3) {
-                content = $td.text();
+            } else if (i == 3) { //Day
+                content = $.trim($td.text());
 
                 let selected_day = (content != '') ? content : '';
                 let readonly_attr = (selected_day != '') ? 'readonly' : '';
 
                 input = '<input type="text" class="form-control" name="weekDay" id="weekDay" value="'+selected_day+'" '+readonly_attr+'>';
-            } else if (i == 4) {
-                content = $td.text();
+            } else if (i == 4) { //Name of Circle
+                content = $.trim($td.text());
 
                 input = '<select name="circle" id="circle" class="form-control form-select" data-bs-placeholder="Select Circle">';
                 input += '<option value="select" selected disabled>Select Circle</option>';
@@ -214,8 +214,8 @@ class BSTableTKCWeeklyPlan {
                     input += '<option value="'+value+'" '+selected+'>'+value+'</option>';
                 })
                 input += '</select>';
-            } else if (i == 5) {
-                content = $td.text();
+            } else if (i == 5) { //Name of Division
+                content = $.trim($td.text());
 
                 input = '<select name="division" id="division" class="form-control form-select" data-bs-placeholder="Select Division">';
 
@@ -226,12 +226,20 @@ class BSTableTKCWeeklyPlan {
                         input += '<option value="'+value+'" '+selected+'>'+value+'</option>';
                     });
                 } else {
-                    input += '<option value="select" selected disabled>Select Division</option>';    
+                    let selected_circle = $('select[name="circle"]').val();
+                    if (selected_circle != 'select') {
+                        input += '<option value="select" selected disabled>Select Division</option>';
+                        $.each(divisions[selected_circle], function(index, value) {
+                            input += '<option value="'+value+'">'+value+'</option>';
+                        })
+                    } else {
+                        input += '<option value="select" selected disabled>Select Division</option>';
+                    }
                 }
                 
                 input += '</select>';
-            } else if (i == '6') {
-                content = $td.text();
+            } else if (i == '6') { //Name of Site/Feeder
+                content = $.trim($td.text());
 
                 if (content != '') {
                     let selected_circle = $('select[name="circle"]').val();
@@ -245,17 +253,30 @@ class BSTableTKCWeeklyPlan {
                         $('select[name="feeder"]').multipleSelect('setSelects', selected_feeders);
                     }, 1000);
                 } else {
-                    input = '<select name="feeder" id="feeder" class="form-control form-select" data-bs-placeholder="Select Feeder">';
-                    input += '<option value="select" selected disabled>Select Feeder</option>';
-                    input += '</select>';    
+                    let selected_circle = $('select[name="circle"]').val();
+                    let selected_division = $('select[name="division"]').val();
+                    
+                    if (selected_circle != 'select' && selected_division != 'select') {
+                        getFeedersList(selected_circle, selected_division);
+
+                        let selected_feeders = content.split(', ');
+
+                        setTimeout(function() {
+                            $('select[name="feeder"]').multipleSelect('setSelects', selected_feeders);
+                        }, 1000);
+                    } else {
+                        input = '<select name="feeder" id="feeder" class="form-control form-select" data-bs-placeholder="Select Feeder">';
+                        input += '<option value="select" selected disabled>Select Feeder</option>';
+                        input += '</select>';        
+                    }
                 }
-            } else if (i == '7') {
-                content = $td.text();
+            } else if (i == '7') { //Description of Work
+                content = $.trim($td.text());
 
                 let work_description = (content != '') ? content : '';
                 input = '<textarea class="form-control" id="description_of_work" name="description_of_work" rows="2">'+work_description+'</textarea>';
-            } else if (i == '8') {
-                content = $td.text();
+            } else if (i == '8') { //Remark
+                content = $.trim($td.text());
 
                 let remark = (content != '') ? content : '';
 

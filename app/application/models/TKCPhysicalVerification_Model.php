@@ -225,7 +225,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 			'modifieddate' => date('Y-m-d H-i:s')
 		);
 
-		$query = $this->db->update('tkc_physical_progress', $data, array('tkc_physical_progress_id' => $pp_id));
+		$query = $this->db->update('tkc_physical_progress', $data, array('tkc_physical_progress_id' => $tkc_pp_id));
 
 		if (!$query) {
 			$error = $this->db->error();

@@ -66,7 +66,7 @@ class TKCPhysicalVerificationApi extends REST_Controller
 	{
 		if (!empty($this->post())) {
 			$logged_user_role_id = $this->post('logged_user_role_id');
-			$tkc_ppsheet_id = $this->post('physical_progress_id');
+			$tkc_ppsheet_id = $this->post('tkc_physical_progress_id');
 			$prev_tkc_ppsheet_id = $this->post('prev_tkc_physical_progress_id');
 			$contract_id = $this->post('contract_id');
 			$contract_location_id = $this->post('contract_location_id');

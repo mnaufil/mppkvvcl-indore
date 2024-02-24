@@ -125,14 +125,14 @@
 			                											<u><?php echo date('j M', strtotime($value['reported_date'])); ?></u>
 			                  									</a>
 			                										<?php } else { ?>
-			                										<a href="<?php echo base_url('get-sheet/'.$value['reported_date'].'/'.$value['physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">
+			                										<a href="<?php echo base_url('get-sheet/'.$value['reported_date'].'/'.$value['tkc_physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">
 			                  									<?php echo date('j M', strtotime($value['reported_date'])); ?>
 		                  									</a>
 			                									<?php } ?>
 				                  							</li>
                 											<?php } else { ?>
 	                											<li class="breadcrumb-item1">
-				                  								<a href="<?php echo base_url('get-sheet/'.$value['reported_date'].'/'.$value['physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">
+				                  								<a href="<?php echo base_url('get-sheet/'.$value['reported_date'].'/'.$value['tkc_physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">
 				                  									<?php echo date('j M', strtotime($value['reported_date'])); ?>
 			                  									</a>
 				                  							</li>
@@ -143,7 +143,7 @@
                   									<?php if (!isset($future_sheet_status)) { ?>
                   										<?php $recent_sheet = end($prev_sheet_dates); ?>	
                   										<li class="breadcrumb-item1 active">
-		                  									<a href="<?php echo base_url('add-physical-progress/edit-prev/'.$recent_sheet['physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">Today</a>
+		                  									<a href="<?php echo base_url('add-tkc-physical-verification/edit-prev/'.$recent_sheet['tkc_physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">Today</a>
 		                  								</li>
                   									<?php } ?>
                   								<?php } elseif ($sheet_data['sheet_status'] == 'In Process') { ?>
@@ -848,7 +848,7 @@
               							<?php if ($sheet_data['sheet_status'] == 'Reviewed' && strpos($_SERVER['REQUEST_URI'], 'edit-review')) { 
               											$back_url = 'physical-verification-review';
               										} else {
-              											$back_url = 'physical-verification';
+              											$back_url = 'tkc-physical-verification';
               										}
               							?>
               							<a href="<?php echo base_url($back_url); ?>" type="button" class="btn btn-primary">Back</a>

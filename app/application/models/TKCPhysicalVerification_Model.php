@@ -12,15 +12,25 @@ class TKCPhysicalVerification_Model extends CI_Model
 
 	public function getPhysicalVerificationSheets($user_id)
 	{
-		$package_access = $this->getTKCPackageAccess($user_id);
-		$contract_id = $this->getContractIDFromPackageAccess($package_access);
-
 		$contract_status_list = $this->getContractStatusList();
 		$active_contract_status_id = $contract_status_list['Open'];
 
 		$pp_status_ids = $this->getStatusIDsForList();
 
-		$query = $this->db->query("SELECT `tkc_physical_progress`.`tkc_physical_progress_id`, `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`, `tkc_physical_progress`.`site_location`, `tkc_physical_progress`.`reported_by`, `tkc_physical_progress`.`reported_date`, `tkc_physical_progress`.`status_id`, `contract`.`contract_id`, `contract`.`package_no`, `contract`.`contractor_name`, `contract`.`tender_award_no`, `contract`.`typeofwork_id`, `contract_location`.`contract_location_id`, `contract_location`.`region_id`, `contract_location`.`circle_id`, `contract_location`.`division_id`, `contract_location`.`location_name`, `contract_location`.`feeder_id`, `mst_user`.`username` AS `pp_reported_by`, `mst_user`.`package_access`, `mst_region`.`region_name`, `mst_circle`.`circle_name`, `mst_division`.`division_name`, `mst_status`.`name` AS `sheet_status`, `mst_typeofwork`.`name` AS `typeofwork_name`, IFNULL(`tt_act`.`tt_activity`, 0) AS `tt_task`, IFNULL(`cc_act`.`comp_act`, 0) AS `cc_task` FROM (SELECT MAX(`tkc_physical_progress`.`tkc_physical_progress_id`) AS `tkc_physical_progress_id`, `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`, MAX(`reported_date`) AS `reported_date` FROM		`tkc_physical_progress` WHERE `tkc_physical_progress`.`is_draft` = 0 GROUP BY `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`) `grp` INNER JOIN `tkc_physical_progress` ON `tkc_physical_progress`.`tkc_physical_progress_id` = `grp`.`tkc_physical_progress_id` AND `tkc_physical_progress`.`contract_id` = `grp`.`contract_id` AND `tkc_physical_progress`.`contract_location_id` = `grp`.`contract_location_id` INNER JOIN `contract` ON `tkc_physical_progress`.`contract_id` = `contract`.`contract_id` INNER JOIN `contract_location` ON `tkc_physical_progress`.`contract_id` = `contract_location`.`contract_id` AND `tkc_physical_progress`.`contract_location_id` = `contract_location`.`contract_location_id` LEFT JOIN `mst_user` ON `mst_user`.`user_id` = `tkc_physical_progress`.`reported_by` INNER JOIN `mst_region` ON `mst_region`.`region_id` = `contract_location`.`region_id` INNER JOIN `mst_circle` ON `mst_circle`.`circle_id` = `contract_location`.`circle_id` INNER JOIN `mst_division` ON `mst_division`.`division_id` = `contract_location`.`division_id` INNER JOIN `mst_status` ON `mst_status`.`status_id` = `tkc_physical_progress`.`status_id` INNER JOIN `mst_typeofwork` ON `mst_typeofwork`.`typeofwork_id` = `contract`.`typeofwork_id` LEFT JOIN (SELECT `tkc_physical_progress_id`, COUNT(`mst_typeofwork_activity`.`typeofwork_activity_id`) AS `tt_activity` FROM `tkc_physical_progress` `a` INNER JOIN 	`contract` ON `contract`.`contract_id` = `a`.`contract_id` INNER JOIN `mst_typeofwork_activity` ON `mst_typeofwork_activity`.`typeofwork_id` = `contract`.`typeofwork_id` GROUP BY `tkc_physical_progress_id`, `mst_typeofwork_activity`.`typeofwork_id`) `tt_act` ON `tt_act`.`tkc_physical_progress_id` = `tkc_physical_progress`.`tkc_physical_progress_id` LEFT JOIN (SELECT `A`.`tkc_physical_progress_id` AS `tkc_physical_progress_id`, IFNULL(COUNT(`A`.`activity_id`), 0) AS `comp_act` FROM (SELECT `P1`.`tkc_physical_progress_id`, `P1`.`contract_location_id`, `P2`.`activity_id`, `P2`.`status_id` FROM `contract` `C` LEFT JOIN `contract_location` `CL` ON `CL`.`contract_id` = `C`.`contract_id` LEFT JOIN (SELECT MAX(`tkc_physical_progress`.`tkc_physical_progress_id`) AS `tkc_physical_progress_id`, `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`, MAX(`reported_date`) AS `reported_date` FROM `tkc_physical_progress` GROUP BY `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`) `P` ON `P`.`contract_location_id` = `CL`.`contract_location_id` AND `P`.`contract_id` = `CL`.`contract_id` LEFT JOIN `tkc_physical_progress` `P1` ON `P1`.`tkc_physical_progress_id` = `P`.`tkc_physical_progress_id` LEFT JOIN `tkc_physical_progress_activity` `P2` ON `P2`.`tkc_physical_progress_id` = `P1`.`tkc_physical_progress_id` WHERE `CL`.`is_active` = 1) `A` LEFT JOIN	(SELECT `P1`.`tkc_physical_progress_id`, `P1`.`contract_location_id`, 1 AS `is_no_pending_observation`, `P`.`activity_id` FROM `mst_typeofwork_activity` `T` INNER JOIN `tkc_physical_progress_activity` `P` ON `P`.`activity_id` = `T`.`typeofwork_activity_id` INNER JOIN `tkc_physical_progress` `P1` ON `P1`.`tkc_physical_progress_id` = `P`.`tkc_physical_progress_id` INNER JOIN `contract_location` `CL` ON `CL`.`contract_location_id` = `P1`.`contract_location_id` AND `P1`.`contract_id` = `CL`.`contract_id` WHERE `CL`.`is_active` = 1 GROUP BY `P1`.`contract_id`, `P1`.`contract_location_id`, `P`.`activity_id`) `P3` ON `P3`.`contract_location_id` = `A`.`contract_location_id` AND `P3`.`activity_id` = `A`.`activity_id` WHERE (`A`.`status_id` = 1 AND IFNULL(`is_no_pending_observation`, 0) = 0) OR (`A`.`status_id` = 3) GROUP BY `A`.`tkc_physical_progress_id`) `cc_act` ON `cc_act`.`tkc_physical_progress_id` = `tkc_physical_progress`.`tkc_physical_progress_id` WHERE `tkc_physical_progress`.`is_draft` = 0 AND `tkc_physical_progress`.`status_id` IN(".$pp_status_ids.") AND `contract`.`status_id` = ".$active_contract_status_id." AND `contract_location`.`is_active` = 1 AND `contract`.`contract_id` = ".$contract_id." ORDER BY `tkc_physical_progress`.`status_id` DESC, `tkc_physical_progress`.`reported_date` DESC;");
+		$user_role = $this->getUserRoleName($user_id);
+
+		if ($user_role == 'TKC') {
+			$package_access = $this->getTKCPackageAccess($user_id);
+			$contract_id = $this->getContractIDFromPackageAccess($package_access);
+
+			$query = $this->db->query("SELECT `tkc_physical_progress`.`tkc_physical_progress_id`, `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`, `tkc_physical_progress`.`site_location`, `tkc_physical_progress`.`reported_by`, `tkc_physical_progress`.`reported_date`, `tkc_physical_progress`.`status_id`, `contract`.`contract_id`, `contract`.`package_no`, `contract`.`contractor_name`, `contract`.`tender_award_no`, `contract`.`typeofwork_id`, `contract_location`.`contract_location_id`, `contract_location`.`region_id`, `contract_location`.`circle_id`, `contract_location`.`division_id`, `contract_location`.`location_name`, `contract_location`.`feeder_id`, `mst_user`.`username` AS `pp_reported_by`, `mst_user`.`package_access`, `mst_region`.`region_name`, `mst_circle`.`circle_name`, `mst_division`.`division_name`, `mst_status`.`name` AS `sheet_status`, `mst_typeofwork`.`name` AS `typeofwork_name`, IFNULL(`tt_act`.`tt_activity`, 0) AS `tt_task`, IFNULL(`cc_act`.`comp_act`, 0) AS `cc_task` FROM (SELECT MAX(`tkc_physical_progress`.`tkc_physical_progress_id`) AS `tkc_physical_progress_id`, `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`, MAX(`reported_date`) AS `reported_date` FROM		`tkc_physical_progress` WHERE `tkc_physical_progress`.`is_draft` = 0 GROUP BY `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`) `grp` INNER JOIN `tkc_physical_progress` ON `tkc_physical_progress`.`tkc_physical_progress_id` = `grp`.`tkc_physical_progress_id` AND `tkc_physical_progress`.`contract_id` = `grp`.`contract_id` AND `tkc_physical_progress`.`contract_location_id` = `grp`.`contract_location_id` INNER JOIN `contract` ON `tkc_physical_progress`.`contract_id` = `contract`.`contract_id` INNER JOIN `contract_location` ON `tkc_physical_progress`.`contract_id` = `contract_location`.`contract_id` AND `tkc_physical_progress`.`contract_location_id` = `contract_location`.`contract_location_id` LEFT JOIN `mst_user` ON `mst_user`.`user_id` = `tkc_physical_progress`.`reported_by` INNER JOIN `mst_region` ON `mst_region`.`region_id` = `contract_location`.`region_id` INNER JOIN `mst_circle` ON `mst_circle`.`circle_id` = `contract_location`.`circle_id` INNER JOIN `mst_division` ON `mst_division`.`division_id` = `contract_location`.`division_id` INNER JOIN `mst_status` ON `mst_status`.`status_id` = `tkc_physical_progress`.`status_id` INNER JOIN `mst_typeofwork` ON `mst_typeofwork`.`typeofwork_id` = `contract`.`typeofwork_id` LEFT JOIN (SELECT `tkc_physical_progress_id`, COUNT(`mst_typeofwork_activity`.`typeofwork_activity_id`) AS `tt_activity` FROM `tkc_physical_progress` `a` INNER JOIN 	`contract` ON `contract`.`contract_id` = `a`.`contract_id` INNER JOIN `mst_typeofwork_activity` ON `mst_typeofwork_activity`.`typeofwork_id` = `contract`.`typeofwork_id` GROUP BY `tkc_physical_progress_id`, `mst_typeofwork_activity`.`typeofwork_id`) `tt_act` ON `tt_act`.`tkc_physical_progress_id` = `tkc_physical_progress`.`tkc_physical_progress_id` LEFT JOIN (SELECT `A`.`tkc_physical_progress_id` AS `tkc_physical_progress_id`, IFNULL(COUNT(`A`.`activity_id`), 0) AS `comp_act` FROM (SELECT `P1`.`tkc_physical_progress_id`, `P1`.`contract_location_id`, `P2`.`activity_id`, `P2`.`status_id` FROM `contract` `C` LEFT JOIN `contract_location` `CL` ON `CL`.`contract_id` = `C`.`contract_id` LEFT JOIN (SELECT MAX(`tkc_physical_progress`.`tkc_physical_progress_id`) AS `tkc_physical_progress_id`, `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`, MAX(`reported_date`) AS `reported_date` FROM `tkc_physical_progress` GROUP BY `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`) `P` ON `P`.`contract_location_id` = `CL`.`contract_location_id` AND `P`.`contract_id` = `CL`.`contract_id` LEFT JOIN `tkc_physical_progress` `P1` ON `P1`.`tkc_physical_progress_id` = `P`.`tkc_physical_progress_id` LEFT JOIN `tkc_physical_progress_activity` `P2` ON `P2`.`tkc_physical_progress_id` = `P1`.`tkc_physical_progress_id` WHERE `CL`.`is_active` = 1) `A` LEFT JOIN	(SELECT `P1`.`tkc_physical_progress_id`, `P1`.`contract_location_id`, 1 AS `is_no_pending_observation`, `P`.`activity_id` FROM `mst_typeofwork_activity` `T` INNER JOIN `tkc_physical_progress_activity` `P` ON `P`.`activity_id` = `T`.`typeofwork_activity_id` INNER JOIN `tkc_physical_progress` `P1` ON `P1`.`tkc_physical_progress_id` = `P`.`tkc_physical_progress_id` INNER JOIN `contract_location` `CL` ON `CL`.`contract_location_id` = `P1`.`contract_location_id` AND `P1`.`contract_id` = `CL`.`contract_id` WHERE `CL`.`is_active` = 1 GROUP BY `P1`.`contract_id`, `P1`.`contract_location_id`, `P`.`activity_id`) `P3` ON `P3`.`contract_location_id` = `A`.`contract_location_id` AND `P3`.`activity_id` = `A`.`activity_id` WHERE (`A`.`status_id` = 1 AND IFNULL(`is_no_pending_observation`, 0) = 0) OR (`A`.`status_id` = 3) GROUP BY `A`.`tkc_physical_progress_id`) `cc_act` ON `cc_act`.`tkc_physical_progress_id` = `tkc_physical_progress`.`tkc_physical_progress_id` WHERE `tkc_physical_progress`.`is_draft` = 0 AND `tkc_physical_progress`.`status_id` IN(".$pp_status_ids.") AND `contract`.`status_id` = ".$active_contract_status_id." AND `contract_location`.`is_active` = 1 AND `contract`.`contract_id` = ".$contract_id." ORDER BY `tkc_physical_progress`.`status_id` DESC, `tkc_physical_progress`.`reported_date` DESC;");	
+		} else {
+
+			$query = $this->db->query("SELECT `tkc_physical_progress`.`tkc_physical_progress_id`, `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`, `tkc_physical_progress`.`site_location`, `tkc_physical_progress`.`reported_by`, `tkc_physical_progress`.`reported_date`, `tkc_physical_progress`.`status_id`, `contract`.`contract_id`, `contract`.`package_no`, `contract`.`contractor_name`, `contract`.`tender_award_no`, `contract`.`typeofwork_id`, `contract_location`.`contract_location_id`, `contract_location`.`region_id`, `contract_location`.`circle_id`, `contract_location`.`division_id`, `contract_location`.`location_name`, `contract_location`.`feeder_id`, `mst_user`.`username` AS `pp_reported_by`, `mst_user`.`package_access`, `mst_region`.`region_name`, `mst_circle`.`circle_name`, `mst_division`.`division_name`, `mst_status`.`name` AS `sheet_status`, `mst_typeofwork`.`name` AS `typeofwork_name`, IFNULL(`tt_act`.`tt_activity`, 0) AS `tt_task`, IFNULL(`cc_act`.`comp_act`, 0) AS `cc_task` FROM (SELECT MAX(`tkc_physical_progress`.`tkc_physical_progress_id`) AS `tkc_physical_progress_id`, `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`, MAX(`reported_date`) AS `reported_date` FROM `tkc_physical_progress` WHERE `tkc_physical_progress`.`is_draft` = 0 GROUP BY `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`) `grp` INNER JOIN `tkc_physical_progress` ON `tkc_physical_progress`.`tkc_physical_progress_id` = `grp`.`tkc_physical_progress_id` AND `tkc_physical_progress`.`contract_id` = `grp`.`contract_id` AND `tkc_physical_progress`.`contract_location_id` = `grp`.`contract_location_id` INNER JOIN `contract` ON `tkc_physical_progress`.`contract_id` = `contract`.`contract_id` INNER JOIN `contract_location` ON `tkc_physical_progress`.`contract_id` = `contract_location`.`contract_id` AND `tkc_physical_progress`.`contract_location_id` = `contract_location`.`contract_location_id` LEFT JOIN `mst_user_data_access` `U` ON `U`.`region_id` = `contract_location`.`region_id` AND `U`.`circle_id` = `contract_location`.`circle_id` AND `U`.`division_id` = `contract_location`.`division_id` LEFT JOIN `mst_user` ON `mst_user`.`user_id` = `tkc_physical_progress`.`reported_by` INNER JOIN `mst_region` ON `mst_region`.`region_id` = `contract_location`.`region_id` INNER JOIN `mst_circle` ON `mst_circle`.`circle_id` = `contract_location`.`circle_id` INNER JOIN `mst_division` ON `mst_division`.`division_id` = `contract_location`.`division_id` INNER JOIN `mst_status` ON `mst_status`.`status_id` = `tkc_physical_progress`.`status_id` INNER JOIN `mst_typeofwork` ON `mst_typeofwork`.`typeofwork_id` = `contract`.`typeofwork_id` LEFT JOIN(SELECT `tkc_physical_progress_id`, COUNT(`mst_typeofwork_activity`.`typeofwork_activity_id`) AS `tt_activity` FROM `tkc_physical_progress` `a` INNER JOIN `contract` ON `contract`.`contract_id` = `a`.`contract_id` INNER JOIN `mst_typeofwork_activity` ON `mst_typeofwork_activity`.`typeofwork_id` = `contract`.`typeofwork_id` GROUP BY `tkc_physical_progress_id`, `mst_typeofwork_activity`.`typeofwork_id`) `tt_act` ON `tt_act`.`tkc_physical_progress_id` = `tkc_physical_progress`.`tkc_physical_progress_id` LEFT JOIN(SELECT `A`.`tkc_physical_progress_id` AS `tkc_physical_progress_id`, IFNULL(COUNT(`A`.`activity_id`), 0) AS `comp_act`FROM (SELECT `P1`.`tkc_physical_progress_id`, `P1`.`contract_location_id`, `P2`.`activity_id`, `P2`.`status_id` FROM `contract` `C` LEFT JOIN `contract_location` `CL` ON `CL`.`contract_id` = `C`.`contract_id` LEFT JOIN(SELECT MAX(`tkc_physical_progress`.`tkc_physical_progress_id`) AS `tkc_physical_progress_id`,
+                `tkc_physical_progress`.`contract_id`, `tkc_physical_progress`.`contract_location_id`, MAX(`reported_date`) AS `reported_date` FROM `tkc_physical_progress` GROUP BY `tkc_physical_progress`.`contract_id`,
+                `tkc_physical_progress`.`contract_location_id` ) `P` ON `P`.`contract_location_id` = `CL`.`contract_location_id` AND `P`.`contract_id` = `CL`.`contract_id` LEFT JOIN `tkc_physical_progress` `P1` ON `P1`.`tkc_physical_progress_id` = `P`.`tkc_physical_progress_id` LEFT JOIN `tkc_physical_progress_activity` `P2` ON `P2`.`tkc_physical_progress_id` = `P1`.`tkc_physical_progress_id` WHERE `CL`.`is_active` = 1) `A` LEFT JOIN(SELECT `P1`.`tkc_physical_progress_id`, `P1`.`contract_location_id`, 1 AS `is_no_pending_observation`, `P`.`activity_id` FROM `mst_typeofwork_activity` `T` INNER JOIN `tkc_physical_progress_activity` `P` ON `P`.`activity_id` = `T`.`typeofwork_activity_id` INNER JOIN `tkc_physical_progress` `P1` ON `P1`.`tkc_physical_progress_id` = `P`.`tkc_physical_progress_id` INNER JOIN `contract_location` `CL` ON `CL`.`contract_location_id` = `P1`.`contract_location_id` AND `P1`.`contract_id` = `CL`.`contract_id` WHERE `CL`.`is_active` = 1 GROUP BY `P1`.`contract_id`, `P1`.`contract_location_id`, `P`.`activity_id`) `P3` ON `P3`.`contract_location_id` = `A`.`contract_location_id` AND `P3`.`activity_id` = `A`.`activity_id` WHERE (`A`.`status_id` = 1 AND IFNULL(`is_no_pending_observation`, 0) = 0) OR(`A`.`status_id` = 3) GROUP BY `A`.`tkc_physical_progress_id`) `cc_act` ON `cc_act`.`tkc_physical_progress_id` = `tkc_physical_progress`.`tkc_physical_progress_id` WHERE `tkc_physical_progress`.`is_draft` = 0 AND `tkc_physical_progress`.`status_id` IN(".$pp_status_ids.") AND `contract`.`status_id` = ".$active_contract_status_id." AND `contract_location`.`is_active` = 1 AND U.user_id = ".$user_id." ORDER BY `tkc_physical_progress`.`status_id` DESC, `tkc_physical_progress`.`reported_date` DESC LIMIT 0,1000;");
+		}
+		
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -72,7 +82,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 					if ($type == 'API') {
 						$activities_list = $this->getActivitiesListAPI($ppsheet_id, $query_result['typeofwork_id'], $contract_location_id, $reported_date);	
 					} else {
-						$activities_list = $this->getActivitiesList($query_result['typeofwork_id'], $contract_location_id);	
+						$activities_list = $this->getActivitiesList($query_result['typeofwork_id'], $contract_location_id);
 					}
 
 					$query_result['activities_list'] = $activities_list;
@@ -387,7 +397,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 
 	public function getActivitiesList($work_id, $contract_location_id, $activity_id = NULL)
 	{
-		$this->db->select('mst_typeofwork_activity.typeofwork_activity_id, mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq, mst_activity_group.name as activity_group_name, mst_typeofwork_activity.unit_id, mst_unit.name, mst_typeofwork_activity.seqno, mst_typeofwork_activity.activity');
+		$this->db->select('mst_typeofwork_activity.typeofwork_activity_id, mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq, mst_activity_group.name as activity_group_name, mst_typeofwork_activity.unit_id, mst_unit.name as unit_name, mst_typeofwork_activity.seqno, mst_typeofwork_activity.activity');
 		$this->db->from('mst_typeofwork_activity');
 		$this->db->join('mst_activity_group', 'mst_typeofwork_activity.activity_group_id = mst_activity_group.activity_group_id', 'INNER');
 		$this->db->join('mst_unit', 'mst_typeofwork_activity.unit_id = mst_unit.unit_id', 'INNER');
@@ -737,17 +747,21 @@ class TKCPhysicalVerification_Model extends CI_Model
 
 	public function getTypeOfWorkList($user_id)
 	{
-		$package_access = $this->getTKCPackageAccess($user_id);
-		$contract_id = $this->getContractIDFromPackageAccess($package_access);
+		$user_role = $this->getUserRoleName($user_id);
 
-		// $query =  $this->db->select('typeofwork_id, name')->get('mst_typeofwork');
+		if ($user_role == 'TKC') {
+			$package_access = $this->getTKCPackageAccess($user_id);
+			$contract_id = $this->getContractIDFromPackageAccess($package_access);
 
-		$this->db->select('contract.typeofwork_id, mst_typeofwork.name');
-		$this->db->from('contract');
-		$this->db->join('mst_typeofwork', 'contract.typeofwork_id = mst_typeofwork.typeofwork_id', 'INNER');
-		$this->db->where(array('contract.contract_id' => $contract_id));
+			$this->db->select('contract.typeofwork_id, mst_typeofwork.name');
+			$this->db->from('contract');
+			$this->db->join('mst_typeofwork', 'contract.typeofwork_id = mst_typeofwork.typeofwork_id', 'INNER');
+			$this->db->where(array('contract.contract_id' => $contract_id));
 
-		$query = $this->db->get();
+			$query = $this->db->get();
+		} else {
+			$query = $this->db->select('typeofwork_id, name')->get('mst_typeofwork');
+		}
 
 		if (!$query) {
 			$error = $this->db->error();
@@ -905,14 +919,23 @@ class TKCPhysicalVerification_Model extends CI_Model
 
 	public function getRegionList($user_id = NULL)
 	{
-		$package_access = $this->getTKCPackageAccess($user_id);
-		$contract_id = $this->getContractIDFromPackageAccess($package_access);
+		$user_role = $this->getUserRoleName($user_id);
 
-		$this->db->distinct();
-		$this->db->select('contract_location.region_id, mst_region.region_name');
-		$this->db->from('contract_location');
-		$this->db->join('mst_region', 'contract_location.region_id = mst_region.region_id', 'INNER');
-		$this->db->where(array('contract_location.contract_id' => $contract_id));
+		if ($user_role == 'TKC') {
+			$package_access = $this->getTKCPackageAccess($user_id);
+			$contract_id = $this->getContractIDFromPackageAccess($package_access);
+
+			$this->db->distinct();
+			$this->db->select('contract_location.region_id, mst_region.region_name');
+			$this->db->from('contract_location');
+			$this->db->join('mst_region', 'contract_location.region_id = mst_region.region_id', 'INNER');
+			$this->db->where(array('contract_location.contract_id' => $contract_id));
+		} else {
+			$this->db->select('mst_user_data_access.region_id, mst_region.region_name');
+			$this->db->from('mst_user_data_access');
+			$this->db->join('mst_region', 'mst_user_data_access.region_id = mst_region.region_id');
+			$this->db->where(array('mst_user_data_access.user_id' => $user_id));
+		}
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -934,15 +957,24 @@ class TKCPhysicalVerification_Model extends CI_Model
 
 	public function getRegionCircleData($user_id)
 	{
-		$package_access = $this->getTKCPackageAccess($user_id);
-		$contract_id = $this->getContractIDFromPackageAccess($package_access);
+		$user_role = $this->getUserRoleName($user_id);
 
-		$this->db->distinct();
-		$this->db->select('contract_location.circle_id, mst_circle.circle_name, mst_circle.region_id');
-		$this->db->from('contract_location');
-		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
-		$this->db->where(array('contract_location.contract_id' => $contract_id));
+		if ($user_role == 'TKC') {
+			$package_access = $this->getTKCPackageAccess($user_id);
+			$contract_id = $this->getContractIDFromPackageAccess($package_access);
 
+			$this->db->distinct();
+			$this->db->select('contract_location.circle_id, mst_circle.circle_name, mst_circle.region_id');
+			$this->db->from('contract_location');
+			$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
+			$this->db->where(array('contract_location.contract_id' => $contract_id));			
+		} else {
+			$this->db->select('mst_user_data_access.circle_id, mst_circle.circle_name, mst_circle.region_id');
+			$this->db->from('mst_user_data_access');
+			$this->db->join('mst_circle', 'mst_user_data_access.circle_id = mst_circle.circle_id', 'INNER');
+			$this->db->where(array('mst_user_data_access.user_id' => $user_id));
+		}
+		
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
 
@@ -963,14 +995,23 @@ class TKCPhysicalVerification_Model extends CI_Model
 
 	public function getCircleDivisionData($user_id)
 	{
-		$package_access = $this->getTKCPackageAccess($user_id);
-		$contract_id = $this->getContractIDFromPackageAccess($package_access);
+		$user_role = $this->getUserRoleName($user_id);
 
-		$this->db->distinct();
-		$this->db->select('contract_location.division_id, mst_division.division_name, mst_division.circle_id');
-		$this->db->from('contract_location');
-		$this->db->join('mst_division', 'contract_location.division_id = mst_division.division_id', 'INNER');
-		$this->db->where(array('contract_location.contract_id' => $contract_id));
+		if ($user_role == 'TKC') {
+			$package_access = $this->getTKCPackageAccess($user_id);
+			$contract_id = $this->getContractIDFromPackageAccess($package_access);
+
+			$this->db->distinct();
+			$this->db->select('contract_location.division_id, mst_division.division_name, mst_division.circle_id');
+			$this->db->from('contract_location');
+			$this->db->join('mst_division', 'contract_location.division_id = mst_division.division_id', 'INNER');
+			$this->db->where(array('contract_location.contract_id' => $contract_id));
+		} else {
+			$this->db->select('mst_user_data_access.division_id, mst_division.division_name, mst_division.circle_id');
+			$this->db->from('mst_user_data_access');
+			$this->db->join('mst_division', 'mst_user_data_access.division_id = mst_division.division_id', 'INNER');
+			$this->db->where(array('mst_user_data_access.user_id' => $user_id));
+		}		
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -1039,7 +1080,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 		$this->db->join('mst_role_module_access', 'mst_user.role_id = mst_role_module_access.role_id', 'INNER');
 		$this->db->join('mst_module_access', 'mst_role_module_access.module_access_id = mst_module_access.module_access_id', 'INNER');
 		$this->db->join('mst_module', 'mst_module_access.module_id = mst_module.module_id', 'INNER');
-		$this->db->where(array('mst_module.name' => 'TKC Physical Verification', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
+		$this->db->where(array('mst_module.name' => 'TKC Physical Entry', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
 		$this->db->where(array('mst_role_module_access.is_active' => 1, 'mst_module_access.is_active' => 1, 'mst_module.is_active' => 1));
 
 		$query = $this->db->get();
@@ -1147,6 +1188,33 @@ class TKCPhysicalVerification_Model extends CI_Model
 
 			if ($query->num_rows() > 0) {
 				$query_result = $query->result_array();				
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getUserRoleName($user_id)
+	{
+		$this->db->select('mst_role.name');
+		$this->db->from('mst_role');
+		$this->db->join('mst_user', 'mst_user.role_id = mst_role.role_id', 'INNER');
+		$this->db->where(array('mst_user.user_id' => $user_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['name'];
 			}
 
 			return $query_result;

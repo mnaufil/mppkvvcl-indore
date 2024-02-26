@@ -80,7 +80,7 @@
               	<div class="col-lg-12 col-md-12">
               		<div class="card">
               			
-              			<form id="addTKCPhysicalVerificationSheet" method="post" enctype="multipart/form-data" action="<?php echo base_url('save-tkc-physical-verification'); ?>">
+              			<form id="addTKCPhysicalVerificationSheet" method="post" enctype="multipart/form-data" action="<?php echo base_url('save-tkc-physical-entry'); ?>">
 
               				<!-- TKC Physical Progress ID -->
 	                  	<input type="hidden" id="tkc_physical_progress_id" name="tkc_physical_progress_id" value="<?php echo $sheet_data['tkc_physical_progress_id']; ?>">
@@ -848,7 +848,7 @@
               							<?php if ($sheet_data['sheet_status'] == 'Reviewed' && strpos($_SERVER['REQUEST_URI'], 'edit-review')) { 
               											$back_url = 'physical-verification-review';
               										} else {
-              											$back_url = 'tkc-physical-verification';
+              											$back_url = 'tkc-physical-entry';
               										}
               							?>
               							<a href="<?php echo base_url($back_url); ?>" type="button" class="btn btn-primary">Back</a>
@@ -973,6 +973,125 @@
     	$('input[type="radio"]').change(function() {
     		form_change = true;
     	});
+
+    	// Displaying progress(%),observation dropdown, remark input and file upload on entering value in erected qty field (with BOQ groups)
+      $('input[name^="33kv_feeder_"], input[name^="11kv_feeder_"], input[name^="11kv_feeder_separation_"], input[name^="33kv_interconnection_line_"]').on('input', function() {
+      	// alert('here'); return false;
+      	//Changing status of form to edited by setting below variable true
+				form_change = true;
+
+      	getObservationsForWithBOQ(this);
+      });
+
+      //Getting observations, if any on input value of erected qty field
+      function getObservationsForWithBOQ(input) {
+      	//Getting table row
+				let tr = $(input).closest('tr');
+				let table_row = $(tr).attr('data-table-row');
+				let activity_index = $(input).closest('table').attr('data-activity-index');
+
+      	//Check if erected qty does not exceeds BOQ qty
+				let boq_td = $(input).parent().prev('.boq-qty');
+				let boq_qty = $(boq_td).find('input').val();
+				
+				let erected_qty = $(input).val();
+
+				if (boq_qty == 0) {
+					$('.toast-body').text('Cannot enter erected quantity against 0 BOQ quantity');
+	      	$('.toast').toast('show');
+
+	      	// Setting input value to blank
+	      	$(input).val('');
+	      	
+	      	return false;
+				} else if (isNaN(erected_qty)) {
+					$('.toast-body').text('Enter only digits');
+	      	$('.toast').toast('show');
+
+	      	//Removing data from progress in % cell
+					let progress_td = $(tr).find('td').eq(5);
+					$(progress_td).empty();
+
+	      	return false;
+				} else if (parseInt(erected_qty) > parseInt(boq_qty)) {
+					$('.toast-body').text('Erecetd quantity cannot exceed BOQ quantity');
+	      	$('.toast').toast('show');
+
+	      	// Setting input value to blank
+	      	$(input).val('');
+
+	      	//Removing data from progress in % cell
+					let progress_td = $(tr).find('td').eq(5);
+					$(progress_td).empty();
+
+	      	return false;
+				} else {
+					//Getting tab name
+	      	let table_name = getTableName($(input));
+
+					if (erected_qty > 0) {
+						//Calculating Progress in %
+						let boq_qty = $(tr).find('td').eq(3).text();
+						let progress = (parseInt(erected_qty) / parseInt(boq_qty)) * 100;
+						// $(tr).find('td').eq(5).text(Math.round(progress));
+						$(tr).find('td').eq(5).text(parseFloat(progress).toFixed(2));
+
+						/*//Getting selected activity details
+						let activity = getActivityDetails(table_name, table_row, activity_index);
+
+						//Getting selected activity's id
+						let activity_id = activity.typeofwork_activity_id;
+
+						//Getting selected activity's observations
+						let activity_obs = activity.observations_list;
+
+						if (activity_obs.length > 0) {
+			    		apply_observations(tr, table_row, table_name, activity_id, 'withBOQ'); 
+			    	}*/
+					}/* else {
+						let activity_id = $(tr).attr('data-activity-id');
+						let contract_location_id = $('input[name="contract_location_id"]').val();
+
+						//Ajax call to check if any observation has been applied
+						$.ajax({
+							type: 'POST',
+							url: '<?php echo base_url("check-observation-exists"); ?>',
+							dataType: 'json',
+							data: {activity_id: activity_id, contract_location_id: contract_location_id},
+							success: function(response) {
+								// console.log(response);
+								if (response.applied_obs_count > 0) {
+									$('#observation-notification-alert').removeAttr('hidden');
+
+									let delete_btn = $('#observation-notification-alert').find('.notification-delete');
+									$(delete_btn).attr('data-contract-location-id', contract_location_id);
+									$(delete_btn).attr('data-activity-id', activity_id);
+									$(delete_btn).attr('data-activity-type', 'withBOQ');
+
+									let alert_text = response.applied_obs_count + ' ' + (response.applied_obs_count == 1 ? 'observation has' : 'observations have') +' been found against the activity. Changing status of activity to NO will delete the observations. Do you still want to proceed and delete the observations?';
+									$('.notification-text').text(alert_text);
+								} else {
+									//Removing data from progress in %, observations, remark and file upload cells
+									let progress_td = $(tr).find('td').eq(5);
+									$(progress_td).empty();
+
+									let obs_td = $(tr).find('td').eq(6);
+									$(obs_td).empty();
+
+									let remark_td = $(tr).find('td').eq(7);
+									$(remark_td).empty();
+
+									let file_td = $(tr).find('td').eq(8);
+									$(file_td).empty();			
+								}
+							},
+							error: function(xhr, status, error) {
+								console.log(xhr.responseText);
+							}
+						});						
+					}*/	
+				}
+      }
 
     	//Check if the sheet activities meet the conditions to change the sheet status to Complete
       $('#markComplete').click(function() {
@@ -1148,6 +1267,13 @@
 	      		$(this).find('button[type="submit"]').attr('disabled', true);
 	      	}      	
       });
+
+      function getTableName(radio) {
+      	let table = $(radio).closest('table');
+      	let table_name = $(table).attr('data-tablename');
+      	
+      	return table_name;
+      }
 
     </script>
 	</body>

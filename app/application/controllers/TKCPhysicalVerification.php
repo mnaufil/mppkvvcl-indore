@@ -38,7 +38,7 @@ class TKCPhysicalVerification extends CI_Controller
       	$user_access_data = $this->tpv_model->getUserModuleAccess();
       	$user_access = $this->sortUserModuleAccess($user_access_data);
 
-      	$data['title'] = 'TKC Physical Verification';
+      	$data['title'] = 'TKC Physical Entry';
       	$data['result'] = $result;
 
       	$data['work_list'] = $type_of_work;
@@ -329,7 +329,7 @@ class TKCPhysicalVerification extends CI_Controller
             	}*/
             }
 
-            redirect('tkc-physical-verification');
+            redirect('tkc-physical-entry');
 		}
 	}
 

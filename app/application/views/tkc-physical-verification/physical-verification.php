@@ -66,7 +66,7 @@
         			
         			<!-- Page-Header -->
               <div class="page-header">
-                <h1 class="page-title">TKC Physical Verification</h1>
+                <h1 class="page-title"><?php echo $title; ?></h1>
               </div>
               <!-- Page-Header Ends -->
 
@@ -84,7 +84,7 @@
                                   $clear_btn_visibility = (isset($filters)) ? '' : 'hidden';
                             ?>
                             <button class="accordion-button collapsed active prog-btn <?php echo $accordion_btn_class; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" <?php echo $accordion_btn_style; ?>>
-                              Search TKC Physical Verification Sheet
+                              Search <?php echo $title; ?> Sheet
                             </button>
               						</h2>
               						<div class="clear-data" <?php echo $clear_btn_visibility; ?>>
@@ -104,7 +104,7 @@
                           </div>
                           <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
                           	<div class="accordion-body p-1">
-                          		<form name="searchTKCPhysicalVerificationSheet" id="searchTKCPhysicalVerificationSheet" method="post" action="<?php echo base_url('search-tkc-physical-verification-sheet'); ?>">
+                          		<form name="searchTKCPhysicalVerificationSheet" id="searchTKCPhysicalVerificationSheet" method="post" action="<?php echo base_url('search-tkc-physical-entry-sheet'); ?>">
                           			<!-- Row1 -->
                           			<div class="row">
                           				<!-- Contractor (TKC) -->
@@ -305,7 +305,7 @@
                               					<!-- Action Buttons -->
                               					<div class="btn-list">
                               						<?php if (!empty($user_access) && (isset($user_access['view']) || isset($user_access['update']))) { ?>
-                              							<a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('add-tkc-physical-verification/'.$mode.'/'.$value['tkc_physical_progress_id'].'/'.$value['contract_id'].'/'.$value['contract_location_id']); ?>">
+                              							<a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('add-tkc-physical-entry/'.$mode.'/'.$value['tkc_physical_progress_id'].'/'.$value['contract_id'].'/'.$value['contract_location_id']); ?>">
 		                                          <span class="<?php echo ($value['sheet_status'] == 'Completed') ? 'fa fa-eye' : 'fe fe-edit'; ?> fa-lg action-btn-table"></span>
 		                                        </a>
 		                                      <?php } ?>
@@ -606,8 +606,6 @@
 	      $('#division').empty();
 	      $('#division').append(html);
 	    });
-
-
     </script>
 	</body>
 </html>

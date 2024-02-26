@@ -147,8 +147,10 @@ class TKCWeeklyPlanApi extends REST_Controller
 				array_push($data, $temp_data);
 			}
 
+
+
 			$errors = null;
-			$message = null;
+			$message = (empty($data)) ? 'No data found for selected date range' : null;
 			$status_code = 200;			
 		} else {
 			$errors = 'Invalid Parameters';

@@ -34,7 +34,10 @@ class Api extends REST_Controller {
     {  
         $email = trim($this->post()['email']);
         $password = trim($this->post()['password']);  
-        $data = $this->Login_Model->index($email,$password);
+        $data = $this->Login_Model->index($email,$password);        
+
+        $user_rolename = $this->Login_Model->getRoleNameByRoleID($data['userdetails']->role_id);
+        $data['userdetails']->user_rolename = $user_rolename;
 
         if ($data['status'] == 200) {
             $errors = null;

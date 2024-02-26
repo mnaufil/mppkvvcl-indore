@@ -137,5 +137,28 @@ WHERE   mst_role_module_access.role_id = $roleId AND mst_role_module_access.is_a
     	
     }
 
+    public function getRoleNameByRoleID($role_id)
+    {
+    	$this->db->select('name');
+    	$query = $this->db->get_where('mst_role', array('role_id' => $role_id));
+    	// echo $this->db->last_query(); die();
+
+    	if (!$query) {
+    		$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+    	} else {
+    		$query_result = '';
+
+    		if ($query->num_rows() > 0) {
+    			$result = $query->row_array();
+
+    			$query_result = $result['name'];
+    		}
+
+    		return $query_result;
+    	}
+    }
+
 
 }

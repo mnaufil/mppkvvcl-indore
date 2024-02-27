@@ -76,11 +76,11 @@ class TKCPhysicalVerification_Model extends CI_Model
 				$query_result['circle_name'] = $this->getCircle($query_result['circle_id']);
 				$query_result['division_name'] = $this->getDivision($query_result['division_id']);
 				$query_result['typeofwork'] = $this->getTypeOfWork($query_result['typeofwork_id']);
-				$query_result['sheet_status'] = $this->getSheetStatus($query_result['status_id']);
+				$query_result['sheet_status'] = $sheet_status = $this->getSheetStatus($query_result['status_id']);
 
 				if ($mode == 'edit-new') {
 					if ($type == 'API') {
-						$activities_list = $this->getActivitiesListAPI($ppsheet_id, $query_result['typeofwork_id'], $contract_location_id, $reported_date);	
+						$activities_list = $this->getActivitiesListAPI($ppsheet_id, $query_result['typeofwork_id'], $contract_location_id, $reported_date);
 					} else {
 						$activities_list = $this->getActivitiesList($query_result['typeofwork_id'], $contract_location_id);
 					}
@@ -92,13 +92,16 @@ class TKCPhysicalVerification_Model extends CI_Model
 						$query_result['activities_group_name'] = $activity_groups;
 					}
 				} elseif ($mode == 'edit-prev' || $mode == 'view' || $mode == 'view-by-date') {
-					if ($mode == 'view' || $mode = 'view-by-date') {
+					/*if ($mode == 'view' || $mode = 'view-by-date') {
 						
+					}*/ 
+					if ($sheet_status == 'Open') {
+						$activities_list = $this->getActivitiesList($query_result['typeofwork_id'], $contract_location_id);
+						$activities_list_by_seqno = $this->sort_array_by_key($activities_list, 'seqno');
+					} else if ($sheet_status == 'In Process' || $sheet_status == 'Completed') {
+						$activities_list = $this->getAppliedActivitiesList($ppsheet_id, $query_result['contract_location_id'], $reported_date);
+						$activities_list_by_seqno = $this->sort_array_by_key($activities_list, 'seqno');
 					}
-
-					$activities_list = $this->getAppliedActivitiesList($ppsheet_id, $query_result['contract_location_id'], $reported_date);
-
-					$activities_list_by_seqno = $this->sort_array_by_key($activities_list, 'seqno');
 
 					$query_result['activities_list'] = $activities_list_by_seqno;
 
@@ -629,7 +632,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
 			die();
 		} else {
-			$query_result = [];
+			$query_result = '';
 
 			if ($query->num_rows() > 0) {
 				$result = $query->row_array();

@@ -240,10 +240,8 @@
         	packages_arr = packages.split(',');
 
         	let circles = <?php echo json_encode($circles) ?>;
-            // console.log(circles);
 
         	let divisions = <?php echo json_encode($divisions) ?>;
-        	// console.log(divisions);
         </script>
 
         <!-- EDIT-TABLE JS -->

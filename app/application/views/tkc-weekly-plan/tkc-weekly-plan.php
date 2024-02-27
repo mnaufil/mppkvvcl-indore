@@ -66,11 +66,13 @@
                 			<!-- Page Header -->
                 			<div class="page-header">
                 				<h1 class="page-title">TKC Weekly Plan</h1>
-                				<div class="row">
+                                <?php if ($user_role == 'TKC') { ?>
+                                <div class="row">
                                     <div class="col-md-12 mt-2 mb-3">
                                         <a  href="<?php echo base_url('add-tkc-weekly-plan'); ?>" class="btn btn-success btn-add">Add </a>
                                     </div>
-                                </div>
+                                </div>    
+                                <?php } ?>
                 			</div>
                 			<!-- Page Header Ends -->
 
@@ -96,7 +98,7 @@
                                                                 <tbody>
                                                                     <?php foreach ($result as $key => $value) { ?>
                                                                     <tr>
-                                                                        <?php $mode = ($value['is_draft'] == '0') ? 'view' : 'edit'; ?>
+                                                                        <?php $mode = ($value['is_draft'] == '0' || (!empty($user_access) && isset($user_access['view']))) ? 'view' : 'edit'; ?>
                                                                         <!-- Action Buttons -->
                                                                         <td name="bstable-actions">
                                                                             <div class="btn-list">

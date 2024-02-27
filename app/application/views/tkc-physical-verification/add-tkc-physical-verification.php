@@ -102,7 +102,7 @@
 	                  			<!-- Sheet Status -->
 	                  			<div class="col-xl-6 mb-3">
 	                  				<div class="btn-group radiobtns btn-tit" role="group" aria-label="Basic radio toggle button group">
-	                  					<button type="button" class="btn btn-primary"><?php echo strtoupper($sheet_data['sheet_status']); ?></button>
+	                  					<button type="button" class="btn btn-primary" style="background: rgb(179 103 0) !important; border-color: rgb(179 103 0) !important;"><?php echo strtoupper($sheet_data['sheet_status']); ?></button>
 	                  				</div>
 	                  				<!-- Work Completion -->
 	                  				<div class="mt-3">
@@ -216,7 +216,10 @@
                               <div class="input-group-text dates">
                                   <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                               </div>
-                              <input type="text" class="form-control" name="reportedDate" id="reportedDate" />
+                              <?php $readonly = ($userdata['role'] != 'TKC') ? 'readonly' : ''; 
+                              			$disabled = ($userdata['role'] != 'TKC') ? 'disabled' : ''; 
+                              ?>
+                              <input type="text" class="form-control" name="reportedDate" id="reportedDate" <?php echo $readonly; ?> <?php echo $disabled; ?>/>
                             </div>
               							<?php } elseif ($sheet_data['sheet_status'] == 'In Process') { ?>
               								<?php $uriSegments = explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)); 

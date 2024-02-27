@@ -102,8 +102,8 @@ class TKCPhysicalVerification extends CI_Controller
        	}
 
        	$data['sheet_data'] = $sheet_result;
-       	$data['title'] = 'TKC Physical Verification';
-       	$data['page_title'] = 'TKC Physical Verification - Feeder ID['.$sheet_result['feeder_id'].']';
+       	$data['title'] = 'TKC Physical Entry';
+       	$data['page_title'] = 'TKC Physical Entry - Feeder ID['.$sheet_result['feeder_id'].']';
 
         $data['userdata'] = $this->getUserData();
 
@@ -439,6 +439,7 @@ class TKCPhysicalVerification extends CI_Controller
         	$data['user_access'] = $user_access;
       		$data['userdata'] = $this->getUserData();
 
+      		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
         	$this->load->view('tkc-physical-verification/physical-verification', $data);
 		}
 	}
@@ -654,6 +655,16 @@ class TKCPhysicalVerification extends CI_Controller
         }
 
         return $modified_status_arr;
+    }
+
+    public function searchContractor()
+    {
+    	if (!empty($_POST)) {
+    		$contractor = $this->input->post('contractor');
+    		$response['contractor_data'] = $this->tpv_model->getContractorData($contractor);
+    	}
+
+    	echo json_encode($response);
     }
 
 	//Function to sort array by key

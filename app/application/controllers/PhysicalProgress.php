@@ -1330,7 +1330,7 @@ class PhysicalProgress extends CI_Controller
           return $userdata;
      }
 
-     public function searchContractor($value='')
+     public function searchContractor()
      {
           if (!empty($_POST)) {
                $contractor = $this->input->post('contractor');

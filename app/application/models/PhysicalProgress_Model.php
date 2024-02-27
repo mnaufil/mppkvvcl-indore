@@ -156,7 +156,6 @@ class PhysicalProgress_Model extends CI_Model
 		} else {
 			if ($query->num_rows() > 0) {
 				$query_result = $query->row_array();
-				// echo 'query_result: <pre>'; print_r($query_result); echo '</pre>'; die();
 
 				$query_result['region_name'] = $this->getRegion($query_result['region_id']);
 

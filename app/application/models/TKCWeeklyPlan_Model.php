@@ -118,10 +118,16 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getDivisionList()
+	public function getDivisionListAssignedToTKC($user_id)
 	{
-		$this->db->select('circle_id, division_id, division_name');
-		$query = $this->db->get_where('mst_division', array('is_active' => 1, 'deletedby' => NULL));
+		$this->db->select('DISTINCT(contract_location.division_id), mst_division.division_name');
+		$this->db->from('contract_location');
+		$this->db->join('contract', 'contract.contract_id = contract_location.contract_id', 'INNER');
+		$this->db->join('mst_user', 'mst_user.package_access = contract.package_no', 'INNER');
+		$this->db->join('mst_division', 'contract_location.division_id = mst_division.division_id', 'INNER');
+		$this->db->where(array('mst_user.user_id' => $user_id, 'mst_division.is_active' => 1, 'mst_division.deletedby' => NULL));
+
+		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -740,10 +746,17 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getCircleList()
+	public function getCircleListAssignedToTKC($user_id)
 	{
-		$this->db->select('circle_id, circle_name');
-		$query = $this->db->get_where('mst_circle', array('is_active' => 1, 'deletedby' => NULL));
+		$this->db->select('DISTINCT(contract_location.circle_id), mst_circle.circle_name');
+		$this->db->from('contract_location');
+		$this->db->join('contract', 'contract.contract_id = contract_location.contract_id', 'INNER');
+		$this->db->join('mst_user', 'mst_user.package_access = contract.package_no', 'INNER');
+		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
+		$this->db->where(array('mst_user.user_id' => $user_id, 'mst_circle.is_active' => 1, 'mst_circle.deletedby' => NULL))
+		;
+
+		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -755,10 +768,56 @@ class TKCWeeklyPlan_Model extends CI_Model
 			
 			if ($query->num_rows() > 0) {
 				$query_result = $query->result_array();
+			}
 
-				/*foreach ($result as $key => $value) {
-					array_push($query_result, $value['circle_name']);
-				}*/
+			return $query_result;
+		}
+	}
+
+	public function getCircleListAssignedToUser($user_id)
+	{
+		$this->db->select('mst_user_data_access.circle_id, mst_circle.circle_name');
+		$this->db->from('mst_user_data_access');
+		$this->db->join('mst_circle', 'mst_user_data_access.circle_id = mst_circle.circle_id', 'INNER');
+		$this->db->where(array('mst_user_data_access.user_id' => $user_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getDivisionListAssignedToUser($user_id)
+	{
+		$this->db->select('mst_user_data_access.division_id, mst_division.division_name');
+		$this->db->from('mst_user_data_access');
+		$this->db->join('mst_division', 'mst_user_data_access.division_id = mst_division.division_id', 'INNER');
+		$this->db->where(array('mst_user_data_access.user_id' => $user_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
 			}
 
 			return $query_result;

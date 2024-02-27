@@ -70,19 +70,26 @@ class TKCWeeklyPlanApi extends REST_Controller
         $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'result' => $data], REST_Controller::HTTP_OK);
 	}
 
-	public function filter_data_get()
+	public function filter_data_post()
 	{
+		$user_id = $this->post('user_id');
+		$user_role = $this->twp_model->getUserRoleName($user_id);
+
 		$tkc_list = $this->twp_model->getContractorList();
 
-		$circle_list = $this->twp_model->getCircleList();
+		if ($user_role != 'TKC') {
+			$circle_list = $this->twp_model->getCircleListAssignedToUser($user_id);
+			$division_list = $this->twp_model->getDivisionListAssignedToUser($user_id);
+		} else {
+			$circle_list = $this->twp_model->getCircleListAssignedToTKC($user_id);
+			$division_list = $this->twp_model->getDivisionListAssignedToTKC($user_id);
+		}		
 
 		$circle_arr = [];
 		foreach ($circle_list as $key => $value) {
 			$circle_arr[$key]['name'] = $value['circle_name'];
 			$circle_arr[$key]['value'] = $value['circle_id'];
-		}
-
-		$division_list = $this->twp_model->getDivisionList();
+		}		
 
 		$divisions_arr_temp = [];
 		foreach ($division_list as $key => $value) {

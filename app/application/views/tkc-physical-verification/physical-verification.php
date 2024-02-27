@@ -300,13 +300,13 @@
                               	<tbody>
                               		<?php foreach ($result as $key => $value) { ?>
                               			<tr>
-                              				<?php $mode = ($value['sheet_status'] == 'Completed' || $value['sheet_status'] == 'Reviewed') ? 'view' : (($value['sheet_status'] == 'In Process') ? 'edit-prev' : 'edit-new'); ?>
+                              				<?php $mode = ($value['sheet_status'] == 'Completed' || $value['sheet_status'] == 'Reviewed' || $userdata['role'] != 'TKC') ? 'view' : (($value['sheet_status'] == 'In Process') ? 'edit-prev' : 'edit-new'); ?>
                               				<td name="bstable-actions">
                               					<!-- Action Buttons -->
                               					<div class="btn-list">
                               						<?php if (!empty($user_access) && (isset($user_access['view']) || isset($user_access['update']))) { ?>
                               							<a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('add-tkc-physical-entry/'.$mode.'/'.$value['tkc_physical_progress_id'].'/'.$value['contract_id'].'/'.$value['contract_location_id']); ?>">
-		                                          <span class="<?php echo ($value['sheet_status'] == 'Completed') ? 'fa fa-eye' : 'fe fe-edit'; ?> fa-lg action-btn-table"></span>
+		                                          <span class="<?php echo ($value['sheet_status'] == 'Completed' || $userdata['role'] != 'TKC') ? 'fa fa-eye' : 'fe fe-edit'; ?> fa-lg action-btn-table"></span>
 		                                        </a>
 		                                      <?php } ?>
                               					</div>
@@ -605,6 +605,61 @@
 
 	      $('#division').empty();
 	      $('#division').append(html);
+	    });
+
+	    //Displays contractor search list view
+	    function showtkclist(tkcValue) {
+	      $.ajax({
+	        type: 'POST',
+	        url: '<?php echo base_url('search-contractor-tkcpp') ?>',
+	        dataType: 'json',
+	        data: {contractor: tkcValue},
+	        success: function(response){
+	          // console.log(response); return false;
+
+	          $('#list-view').show();
+	          $('#list-view').empty();
+
+	          var html = '';
+
+	          let contractor_data = response.contractor_data;
+
+	          if ($.isEmptyObject(contractor_data)) {
+	            html += 'No Contractor Found';
+	          } else {
+	            $.each(contractor_data, function(index, value) {
+	              html += '<a href="javascript:void(0)" class="p-2 list-group-item list-group-item-action flex-column align-items-start" data-typeofwork-id="'+value.typeofwork_id+'" data-contract-id="'+value.contract_id+'" onclick=applyContractorDetails(this)>';
+	              html += '<div class="d-flex w-100 justify-content-between">';
+	              html += '<h4 class="mb-1 contractor-name"><strong>'+value.contractor_name+'</strong></h4>';
+	              html += '<small class="text-muted contract-date">Contract Date : <span class="text-primary"> '+value.tender_award_date+'</span></small>';
+	              html += '</div>';
+	              html += '<p class="mb-0 type-of-work">Type Of Work: <span class="text-primary"> '+value.typeofwork_name+'</span></p>';
+	              html += '<small class="text-muted contract-no">Contract No: <span class="text-primary">'+value.tender_award_no+'</span></small>';
+	              html += '</a>';
+	            });
+	          }
+
+	          $('#list-view').append(html);
+	        },
+	        error: function(xhr, status, error){
+	          console.log(xhr.responseText);
+	        }
+	      });
+	    }
+
+	    function applyContractorDetails(anchor) {
+	      $('#list-view').hide();
+
+	      let contractor_name = $(anchor).find('.contractor-name').text();
+	      $('input[name="contractor"]').val(contractor_name);
+	    }
+
+	    $(document).click(function() {
+	      // alert('click');
+	      var list_view = $('#list-view');
+	      if (!list_view.is(event.target) && !list_view.has(event.target).length) {
+	        list_view.hide();
+	      }
 	    });
     </script>
 	</body>

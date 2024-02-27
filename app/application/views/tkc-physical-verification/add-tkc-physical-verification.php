@@ -114,7 +114,7 @@
               						<div class="col-xl-6 mb-3">
               							<div class="breadcrumb-6">
                 							<ol class="breadcrumb1 mb-0">
-                								<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
+                								<?php if ($sheet_data['sheet_status'] == 'Open' && $userdata['role'] == 'TKC') { ?>
                 								<li class="breadcrumb-item1 active"><u>Today</u></li>	
                 								<?php } else { ?>
                 									<?php foreach ($prev_sheet_dates as $key => $value) { ?>
@@ -125,14 +125,14 @@
 			                											<u><?php echo date('j M', strtotime($value['reported_date'])); ?></u>
 			                  									</a>
 			                										<?php } else { ?>
-			                										<a href="<?php echo base_url('get-sheet/'.$value['reported_date'].'/'.$value['tkc_physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">
+			                										<a href="<?php echo base_url('get-tkc-sheet/'.$value['reported_date'].'/'.$value['tkc_physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">
 			                  									<?php echo date('j M', strtotime($value['reported_date'])); ?>
 		                  									</a>
 			                									<?php } ?>
 				                  							</li>
                 											<?php } else { ?>
 	                											<li class="breadcrumb-item1">
-				                  								<a href="<?php echo base_url('get-sheet/'.$value['reported_date'].'/'.$value['tkc_physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">
+				                  								<a href="<?php echo base_url('get-tkc-sheet/'.$value['reported_date'].'/'.$value['tkc_physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">
 				                  									<?php echo date('j M', strtotime($value['reported_date'])); ?>
 			                  									</a>
 				                  							</li>
@@ -140,13 +140,13 @@
                 											<?php } ?>                									
                 									<?php } ?>
                   								<?php if (isset($sheet_type) && $sheet_type == 'old' && $sheet_data['sheet_status'] == 'In Process') { ?>
-                  									<?php if (!isset($future_sheet_status)) { ?>
+                  									<?php if (!isset($future_sheet_status) && $userdata['role'] == 'TKC') { ?>
                   										<?php $recent_sheet = end($prev_sheet_dates); ?>	
                   										<li class="breadcrumb-item1 active">
 		                  									<a href="<?php echo base_url('add-tkc-physical-verification/edit-prev/'.$recent_sheet['tkc_physical_progress_id'].'/'.$sheet_data['contract_id'].'/'.$sheet_data['contract_location_id']); ?>">Today</a>
 		                  								</li>
                   									<?php } ?>
-                  								<?php } elseif ($sheet_data['sheet_status'] == 'In Process') { ?>
+                  								<?php } elseif ($sheet_data['sheet_status'] == 'In Process' && $userdata['role'] == 'TKC') { ?>
                   								<li class="breadcrumb-item1 active"><u>Today</u></li>
                   								<?php } ?>
                   							<?php } ?>
@@ -220,7 +220,7 @@
                             </div>
               							<?php } elseif ($sheet_data['sheet_status'] == 'In Process') { ?>
               								<?php $uriSegments = explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)); 
-              											if (in_array('get-sheet', $uriSegments)) { ?>
+              											if (in_array('get-sheet', $uriSegments) || $userdata['role'] != 'TKC') { ?>
               								<div class="input-group">
                     						<div class="input-group-text dates">
                                 	<i class="fa fa-calendar tx-16 lh-0 op-6"></i>
@@ -724,11 +724,12 @@
 																									<!-- Erected Qty -->
 																									<td class="erected-qty">
 																										<?php $input_name = strtolower(str_replace(' ', '_', $k1)).'_'.$v2['typeofwork_activity_id']; ?>
-																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
+																										<?php if ($sheet_data['sheet_status'] == 'Open' && $userdata['role'] == 'TKC') { ?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>">	
 																										<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																											<?php $erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty']; ?>
-																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>">	
+																											<?php $readonly = ($userdata['role'] != 'TKC') ? 'readonly' : ''; ?>
+																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>" <?php echo $readonly; ?>>	
 																										<?php } ?>
 																									</td>
 																									<!-- Progress in % -->
@@ -817,8 +818,9 @@
               											}	else {
               												$readonly = 'readonly';
               											}	
-              										} else {
-              											$readonly = '';
+              										} else {              											
+              											// $readonly = '';
+              											$readonly = ($userdata['role'] != 'TKC') ? 'readonly' : '';
               										}
               							?>
               							<textarea rows="3" cols="50" class="form-control" name="sheetRemark" <?php echo $readonly; ?>><?php echo $sheet_data['remark']; ?></textarea>
@@ -828,18 +830,18 @@
               					<div class="form-row">
               						<div class="col-xl-6 mt-5 mb-3">
               							<?php if (!isset($sheet_type)) { 
-              											if ($sheet_data['sheet_status'] != 'Completed' && !(isset($sheet_data['sheet_mode']))) { 
+              											if ($sheet_data['sheet_status'] != 'Completed' && !(isset($sheet_data['sheet_mode']))) {
               												if ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) { 
               							?>
               							<button type="button" class="btn btn-success" id="markReviewedSheetComplete">Mark as Complete</button>
-              							<?php 		} else { ?>
+              							<?php 		} else if ($userdata['role'] == 'TKC') { ?>
               							<button type="submit" class="btn btn-success">Submit</button>		
               							<?php 	} 
               								 		} else if (isset($sheet_data['sheet_mode']) && ($sheet_data['sheet_mode'] == 'update' && $sheet_data['sheet_status'] != 'Completed')) { 
               												if ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) { 
               							?>
               							<button type="button" class="btn btn-success" id="markReviewedSheetComplete">Mark as Complete</button>	
-              							<?php 		} else if($sheet_data['sheet_status'] == 'In Process' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Field Supervisor')) { ?>
+              							<?php 		} else if($sheet_data['sheet_status'] == 'In Process' && ($userdata['role'] == 'TKC')) { ?>
               							<button type="submit" class="btn btn-success">Update</button>
               							<?php 			} 
               												}

@@ -79,7 +79,7 @@ class TKCPhysicalVerification extends CI_Controller
 
        	if ($mode == 'edit-prev' || $mode == 'view') {
        		/*Formatting Reported Date*/
-       		$reported_date = date("d-m-Y", strtotime($sheet_result['reported_date']));
+       		$reported_date = (!empty($sheet_result['reported_date'])) ? date("d-m-Y", strtotime($sheet_result['reported_date'])) : '';
             $sheet_result['reported_date'] = $reported_date;
 
             //Getting previously edited sheet dates
@@ -441,6 +441,52 @@ class TKCPhysicalVerification extends CI_Controller
 
         	$this->load->view('tkc-physical-verification/physical-verification', $data);
 		}
+	}
+
+	public function getSheetDataByDate($reported_date, $ppsheet_id, $contract_id, $contract_location_id)
+	{
+		$mode = 'view-by-date';
+		$sheet_result = $this->tpv_model->getSheetDetail($mode, $ppsheet_id, $contract_id, $contract_location_id, $reported_date);		
+
+		/*Formatting Tender Award Date*/
+        $award_date = date("d-m-Y", strtotime($sheet_result['tender_award_date']));
+        $sheet_result['tender_award_date'] = $award_date;
+
+        $sheet_result['task_ratio'] = $task_ratio = $this->calculateTaskRatio($sheet_result, $mode, $reported_date);
+        $task_ratio_arr = explode(' / ', $task_ratio);
+       	$sheet_result['work_completion'] = round(((int)$task_ratio_arr[0] / (int)$task_ratio_arr[1]) * 100);
+        // echo 'sheet_result: <pre>'; print_r($sheet_result); echo '</pre>'; die();
+
+        if (!empty($sheet_result['activities_list'])) {
+            $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);
+            $sheet_result['activities_list'] = $activities_list;
+        }
+
+        /*Formatting Reported Date*/
+        $reported_date = date("d-m-Y", strtotime($sheet_result['reported_date']));
+        $sheet_result['reported_date'] = $reported_date;
+
+        $data['sheet_type'] = 'old';
+        $data['sheet_date'] = $reported_date;
+
+        //Checking future date's sheet for the same contract & location (to check if the sheet is completed in future dates)
+        $last_filled_sheet = $this->tpv_model->getLastFilledPhysicalProgressSheet($contract_id, $contract_location_id);
+        if ($last_filled_sheet['status_id'] == '3') {
+        	$data['future_sheet_status'] = 'Completed';
+        }
+
+        //Getting previously edited sheet dates
+        $prev_sheet_dates = $this->tpv_model->getPrevSheetDates($sheet_result['contract_id'], $sheet_result['contract_location_id'], $sheet_result['site_location']);
+        $data['prev_sheet_dates'] = $prev_sheet_dates;
+
+        $data['sheet_data'] = $sheet_result;
+        $data['title'] = 'TKC Physical Entry';
+        $data['page_title'] = 'Physical Entry - Feeder ID['.$sheet_result['feeder_id'].']';
+
+        $data['userdata'] = $this->getUserData();
+
+        // echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+        $this->load->view('tkc-physical-verification/add-tkc-physical-verification', $data);
 	}
 
 	public function calculateStatusForWithoutBOQ($value)

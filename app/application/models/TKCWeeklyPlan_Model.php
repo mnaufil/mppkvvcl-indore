@@ -120,7 +120,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 	public function getDivisionListAssignedToTKC($user_id)
 	{
-		$this->db->select('DISTINCT(contract_location.division_id), mst_division.division_name');
+		$this->db->select('DISTINCT(contract_location.division_id), mst_division.circle_id, mst_division.division_name');
 		$this->db->from('contract_location');
 		$this->db->join('contract', 'contract.contract_id = contract_location.contract_id', 'INNER');
 		$this->db->join('mst_user', 'mst_user.package_access = contract.package_no', 'INNER');
@@ -801,7 +801,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 	public function getDivisionListAssignedToUser($user_id)
 	{
-		$this->db->select('mst_user_data_access.division_id, mst_division.division_name');
+		$this->db->select('mst_user_data_access.division_id, mst_division.circle_id, mst_division.division_name');
 		$this->db->from('mst_user_data_access');
 		$this->db->join('mst_division', 'mst_user_data_access.division_id = mst_division.division_id', 'INNER');
 		$this->db->where(array('mst_user_data_access.user_id' => $user_id));

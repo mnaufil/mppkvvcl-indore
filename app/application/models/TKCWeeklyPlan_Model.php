@@ -468,7 +468,12 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 		$this->db->select('tkc_plan.tkc_plan_id, tkc_plan.from_date, tkc_plan.to_date, tkc_plan_detail.tkc_plan_detail_id, tkc_plan_detail.contract_id, tkc_plan_detail.plan_date, tkc_plan_detail.circle_id, tkc_plan_detail.division_id, tkc_plan_detail.description, tkc_plan_detail.remark, contract.contractor_name, contract.package_no, mst_circle.circle_name, mst_division.division_name');
 		$this->db->from('tkc_plan');
-		$this->db->join('tkc_plan_detail', 'tkc_plan_detail.tkc_plan_id = tkc_plan.tkc_plan_id', 'INNER');		
+		$this->db->join('tkc_plan_detail', 'tkc_plan_detail.tkc_plan_id = tkc_plan.tkc_plan_id', 'INNER');
+
+		if (!empty($feeder_id)) {
+			$this->db->join('tkc_plan_detail_feeder', 'tkc_plan_detail_feeder.tkc_plan_detail_id = tkc_plan_detail.tkc_plan_detail_id', 'INNER');
+		}
+
 		$this->db->join('contract', 'contract.contract_id = tkc_plan_detail.contract_id', 'INNER');
 		$this->db->join('mst_circle', 'mst_circle.circle_id = tkc_plan_detail.circle_id', 'INNER');
 		$this->db->join('mst_division', 'mst_division.division_id = tkc_plan_detail.division_id', 'INNER');
@@ -494,7 +499,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 			$this->db->where('tkc_plan_detail.division_id', $division);
 		}
 
-		if (!empty($feeder_id)) {			
+		if (!empty($feeder_id)) {
 			$this->db->where('tkc_plan_detail_feeder.contract_location_id', $contract_location_id);
 		}
 
@@ -513,7 +518,16 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 				foreach ($query_result as $key => $value) {
 					$feeders_data = $this->getTKCWeeklyPlansFeederDetails($value['tkc_plan_detail_id']);
-					$query_result[$key]['feeders'] = implode(',', $feeders_data);
+
+					if (!empty($feeder_id)) {
+						foreach ($feeders_data as $f_value) {
+							if ($feeder_id == $f_value) {
+								$query_result[$key]['feeders'] = $f_value;			
+							}
+						}
+					} else {
+						$query_result[$key]['feeders'] = implode(',', $feeders_data);
+					}					
 				}
 			}
 
@@ -608,7 +622,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$this->db->select('contract_location.feeder_id');
 		$this->db->from('tkc_plan_detail_feeder');
 		$this->db->join('contract_location', 'tkc_plan_detail_feeder.contract_location_id = contract_location.contract_location_id', 'INNER');
-		$this->db->where(array('tkc_plan_detail_feeder.tkc_plan_detail_id' => $tkc_plan_detail_id));
+		$this->db->where(array('tkc_plan_detail_feeder.tkc_plan_detail_id' => $tkc_plan_detail_id));		
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();

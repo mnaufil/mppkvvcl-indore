@@ -492,7 +492,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 
 		if (!empty($division)) {
-			$this->db->where('tkc_plan_detail.division_id', $circle);
+			$this->db->where('tkc_plan_detail.division_id', $division);
 		}
 
 		if (!empty($feeder_id)) {			

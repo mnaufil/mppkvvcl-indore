@@ -261,6 +261,8 @@ $route['tkc-physical-entry'] = 'TKCPhysicalVerification/index';
 $route['add-tkc-physical-entry/(:any)/(:num)/(:num)/(:num)'] = 'TKCPhysicalVerification/editSheet/$1/$2/$3/$4';
 $route['save-tkc-physical-entry'] = 'TKCPhysicalVerification/saveSheet';
 $route['search-tkc-physical-entry-sheet'] = 'TKCPhysicalVerification/searchSheet';
+$route['get-tkc-sheet/(:any)/(:num)/(:num)/(:num)'] = 'TKCPhysicalVerification/getSheetDataByDate/$1/$2/$3/$4';
+$route['search-contractor-tkcpp'] = 'TKCPhysicalVerification/searchContractor';
 
 /*Security / Roles Module*/
 $route['roles'] = 'Security/roles';

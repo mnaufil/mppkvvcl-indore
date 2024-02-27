@@ -564,7 +564,7 @@
 	      $(status_select).find('.ms-choice span').text('');
 	      $('#clear-btn').hide();
 
-	      window.location.replace('<?php echo base_url("tkc-physical-verification") ?>');
+	      window.location.replace('<?php echo base_url("tkc-physical-entry") ?>');
 	    });
 
 	    $('#region').on('change', function(event) {

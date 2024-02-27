@@ -255,6 +255,7 @@ $route['save-tkc-weekly-plan'] = 'TKCWeeklyPlan/saveTKCWeeklyPlan';
 $route['edit-tkc-weekly-plan/(:any)/(:num)'] = 'TKCWeeklyPlan/editTKCWeeklyPlan/$1/$2';
 $route['update-tkc-weekly-plan'] = 'TKCWeeklyPlan/updateTKCWeeklyPlan';
 $route['get-feeders-list-tkc'] = 'TKCWeeklyPlan/getFeedersList';
+$route['check-date-range-exists'] = 'TKCWeeklyPlan/checkDateRangeExists';
 
 /*TKC Physical Verification*/
 $route['tkc-physical-entry'] = 'TKCPhysicalVerification/index';

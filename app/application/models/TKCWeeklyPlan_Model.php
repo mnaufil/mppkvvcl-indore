@@ -63,14 +63,14 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getCirclesAssignedToTKC($packages_arr)
+	public function getCirclesAssignedToTKC($packages)
 	{
 		$this->db->select('mst_circle.circle_name');
 		$this->db->distinct();
 		$this->db->from('contract');
 		$this->db->join('contract_location', 'contract.contract_id = contract_location.contract_id', 'INNER');
 		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
-		$this->db->where_in('contract.package_no', $packages_arr);
+		$this->db->where('contract.package_group_no', $packages);
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -358,6 +358,26 @@ class TKCWeeklyPlan_Model extends CI_Model
 					$feeders_data = $this->getTKCWeeklyPlansFeederDetails($value['tkc_plan_detail_id']);
 					$query_result[$key]['feeders'] = implode(',', $feeders_data);
 				}
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getDateRangeExists($user_id, $from_date, $to_date)
+	{
+		$query = $this->db->get_where('tkc_plan', array('from_date' => $from_date, 'to_date' => $to_date, 'createdby' => $user_id, 'is_active' => 1));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();
 			}
 
 			return $query_result;

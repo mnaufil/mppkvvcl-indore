@@ -286,7 +286,31 @@
                     $(this).val(picker.startDate.format('DD-MM-YYYY') +' - '+ picker.endDate.format('DD-MM-YYYY'));
                     $('#weeklyPlanHeading').find('h4 > span').text(picker.startDate.format('DD-MM-YYYY') +' To '+ picker.endDate.format('DD-MM-YYYY'));
 
-                    $('#weeklyPlan').attr('hidden', false);
+                    let fromDate = picker.startDate.format('DD-MM-YYYY');
+                    let toDate = picker.endDate.format('DD-MM-YYYY');
+
+                    // Check if weekly plan for selected date range already exists for logged in user
+                    $.ajax({
+                        type: 'POST',
+                        url: '<?php echo base_url('check-date-range-exists') ?>',
+                        dataType: 'json',
+                        data: {from_date: fromDate, to_date: toDate},
+                        success: function(response) {
+                            // console.log(response);
+
+                            if (!$.isEmptyObject(response.date_range_result)) {
+                                $('.toast-body').text('Weekly plan for selected date range already exists');
+                                $('.toast').toast('show');
+
+                                return false;
+                            } else {
+                                $('#weeklyPlan').attr('hidden', false);                                
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr);
+                        }
+                    });
                 } else {
                     $('.toast-body').text('Select a date range of 7 days starting from Monday');
                     $('.toast').toast('show');

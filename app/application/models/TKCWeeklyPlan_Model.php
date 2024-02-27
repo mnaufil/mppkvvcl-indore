@@ -367,7 +367,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 	public function getUserAssignedDivisions($user_id)
 	{
 		$this->db->select('division_id');
-		$query = $this->db->get_where('mst_user_data_access', array('user_id' => 8));
+		$query = $this->db->get_where('mst_user_data_access', array('user_id' => $user_id));
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -392,7 +392,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 	public function getUserAssignedCircles($user_id)
 	{
 		$this->db->select('circle_id');
-		$query = $this->db->get_where('mst_user_data_access', array('user_id' => 8));
+		$query = $this->db->get_where('mst_user_data_access', array('user_id' => $user_id));
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -846,7 +846,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$this->db->join('mst_role_module_access', 'mst_user.role_id = mst_role_module_access.role_id', 'INNER');
 		$this->db->join('mst_module_access', 'mst_role_module_access.module_access_id = mst_module_access.module_access_id', 'INNER');
 		$this->db->join('mst_module', 'mst_module_access.module_id = mst_module.module_id', 'INNER');
-		$this->db->where(array('mst_module.name' => 'TKC Physical Verification', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
+		$this->db->where(array('mst_module.name' => 'TKC Physical Entry', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
 		$this->db->where(array('mst_role_module_access.is_active' => 1, 'mst_module_access.is_active' => 1, 'mst_module.is_active' => 1));
 
 		$query = $this->db->get();

@@ -139,8 +139,12 @@ class Security_Model extends CI_Model
 
     public function loadPackages()
     {
-        $this->db->select('package_no');
-        $query = $this->db->get_where('contract', array('status_id' => 14));
+        $this->db->select('DISTINCT(package_group_no)');
+        $this->db->from('contract');
+        $this->db->where(array('status_id' => 14));
+        $this->db->order_by('package_group_no', 'ASC');
+
+        $query = $this->db->get();
         // echo $this->db->last_query(); die();
 
         if (!$query) {

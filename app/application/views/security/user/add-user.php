@@ -217,7 +217,7 @@
                                                     <select class="form-control select2" id="package_access" name="package_access">
                                                         <option selected disabled value="">Select Package</option>
                                                         <?php foreach ($packages as $key => $value) { ?>
-                                                        <option value="<?php echo $value['package_no']; ?>"><?php echo $value['package_no']; ?></option>
+                                                        <option value="<?php echo $value['package_group_no']; ?>"><?php echo $value['package_group_no']; ?></option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>

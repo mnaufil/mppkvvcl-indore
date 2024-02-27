@@ -18,7 +18,9 @@ class TKCWeeklyPlan extends CI_Controller
 	{
 		$data['title'] = 'TKC Weekly Plan';
 
-		$result = $this->twp_model->getTKCWeeklyPlanDateRanges();		
+		$user_id = $_SESSION['loggedData']->user_id;
+
+		$result = $this->twp_model->getTKCWeeklyPlanDateRanges($user_id);
 
 		foreach ($result as $key => $value) {
 			$result[$key]['date_range'] = date('d-m-Y', strtotime($value['from_date'])).' - '.date('d-m-Y', strtotime($value['to_date']));

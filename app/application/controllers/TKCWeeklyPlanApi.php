@@ -35,12 +35,14 @@ class TKCWeeklyPlanApi extends REST_Controller
 		$this->load->model('TKCWeeklyPlan_Model', 'twp_model');
 	}
 
-	public function index_get()
+	public function index_post()
 	{
 		$from_date = (date('D') != 'Mon') ? date('Y-m-d', strtotime('last Monday')) : date('Y-m-d');
 		$to_date = (date('D') != 'Sun') ? date('Y-m-d', strtotime('next Sunday')) : date('Y-m-d');
 
-		$tkc_plan_result = $this->twp_model->getTKCWeeklyPlans($from_date, $to_date);
+		$user_id = $this->post('user_id');
+
+		$tkc_plan_result = $this->twp_model->getTKCWeeklyPlans($user_id, $from_date, $to_date);
 
 		$data = [];
 		foreach ($tkc_plan_result as $key => $value) {
@@ -146,8 +148,6 @@ class TKCWeeklyPlanApi extends REST_Controller
 
 				array_push($data, $temp_data);
 			}
-
-
 
 			$errors = null;
 			$message = (empty($data)) ? 'No data found for selected date range' : null;

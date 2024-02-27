@@ -434,6 +434,8 @@
                     let day_name = weekDays[day];
                     $('input[name="weekDay"]').val(day_name);
                     $('input[name="weekDay"]').prop('readonly', true);
+
+                    form_change = true;
                 });
             }
 
@@ -463,7 +465,7 @@
                 // Ajax call to get list of feeders belonging to selected circle and division
                 $.ajax({
                     type: 'POST',
-                    url: '<?php echo base_url('get-feeders-list') ?>',
+                    url: '<?php echo base_url('get-feeders-list-tkc') ?>',
                     dataType: 'json',
                     data: {circle_name: circle_name, division_name: division_name},
                     success: function(response) {

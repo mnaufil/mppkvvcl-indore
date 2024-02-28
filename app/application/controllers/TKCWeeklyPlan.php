@@ -19,6 +19,7 @@ class TKCWeeklyPlan extends CI_Controller
 		$data['title'] = 'TKC Weekly Plan';
 
 		$user_id = $_SESSION['loggedData']->user_id;
+		$user_role = $this->twp_model->getUserRoleName($user_id);
 
 		$result = $this->twp_model->getTKCWeeklyPlanDateRanges($user_id);
 
@@ -32,6 +33,7 @@ class TKCWeeklyPlan extends CI_Controller
 
 		$data['result'] = $result;
 		$data['user_access'] = $user_access;
+		$data['user_role'] = $user_role;
 
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('tkc-weekly-plan/tkc-weekly-plan', $data);
@@ -39,11 +41,9 @@ class TKCWeeklyPlan extends CI_Controller
 
 	public function addTKCWeeklyPlan()
 	{
-		// $data['packages'] = $this->twp_model->getPackages();
 		$data['packages'] = $packages = $_SESSION['loggedData']->package_access;
-		$packages_arr = explode(',', $packages);
 
-		$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages_arr);
+		$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages);
 		$divisions = $this->twp_model->getCircleWiseDivision($circles);
 
 		$divisions_arr = [];
@@ -130,27 +130,32 @@ class TKCWeeklyPlan extends CI_Controller
 
 	public function editTKCWeeklyPlan($mode, $tkc_plan_id)
 	{
+		$user_id = $_SESSION['loggedData']->user_id;
+		$user_role = $this->twp_model->getUserRoleName($user_id);		
+
 		$result = $this->twp_model->getTKCWeeklyPlanDetails($tkc_plan_id);
 
 		$result['tkc_plan_id'] = $tkc_plan_id;
-		// echo 'result: <pre>'; print_r($result); echo '</pre>'; die();
 
-		$data['packages'] = $packages = $_SESSION['loggedData']->package_access;
-		$packages_arr = explode(',', $packages);
+		if ($user_role == 'TKC') {
+			$data['packages'] = $packages = $_SESSION['loggedData']->package_access;
+			$packages_arr = explode(',', $packages);
 
-		$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages_arr);
-		$divisions = $this->twp_model->getCircleWiseDivision($circles);
+			$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages_arr);
 
-		$divisions_arr = [];
-		foreach ($divisions as $key => $value) {
-			$divisions_arr[$value['circle_name']][] = $value['division_name'];
-		}
+			$divisions = $this->twp_model->getCircleWiseDivision($circles);
 
-		$data['divisions'] = $divisions_arr;
+			$divisions_arr = [];
+			foreach ($divisions as $key => $value) {
+				$divisions_arr[$value['circle_name']][] = $value['division_name'];
+			}
+
+			$data['divisions'] = $divisions_arr;
+		}		
 
 		$data['result'] = $result;
 		$data['mode'] = $mode;
-		$data['title'] = 'Edit TKC Weekly Plan';
+		$data['title'] = ucfirst($mode).' TKC Weekly Plan';
 
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('tkc-weekly-plan/edit-tkc-weekly-plan', $data);
@@ -223,6 +228,25 @@ class TKCWeeklyPlan extends CI_Controller
       	}
 
       	echo json_encode($response);
+	}
+
+	public function checkDateRangeExists()
+	{
+		$response['date_range_result'] = [];
+		if (!empty($_POST)) {
+			$from_date = date('Y-m-d', strtotime($this->input->post('from_date')));
+			$to_date = date('Y-m-d', strtotime($this->input->post('to_date')));
+
+			$user_id = $_SESSION['loggedData']->user_id;
+
+			$result = $this->twp_model->getDateRangeExists($user_id, $from_date, $to_date);
+
+			if (!empty($result)) {
+				$response['date_range_result'] = $result;
+			}
+		}
+
+		echo json_encode($response);
 	}
 
 	public function sortCircleWiseDivisionData($circle_wise_division_data)

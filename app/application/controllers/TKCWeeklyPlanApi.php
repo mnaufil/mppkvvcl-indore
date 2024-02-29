@@ -157,7 +157,7 @@ class TKCWeeklyPlanApi extends REST_Controller
 			}
 
 			$errors = null;
-			$message = (empty($data)) ? 'No data found for selected date range' : null;
+			$message = (empty($data)) ? 'No data found for selected filters' : null;
 			$status_code = 200;			
 		} else {
 			$errors = 'Invalid Parameters';

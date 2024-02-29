@@ -843,7 +843,7 @@ class TKCWeeklyPlan_Model extends CI_Model
             echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
             die();
 		} else {
-			$query_result = [];
+			$query_result = 0;
 			
 			if ($query->num_rows() > 0) {
 				$result = $query->row_array();

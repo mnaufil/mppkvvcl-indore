@@ -115,6 +115,37 @@
                                                     </div>
                                                     <!-- Loading Spinner Ends -->
 
+                                                    <!-- Alert -->
+                                                    <div class="row war-pop" id="weekly-plan-alert" hidden>
+                                                        <div class="col-xl-3 col-sm-6 war-pop-1">
+                                                            <div class="card border p-0 pb-3">
+                                                                <div class="card-header border-0 pt-3">
+                                                                    <div class="card-options">
+                                                                        <a href="javascript:void(0)" class="card-options-remove" data-bs-toggle="card-remove">
+                                                                            <i class="fe fe-x"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body text-center">
+                                                                    <span class="">
+                                                                        <svg class="custom-alert-icon svg-warning" xmlns="http://www.w3.org/2000/svg" height="1.5rem" viewBox="0 0 24 24" width="1.5rem" fill="#000000"><path d="M0 0h24v24H0z" fill="none"></path><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>
+                                                                    </span>
+                                                                    <h4 class="h4 mb-0 mt-3">Warning</h4>
+                                                                    <p class="card-text notification-text"></p>
+                                                                </div>
+                                                                <div class="card-footer text-center border-0 pt-0 mt-2">
+                                                                    <div class="row">
+                                                                        <div class="text-center">
+                                                                            <a href="javascript:void(0)" class="btn btn-success weekly-plan-submit" data-type="submit" onclick="saveIncompleteWeeklyPlan(this)">Submit</a>
+                                                                            <a href="javascript:void(0)" class="btn btn-white me-2" onclick="closeNotificationAlert(this)">Cancel</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>  
+                                                      </div>
+                                                    <!-- Alert Ends -->
+
                                                     <!-- Row3 -->
                                                     <div class="row">
                                                         <!-- Weekly Plan Table -->
@@ -447,7 +478,6 @@
 
                     return false;
                 } else if (selected_submit_btn == 'submit') {
-                    let no_values_count = 0;
                     let days_count = 7;
 
                     let days_arr = [];
@@ -462,31 +492,12 @@
                     });
 
                     if (days_count != 7) {
-                        $('.toast-body').text('Kindly enter plan for the entire week before submitting.');
-                        $('.toast').toast('show');
+                        $('#weekly-plan-alert').removeAttr('hidden');
+
+                        let alert_text = 'You are trying to submit weekly plan for only '+days_count+' day(s). Do you still wish to continue?';
+                        $('.notification-text').text(alert_text);
 
                         return false;
-                    } else if (days_count == 7) {
-                        $(table_rows).each(function(index, value) {
-                            $(value).find('td').each(function(ind, val){
-                                if (ind == 0 || ind == 1 || ind == 2 || ind == 3 || ind == 4) {
-                                    return
-                                }
-
-                                if ($(val).text() == '') {
-                                    no_values_count++;
-                                }
-                            });
-                        });
-
-                        if (no_values_count > 0) {
-                            $('.toast-body').text('Kindly fill data for weekly plan for the entire week before submitting.');
-                            $('.toast').toast('show');
-
-                            return false;
-                        } else if (no_values_count == 0) {
-                            saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
-                        }
                     }
                 } else if (selected_submit_btn == 'draft') {
                     saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
@@ -547,7 +558,7 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        // console.log(response); 
+                        console.log(response);
 
                         $('.plan-loader').attr('hidden', true);
 
@@ -563,6 +574,42 @@
                     }
                 });
             }
+
+            function saveIncompleteWeeklyPlan(button) {
+                $('#weekly-plan-alert').prop('hidden', true);
+
+                let table_rows = $('#new-add-weekly-tkc-plan-details tbody').find('tr');
+                let weekly_plan_form = $('#addTKCWeeklyPlan')[0];
+                let selected_submit_btn = $(this).data('type');
+                let no_values_count = 0;
+
+                $(table_rows).each(function(index, value) {
+                    $(value).find('td').each(function(ind, val){
+                        if (ind == 0 || ind == 1 || ind == 2 || ind == 3 || ind == 4) {
+                            return
+                        }
+
+                        if ($(val).text() == '') {
+                            no_values_count++;
+                        }
+                    });
+                });
+
+                if (no_values_count > 0) {
+                    $('.toast-body').text('Kindly fill data for selected dates before submitting.');
+                    $('.toast').toast('show');
+
+                    return false;
+                } else if (no_values_count == 0) {
+                    saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
+                }
+            }
+
+            function closeNotificationAlert(anchor) {
+                let weekly_plan_alert = $(anchor).closest('#weekly-plan-alert');
+                weekly_plan_alert.prop('hidden', true);
+                $('.notification-text').text('');
+              }
 
             function getModifiedDate(date) {
                 var parts = date.split("-")

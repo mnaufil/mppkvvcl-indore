@@ -141,7 +141,7 @@ class TKCWeeklyPlan extends CI_Controller
 			$data['packages'] = $packages = $_SESSION['loggedData']->package_access;
 			$packages_arr = explode(',', $packages);
 
-			$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages_arr);
+			$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages);
 
 			$divisions = $this->twp_model->getCircleWiseDivision($circles);
 

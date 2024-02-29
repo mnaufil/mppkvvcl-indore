@@ -321,7 +321,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 			$this->db->join('contract', 'contract.contract_id = tkc_plan_detail.contract_id', 'INNER');
 			$this->db->join('mst_circle', 'mst_circle.circle_id = tkc_plan_detail.circle_id', 'INNER');
 			$this->db->join('mst_division', 'mst_division.division_id = tkc_plan_detail.division_id', 'INNER');
-			$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1));	
+			$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL));	
 		} else {
 			$user_assigned_circles = $this->getUserAssignedCircles($user_id);
 			$user_assigned_divisions = $this->getUserAssignedDivisions($user_id);
@@ -334,7 +334,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 			$this->db->join('mst_division', 'mst_division.division_id = tkc_plan_detail.division_id', 'INNER');
 			$this->db->where_in('tkc_plan_detail.circle_id', $user_assigned_circles);
 			$this->db->where_in('tkc_plan_detail.division_id', $user_assigned_divisions);
-			$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1));	
+			$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL));	
 		}		
 
 		if (!empty($from_date) && !empty($to_date)) {
@@ -442,7 +442,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$this->db->join('contract', 'tkc_plan_detail.contract_id = contract.contract_id', 'LEFT');
 		$this->db->join('mst_circle', 'tkc_plan_detail.circle_id = mst_circle.circle_id', 'LEFT');
 		$this->db->join('mst_division', 'tkc_plan_detail.division_id = mst_division.division_id', 'LEFT');
-		$this->db->where(array('tkc_plan.tkc_plan_id' => $tkc_plan_id));
+		$this->db->where(array('tkc_plan.tkc_plan_id' => $tkc_plan_id, 'tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL));
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -480,6 +480,26 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
+	public function getTKCWeeklyPlanDetailsForTKCWeeklyID($tkc_plan_id)
+	{
+		$query = $this->db->get_where('tkc_plan_detail', array('tkc_plan_id' => $tkc_plan_id, 'is_active' => 1, 'deletedby' => NULL));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function searchTKCWeeklyPlans($from_date, $to_date, $contractor, $circle, $division, $feeder_id)
 	{
 		if (!empty($feeder_id)) {
@@ -497,7 +517,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$this->db->join('contract', 'contract.contract_id = tkc_plan_detail.contract_id', 'INNER');
 		$this->db->join('mst_circle', 'mst_circle.circle_id = tkc_plan_detail.circle_id', 'INNER');
 		$this->db->join('mst_division', 'mst_division.division_id = tkc_plan_detail.division_id', 'INNER');
-		$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1));
+		$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL));
 
 		if (!empty($from_date)) {
 			$this->db->where('tkc_plan.from_date', $from_date);
@@ -574,7 +594,10 @@ class TKCWeeklyPlan_Model extends CI_Model
 			$this->db->join('mst_user', 'tkc_plan.createdby = mst_user.user_id', 'INNER');
 			$this->db->where_in('tkc_plan_detail.circle_id', $user_assigned_circles);
 			$this->db->where_in('tkc_plan_detail.division_id', $user_assigned_divisions);
+			$this->db->where(array('tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL));
 		}
+
+		$this->db->order_by('tkc_plan.from_date', 'DESC');
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -642,7 +665,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$this->db->select('contract_location.feeder_id');
 		$this->db->from('tkc_plan_detail_feeder');
 		$this->db->join('contract_location', 'tkc_plan_detail_feeder.contract_location_id = contract_location.contract_location_id', 'INNER');
-		$this->db->where(array('tkc_plan_detail_feeder.tkc_plan_detail_id' => $tkc_plan_detail_id));		
+		$this->db->where(array('tkc_plan_detail_feeder.tkc_plan_detail_id' => $tkc_plan_detail_id, 'tkc_plan_detail_feeder.is_active' => 1, 'tkc_plan_detail_feeder.deletedby' => NULL));		
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -663,6 +686,83 @@ class TKCWeeklyPlan_Model extends CI_Model
 			}
 
 			return $query_result;
+		}
+	}
+
+	public function getTKCWeeklyPlansFeederDetailsForTKCWeeklyDetailID($tkc_plan_detail_id)
+	{
+		$query = $this->db->get_where('tkc_plan_detail_feeder', array('tkc_plan_detail_id' => $tkc_plan_detail_id, 'is_active', 'deletedby' => NULL));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function deleteFeedersDetailsByTKCPLanDetailID($tkc_plan_detail_id)
+	{
+		$data = array(
+			'is_active' => 0,
+			'deletedby' => $this->getLoggedInUserID(),
+			'deleteddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('tkc_plan_detail_feeder', $data, array('tkc_plan_detail_id' => $tkc_plan_detail_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
+		}
+	}
+
+	public function deleteWeekllPlanDetailsByTKCPlanID($tkc_plan_id)
+	{
+		$data = array(
+			'is_active' => 0,
+			'deletedby' => $this->getLoggedInUserID(),
+			'deleteddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('tkc_plan_detail', $data, array('tkc_plan_id' => $tkc_plan_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
+		}
+	}
+
+	public function deleteTKCWeeklyPlan($tkc_plan_id)
+	{
+		$data = array(
+			'is_active' => 0,
+			'deletedby' => $this->getLoggedInUserID(),
+			'deleteddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('tkc_plan', $data, array('tkc_plan_id' => $tkc_plan_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
 		}
 	}
 
@@ -809,7 +909,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 	public function getCircleListAssignedToUser($user_id)
 	{
-		$this->db->select('mst_user_data_access.circle_id, mst_circle.circle_name');
+		$this->db->select('DISTINCT(mst_user_data_access.circle_id), mst_circle.circle_name');
 		$this->db->from('mst_user_data_access');
 		$this->db->join('mst_circle', 'mst_user_data_access.circle_id = mst_circle.circle_id', 'INNER');
 		$this->db->where(array('mst_user_data_access.user_id' => $user_id));
@@ -866,7 +966,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$this->db->join('mst_role_module_access', 'mst_user.role_id = mst_role_module_access.role_id', 'INNER');
 		$this->db->join('mst_module_access', 'mst_role_module_access.module_access_id = mst_module_access.module_access_id', 'INNER');
 		$this->db->join('mst_module', 'mst_module_access.module_id = mst_module.module_id', 'INNER');
-		$this->db->where(array('mst_module.name' => 'TKC Physical Entry', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
+		$this->db->where(array('mst_module.name' => 'TKC Weekly Plan', 'mst_module.icon !=' => '', 'mst_user.user_id' => $user_id));
 		$this->db->where(array('mst_role_module_access.is_active' => 1, 'mst_module_access.is_active' => 1, 'mst_module.is_active' => 1));
 
 		$query = $this->db->get();

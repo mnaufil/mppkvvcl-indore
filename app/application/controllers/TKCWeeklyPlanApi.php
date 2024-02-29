@@ -83,7 +83,7 @@ class TKCWeeklyPlanApi extends REST_Controller
 		} else {
 			$circle_list = $this->twp_model->getCircleListAssignedToTKC($user_id);
 			$division_list = $this->twp_model->getDivisionListAssignedToTKC($user_id);
-		}		
+		}
 
 		$circle_arr = [];
 		foreach ($circle_list as $key => $value) {

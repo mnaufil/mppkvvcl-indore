@@ -254,6 +254,7 @@ $route['add-tkc-weekly-plan'] = 'TKCWeeklyPlan/addTKCWeeklyPlan';
 $route['save-tkc-weekly-plan'] = 'TKCWeeklyPlan/saveTKCWeeklyPlan';
 $route['edit-tkc-weekly-plan/(:any)/(:num)'] = 'TKCWeeklyPlan/editTKCWeeklyPlan/$1/$2';
 $route['update-tkc-weekly-plan'] = 'TKCWeeklyPlan/updateTKCWeeklyPlan';
+$route['delete-tkc-weekly-plan/(:num)'] = 'TKCWeeklyPlan/deleteTKCWeeklyPlan/$1';
 $route['get-feeders-list-tkc'] = 'TKCWeeklyPlan/getFeedersList';
 $route['check-date-range-exists'] = 'TKCWeeklyPlan/checkDateRangeExists';
 
@@ -325,7 +326,7 @@ $route['api/tkc-weekly-plan-list'] = 'TKCWeeklyPlanApi/index';
 $route['api/tkc-weekly-plan-filter'] = 'TKCWeeklyPlanApi/filter_data';
 $route['api/tkc-weekly-plan-search'] = 'TKCWeeklyPlanApi/filter_weekly_plan';
 
-/*TKC Physical Verification API*/
+/*TKC Physical Entry API*/
 $route['api/tkc-physical-verification'] = 'TKCPhysicalVerificationApi/index';
 $route['api/get-tkc-sheet-details'] = 'TKCPhysicalVerificationApi/get_tkc_ppsheet_details';
 $route['api/save-tkc-sheet-details'] = 'TKCPhysicalVerificationApi/save_tkc_ppsheet_details';

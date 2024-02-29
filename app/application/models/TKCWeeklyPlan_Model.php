@@ -442,7 +442,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$this->db->join('contract', 'tkc_plan_detail.contract_id = contract.contract_id', 'LEFT');
 		$this->db->join('mst_circle', 'tkc_plan_detail.circle_id = mst_circle.circle_id', 'LEFT');
 		$this->db->join('mst_division', 'tkc_plan_detail.division_id = mst_division.division_id', 'LEFT');
-		$this->db->where(array('tkc_plan.tkc_plan_id' => $tkc_plan_id, 'tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL));
+		$this->db->where(array('tkc_plan.tkc_plan_id' => $tkc_plan_id, 'tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL, 'tkc_plan_detail.is_active' => 1, 'tkc_plan_detail.deletedby' => NULL));
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -613,7 +613,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 				$result = $query->result_array();
 
 				foreach ($result as $key => $value) {
-					$lot_data = $this->getLotNoAndContractorForTKCWeeklyPlan($value['tkc_plan_id']);
+					$lot_data = $this->getPackageGroupNoAndContractorForTKCWeeklyPlan($value['tkc_plan_id']);
 
 					$lot_no = [];
 					$contractor = [];
@@ -622,8 +622,8 @@ class TKCWeeklyPlan_Model extends CI_Model
 						array_push($contractor, $lot_value['contractor_name']);
 					}
 
-					$result[$key]['lot_no'] = implode(', ', $lot_no);
-					$result[$key]['contractor_name'] = implode(', ', $contractor);
+					$result[$key]['lot_no'] = implode(',', array_unique($lot_no));
+					$result[$key]['contractor_name'] = implode(',', array_unique($contractor));
 				}
 
 				$query_result = $result;
@@ -633,14 +633,14 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getLotNoAndContractorForTKCWeeklyPlan($tkc_plan_id)
+	public function getPackageGroupNoAndContractorForTKCWeeklyPlan($tkc_plan_id)
 	{
 		$contract_status_list = $this->getContractStatusList();
 
 		$this->db->select('DISTINCT (tkc_plan_detail.contract_id), contract.package_group_no, contract.contractor_name');
 		$this->db->from('tkc_plan_detail');
 		$this->db->join('contract', 'tkc_plan_detail.contract_id = contract.contract_id', 'INNER');
-		$this->db->where(array('contract.status_id' => $contract_status_list['Open']));
+		$this->db->where(array('contract.status_id' => $contract_status_list['Open'], 'tkc_plan_detail.tkc_plan_id' => $tkc_plan_id));
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -728,7 +728,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function deleteWeekllPlanDetailsByTKCPlanID($tkc_plan_id)
+	public function deleteWeeklyPlanDetailsByTKCPlanID($tkc_plan_id)
 	{
 		$data = array(
 			'is_active' => 0,
@@ -737,6 +737,25 @@ class TKCWeeklyPlan_Model extends CI_Model
 		);
 
 		$query = $this->db->update('tkc_plan_detail', $data, array('tkc_plan_id' => $tkc_plan_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
+		}
+	}
+
+	public function deleteWeeklyPlanDetailsByTKCPlanDetailsID($tkc_plan_detail_id)
+	{
+		$data = array(
+			'is_active' => 0,
+			'deletedby' => $this->getLoggedInUserID(),
+			'deleteddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('tkc_plan_detail', $data, array('tkc_plan_detail_id' => $tkc_plan_detail_id));
 
 		if (!$query) {
 			$error = $this->db->error();	
@@ -763,6 +782,33 @@ class TKCWeeklyPlan_Model extends CI_Model
 			die();
 		} else {
 			return $this->db->affected_rows();
+		}
+	}
+
+	public function getLotNoFromPackageGroupNo($package_group_no)
+	{
+		$this->db->select('package_no');
+		$query = $this->db->get_where('contract', array('package_group_no' => $package_group_no));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['package_no']);
+				}
+			} else {
+				$query_result = 0;
+			}
+
+			return $query_result;
 		}
 	}
 
@@ -799,7 +845,7 @@ class TKCWeeklyPlan_Model extends CI_Model
             echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
             die();
 		} else {
-			$query_result = [];
+			$query_result = 0;
 			
 			if ($query->num_rows() > 0) {
 				$result = $query->row_array();
@@ -821,7 +867,7 @@ class TKCWeeklyPlan_Model extends CI_Model
             echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
             die();
 		} else {
-			$query_result = [];
+			$query_result = 0;
 			
 			if ($query->num_rows() > 0) {
 				$result = $query->row_array();

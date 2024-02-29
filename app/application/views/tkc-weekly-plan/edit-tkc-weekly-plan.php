@@ -121,6 +121,37 @@
                                                     </div>
                                                     <!-- Loading Spinner Ends -->
 
+                                                    <!-- Alert -->
+                                                    <div class="row war-pop" id="weekly-plan-alert" hidden>
+                                                        <div class="col-xl-3 col-sm-6 war-pop-1">
+                                                            <div class="card border p-0 pb-3">
+                                                                <div class="card-header border-0 pt-3">
+                                                                    <div class="card-options">
+                                                                        <a href="javascript:void(0)" class="card-options-remove" data-bs-toggle="card-remove">
+                                                                            <i class="fe fe-x"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body text-center">
+                                                                    <span class="">
+                                                                        <svg class="custom-alert-icon svg-warning" xmlns="http://www.w3.org/2000/svg" height="1.5rem" viewBox="0 0 24 24" width="1.5rem" fill="#000000"><path d="M0 0h24v24H0z" fill="none"></path><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"></path></svg>
+                                                                    </span>
+                                                                    <h4 class="h4 mb-0 mt-3">Warning</h4>
+                                                                    <p class="card-text notification-text"></p>
+                                                                </div>
+                                                                <div class="card-footer text-center border-0 pt-0 mt-2">
+                                                                    <div class="row">
+                                                                        <div class="text-center">
+                                                                            <a href="javascript:void(0)" class="btn btn-success weekly-plan-submit" data-type="submit" onclick="saveIncompleteWeeklyPlan(this)">Submit</a>
+                                                                            <a href="javascript:void(0)" class="btn btn-white me-2" onclick="closeNotificationAlert(this)">Cancel</a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>  
+                                                    </div>
+                                                    <!-- Alert Ends -->
+
                                                     <!-- Row3 -->
                                                     <div class="row">
                                                         <!-- Weekly Plan Table -->
@@ -240,7 +271,7 @@
                                                         <div class="col-xl-12 mt-3 mb-3" id="weekly-tkc-plan-form-btns">
                                                             <?php if ($mode == 'edit') { ?>
                                                             <button type="submit" class="btn btn-warning" id="draft-plan" data-type="draft">Save as draft</button>
-                                                            <button type="submit" class="btn btn-success" id="update-plan" data-type="submit">Update</button>    
+                                                            <button type="submit" class="btn btn-success" id="update-plan" data-type="submit">Submit</button>    
                                                             <?php } ?>
                                                             <a href="<?php echo base_url('tkc-weekly-plan'); ?>" type="button" class="btn btn-primary">Back</a>
                                                         </div>
@@ -346,6 +377,7 @@
         <script type="text/javascript">
         	let weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
             var form_change = false;
+            var deleted_plan_detail_ids = [];
 
         	$('input[name="weeklyPlanDateRange"]').daterangepicker({
                 autoUpdateInput: false,
@@ -434,6 +466,10 @@
                 form_change = true;
             });
 
+            $(document).on('change', 'select[name="lotNo"]', function(event) {
+                form_change = true;
+            });
+
             function getFeedersList(circle_name, division_name) {
                 // Ajax call to get list of feeders belonging to selected circle and division
                 $.ajax({
@@ -489,8 +525,6 @@
 
             $('#updateTKCWeeklyPlan button[type="submit"]').click(function(event) {
                 let selected_submit_btn = $(this).data('type');
-                /*console.log('selected_submit_btn: ' + selected_submit_btn);
-                console.log('form_change: ' + form_change);*/
                 let weekly_plan_form = $('#updateTKCWeeklyPlan')[0];
 
                 let selected_date_range = $('input[name="weeklyPlanDateRange"]').val();
@@ -502,19 +536,24 @@
                     $('.toast').toast('show');
 
                     return false;
-                } else if (form_change == false || table_rows.length == 0) {
+                } else if (form_change == false) {                    
+                    $('.toast-body').text('No changes occurred. Kindly make a change to submit the form. ');
+                    $('.toast').toast('show');
+
+                    return false;
+                } else if (table_rows.length == 0) {
                     $('.toast-body').text('Kindly enter plan for the entire week before submitting.');
                     $('.toast').toast('show');
 
                     return false;
                 } else if (selected_submit_btn == 'submit') {
-                    let no_values_count = 0;
+                    // let no_values_count = 0;
                     let days_count = 7;
 
                     let days_arr = [];
                     $(table_rows).each(function(index, value){
-                        days_arr.push($(value).find('td[class="day"]').text());
-                    });
+                        days_arr.push($.trim($(value).find('td[class="day"]').text()));
+                    });                    
 
                     $.each(weekDays, function(index, value) {
                         if ($.inArray(value, days_arr) == -1) {
@@ -523,34 +562,36 @@
                     });
 
                     if (days_count != 7) {
-                        $('.toast-body').text('Kindly enter plan for the entire week before submitting.');
+                        $('#weekly-plan-alert').removeAttr('hidden');
+
+                        let alert_text = 'You are trying to submit weekly plan for only '+days_count+' day(s). Do you still wish to continue?';
+                        $('.notification-text').text(alert_text);
+
+                        return false;
+                    }
+                } else if (selected_submit_btn == 'draft') {
+                    let no_values_count = 0;
+
+                    $(table_rows).each(function(index, value) {
+                        $(value).find('td').each(function(ind,val) {
+                            if (ind == 0 || ind == 1 || ind == 5 || ind == 6 || ind == 7 || ind == 8 || ind == 9) {
+                                return;
+                            }
+
+                            if ($(val).text() == '') {
+                                no_values_count++;
+                            }
+                        })
+                    });
+
+                    if (no_values_count > 0) {
+                        $('.toast-body').text('Kindly select lot no. and date of work before saving as draft');
                         $('.toast').toast('show');
 
                         return false;
-                    } else if (days_count == 7) {
-                        $(table_rows).each(function(index, value) {
-                            $(value).find('td').each(function(ind, val){
-                                if (ind == 0 || ind == 1 || ind == 2 || ind == 3 || ind == 4) {
-                                    return
-                                }
-
-                                if ($(val).text() == '') {
-                                    no_values_count++;
-                                }
-                            });
-                        });
-
-                        if (no_values_count > 0) {
-                            $('.toast-body').text('Kindly fill data for weekly plan for the entire week before submitting.');
-                            $('.toast').toast('show');
-
-                            return false;
-                        } else if (no_values_count == 0) {
-                            saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
-                        }
+                    } else if (no_values_count == 0) {
+                        saveWeeklyPlan(weekly_plan_form, selected_submit_btn);    
                     }
-                } else if (selected_submit_btn == 'draft') {
-                    saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
                 }
 
                 event.preventDefault();
@@ -569,12 +610,15 @@
 
                 let formData = new FormData(weekly_plan_form);
 
+                if (!$.isEmptyObject(deleted_plan_detail_ids)) {
+                    formData.append('deleted_plan_detail_ids', deleted_plan_detail_ids);
+                }
+
                 let trs = $('#new-add-weekly-tkc-plan-details tbody').find('tr');
 
                 let weekly_plan_array = [];
                 
                 $(trs).each(function(index, value) {
-                    // console.log($(value));
                     let tds = $(value).find('td');
 
                     let plan_array = new Object();
@@ -589,9 +633,7 @@
                     });
 
                     let tkc_plan_detail_id = $(value).attr('data-tkc-plan-detail-id');
-                    // console.log(tkc_plan_detail_id); return false;
                     plan_array['tkc_plan_detail_id'] = tkc_plan_detail_id;
-                    // console.log(plan_array); return false;
 
                     weekly_plan_array.push(plan_array);
                 });
@@ -604,11 +646,7 @@
                     formData.append('is_draft', 1);
                 }
 
-                /*console.log('formData: ');
-                console.log(formData);*/
-
                 let form_url = $(weekly_plan_form).attr('action');
-                // console.log('form_url:' + form_url);
 
                 // Ajax call to save the weekly plan
                 $.ajax({
@@ -634,6 +672,42 @@
                         console.log(xhr);
                     }
                 });
+            }
+
+            function saveIncompleteWeeklyPlan(button) {
+                $('#weekly-plan-alert').prop('hidden', true);
+
+                let table_rows = $('#new-add-weekly-tkc-plan-details tbody').find('tr');
+                let weekly_plan_form = $('#updateTKCWeeklyPlan')[0];
+                let selected_submit_btn = $(this).data('type');
+                let no_values_count = 0;
+
+                $(table_rows).each(function(index, value) {
+                    $(value).find('td').each(function(ind, val){
+                        if (ind == 0 || ind == 1 || ind == 2 || ind == 3 || ind == 4) {
+                            return
+                        }
+
+                        if ($(val).text() == '') {
+                            no_values_count++;
+                        }
+                    });
+                });
+
+                if (no_values_count > 0) {
+                    $('.toast-body').text('Kindly fill data for selected lot no./dates before submitting.');
+                    $('.toast').toast('show');
+
+                    return false;
+                } else if (no_values_count == 0) {
+                    saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
+                }
+            }
+
+            function closeNotificationAlert(anchor) {
+                let weekly_plan_alert = $(anchor).closest('#weekly-plan-alert');
+                weekly_plan_alert.prop('hidden', true);
+                $('.notification-text').text('');
             }
 
             function getModifiedDate(date) {

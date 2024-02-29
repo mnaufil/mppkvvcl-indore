@@ -98,13 +98,25 @@
                                                                 <tbody>
                                                                     <?php foreach ($result as $key => $value) { ?>
                                                                     <tr>
-                                                                        <?php $mode = ($value['is_draft'] == '0' || (!empty($user_access) && isset($user_access['view']))) ? 'view' : 'edit'; ?>
                                                                         <!-- Action Buttons -->
-                                                                        <td name="bstable-actions">
+                                                                        <td name="bstable-actions" style="text-align: center;">
                                                                             <div class="btn-list">
-                                                                            <?php if (!empty($user_access) && (isset($user_access['view']) || isset($user_access['update']))) { ?>
-                                                                                <a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('edit-tkc-weekly-plan/'.$mode.'/'.$value['tkc_plan_id']); ?>">
-                                                                                    <span class="<?php echo ($mode == 'view') ? 'fa fa-eye' : 'fe fe-edit'; ?> fa-lg action-btn-table"></span>
+                                                                            <!-- View -->
+                                                                            <?php if ($value['is_draft'] == 0 || ($user_role != 'TKC' && isset($user_access['view']))) { ?>
+                                                                                <a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('edit-tkc-weekly-plan/view/'.$value['tkc_plan_id']); ?>">
+                                                                                    <span class="fa fa-eye fa-lg action-btn-table"></span>
+                                                                                </a>
+                                                                            <?php } ?>
+                                                                            <!-- Edit -->
+                                                                            <?php if ($value['is_draft'] == 1 && $user_role == 'TKC' && isset($user_access['update'])) { ?>
+                                                                                <a id="bEdit" type="button" class="btn btn-sm" href="<?php echo base_url('edit-tkc-weekly-plan/edit/'.$value['tkc_plan_id']); ?>">
+                                                                                    <span class="fe fe-edit fa-lg action-btn-table"></span>
+                                                                                </a>   
+                                                                            <?php } ?>
+                                                                            <!-- Delete -->
+                                                                            <?php if ($user_role == 'TKC' && isset($user_access['delete'])) { ?>
+                                                                                <a id="bDelete" type="button" class="btn btn-sm" href="<?php echo base_url('delete-tkc-weekly-plan/'.$value['tkc_plan_id']); ?>">
+                                                                                    <span class="fe fe-trash-2 fa-lg action-btn-table"> </span>
                                                                                 </a>
                                                                             <?php } ?>
                                                                             </div>

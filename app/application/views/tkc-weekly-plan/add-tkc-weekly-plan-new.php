@@ -143,7 +143,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>  
-                                                      </div>
+                                                    </div>
                                                     <!-- Alert Ends -->
 
                                                     <!-- Row3 -->
@@ -268,7 +268,7 @@
 
         <script type="text/javascript">
         	let packages = '<?php echo $packages ?>';
-        	packages_arr = packages.split(',');
+        	packages_arr = packages.split(',');            
 
         	let circles = <?php echo json_encode($circles) ?>;
 
@@ -500,7 +500,28 @@
                         return false;
                     }
                 } else if (selected_submit_btn == 'draft') {
-                    saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
+                    let no_values_count = 0;
+
+                    $(table_rows).each(function(index, value) {
+                        $(value).find('td').each(function(ind,val) {
+                            if (ind == 0 || ind == 1 || ind == 5 || ind == 6 || ind == 7 || ind == 8 || ind == 9) {
+                                return;
+                            }
+
+                            if ($(val).text() == '') {
+                                no_values_count++;
+                            }
+                        })
+                    });
+
+                    if (no_values_count > 0) {
+                        $('.toast-body').text('Kindly select lot no. and date of work before saving as draft');
+                        $('.toast').toast('show');
+
+                        return false;
+                    } else if (no_values_count == 0) {
+                        saveWeeklyPlan(weekly_plan_form, selected_submit_btn);    
+                    }                    
                 }
 
                 event.preventDefault();
@@ -586,7 +607,7 @@
                 $(table_rows).each(function(index, value) {
                     $(value).find('td').each(function(ind, val){
                         if (ind == 0 || ind == 1 || ind == 2 || ind == 3 || ind == 4) {
-                            return
+                            return;
                         }
 
                         if ($(val).text() == '') {
@@ -596,7 +617,7 @@
                 });
 
                 if (no_values_count > 0) {
-                    $('.toast-body').text('Kindly fill data for selected dates before submitting.');
+                    $('.toast-body').text('Kindly fill data for selected lot no./dates before submitting.');
                     $('.toast').toast('show');
 
                     return false;
@@ -609,7 +630,7 @@
                 let weekly_plan_alert = $(anchor).closest('#weekly-plan-alert');
                 weekly_plan_alert.prop('hidden', true);
                 $('.notification-text').text('');
-              }
+            }
 
             function getModifiedDate(date) {
                 var parts = date.split("-")

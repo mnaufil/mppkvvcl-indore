@@ -41,9 +41,11 @@ class TKCWeeklyPlan extends CI_Controller
 
 	public function addTKCWeeklyPlan()
 	{
-		$data['packages'] = $packages = $_SESSION['loggedData']->package_access;
+		$package_group_no = $_SESSION['loggedData']->package_access;
+		$lot_nos = $this->twp_model->getLotNoFromPackageGroupNo($package_group_no);
+		$data['packages'] = $lot_no_arr = implode(',', $lot_nos);
 
-		$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages);
+		$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($lot_no_arr);
 		$divisions = $this->twp_model->getCircleWiseDivision($circles);
 
 		$divisions_arr = [];
@@ -138,10 +140,11 @@ class TKCWeeklyPlan extends CI_Controller
 		$result['tkc_plan_id'] = $tkc_plan_id;
 
 		if ($user_role == 'TKC') {
-			$data['packages'] = $packages = $_SESSION['loggedData']->package_access;
-			$packages_arr = explode(',', $packages);
+			$package_group_no = $_SESSION['loggedData']->package_access;
+			$lot_nos = $this->twp_model->getLotNoFromPackageGroupNo($package_group_no);
+			$data['packages'] = $lot_no_arr = implode(',', $lot_nos);
 
-			$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($packages);
+			$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($lot_no_arr);
 
 			$divisions = $this->twp_model->getCircleWiseDivision($circles);
 
@@ -171,6 +174,7 @@ class TKCWeeklyPlan extends CI_Controller
       		$tkc_plan_id = $this->input->post('tkc_plan_id');
       		$week_date_range = $this->input->post('weeklyPlanDateRange');
       		$weekly_plan_array = json_decode($this->input->post('weekly_plan_array'));
+      		$deleted_plan_detail_ids = isset($_POST['deleted_plan_detail_ids']) ? explode(',', $this->input->post('deleted_plan_detail_ids')) : '';
 
       		$is_draft = $this->input->post('is_draft');
 
@@ -182,16 +186,31 @@ class TKCWeeklyPlan extends CI_Controller
       		$tkc_plan_result = $this->twp_model->updateTKCWeeklyPlan($tkc_plan_id, $from_date, $to_date, $is_draft);
 
       		if ($tkc_plan_result) {
+      			if (!empty($deleted_plan_detail_ids)) {
+      				foreach ($deleted_plan_detail_ids as $value) {
+      					// Check if feeders details exists against tkc_plan_detail_id
+						$feeders_result = $this->twp_model->getTKCWeeklyPlansFeederDetailsForTKCWeeklyDetailID($value);
+
+						if (!empty($feeders_result)) {
+							// Updating delete status of the feeders
+							$feeders_deleted =  $this->twp_model->deleteFeedersDetailsByTKCPLanDetailID($value);
+						}
+
+      					// Updating delete status of the weekly plan details
+      					$details_deleted = $this->twp_model->deleteWeeklyPlanDetailsByTKCPlanDetailsID($value);
+      				}
+      			}
+
       			foreach ($weekly_plan_array as $key => $value) {
-      				$lot_no = $value->lot_no;
+      				$lot_no = trim($value->lot_no);
       				$contract_id = $this->twp_model->getContractIDFromLotNo($lot_no);
       				$date_of_work = date('Y-m-d', strtotime($value->date_of_work));
 
       				$circle_id = (!empty($value->circle)) ? $this->twp_model->getCircleID($value->circle) : $value->circle;
       				$division_id = (!empty($value->division)) ? $this->twp_model->getDivisionID($value->division) : $value->division;
 
-      				$work_description = $value->description_of_work;
-      				$remark = $value->remark;
+      				$work_description = trim($value->description_of_work);
+      				$remark = trim($value->remark);
 
       				if (isset($value->tkc_plan_detail_id)) {
       					// Updating data in tkc_plan_detail
@@ -228,6 +247,32 @@ class TKCWeeklyPlan extends CI_Controller
       	}
 
       	echo json_encode($response);
+	}
+
+	public function deleteTKCWeeklyPlan($tkc_plan_id)
+	{
+		// Fetching records from tkc_plan_detail against the $tkc_plan_id
+		$details_result = $this->twp_model->getTKCWeeklyPlanDetailsForTKCWeeklyID($tkc_plan_id);
+
+		foreach ($details_result as $key => $value) {
+			// Check if feeders details exists against tkc_plan_detail_id
+			$feeders_result = $this->twp_model->getTKCWeeklyPlansFeederDetailsForTKCWeeklyDetailID($value['tkc_plan_detail_id']);
+
+			if (!empty($feeders_result)) {
+				// Updating delete status of the feeders
+				$feeders_deleted =  $this->twp_model->deleteFeedersDetailsByTKCPLanDetailID($value['tkc_plan_detail_id']);
+			}
+		}
+
+		// Updating delete status of the weekly plan details
+		$details_deleted = $this->twp_model->deleteWeeklyPlanDetailsByTKCPlanID($tkc_plan_id);
+
+		if ($details_deleted) {
+			// Updating delete status of the weekly plan
+			$plan_deleted = $this->twp_model->deleteTKCWeeklyPlan($tkc_plan_id);
+		}
+
+		redirect('tkc-weekly-plan');
 	}
 
 	public function checkDateRangeExists()

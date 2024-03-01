@@ -2889,8 +2889,8 @@
       			data: {pp_activity_obs_id: pp_activity_obs_id, sheet_date: sheet_date},
       			dataType: 'json',
       			success: function(response){
-      				console.log('Get observation response:');
-      				console.log(response);  
+      				/*console.log('Get observation response:');
+      				console.log(response);*/  
       				let obs_data = response.obs_data;
 
       				//Setting Observation Status

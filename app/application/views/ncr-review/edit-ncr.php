@@ -176,7 +176,6 @@
                   									</div>
 					            				</div>
 					            				<!-- Row4 -->
-					            				<?php if ($logged_user_role == 'TKC' || $logged_user_role == 'Admin') { ?>
 					            				<div class="row">
 					            					<!-- TKC Observation Photos -->
 					            					<div class="col-xl-12">
@@ -209,8 +208,7 @@
 					            						?>
 					            						</div>
 					            					</div>
-					            				</div>	
-					            				<?php } ?>
+					            				</div>
 					            				<!-- Row5 -->
 					            				<?php if ($logged_user_role != 'TKC') { ?>
 					            				<div class="row">

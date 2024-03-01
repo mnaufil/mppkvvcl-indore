@@ -291,7 +291,14 @@ class BSTableTKCWeeklyPlan {
     }
     _rowDelete(button) {
         // Remove the row
-        let $currentRow = $(button).parents('tr'); // access the row
+        let $currentRow = $(button).parents('tr'); // access the row       
+
+        if (typeof $currentRow.data('tkc-plan-detail-id') !== 'undefined') {
+            
+            let tkc_plan_detail_id = $currentRow.attr('data-tkc-plan-detail-id');
+            deleted_plan_detail_ids.push(tkc_plan_detail_id);
+        }
+
         this.options.onBeforeDelete($currentRow);
         $currentRow.remove();
         this.options.onDelete();
@@ -299,7 +306,9 @@ class BSTableTKCWeeklyPlan {
         let table_rows = $('#new-add-weekly-tkc-plan-details tbody').find('tr');
 
         if (table_rows.length == 0) {
-            form_change == false;
+            form_change = false;
+        } else {
+            form_change = true;
         }
     }
     _rowAccept(button) {
@@ -316,15 +325,15 @@ class BSTableTKCWeeklyPlan {
                 let row_id = $currentRow.attr('data-row-id');
                 cont = ++row_id;
             } else if (i == 1) {
-                cont = $td.find('select[name="lotNo"]').val();
+                cont = $.trim($td.find('select[name="lotNo"]').val());
             } else if (i == 2) {
-                cont = $td.find('input[name="weekDates"]').val();
+                cont = $.trim($td.find('input[name="weekDates"]').val());
             } else if (i == 3) {
-                cont = $td.find('input[name="weekDay"]').val();
+                cont = $.trim($td.find('input[name="weekDay"]').val());
             } else if (i == 4) {
-                cont = $td.find('select[name="circle"]').val();
+                cont = $.trim($td.find('select[name="circle"]').val());
             } else if (i == 5) {
-                cont = $td.find('select[name="division"]').val();
+                cont = $.trim($td.find('select[name="division"]').val());
             } else if (i == 6) {
                 let select = $td.find('select[name="feeder"]');
                 let multiple_attr = $(select).attr('multiple');
@@ -335,9 +344,9 @@ class BSTableTKCWeeklyPlan {
                     cont = selected_feeders.join(', ');
                 }
             } else if (i == 7) {
-                cont = $td.find('textarea[name="description_of_work"]').val();
+                cont = $.trim($td.find('textarea[name="description_of_work"]').val());
             } else if (i == 8) {
-                cont = $td.find('input[name="remark"]').val();
+                cont = $.trim($td.find('input[name="remark"]').val());
             } 
 			
             $td.html(cont); // set the content and remove the input fields
@@ -386,6 +395,8 @@ class BSTableTKCWeeklyPlan {
 
             let row_id = $lastRow.data('row-id');
             $lastRow.attr('data-row-id', ++row_id);
+
+            $lastRow.removeAttr('data-tkc-plan-detail-id');
 
             let $cols = $lastRow.find('td'); //lee campos
             $cols.each(function(e) {

@@ -105,7 +105,7 @@
               						<!-- Sheet Status -->
               						<div class="col-xl-6 mb-3">
               							<div class="btn-group radiobtns btn-tit" role="group" aria-label="Basic radio toggle button group">
-															<button  type="button" class="btn btn-primary"><?php echo strtoupper($sheet_data['sheet_status']); ?></button>
+															<button  type="button" class="btn btn-primary" style="background: rgb(179 103 0) !important; border-color: rgb(179 103 0) !important;"><?php echo strtoupper($sheet_data['sheet_status']); ?></button>
               							</div>
               							<!-- Work Completion -->
               							<div class="mt-3">
@@ -1654,6 +1654,15 @@
                     </div>                    
                   </div>
                 </div>
+                <div class="row" id="observation_photos_by_tkc" hidden>
+                	<!-- Observation Photos By TKC -->
+                	<div class="col-xl-12">
+                		<label class="form-label" for="obs_photo_by_tkv" id="obs_photo_by_tkc_label">Observation Photos By TKC</label>
+                		<div class="col-xl-12">
+                			<div class="text-wrap mt-2" id="preview-img-obs-by-tkc"></div>
+                		</div>
+                	</div>
+                </div>
                 <div class="row mt-2">
                 	<!-- Completion Photos -->
                   <div class="col-xl-8">
@@ -2758,6 +2767,8 @@
 
       	//Getting selected activity details
 	      let activity = getActivityDetails(table, table_row, activity_index);
+	      /*console.log('activity data');
+	      console.log(activity); return false;*/
 
       	//Getting selected activity's observations
       	let activity_obs = activity.observations_list;
@@ -2878,8 +2889,8 @@
       			data: {pp_activity_obs_id: pp_activity_obs_id, sheet_date: sheet_date},
       			dataType: 'json',
       			success: function(response){
-      				/*console.log('Get observation response:');
-      				console.log(response);*/ 
+      				console.log('Get observation response:');
+      				console.log(response);  
       				let obs_data = response.obs_data;
 
       				//Setting Observation Status
@@ -2887,6 +2898,7 @@
 
       				//Clearing previously attached photos
       				$('#preview-img-obs').empty();
+      				$('#preview-img-obs-by-tkc').empty();
 							$('#preview-img-complete').empty();
 
       				$.each(activity_obs, function(index, value) {
@@ -2965,6 +2977,25 @@
 		      			});
 
 		      			$('#preview-img-obs').append(html_img);
+		      		}
+
+		      		if (obs_data.observation_files_by_tkc.length > 0) {
+		      			$('#observation_photos_by_tkc').prop('hidden', false);
+
+		      			let html_img = '';
+		      			obs_photo_by_tkc_file_list = [];
+
+		      			$.each(obs_data.observation_files_by_tkc, function(index, value) {
+		      				let file_path = '<?php echo base_url() ?>'+ value.file_path;
+
+		      				html_img += '<div class="file-image-1" data-ppao-file_id="'+ value.physical_progress_activity_observation_file_id +'">';
+		      				html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
+		      				html_img += '<img src="'+file_path+'" class="br-5" alt="">';
+		      				html_img += '</a>';
+		      				html_img += '</div>';
+		      			});
+
+		      			$('#preview-img-obs-by-tkc').append(html_img);
 		      		}
 
 		      		if (obs_data.completion_files.length > 0) {

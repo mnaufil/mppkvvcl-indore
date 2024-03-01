@@ -727,6 +727,7 @@ class PhysicalProgress_Model extends CI_Model
 							$obs_data[$akey]['remark'] = $avalue['remark'];
 							$obs_data[$akey]['observation_status'] = $avalue['observation_status'];
 							$obs_data[$akey]['observation_photos'] = $avalue['observation_file_details'];
+							$obs_data[$akey]['observation_photos_by_tkc'] = $avalue['observation_file_by_tkc_details'];
 							$obs_data[$akey]['completion_photos'] = $avalue['observation_completion_file_details'];
 						}
 					}
@@ -1500,12 +1501,18 @@ class PhysicalProgress_Model extends CI_Model
 		} else {
 			$query_result = [];
 			if ($query->num_rows() > 0) {
-				$query_result = $query->result_array();			
+				$query_result = $query->result_array();
 
 				foreach ($query_result as $key => $value) {
 					//Getting observation file details
 					$obs_file = $this->getObservationFile($value['physical_progress_activity_observation_id']);
 					$query_result[$key]['observation_file_details'] = $obs_file;
+
+					$query_result[$key]['observation_file_by_tkc_details'] = [];
+					if ($value['observation_status'] == 'Submitted by TKC') {
+						$obs_by_tkc_file = $this->getObservationFileByTKC($value['physical_progress_activity_observation_id']);
+						$query_result[$key]['observation_file_by_tkc_details'] = $obs_by_tkc_file;
+					}
 
 					$query_result[$key]['observation_completion_file_details'] = [];
 					if ($reported_date != NUll) {

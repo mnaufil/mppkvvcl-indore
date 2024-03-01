@@ -106,7 +106,7 @@
 					            						<label class="form-label" for="observationType">Observation Type
                     										<span class="text-red">*</span>
                     									</label>
-                    									<?php $select_disabled = ($ncr_data['completion_date'] != NULL) ? 'disabled' : '';?>
+                    									<?php $select_disabled = ($ncr_data['completion_date'] != NULL || $logged_user_role == 'TKC') ? 'disabled' : '';?>
                     									<select name="observationType" id="observationType" class="form-control form-select" data-bs-placeholder="Select Observation" <?php echo $select_disabled; ?>>
 									                      	<option value="select" disabled>Select Observation</option>
 								                      		<?php foreach ($activity_observations as $key => $value) { ?>
@@ -146,9 +146,11 @@
                     									<label class="form-label" for="obs_photo">Observation Photos
                     										<span class="text-red">*</span>
                     									</label>
+                    									<?php if ($logged_user_role != 'TKC') { ?>
                     									<?php $obs_photos_disabled = ($ncr_data['completion_date'] != NULL) ? 'disabled' : '';?>
-            											<input class="form-control" type="file" id="obs_photo" name="obs_photo[]" multiple="" <?php echo $obs_photos_disabled; ?>>
+                    									<input class="form-control" type="file" id="obs_photo" name="obs_photo[]" multiple="" <?php echo $obs_photos_disabled; ?>>
               											<input type="hidden" name="obs_deleted_file_id" value="">
+                    									<?php } ?>
                   									</div>
                   									<!-- Uploaded Images -->
                   									<div class="col-xl-12">
@@ -210,6 +212,7 @@
 					            				</div>	
 					            				<?php } ?>
 					            				<!-- Row5 -->
+					            				<?php if ($logged_user_role != 'TKC') { ?>
 					            				<div class="row">
 					            					<!-- Completion Photos -->
 					            					<div class="col-xl-8">
@@ -247,13 +250,14 @@
                           									<input type="text" class="form-control" id="completionDate" name="completionDate" value="<?php echo $ncr_data['completion_date']; ?>" <?php echo $readonly; ?>>
                       									</div>
                   									</div>
-					            				</div>
+					            				</div>	
+					            				<?php } ?>
 					            				<!-- Row6 -->
 					            				<div class="row">
 					            					<!-- Submit -->
 					            					<div class="col-xl-6 mt-5 mb-3">
 					            						<?php if ($logged_user_role == 'TKC') { ?>
-					            						<button class="btn btn-success" type="submit">Update</button>
+					            						<button class="btn btn-success" type="submit">Submit</button>
 					            						<?php } else { ?>
 					            						<?php if ($ncr_data['observation_status'] == 'Pending') { ?>
 					            						<input type="hidden" name="changed_observation_status" value="Forwarded">

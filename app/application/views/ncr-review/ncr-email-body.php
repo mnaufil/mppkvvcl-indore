@@ -37,13 +37,13 @@
 	          <p style="text-align:right">Date: <?php echo $date; ?> </p>
 
             <p>Dear Sir,</p>
-            <p>Please find the enclosed herewith Non  Conformance Report(NCR).</p>
-            <p>Kindly rectify and submit the Compliance  Report within seven working days.</p>
+            <p>Please find the enclosed herewith Non Conformance Report(NCR).</p>
+            <p>Kindly rectify and submit the Compliance Report within seven working days.</p>
             <p>
               Thanks &amp; regards,<br />
               <strong>SGS India Pvt. Ltd.</strong><br />
               PMA-RDSS<br />
-              MPPKVVCL, Jabalpur
+              MPPKVVCL, Indore
             </p>
           </td>
         </tr>

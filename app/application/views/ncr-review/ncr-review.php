@@ -247,8 +247,11 @@
 				            									<tr>
 				            										<!-- Action Buttons -->
 				            										<td class="d-flex">
+				            											<?php if ($user_role != 'TKC') { ?>
 				            											<input type="checkbox" class="m-2" name="ncrReview_<?php echo $value['ncr_id']; ?>" value="<?php echo $value['ncr_id']; ?>">
-				            											&nbsp;&nbsp;
+				            											&nbsp;&nbsp;	
+				            											<?php } ?>
+				            											
 				            											<?php if (!empty($user_access) && (isset($user_access['update']))) { ?>
 				            											<a href="<?php echo base_url('edit-ncr/'.$value['physical_progress_activity_observation_id']); ?>" class="btn btn-sm">
 		                                                               		<span class="fe fe-edit fa-lg action-btn-table"></span>
@@ -284,7 +287,8 @@
 				            										<!-- Completion Date -->
 				            										<td><?php echo $value['completion_date']; ?></td>
 				            										<!-- Status -->
-				            										<?php 	if ($value['observation_status'] == 'Pending') {
+				            										<?php 	if ($value['observation_status'] == 'Pending')
+				            												{
 				            													$text_color_class = 'text-gray';
 				            												} elseif ($value['observation_status'] == 'Reviewed') {
 				            													$text_color_class = 'text-blue';
@@ -297,6 +301,7 @@
 				            												}
 				            										?>
 				            										<td><h6 class="<?php echo $text_color_class; ?>"><?php echo $value['observation_status']; ?></h6></td>
+				            										<!-- Last Email Details -->
 				            										<td>
 				            											<?php if (!empty($value['last_email_details'])) {
 				            													echo 'Date and Time: '.$value['last_email_details'].'<br/>'.'Sent To: '.$value['contractor_email'];
@@ -589,7 +594,6 @@
 
 		      	window.location.replace('<?php echo base_url("ncr-review") ?>');
     		});
-
 
     		$('#circle').on('change', function(event) {
     			let selected_circle_id = $(this).val();

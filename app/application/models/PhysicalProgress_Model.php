@@ -1284,7 +1284,7 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
-	public function savePhysicalProgressSheetAPI($contract_id, $contract_location_id, $site_location, $reported_by, $reported_date, $geo_code, $remark, $status_id, $is_draft, $user_id)
+	public function savePhysicalProgressSheetAPI($contract_id, $contract_location_id, $site_location, $reported_by, $reported_date, $geo_code, $is_inrange, $remark, $status_id, $is_draft, $user_id)
 	{
 		$data = array(
 			'contract_id' => $contract_id,
@@ -1293,6 +1293,7 @@ class PhysicalProgress_Model extends CI_Model
 			'reported_by' => $reported_by,
 			'reported_date' => $reported_date,
 			'geo_code' => $geo_code,
+			'is_inrange' => $is_inrange,
 			'remark' => $remark,
 			'is_draft' => $is_draft,
 			'status_id' => $status_id,
@@ -1312,7 +1313,7 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
-	public function updatePhysicalProgressSheet($pp_id, $contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, $geo_code, $remark, $status_id, $is_draft, $user_id = NULL)
+	public function updatePhysicalProgressSheet($pp_id, $contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, $geo_code, $is_inrange, $remark, $status_id, $is_draft, $user_id = NULL)
 	{
 		$data = array(
 			'contract_id' => $contract_id,
@@ -1321,6 +1322,7 @@ class PhysicalProgress_Model extends CI_Model
 			'reported_by' => $reported_by_id,
 			'reported_date' => $reported_date,
 			'geo_code' => $geo_code,
+			'is_inrange' => $is_inrange,
 			'remark' => $remark,
 			'is_draft' => $is_draft,
 			'status_id' => $status_id,

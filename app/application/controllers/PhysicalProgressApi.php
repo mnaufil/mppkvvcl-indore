@@ -147,6 +147,7 @@ class PhysicalProgressApi extends REST_Controller
             $reported_by = $this->post('reported_by');
             $reported_date = date('Y-m-d', strtotime($this->post('reported_date')));
             $geo_code = $this->post('geo_code');
+            $is_inrange = ($this->post('is_inrange') == 'yes') ? 1 : 0;
             $sheet_remark = $this->post('sheet_remark');
             $activities = $this->post('activities');
             $sheet_completion_file = $this->post('sheet_completion_file');
@@ -161,9 +162,9 @@ class PhysicalProgressApi extends REST_Controller
             //In case sheet is being saved, without saving any observations
             if ((empty($pp_id)) || $pp_id == NULL) {
                 //Saving the sheet and fetching the new physical_progres_id
-                $pp_id = $this->pp_model->savePhysicalProgressSheetAPI($prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $geo_code, $sheet_remark, $status_id, $is_draft, $user_id);
+                $pp_id = $this->pp_model->savePhysicalProgressSheetAPI($prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $geo_code, $is_inrange, $sheet_remark, $status_id, $is_draft, $user_id);
             } else {
-                $pp_id = $this->pp_model->updatePhysicalProgressSheet($pp_id, $prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $geo_code, $sheet_remark, $status_id, $is_draft, $user_id);
+                $pp_id = $this->pp_model->updatePhysicalProgressSheet($pp_id, $prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $geo_code, $is_inrange, $sheet_remark, $status_id, $is_draft, $user_id);
             }
 
             if ($pp_id) {
@@ -942,6 +943,7 @@ class PhysicalProgressApi extends REST_Controller
             $offset = 0;
 
             $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by, $reported_date, $feeder_id, $status, $user_id, $offset, $limit);
+            echo 'search_result: <pre>'; print_r($search_result); echo '</pre>'; die();
             
             $errors = null;
             $message = (empty($search_result)) ? 'No results found for the specified filters' : 'Search Sheet Result';

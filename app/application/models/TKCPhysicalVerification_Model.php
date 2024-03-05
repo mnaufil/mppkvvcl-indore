@@ -202,7 +202,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
-	public function saveTKCPhysicalVerificationSheet($contract_id, $contract_location_id, $site_location, $reported_by, $reported_date, $remark, $status_id, $is_draft, $geo_code = NULL, $user_id = NULL)
+	public function saveTKCPhysicalVerificationSheet($contract_id, $contract_location_id, $site_location, $reported_by, $reported_date, $remark, $status_id, $is_draft, $is_inrange, $geo_code, $user_id = NULL)
 	{
 		$data = array(
 			'contract_id' => $contract_id,
@@ -210,6 +210,8 @@ class TKCPhysicalVerification_Model extends CI_Model
 			'site_location' => $site_location,
 			'reported_by' => $reported_by,
 			'reported_date' => $reported_date,
+			'geo_code' => $geo_code,
+			'is_inrange' => $is_inrange,
 			'remark' => $remark,
 			'is_draft' => $is_draft,
 			'status_id' => $status_id,
@@ -229,7 +231,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
-	public function updateTKCPhysicalVerificationSheet($tkc_pp_id, $contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, $geo_code, $remark, $status_id, $is_draft, $user_id = NULL)
+	public function updateTKCPhysicalVerificationSheet($tkc_pp_id, $contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, $is_inrange, $geo_code, $remark, $status_id, $is_draft, $user_id = NULL)
 	{
 		$data = array(
 			'contract_id' => $contract_id,
@@ -237,7 +239,8 @@ class TKCPhysicalVerification_Model extends CI_Model
 			'site_location' => $site_location,
 			'reported_by' => $reported_by_id,
 			'reported_date' => $reported_date,
-			/*'geo_code' => $geo_code,*/
+			'geo_code' => $geo_code,
+			'is_inrange' => $is_inrange,
 			'remark' => $remark,
 			'is_draft' => $is_draft,
 			'status_id' => $status_id,

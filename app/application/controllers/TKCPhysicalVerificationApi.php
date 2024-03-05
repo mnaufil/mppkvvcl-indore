@@ -194,6 +194,7 @@ class TKCPhysicalVerificationApi extends REST_Controller
 			$reported_by = $this->post('reported_by');
 			$reported_date = date('Y-m-d', strtotime($this->post('reported_date')));
 			$geo_code = $this->post('geo_code');
+			$is_inrange = ($this->post('is_inrange') == 'yes') ? 1 : 0;
 			$sheet_remark = $this->post('sheet_remark');
 			$activities = $this->post('activities');
 
@@ -206,9 +207,9 @@ class TKCPhysicalVerificationApi extends REST_Controller
             //In case sheet is being saved, without saving any observations
             if ((empty($tkc_pp_id)) || $tkc_pp_id == NULL) {
             	//Saving the sheet and fetching the new physical_progres_id
-            	$tkc_pp_id = $this->tpv_model->saveTKCPhysicalVerificationSheet($prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $sheet_remark, $status_id, $is_draft, $geo_code, $user_id);
+            	$tkc_pp_id = $this->tpv_model->saveTKCPhysicalVerificationSheet($prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $sheet_remark, $status_id, $is_draft, $is_inrange, $geo_code, $user_id);
             } else {
-            	$tkc_pp_id = $this->tpv_model->updateTKCPhysicalVerificationSheet($tkc_pp_id, $prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $geo_code, $sheet_remark, $status_id, $is_draft, $user_id);
+            	$tkc_pp_id = $this->tpv_model->updateTKCPhysicalVerificationSheet($tkc_pp_id, $prev_sheet_data['contract_id'], $prev_sheet_data['contract_location_id'], $prev_sheet_data['site_location'], $reported_by, $reported_date, $is_inrange, $geo_code, $sheet_remark, $status_id, $is_draft, $user_id);
             }
 
             if ($tkc_pp_id) {

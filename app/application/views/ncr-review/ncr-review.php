@@ -316,12 +316,14 @@
 				            					</div>
 				            				</div>
 				            				<!-- Table Ends -->
+				            				<?php if ($user_role != 'TKC') { ?>
 				            				<div class="row">
 				            					<!-- Submit -->
 				            					<div class="col-xl-6 mt-5 mb-3">
 				            						<button class="btn btn-primary" name="sendMail" id="sendMail">Send Mail</button>
 				            					</div>
-				            				</div>
+				            				</div>	
+				            				<?php } ?>
 				            			</div>
 				            		</div>
 				            	</div>

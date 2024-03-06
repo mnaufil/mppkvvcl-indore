@@ -68,7 +68,7 @@
                             <hr>
                             <div class="text-center" style="margin-top: 40px;">
                                 <a href="index.php">
-                                    <img src="<?php echo base_url('assets/images/brand/mppkvvcl.png'); ?>" class="header-brand-img" style="width: 140px;" alt="" >
+                                    <img src="<?php echo base_url('assets/images/brand/mppkvvcl.png'); ?>" class="header-brand-img" style="width: 100px;" alt="" >
                                 </a> 
                             </div>
 

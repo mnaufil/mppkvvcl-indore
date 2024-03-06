@@ -179,8 +179,9 @@
 					            				<div class="row">
 					            					<!-- TKC Observation Photos -->
 					            					<div class="col-xl-12">
-					            						<label class="form-label" for="obs_photo_tkc">Observation Photos By TKC
-                    									</label>
+					            						<?php if ($logged_user_role == 'TKC' || !empty($ncr_data['observation_tkc_files'])) { ?>
+					            						<label class="form-label" for="obs_photo_tkc">Observation Photos By TKC</label>
+					            						<?php } ?>
                     									<?php if ($logged_user_role == 'TKC') { ?>
                     									<input class="form-control" type="file" id="obs_photo_tkc" name="obs_photo_tkc[]" multiple="">	
                     									<?php } ?>

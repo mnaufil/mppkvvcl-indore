@@ -66,11 +66,11 @@
         		<!-- Container -->
         		<div class="main-container container-fluid">
 
-        			<div class="row">
-        				<?php if ($sheet_data['is_inrange'] == 0) { ?>
+        			<!-- <div class="row">
+        				<?php //if ($sheet_data['is_inrange'] == 0) { ?>
                 		<p class="fs-6 mb-0">This entry is made beyond permissible limit of 5KM from the site location</p>	
-                		<?php } ?>
-        			</div>
+                		<?php //} ?>
+        			</div> -->
                 			
             	<!-- Page-Header -->
               <div class="page-header">

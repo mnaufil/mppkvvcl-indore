@@ -36,7 +36,7 @@
 
     </head>
 
-    <body class="app sidebar-mini ltr login-img">
+    <body class="app sidebar-mini ltr login-img" style="overflow: hidden;">
 
         <!-- BACKGROUND-IMAGE -->
         <div class="">
@@ -68,7 +68,7 @@
                             <hr>
                             <div class="text-center" style="margin-top: 40px;">
                                 <a href="index.php">
-                                    <img src="<?php echo base_url('assets/images/brand/newlogo.png'); ?>" class="header-brand-img" alt="" >
+                                    <img src="<?php echo base_url('assets/images/brand/mppkvvcl.png'); ?>" class="header-brand-img" style="width: 140px;" alt="" >
                                 </a> 
                             </div>
 
@@ -113,7 +113,8 @@
                                                 </p>
                                             </div>
                                             <div class="container-login100-form-btn">
-                                                <button type="submit" class="login100-form-btn btn-primary">Login</button>
+                                                <!-- <button type="submit" style="background-color: #b36700!important; border:1px solid #b36700 !important" class="login100-form-btn btn-primary">Login</button> -->
+                                                <button type="submit"  class="login100-form-btn btn-primary">Login</button>
                                             </div>
                                         </div>
                                     </div>

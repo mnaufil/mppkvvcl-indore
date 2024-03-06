@@ -65,12 +65,18 @@
                 		
         		<!-- Container -->
         		<div class="main-container container-fluid">
+
+        			<div class="row">
+        				<?php if ($sheet_data['is_inrange'] == 0) { ?>
+                		<p class="fs-6 mb-0">This entry is made beyond permissible limit of 5KM from the site location</p>	
+                		<?php } ?>
+        			</div>
                 			
             	<!-- Page-Header -->
               <div class="page-header">
                 <h1 class="page-title"><?php echo $page_title; ?></h1>
                 <div class="row">
-                	<div class="col-md-12">
+                	<div class="col-md-12">                		
                 		<p><h5>Task: <strong><?php echo $sheet_data['task_ratio']; ?></strong></h5></p>
                 	</div>
                 </div>
@@ -105,7 +111,8 @@
               						<!-- Sheet Status -->
               						<div class="col-xl-6 mb-3">
               							<div class="btn-group radiobtns btn-tit" role="group" aria-label="Basic radio toggle button group">
-															<button  type="button" class="btn btn-primary" style="background: rgb(179 103 0) !important; border-color: rgb(179 103 0) !important;"><?php echo strtoupper($sheet_data['sheet_status']); ?></button>
+															<!-- <button  type="button" class="btn btn-primary" style="background: rgb(179 103 0) !important; border-color: rgb(179 103 0) !important;"><?php echo strtoupper($sheet_data['sheet_status']); ?></button> -->
+															<button  type="button" class="btn btn-primary"><?php echo strtoupper($sheet_data['sheet_status']); ?></button>
               							</div>
               							<!-- Work Completion -->
               							<div class="mt-3">

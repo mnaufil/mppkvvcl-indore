@@ -8,7 +8,7 @@
                 <img src="<?php echo base_url('assets/images/brand/logo-white.png'); ?>" class="header-brand-img desktop-logo" alt="logo">
                 <img src="<?php echo base_url('assets/images/brand/icon-white.png'); ?>" class="header-brand-img toggle-logo" alt="logo">
                 <img src="<?php echo base_url('assets/images/brand/icon-dark.png'); ?>" class="header-brand-img light-logo" alt="logo">
-                <img src="<?php echo base_url('assets/images/brand/logo-dark.png'); ?>" class="header-brand-img light-logo1" alt="logo">
+                <img src="<?php echo base_url('assets/images/brand/mppkvvcl.png'); ?>" class="header-brand-img light-logo1" alt="logo">
             </a>
             <!-- Logo Ends-->
         </div>
@@ -31,6 +31,7 @@
                             $segment_arr = explode('/', $url);
                             $last_segment = end($segment_arr);                            
 
+                            // $slide_open = $main_menu_active = $element_style = '';
                             $slide_open = $main_menu_active = '';
                             $slide_style = 'style=" display: none;"';
 
@@ -47,18 +48,19 @@
                                     $slide_style = 'style="display: block;"';
 
                                     $main_menu_active = 'active';
+                                    //$element_style = 'style="color: rgb(179 103 0) !important;"';
                                 }
                             }
                     ?>
 
                     <?php if(in_array($menu, $this->session->allModuleArray)) { ?>
-                    <a class="side-menu__item <?php echo $main_menu_active; ?>"  href="<?php echo base_url(str_replace(" ", "-", strtolower($menu)));?>">
+                    <a class="side-menu__item <?php echo $main_menu_active; ?>"  href="<?php echo base_url(str_replace(" ", "-", strtolower($menu)));?>" >
                         <i class="side-menu__icon fe fe-<?php echo $_SESSION['iconData'][$menu] ;?>"></i>
                         <span class="side-menu__label"><?php echo $menu;?></span>
                         <!--i class="angle fe fe-chevron-right"></i-->
                     </a>
                     <?php } else { ?> 
-                    <a class="side-menu__item <?php echo $main_menu_active; ?>" data-bs-toggle="slide" href="javascript:void(0)">
+                    <a class="side-menu__item <?php echo $main_menu_active; ?>" data-bs-toggle="slide" href="javascript:void(0)" <?php //echo $element_style; ?>>
                         <i class="side-menu__icon fe fe-<?php echo $_SESSION['iconData'][$menu] ;?>"></i>
                         <span class="side-menu__label"><?php echo $menu;?></span>
                         <i class="angle fe fe-chevron-right"></i>

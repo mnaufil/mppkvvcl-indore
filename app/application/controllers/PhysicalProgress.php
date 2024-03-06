@@ -227,7 +227,7 @@ class PhysicalProgress extends CI_Controller
      {
           if ($this->checkLocationAccess($contract_location_id)) {
                $sheet_result = $this->pp_model->getSheetDetail($mode, $ppsheet_id, $contract_id, $contract_location_id);
-
+               
                //Setting physical_progress_id of editing sheet as prev_physical_progress_id
                $sheet_result['prev_physical_progress_id'] = $sheet_result['physical_progress_id'];
 
@@ -333,7 +333,7 @@ class PhysicalProgress extends CI_Controller
                          }
                     }
                } else {
-                    $pp_id = $this->pp_model->updatePhysicalProgressSheet($pp_id, $contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, NULL, $remark, $status_id, $is_draft);
+                    $pp_id = $this->pp_model->updatePhysicalProgressSheet($pp_id, $contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, NULL, NULL,$remark, $status_id, $is_draft);
                }
 
                $pp_sheet_activities = array();

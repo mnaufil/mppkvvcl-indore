@@ -468,7 +468,7 @@
 																								<th>Observation Type</th>
 																								<th>Observation</th>
 																								<th>File Upload</th>
-																								<?php } elseif ($k1 == '33kv Interconnection Line') { ?>
+																								<?php } elseif ($k1 == '33kv Interconnection Line' || $k1 == '11 kv Bifurcation' || $k1 == '11 kv Interconnection' || $k1 == '33 kv Augmentation' || $k1 == '11 kv Augmentation' || $k1 == 'Additional DTR' || $k1 == 'Bare to Cable' || $k1 == 'Cable Augmentation' || $k1 == 'DL to AG/Coated conductor' || $k1 == 'Substation Rennovation') { ?>
 																								<th style="width: 10px;">Sr.No</th>
 																								<th style="width: 200px;">Activity</th>
 																								<!-- <th style="width: 150px;">Status</th> -->
@@ -1264,7 +1264,7 @@
 																								</tr>
 																								<!-- tr close -->
 																							<?php } ?>
-																						<?php } elseif ($k1 == '33kv Interconnection Line') { ?>
+																						<?php } elseif ($k1 == '33kv Interconnection Line' || $k1 == '11 kv Bifurcation' || $k1 == '11 kv Interconnection' || $k1 == '33 kv Augmentation' || $k1 == '11 kv Augmentation' || $k1 == 'Additional DTR' || $k1 == 'Bare to Cable' || $k1 == 'Cable Augmentation' || $k1 == 'DL to AG/Coated conductor' || $k1 == 'Substation Rennovation') { ?>
 																							<?php foreach ($v1 as $k2 => $v2) { ?>
 																								<!-- tr open -->
 																								<tr data-table-row="<?php echo $k2; ?>" data-seqno="<?php echo $v2['seqno'];?>" data-activity-id="<?php echo $v2['typeofwork_activity_id'];?>" data-unit-id="<?php echo $v2['unit_id'];?>">

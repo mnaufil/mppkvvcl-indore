@@ -744,7 +744,7 @@ class PhysicalProgress_Model extends CI_Model
 	{
 		$this->db->select('activity_id');
 		$this->db->where('physical_progress_id', $pp_id);
-		$this->db->where_in('status_id', array(0,2));
+		$this->db->where_in('status_id', array(0,2,4));
 
 		$query = $this->db->get('physical_progress_activity');
 		// echo $this->db->last_query(); die();

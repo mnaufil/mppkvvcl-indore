@@ -502,7 +502,7 @@ class PhysicalProgress extends CI_Controller
                }
 
                $remaining_activity_count = $this->pp_model->getAppliedActivitiesListForSheetStatusCalculation($pp_id);
-               if ($remaining_activity_count == 0) {                    
+               if ($remaining_activity_count == 0) {
 
                     if (isset($_FILES['completionFile']) && $_FILES['completionFile']['error'][0] != 4) {
                          $ppsheet_completion_photo = $_FILES['completionFile'];
@@ -977,16 +977,20 @@ class PhysicalProgress extends CI_Controller
 
      public function calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag)
      {
-          if ($erected_val == 0) {
-               return $status_id = 0;
-          } elseif ($erected_val > 0 && $erected_val < $boq_val) {
-               return $status_id = 2;
-          } elseif ($erected_val == $boq_val) {
-               if ($observation_flag == 'no observation' || $observation_flag == 'observation complete') {
-                    return $status_id = 1;
-               } elseif ($observation_flag == 'observation pending') {
+          if ($boq_val == 0) {
+               return $status_id = 3;
+          } else {
+               if ($erected_val == 0) {
+                    return $status_id = 0;
+               } elseif ($erected_val > 0 && $erected_val < $boq_val) {
                     return $status_id = 2;
-               }
+               } elseif ($erected_val == $boq_val) {
+                    if ($observation_flag == 'no observation' || $observation_flag == 'observation complete') {
+                         return $status_id = 1;
+                    } elseif ($observation_flag == 'observation pending') {
+                         return $status_id = 2;
+                    }
+               }     
           }
      }
 

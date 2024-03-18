@@ -523,11 +523,11 @@ class Report_Model extends CI_Model
 		 //$query = $this->db->query("CALL sp_rpt_physical_progress($sessionId,$package,$feederId)");		
 		 //$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress($sessionId,$package,$feederId)";
 
-		//echo "CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,$package,'$spRegion','$spCircle','$spDivision',$feederId)"; die;
 		$query = $this->db->query("CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)");
+		// echo $this->db->last_query(); die();
 		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)";
 
-		// echo $this->db->last_query(); die();
+		
 		
 		if($query)
 		{
@@ -652,10 +652,10 @@ class Report_Model extends CI_Model
 		 //$query = $this->db->query("CALL sp_rpt_physical_progress($sessionId,$package,$feederId)");		
 		 //$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress($sessionId,$package,$feederId)";
 
-		//echo "CALL sp_rpt_physical_progress_feederWise($sessionId,$package,'$spRegion','$spCircle','$spDivision',null)"; die;
+		// echo "CALL sp_rpt_physical_progress_feederWise($sessionId,$package,'$spRegion','$spCircle','$spDivision',null)"; die;
 
-		//echo "CALL sp_rpt_physical_progress_feederWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)"; die;
-		$query = $this->db->query("CALL sp_rpt_physical_progress_feederWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)");
+		// echo "CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)"; die;
+		$query = $this->db->query("CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
 		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_feederWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)";
 		
@@ -679,9 +679,9 @@ class Report_Model extends CI_Model
 		}
 		
 		//echo "CALL sp_rpt_physical_progres($sessionId,$package,$feederId)"; die;
-	 	$_SESSION['spQuery'] = "CALL sp_rpt_physical_progres($sessionId,$package,$feederId)";
+	 	$_SESSION['spQuery'] = "CALL sp_rpt_physical_progres($sessionId,'$package',$feederId)";
 
-		$query1 = $this->db->query("CALL sp_rpt_physical_progres($sessionId,$package,$feederId)");
+		$query1 = $this->db->query("CALL sp_rpt_physical_progres($sessionId,'$package',$feederId)");
 		
 		if($query1)
 		{

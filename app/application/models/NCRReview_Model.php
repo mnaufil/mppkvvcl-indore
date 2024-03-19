@@ -341,7 +341,7 @@ class NCRReview_Model extends CI_Model
 			'deleteddate' => date('Y-m-d H:i:s')
 		);
 
-		$query = $this->db->update('physical_progress_activity_observation_tkc_file', $data, array('physical_progress_activity_observation_file_id' => $ppao_file_id));
+		$query = $this->db->update('physical_progress_activity_observation_tkc_file', $data, array('physical_progress_activity_observation_tkc_file_id' => $ppao_file_id));
 
 		if (!$query) {
 			$error = $this->db->error();	

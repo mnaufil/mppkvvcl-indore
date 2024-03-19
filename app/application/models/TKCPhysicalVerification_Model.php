@@ -965,6 +965,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 			$this->db->join('mst_region', 'contract_location.region_id = mst_region.region_id', 'INNER');
 			$this->db->where(array('contract_location.contract_id' => $contract_id));
 		} else {
+			$this->db->distinct();
 			$this->db->select('mst_user_data_access.region_id, mst_region.region_name');
 			$this->db->from('mst_user_data_access');
 			$this->db->join('mst_region', 'mst_user_data_access.region_id = mst_region.region_id');

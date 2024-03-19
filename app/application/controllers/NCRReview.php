@@ -420,8 +420,6 @@ class NCRReview extends CI_Controller
 			$this->email->subject($subject);
 			$this->email->message($message);
 
-			echo '<pre>'; print_r($this->email); echo '</pre>'; die();
-
 			if (!$this->email->send()) {
 				$error = $this->email->print_debugger();
 				array_push($email_errors, $error);

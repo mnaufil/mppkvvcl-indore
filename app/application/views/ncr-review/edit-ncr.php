@@ -68,7 +68,7 @@
 				            <div class="page-header">
 				            	<h1 class="page-title">Edit NCR Details</h1>
 				            	<!-- FLash Alert -->
-				            	<?php if ($this->session->flashdata('error')) { ?>
+				            	<?php if ($this->session->flashdata('error') && !empty($this->session->flashdata('error'))) { ?>
 				            		<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width: 45%;"> 
                                         <span class="alert-inner--icon">
                                             <i class="fe fe-slash"></i>

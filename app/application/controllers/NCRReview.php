@@ -375,13 +375,15 @@ class NCRReview extends CI_Controller
 			redirect('edit-ncr/'.$ncr_id);	
 		} else {
 			if ($logged_user_role == 'TKC') {
-				$email_result = $this->sendNCRSubmittedByTKCEmail($contract_location_id, $ncr_id, $pp_activity_obs_id);	
+				$email_result = $this->sendNCRSubmittedByTKCEmail($contract_location_id, $ncr_id, $pp_activity_obs_id);
 
 				if (empty($email_result)) {
 					$this->ncr_model->updateNCRStatus($pp_activity_obs_id, $changed_obs_status_ID);
 					redirect('ncr-review');	
 				} else {
-					$errors = 'Failed to send email to FE/FS/DTL';
+					$error_msg = 'Failed to send email to FE/FS/DTL';
+					array_push($errors, $error_msg);
+					
 					$this->session->set_flashdata('error',$errors);
 					redirect('edit-ncr/'.$ncr_id);
 				}

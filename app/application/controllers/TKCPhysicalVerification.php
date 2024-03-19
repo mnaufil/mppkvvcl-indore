@@ -139,7 +139,7 @@ class TKCPhysicalVerification extends CI_Controller
            			
            		}
            	} else {
-           		$tkc_pp_id = $this->tpv_model->updateTKCPhysicalVerificationSheet($pp_id, $contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, NULL, NULL, $remark, $status_id, $is_draft);
+           		$tkc_pp_id = $this->tpv_model->updateTKCPhysicalVerificationSheet($tkc_pp_id, $contract_id, $contract_location_id, $site_location, $reported_by_id, $reported_date, NULL, NULL, $remark, $status_id, $is_draft);
            	}
 
            	$pp_sheet_activities = array();

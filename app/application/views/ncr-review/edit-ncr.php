@@ -473,7 +473,7 @@
 		      		if (photo_action == 'add') {
 		      			$('#obs_photo')[0].files = FileListItem(obs_photo_file_list)	
 		      		} else if (photo_action == 'edit') {
-		      			let deleted_file_id = $(anchor).closest('.file-image-1').attr('data-ppao-file_id');
+		      			let deleted_file_id = $(anchor).closest('.file-image-1').attr('data-ppao-file-id');
 		      			obs_deleted_file_id.push(deleted_file_id);
 
 		      			$('input[name="obs_deleted_file_id"]').val(obs_deleted_file_id);
@@ -485,7 +485,7 @@
       				if (photo_action == 'add') {
 		      			$('#completion_photo')[0].files = FileListItem(obs_completion_photo_file_list);	
 		      		} else if (photo_action == 'edit') {
-		      			let deleted_file_id = $(anchor).closest('.file-image-1').attr('data-ppao-file_id');
+		      			let deleted_file_id = $(anchor).closest('.file-image-1').attr('data-ppao-file-id');
 		      			obs_completion_deleted_file_id.push(deleted_file_id);
 
 		      			$('input[name="obs_completion_deleted_file_id"]').val(obs_completion_deleted_file_id);
@@ -497,7 +497,7 @@
 		      		if (photo_action == 'add') {
 		      			$('#obs_photo_tkc')[0].files = FileListItem(obs_tkc_photo_file_list);
 		      		} else if (photo_action == 'edit') {
-		      			let deleted_file_id = $(anchor).closest('.file-image-1').attr('data-ppao-file_id');
+		      			let deleted_file_id = $(anchor).closest('.file-image-1').attr('data-ppao-file-id');
 		      			obs_tkc_deleted_file_id.push(deleted_file_id);
 
 		      			$('input[name="obs_tkc_deleted_file_id"]').val(obs_tkc_deleted_file_id);

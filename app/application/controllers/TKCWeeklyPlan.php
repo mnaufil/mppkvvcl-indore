@@ -206,8 +206,8 @@ class TKCWeeklyPlan extends CI_Controller
       				$contract_id = $this->twp_model->getContractIDFromLotNo($lot_no);
       				$date_of_work = date('Y-m-d', strtotime($value->date_of_work));
 
-      				$circle_id = (!empty($value->circle)) ? $this->twp_model->getCircleID($value->circle) : $value->circle;
-      				$division_id = (!empty($value->division)) ? $this->twp_model->getDivisionID($value->division) : $value->division;
+      				$circle_id = (!empty($value->circle)) ? $this->twp_model->getCircleID(trim($value->circle)) : $value->circle;
+      				$division_id = (!empty($value->division)) ? $this->twp_model->getDivisionID(trim($value->division)) : $value->division;
 
       				$work_description = trim($value->description_of_work);
       				$remark = trim($value->remark);

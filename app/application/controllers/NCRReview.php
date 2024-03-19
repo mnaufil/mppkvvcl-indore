@@ -376,7 +376,6 @@ class NCRReview extends CI_Controller
 		} else {
 			if ($logged_user_role == 'TKC') {
 				$email_result = $this->sendNCRSubmittedByTKCEmail($contract_location_id, $ncr_id, $pp_activity_obs_id);
-				echo 'email_result: <pre>'; print_r($email_result); echo '</pre>'; die();
 
 				if (empty($email_result)) {
 					$this->ncr_model->updateNCRStatus($pp_activity_obs_id, $changed_obs_status_ID);

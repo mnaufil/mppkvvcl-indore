@@ -102,7 +102,7 @@
 	                  			<!-- Sheet Status -->
 	                  			<div class="col-xl-6 mb-3">
 	                  				<div class="btn-group radiobtns btn-tit" role="group" aria-label="Basic radio toggle button group">
-	                  					<button type="button" class="btn btn-primary" style="background: rgb(179 103 0) !important; border-color: rgb(179 103 0) !important;"><?php echo strtoupper($sheet_data['sheet_status']); ?></button>
+	                  					<button type="button" class="btn btn-primary"><?php echo strtoupper($sheet_data['sheet_status']); ?></button>
 	                  				</div>
 	                  				<!-- Work Completion -->
 	                  				<div class="mt-3">

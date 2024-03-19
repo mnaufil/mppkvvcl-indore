@@ -785,9 +785,9 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<?php $progress = '';
 																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) {
-																														$erected_qty = (int)$v2['erected_qty'];
+																														$erected_qty = $v2['erected_qty'];
 																														// $progress = round(($erected_qty / $v2['boq']) * 100);
-																														$progress = number_format((float)($erected_qty / $v2['boq']) * 100, 2, '.', '');
+																														$progress = number_format(($erected_qty / $v2['boq']) * 100, 2, '.', '');
 																													}
 																										?>
 																										<td class="progress-percent"><?php echo $progress; ?></td>
@@ -920,9 +920,9 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<?php $progress = '';
 																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) {
-																														$erected_qty = (int)$v2['erected_qty'];
+																														$erected_qty = $v2['erected_qty'];
 																														// $progress = round(($erected_qty / $v2['boq']) * 100);
-																														$progress = number_format((float)($erected_qty / $v2['boq']) * 100, 2, '.', '');
+																														$progress = number_format(($erected_qty / $v2['boq']) * 100, 2, '.', '');
 																													}
 																										?>
 																										<td class="progress-percent"><?php echo $progress; ?></td>
@@ -1180,9 +1180,9 @@
 																									<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<?php $progress = '';
 																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) { 
-																														$erected_qty = (int)$v2['erected_qty'];
+																														$erected_qty = $v2['erected_qty'];
 																														// $progress = round(($erected_qty / $v2['boq']) * 100);
-																														$progress = number_format((float)($erected_qty / $v2['boq']) * 100, 2, '.', '');
+																														$progress = number_format(($erected_qty / $v2['boq']) * 100, 2, '.', '');
 																													}
 																										?>
 																										<td class="progress-percent"><?php echo $progress; ?></td>
@@ -1312,9 +1312,9 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<?php $progress = '';
 																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) {
-																														$erected_qty = (int)$v2['erected_qty'];
+																														$erected_qty = $v2['erected_qty'];
 																														// $progress = round(($erected_qty / $v2['boq']) * 100);
-																														$progress = number_format((float)($erected_qty / $v2['boq']) * 100, 2, '.', '');
+																														$progress = number_format(($erected_qty / $v2['boq']) * 100, 2, '.', '');
 																													}
 																										?>
 																										<td class="progress-percent"><?php echo $progress; ?></td>
@@ -2409,7 +2409,7 @@
 					if (erected_qty > 0) {
 						//Calculating Progress in %
 						let boq_qty = $(tr).find('td').eq(3).text();
-						let progress = (parseInt(erected_qty) / parseInt(boq_qty)) * 100;
+						let progress = (parseFloat(erected_qty) / parseFloat(boq_qty)) * 100;
 						// $(tr).find('td').eq(5).text(Math.round(progress));
 						$(tr).find('td').eq(5).text(parseFloat(progress).toFixed(2));
 

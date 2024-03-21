@@ -35,15 +35,6 @@ class Migration_Create_import_hdr_table extends CI_Migration
 				'constraint' => 200,
 				'null' => FALSE
 			),
-			'error_message' => array(
-				'type' => 'VARCHAR',
-				'constraint' => 1000,
-				'null' => TRUE
-			),
-			'is_valid' => array(
-				'type' => 'BIT',
-				'null' => TRUE
-			),
 			'is_active' => array(
 				'type' => 'BIT',
 				'null' => FALSE

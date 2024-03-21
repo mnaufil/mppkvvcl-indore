@@ -27,12 +27,12 @@ class Migration_Create_import_material_in_sampling_table extends CI_Migration
 			),
 			'lot_no' => array(
 				'type' => 'VARCHAR',
-				'constraint' => 50,
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'circle' => array(
 				'type' => 'VARCHAR',
-				'constraint' => 100,
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'material_description' => array(
@@ -42,44 +42,47 @@ class Migration_Create_import_material_in_sampling_table extends CI_Migration
 			),
 			'unit' => array(
 				'type' => 'VARCHAR',
-				'constraint' => 50,
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'name_of_vendor' => array(
 				'type' => 'VARCHAR',
-				'constraint' => 200,
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'di_no' => array(
 				'type' => 'VARCHAR',
-				'constraint' => 200,
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'di_date' => array(
-				'type' => 'DATE',
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'di_quantity' => array(
-				'type' => 'DECIMAL',
-				'constraint' => '12,2',
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'received_quantity' => array(
-				'type' => 'DECIMAL',
-				'constraint' => '12,2',
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'received_date' => array(
-				'type' => 'DATE',
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'sampling_quantity' => array(
-				'type' => 'DECIMAL',
-				'constraint' => '12,2',
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'sampling_seal_date' => array(
-				'type' => 'DATE',
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
 				'null' => FALSE
 			),
 			'error_message' => array(

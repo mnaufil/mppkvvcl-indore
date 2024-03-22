@@ -1863,7 +1863,7 @@ class PhysicalProgress_Model extends CI_Model
 	{
 		$query_result = [];
 
-		$query =  $this->db->select('typeofwork_id, name')->get('mst_typeofwork');
+		$query =  $this->db->select('typeofwork_id, name')->get_where('mst_typeofwork', array('is_active' => 1));
 
 		if ($query->num_rows() > 0) {
 			$query_result = $query->result_array();

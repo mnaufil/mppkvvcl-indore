@@ -464,10 +464,7 @@ class SetupInner_Model extends CI_Model
                 }
                 else if(isset($region['deleteId']))
                 {
-
-
                     $regionArray = array(
-
                         "contract_id" => $last_id,
                         "region_id" => $region['region'],
                         "circle_id" => $region['circle'],
@@ -493,9 +490,10 @@ class SetupInner_Model extends CI_Model
                         //"contract_location_id" => $last_id_for_log,
                         "site_location" => $region['location'],
                         "status_id" => 0,
-                         "deletedby" => $_SESSION['loggedData']->user_id,
+                        "deletedby" => $_SESSION['loggedData']->user_id,
                         "deleteddate" => date ('Y-m-d H:i:s')
                     );
+                    
                     $this->db->where("contract_location_id", $region['deleteId']);
                     $this->db->update("physical_progress", $physicalProgressArray);
 
@@ -523,48 +521,43 @@ class SetupInner_Model extends CI_Model
                     {
                         $rowId = $region['rowId'];
                         if(isset($_SESSION['contract_location_boq'][$rowId])) {
-                         foreach($_SESSION['contract_location_boq'][$rowId] as $location_boq)
-                         {   
-                            $typeofwork_activity_id = $location_boq['typeofwork_activity_id'];
-                        $boqArray = array(
-                            "contract_location_id" => $last_id_for_log,
-                            "typeofwork_activity_id" => $typeofwork_activity_id,
-                            "unit_id" => $location_boq['unit_id'],
-                            "boq" => $location_boq['boq_value'],
-                            "is_active" => 0,
-                            "deletedby" => $_SESSION['loggedData']->user_id,
-                            "deleteddate" => date ('Y-m-d H:i:s')
+                            foreach($_SESSION['contract_location_boq'][$rowId] as $location_boq)
+                            {   
+                                $typeofwork_activity_id = $location_boq['typeofwork_activity_id'];
+                                $boqArray = array(
+                                    "contract_location_id" => $last_id_for_log,
+                                    "typeofwork_activity_id" => $typeofwork_activity_id,
+                                    "unit_id" => $location_boq['unit_id'],
+                                    "boq" => $location_boq['boq_value'],
+                                    "is_active" => 0,
+                                    "deletedby" => $_SESSION['loggedData']->user_id,
+                                    "deleteddate" => date ('Y-m-d H:i:s')
+                                );
 
-                        );
+                                $this->db->where("contract_location_boq_id", $location_boq['contract_location_boq_id']);
+                                $this->db->update("contract_location_boq", $boqArray);
+                                // echo $this->db->last_query(); die;
+                                // $last_id_for_boq = $this->db->insert_id(); 
 
-                        $this->db->where("contract_location_boq_id", $location_boq['contract_location_boq_id']);
-                        $this->db->update("contract_location_boq", $boqArray);
-                       // echo $this->db->last_query(); die;
-                       // $last_id_for_boq = $this->db->insert_id(); 
+                                $boqArrayLog = array(
+                                    "contract_location_boq_id" => $location_boq['contract_location_boq_id'],
+                                    "contract_location_id" => $last_id_for_log,
+                                    "typeofwork_activity_id" => $typeofwork_activity_id,
+                                    "unit_id" => $location_boq['unit_id'],
+                                    "boq" => $location_boq['boq_value'],
+                                    "is_active" => 0,
+                                    "deletedby" => $_SESSION['loggedData']->user_id,
+                                    "deleteddate" => date ('Y-m-d H:i:s')
+                                );
 
-                        $boqArrayLog = array(
-                            "contract_location_boq_id" => $location_boq['contract_location_boq_id'],
-                            "contract_location_id" => $last_id_for_log,
-                            "typeofwork_activity_id" => $typeofwork_activity_id,
-                             "unit_id" => $location_boq['unit_id'],
-                            "boq" => $location_boq['boq_value'],
-                            "is_active" => 0,
-                            "deletedby" => $_SESSION['loggedData']->user_id,
-                            "deleteddate" => date ('Y-m-d H:i:s')
-
-                        );
-
-                        $this->db->insert("contract_location_boq_log", $boqArrayLog);
+                                $this->db->insert("contract_location_boq_log", $boqArrayLog);
+                            }
+                        }
                     }
-                    }
-                }
-
-
                 }
                 else
                 {
                     $regionArray = array(
-
                         "contract_id" => $last_id,
                         "region_id" => $region['region'],
                         "circle_id" => $region['circle'],
@@ -589,7 +582,7 @@ class SetupInner_Model extends CI_Model
                         "contract_id" => $last_id,
                         //"contract_location_id" => $last_id_for_log,
                         "site_location" => $region['location'],
-                        "status_id" => 1
+                        // "status_id" => 1
                     );
                     $this->db->where("contract_location_id", $region['databaseId']);
                     $this->db->update("physical_progress", $physicalProgressArray);
@@ -618,56 +611,52 @@ class SetupInner_Model extends CI_Model
                     {
                         $rowId = $region['rowId'];
                         if(isset($_SESSION['contract_location_boq'][$rowId])) {
-                         foreach($_SESSION['contract_location_boq'][$rowId] as $location_boq)
-                         {   
-                            $typeofwork_activity_id = $location_boq['typeofwork_activity_id'];
-                        $boqArray = array(
-                            "contract_location_id" => $last_id_for_log,
-                            "typeofwork_activity_id" => $typeofwork_activity_id,
-                            "unit_id" => $location_boq['unit_id'],
-                            "boq" => $location_boq['boq_value'],
-                            "is_active" => 1,
-                            "modifiedby" => $_SESSION['loggedData']->user_id,
-                            "modifieddate" => date ('Y-m-d H:i:s')
+                            foreach($_SESSION['contract_location_boq'][$rowId] as $location_boq)
+                            {   
+                                $typeofwork_activity_id = $location_boq['typeofwork_activity_id'];
+                                $boqArray = array(
+                                    "contract_location_id" => $last_id_for_log,
+                                    "typeofwork_activity_id" => $typeofwork_activity_id,
+                                    "unit_id" => $location_boq['unit_id'],
+                                    "boq" => $location_boq['boq_value'],
+                                    "is_active" => 1,
+                                    "modifiedby" => $_SESSION['loggedData']->user_id,
+                                    "modifieddate" => date ('Y-m-d H:i:s')
+                                );
 
-                        );
+                                $this->db->where("contract_location_boq_id", $location_boq['contract_location_boq_id']);
+                                $this->db->update("contract_location_boq", $boqArray);
+                                // echo $this->db->last_query(); die;
+                                // $last_id_for_boq = $this->db->insert_id(); 
 
-                        $this->db->where("contract_location_boq_id", $location_boq['contract_location_boq_id']);
-                        $this->db->update("contract_location_boq", $boqArray);
-                       // echo $this->db->last_query(); die;
-                       // $last_id_for_boq = $this->db->insert_id(); 
+                                $boqArrayLog = array(
+                                    "contract_location_boq_id" => $location_boq['contract_location_boq_id'],
+                                    "contract_location_id" => $last_id_for_log,
+                                    "typeofwork_activity_id" => $typeofwork_activity_id,
+                                    "unit_id" => $location_boq['unit_id'],
+                                    "boq" => $location_boq['boq_value'],
+                                    "is_active" => 1,
+                                    "modifiedby" => $_SESSION['loggedData']->user_id,
+                                    "modifieddate" => date ('Y-m-d H:i:s')
+                                );
 
-                        $boqArrayLog = array(
-                            "contract_location_boq_id" => $location_boq['contract_location_boq_id'],
-                            "contract_location_id" => $last_id_for_log,
-                            "typeofwork_activity_id" => $typeofwork_activity_id,
-                             "unit_id" => $location_boq['unit_id'],
-                            "boq" => $location_boq['boq_value'],
-                            "is_active" => 1,
-                            "modifiedby" => $_SESSION['loggedData']->user_id,
-                            "modifieddate" => date ('Y-m-d H:i:s')
-
-                        );
-
-                        $this->db->insert("contract_location_boq_log", $boqArrayLog);
-                    }
+                                $this->db->insert("contract_location_boq_log", $boqArrayLog);
+                            }
+                        }
                     }
                 }
-        }
                 unset($_SESSION['acceptregion'][$region['rowId']]);
-            //end here
+                //end here
             }
+
             return true;
-       
         }
-         catch (Exception $e)
-        {
-            
+        catch (Exception $e)
+        {            
             log_message('error: ',$e->getMessage());
             
             return;
         }
-        
     }
 
     public function updateContractLocationBOQ($last_id, $actionItem)

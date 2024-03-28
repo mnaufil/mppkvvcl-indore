@@ -784,7 +784,7 @@
 																										<td class="progress-percent"></td>	
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<?php $progress = '';
-																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) {
+																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0 && $v2['boq'] != 0) {
 																														$erected_qty = $v2['erected_qty'];
 																														// $progress = round(($erected_qty / $v2['boq']) * 100);
 																														$progress = number_format(($erected_qty / $v2['boq']) * 100, 2, '.', '');
@@ -919,7 +919,7 @@
 																										<td class="progress-percent"></td>	
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<?php $progress = '';
-																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) {
+																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0  && $v2['boq'] != 0) {
 																														$erected_qty = $v2['erected_qty'];
 																														// $progress = round(($erected_qty / $v2['boq']) * 100);
 																														$progress = number_format(($erected_qty / $v2['boq']) * 100, 2, '.', '');
@@ -1179,7 +1179,7 @@
 																										<td class="progress-percent"></td>
 																									<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<?php $progress = '';
-																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) { 
+																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0  && $v2['boq'] != 0) { 
 																														$erected_qty = $v2['erected_qty'];
 																														// $progress = round(($erected_qty / $v2['boq']) * 100);
 																														$progress = number_format(($erected_qty / $v2['boq']) * 100, 2, '.', '');
@@ -1311,7 +1311,7 @@
 																										<td class="progress-percent"></td>	
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<?php $progress = '';
-																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0) {
+																													if (isset($v2['erected_qty']) && $v2['erected_qty'] != 0  && $v2['boq'] != 0) {
 																														$erected_qty = $v2['erected_qty'];
 																														// $progress = round(($erected_qty / $v2['boq']) * 100);
 																														$progress = number_format(($erected_qty / $v2['boq']) * 100, 2, '.', '');

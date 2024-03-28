@@ -472,10 +472,12 @@ class Setup_Model extends CI_Model
                       'boq' => ""
                 );
 			 $_SESSION['acceptregion'][$i] = $regionData;
-			 $this->loadSetSessionBoqDetails($contractID, $i);
+			 
 			 $i++;
 			  
 		}
+
+		$this->loadSetSessionBoqDetails($contractID, $i);
 
 		//return $result;
 		return $_SESSION['acceptregion'];

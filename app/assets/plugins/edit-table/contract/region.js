@@ -186,7 +186,7 @@ class BSTable1 {
         //Pone en modo de ediciÃ³n
 		let i = 0;
         this._modifyEachColumn(this.options.editableColumns, $cols, function($td) { // modify each column
-            let content = $td.html(); // read content
+            let content = $.trim($td.html()); // read content
             console.log(content);
             let div = '<div style="display: none;">' + content + '</div>'; // hide content (save for later use)
             let input = '<input class="form-control input-sm"  data-original-value="' + content + '" value="' + content + '">';
@@ -415,12 +415,12 @@ class BSTable1 {
                 if(i==6)
                 {
                     
-    				var   isOk = requiredvalid("region", "dynamiclocationregion", cont, rowIndex);
+    				/*var   isOk = requiredvalid("region", "dynamiclocationregion", cont, rowIndex);
     				checkErrors.push(isOk);
     				if(isOk==false)
     				{
     				    exit();
-    				}	    
+    				}*/	    
                     data.location = cont;
                 }
 
@@ -481,7 +481,7 @@ class BSTable1 {
 		 
 		    //$td.html(cont); // set the content and remove the input fields
 			// if(checkErrors.filter(Boolean).length ==8) //Original
-            if(checkErrors.filter(Boolean).length == 7) //Delete Later
+            if(checkErrors.filter(Boolean).length == 6) //Delete Later
             {
 				$("#td_dynamicregion"+rowIndex).html(data.region_text);
 				$("#td_dynamiccircle"+rowIndex).html(data.circle_text);

@@ -1,5 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); 
 
+ini_set('max_execution_time', '600'); //300 seconds = 5 minutes
+
 class Setup extends CI_Controller
 {	
 	function __construct()
@@ -168,7 +170,7 @@ class Setup extends CI_Controller
 			$this->form_validation->set_rules('eTenderNo', 'E-Tender No', 'required');
 			$this->form_validation->set_rules('bidOpeningDate', 'Bid Opening Date', 'required');
 			$this->form_validation->set_rules('priceBidOpeningDate', 'Price Bid Opening Date', 'required');
-			$this->form_validation->set_rules('systemRefNo', 'System Reference No', 'required');
+			// $this->form_validation->set_rules('systemRefNo', 'System Reference No', 'required');
 			$this->form_validation->set_rules('estimatedCostWithoutGST', 'Estimated Cost (Without GST)', 'required');
 			$this->form_validation->set_rules('estimatedCostWithGST', 'Estimated Cost (With GST)', 'required');
 			$this->form_validation->set_rules('quotedPriceWithoutGST', 'Quoted Price(Without GST)', 'required');

@@ -1269,6 +1269,10 @@
 																								<!-- tr open -->
 																								<tr data-table-row="<?php echo $k2; ?>" data-seqno="<?php echo $v2['seqno'];?>" data-activity-id="<?php echo $v2['typeofwork_activity_id'];?>" data-unit-id="<?php echo $v2['unit_id'];?>">
 																									<!-- Calculating Observation Flag -->
+																									<?php if (str_contains($k1, '/')) {
+																													$k1 = str_replace('/', ' ', $k1);
+																												} 
+																									?>
 																									<?php $hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_observation_'.$v2['typeofwork_activity_id']; ?>
 																									<?php $observation_flag = 'no observation'; ?>
 																									<?php if (isset($v2['applied_observations']) && !empty($v2['applied_observations'])) {
@@ -1885,6 +1889,69 @@
 	      });
 
 	      $('input[name^="33kv_interconnection_line_"]').on('input', function() {
+	      	//Changing status of form to edited by setting below variable true
+					form_change = true;
+					
+					getObservationsForWithBOQ(this);	
+	      });
+
+	      $('input[name^="additional_dtr_"]').on('input', function() {
+	      	//Changing status of form to edited by setting below variable true
+					form_change = true;
+					
+					getObservationsForWithBOQ(this);	
+	      });
+
+	      $('input[name^="bare_to_cable_"]').on('input', function() {
+	      	//Changing status of form to edited by setting below variable true
+					form_change = true;
+					
+					getObservationsForWithBOQ(this);	
+	      });
+
+	      $('input[name^="cable_augmentation_"]').on('input', function() {
+	      	//Changing status of form to edited by setting below variable true
+					form_change = true;
+					
+					getObservationsForWithBOQ(this);	
+	      });
+
+	      $('input[name^="11_kv_bifurcation_"]').on('input', function() {
+	      	//Changing status of form to edited by setting below variable true
+					form_change = true;
+					
+					getObservationsForWithBOQ(this);	
+	      });
+
+	      $('input[name^="11_kv_interconnection_"]').on('input', function() {
+	      	//Changing status of form to edited by setting below variable true
+					form_change = true;
+					
+					getObservationsForWithBOQ(this);	
+	      });
+
+	      $('input[name^="33_kv_augmentation_"]').on('input', function() {
+	      	//Changing status of form to edited by setting below variable true
+					form_change = true;
+					
+					getObservationsForWithBOQ(this);	
+	      });
+
+	      $('input[name^="11_kv_augmentation_"]').on('input', function() {
+	      	//Changing status of form to edited by setting below variable true
+					form_change = true;
+					
+					getObservationsForWithBOQ(this);	
+	      });
+
+	      $('input[name^="dl_to_ag_coated_conductor_"]').on('input', function() {
+	      	//Changing status of form to edited by setting below variable true
+					form_change = true;
+					
+					getObservationsForWithBOQ(this);	
+	      });
+
+	      $('input[name^="substation_rennovation_"]').on('input', function() {
 	      	//Changing status of form to edited by setting below variable true
 					form_change = true;
 					

@@ -348,6 +348,12 @@ class PhysicalProgress extends CI_Controller
                $additional_dtr_activities = array();
                $bare_to_cable_activities = array();
                $cable_augmentation_activities = array();
+               $bifurcation_11_kv_activities = array();
+               $interconnection_11_kv_activities = array();
+               $augmentation_33_kv_activities = array();
+               $augmentation_11_kv_activities = array();
+               $dl_to_ag_coated_conductor_activities = array();
+               $substation_rennovation_activities = array();
                
                foreach ($post_data as $key => $value) {
                     if (str_contains($key, 'civil_work')) { //withoutBOQ
@@ -384,11 +390,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                              $boq_val = (int)$value;
+                              $boq_val = $value;
                               continue;
                          }
 
-                         $erected_val = (int)$value;
+                         $erected_val = $value;
                          
                          $input_name = explode('_', $key);
                          $feeder_33kv_activities[$key]['physical_progress_id'] = $pp_id;
@@ -404,11 +410,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                              $boq_val = (int)$value;
+                              $boq_val = $value;
                               continue;
                          }
 
-                         $erected_val = (int)$value;
+                         $erected_val = $value;
 
                          $input_name = explode('_', $key);
                          $feeder_11kv_activities[$key]['physical_progress_id'] = $pp_id;
@@ -424,11 +430,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = (int)$value;
+                             $boq_val = $value;
                               continue; 
                          }
 
-                         $erected_val = (int)$value;
+                         $erected_val = $value;
 
                          $input_name = explode('_', $key);
                          $feeder_separation_11kv_activities[$key]['physical_progress_id'] = $pp_id;
@@ -444,11 +450,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = (int)$value;
+                             $boq_val = $value;
                               continue; 
                          }
 
-                         $erected_val = (int)$value;
+                         $erected_val = $value;
 
                          $input_name = explode('_', $key);
                          $interconnection_line_33kv_activites[$key]['physical_progress_id'] = $pp_id;
@@ -464,11 +470,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = (int)$value;
+                             $boq_val = $value;
                               continue; 
                          }
 
-                         $erected_val = (int)$value;
+                         $erected_val = $value;
 
                          $input_name = explode('_', $key);
                          $additional_dtr_activities[$key]['physical_progress_id'] = $pp_id;
@@ -484,11 +490,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = (int)$value;
+                             $boq_val = $value;
                               continue; 
                          }
 
-                         $erected_val = (int)$value;
+                         $erected_val = $value;
 
                          $input_name = explode('_', $key);
                          $bare_to_cable_activities[$key]['physical_progress_id'] = $pp_id;
@@ -504,17 +510,137 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = (int)$value;
+                             $boq_val = $value;
                               continue; 
                          }
 
-                         $erected_val = (int)$value;
+                         $erected_val = $value;
 
                          $input_name = explode('_', $key);
                          $cable_augmentation_activities[$key]['physical_progress_id'] = $pp_id;
                          $cable_augmentation_activities[$key]['activity_id'] = end($input_name);
                          $cable_augmentation_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
                          $cable_augmentation_activities[$key]['erected_qty'] = $value;
+                    }
+
+                    if (str_contains($key, '11_kv_bifurcation')) { //withBOQ
+                         if (str_contains($key,'observation')) {
+                              $observation_flag = $value;
+                              continue;
+                         }
+
+                         if (str_contains($key, 'boq')) {
+                             $boq_val = $value;
+                              continue; 
+                         }
+
+                         $erected_val = $value;
+
+                         $input_name = explode('_', $key);
+                         $bifurcation_11_kv_activities[$key]['physical_progress_id'] = $pp_id;
+                         $bifurcation_11_kv_activities[$key]['activity_id'] = end($input_name);
+                         $bifurcation_11_kv_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
+                         $bifurcation_11_kv_activities[$key]['erected_qty'] = $value;
+                    }
+
+                    if (str_contains($key, '11_kv_interconnection')) { //withBOQ
+                         if (str_contains($key,'observation')) {
+                              $observation_flag = $value;
+                              continue;
+                         }
+
+                         if (str_contains($key, 'boq')) {
+                             $boq_val = $value;
+                              continue; 
+                         }
+
+                         $erected_val = $value;
+
+                         $input_name = explode('_', $key);
+                         $interconnection_11_kv_activities[$key]['physical_progress_id'] = $pp_id;
+                         $interconnection_11_kv_activities[$key]['activity_id'] = end($input_name);
+                         $interconnection_11_kv_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
+                         $interconnection_11_kv_activities[$key]['erected_qty'] = $value;
+                    }
+
+                    if (str_contains($key, '33_kv_augmentation')) { //withBOQ
+                         if (str_contains($key,'observation')) {
+                              $observation_flag = $value;
+                              continue;
+                         }
+
+                         if (str_contains($key, 'boq')) {
+                             $boq_val = $value;
+                              continue; 
+                         }
+
+                         $erected_val = $value;
+
+                         $input_name = explode('_', $key);
+                         $augmentation_33_kv_activities[$key]['physical_progress_id'] = $pp_id;
+                         $augmentation_33_kv_activities[$key]['activity_id'] = end($input_name);
+                         $augmentation_33_kv_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
+                         $augmentation_33_kv_activities[$key]['erected_qty'] = $value;
+                    }
+
+                    if (str_contains($key, '11_kv_augmentation')) { //withBOQ
+                         if (str_contains($key,'observation')) {
+                              $observation_flag = $value;
+                              continue;
+                         }
+
+                         if (str_contains($key, 'boq')) {
+                             $boq_val = $value;
+                              continue; 
+                         }
+
+                         $erected_val = $value;
+
+                         $input_name = explode('_', $key);
+                         $augmentation_11_kv_activities[$key]['physical_progress_id'] = $pp_id;
+                         $augmentation_11_kv_activities[$key]['activity_id'] = end($input_name);
+                         $augmentation_11_kv_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
+                         $augmentation_11_kv_activities[$key]['erected_qty'] = $value;
+                    }
+
+                    if (str_contains($key, 'dl_to_ag_coated_conductor')) { //withBOQ
+                         if (str_contains($key,'observation')) {
+                              $observation_flag = $value;
+                              continue;
+                         }
+
+                         if (str_contains($key, 'boq')) {
+                             $boq_val = $value;
+                              continue; 
+                         }
+
+                         $erected_val = $value;
+
+                         $input_name = explode('_', $key);
+                         $dl_to_ag_coated_conductor_activities[$key]['physical_progress_id'] = $pp_id;
+                         $dl_to_ag_coated_conductor_activities[$key]['activity_id'] = end($input_name);
+                         $dl_to_ag_coated_conductor_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
+                         $dl_to_ag_coated_conductor_activities[$key]['erected_qty'] = $value;
+                    }
+
+                    if (str_contains($key, 'substation_rennovation')) { //withBOQ
+                         if (str_contains($key,'observation')) {
+                              $observation_flag = $value;
+                              continue;
+                         }
+
+                         if (str_contains($key, 'boq')) {
+                             $boq_val = $value;
+                              continue; 
+                         }
+
+                         $erected_val = $value;
+
+                         $input_name = explode('_', $key);
+                         $substation_rennovation_activities[$key]['physical_progress_id'] = $pp_id;
+                         $substation_rennovation_activities[$key]['activity_id'] = end($input_name);
+                         $substation_rennovation_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
+                         $substation_rennovation_activities[$key]['erected_qty'] = $value;
                     }
                }
                
@@ -557,6 +683,32 @@ class PhysicalProgress extends CI_Controller
                if (!empty($cable_augmentation_activities)) {
                     array_push($pp_sheet_activities, $cable_augmentation_activities);     
                }
+
+               if (!empty($bifurcation_11_kv_activities)) {
+                    array_push($pp_sheet_activities, $bifurcation_11_kv_activities);     
+               }
+
+               if (!empty($interconnection_11_kv_activities)) {
+                    array_push($pp_sheet_activities, $interconnection_11_kv_activities);     
+               }
+
+               if (!empty($augmentation_33_kv_activities)) {
+                    array_push($pp_sheet_activities, $augmentation_33_kv_activities);     
+               }
+
+               if (!empty($augmentation_11_kv_activities)) {
+                    array_push($pp_sheet_activities, $augmentation_11_kv_activities);     
+               }
+
+               if (!empty($dl_to_ag_coated_conductor_activities)) {
+                    array_push($pp_sheet_activities, $dl_to_ag_coated_conductor_activities);     
+               }
+
+               if (!empty($substation_rennovation_activities)) {
+                    array_push($pp_sheet_activities, $substation_rennovation_activities);     
+               }
+
+               // echo 'pp_sheet_activities: <pre>'; print_r($pp_sheet_activities); echo '</pre>'; die();
 
                //Inserting sheet activities in the table
                foreach ($pp_sheet_activities as $key => $value) {
@@ -1055,7 +1207,7 @@ class PhysicalProgress extends CI_Controller
           if ($boq_val == 0) {
                return $status_id = 3;
           } else {
-               if ($erected_val == 0) {
+               if ($erected_val == 0 || $erected_val == '') {
                     return $status_id = 0;
                } elseif ($erected_val > 0 && $erected_val < $boq_val) {
                     return $status_id = 2;

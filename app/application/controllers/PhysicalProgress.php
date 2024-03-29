@@ -345,6 +345,7 @@ class PhysicalProgress extends CI_Controller
                $feeder_11kv_activities = array();
                $feeder_separation_11kv_activities = array();
                $interconnection_line_33kv_activites = array();
+               $additional_dtr_activities = array();
                $bare_to_cable_activities = array();
                $cable_augmentation_activities = array();
                
@@ -456,6 +457,26 @@ class PhysicalProgress extends CI_Controller
                          $interconnection_line_33kv_activites[$key]['erected_qty'] = $value;
                     }
 
+                    if (str_contains($key, 'additional_dtr')) { //withBOQ
+                         if (str_contains($key,'observation')) {
+                              $observation_flag = $value;
+                              continue;
+                         }
+
+                         if (str_contains($key, 'boq')) {
+                             $boq_val = (int)$value;
+                              continue; 
+                         }
+
+                         $erected_val = (int)$value;
+
+                         $input_name = explode('_', $key);
+                         $additional_dtr_activities[$key]['physical_progress_id'] = $pp_id;
+                         $additional_dtr_activities[$key]['activity_id'] = end($input_name);
+                         $additional_dtr_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
+                         $additional_dtr_activities[$key]['erected_qty'] = $value;
+                    }
+
                     if (str_contains($key, 'bare_to_cable')) { //withBOQ
                          if (str_contains($key,'observation')) {
                               $observation_flag = $value;
@@ -523,6 +544,10 @@ class PhysicalProgress extends CI_Controller
 
                if (!empty($interconnection_line_33kv_activites)) {
                     array_push($pp_sheet_activities, $interconnection_line_33kv_activites);     
+               }
+
+               if (!empty($additional_dtr_activities)) {
+                    array_push($pp_sheet_activities, $additional_dtr_activities);     
                }
 
                if (!empty($bare_to_cable_activities)) {

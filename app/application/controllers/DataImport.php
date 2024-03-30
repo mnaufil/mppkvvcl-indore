@@ -11,6 +11,11 @@ class DataImport extends CI_Controller
 		parent::__construct();
 
 		$this->load->model('DataImport_Model', 'di_model');
+
+		if(!$this->session->isUserLoggedIn)
+        { 
+            redirect('login'); 
+        }
 	}
 
 	public function index()
@@ -210,6 +215,28 @@ class DataImport extends CI_Controller
 			if ($import_data_count == 0) {
 				http_response_code(400);
 				$response['message'] = 'Failed to import data';
+			} else {
+				$this->di_model->changeImportStatus($import_hdr_id, 2);
+			}
+
+			echo json_encode($response);
+		}
+	}
+
+	public function cancelDataImport()
+	{
+		// Default Response
+		http_response_code(200);
+		$response['message'] = 'Data import cancelled';
+
+		if (!empty($_POST)) {
+			$import_hdr_id = $this->input->post('import_hdr_id');
+
+			$cancel_result = $this->di_model->changeImportStatus($import_hdr_id, 3);
+
+			if (!$cancel_result) {
+				http_response_code(400);
+				$response['message'] = 'Failed to cancel data import';
 			}
 
 			echo json_encode($response);

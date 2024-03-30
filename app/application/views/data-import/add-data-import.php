@@ -187,6 +187,8 @@
 				            					<div class="col-xl-12 mt-3 mb-3">
 				            						<!-- Import -->
                 									<button type="button" class="btn btn-success btn-wave waves-effect waves-light" id="btn-import-file" disabled hidden>Import File</button>
+                									<!-- Cancel -->
+                									<button type="button" class="btn btn-danger btn-wave waves-effect waves-light" id="btn-import-file-cancel" hidden>Cancel</button>
                 									<!-- Back -->
                 									<a type="button" class="btn btn-primary" href="<?php echo base_url('data-import') ?>">Back</a>	
                 								</div>
@@ -415,15 +417,18 @@
 
                     		$('#file-upload-process-result-div').prop('hidden', false);
                     		$('#btn-import-file').prop('hidden', false);
+                    		$('#btn-import-file-cancel').prop('hidden', false);
 
                     		// Enabling Import button only if invalid records = 0
                     		if (response.invalid_records.length == 0) {
                     			$('#btn-import-file').prop('disabled', false);
-                    			$('#btn-import-file').attr('data-import-hdr-id', response.import_hdr_id);	
+                    			$('#btn-import-file').attr('data-import-hdr-id', response.import_hdr_id);
                     		}
+
+                    		$('#btn-import-file-cancel').attr('data-import-hdr-id', response.import_hdr_id);	
         				},
         				error: function(xhr, status, error) {
-        					console.log(xhr);
+        					// console.log(xhr);
         					let error_msg = xhr.responseJSON.message;
 
         					$('.process-loader').attr('hidden', true);
@@ -450,7 +455,7 @@
         			dataType: 'json',
         			data: {import_hdr_id: import_hdr_id},
         			success: function(response) {
-        				console.log(response);
+        				// console.log(response);
 
         				$('.process-loader').attr('hidden', true);
 
@@ -473,9 +478,54 @@
         		});
         	});
 
+        	$('#btn-import-file-cancel').click(function(event){
+        		let import_hdr_id = $(this).attr('data-import-hdr-id');
+
+        		$('.process-loader').removeAttr('hidden');
+				$('.process-loader').find('.process-loader-message').html('Please wait while the system cancels the data import process.');
+
+				$('#btn-import-file').prop('disabled', true);
+				$('#btn-import-file-cancel').prop('disabled', true);
+
+				$.ajax({
+					url: '<?php echo base_url('cancel-data-import') ?>',
+        			type: 'POST',
+        			dataType: 'json',
+        			data: {import_hdr_id: import_hdr_id},
+        			success: function(response) {
+        				// console.log(response);
+        				$('.process-loader').attr('hidden', true);
+
+        				$('.toast-body').text(response.message);
+                    	$('.toast').toast('show');
+
+                    	setTimeout(function() {
+                            window.location.replace('<?php echo base_url('data-import') ?>');
+                        }, 2000);
+        			}, 
+        			error: function(xhr, status, error) {
+        				$('.process-loader').attr('hidden', true);
+        				$('#btn-import-file-cancel').prop('disabled', false);
+
+        				if (response.invalid_records.length == 0) {
+                			$('#btn-import-file').prop('disabled', false);
+                		}
+
+        				let error_msg = xhr.responseJSON.message;
+
+        				$('.toast-body').text(error_msg);
+                    	$('.toast').toast('show');
+        			}
+				});
+        	});
+
         	$('#dataFileUpload').change(function(event) {
         		if ($('#btn-process-file').is(':disabled')) {
         			$('#btn-process-file').prop('disabled', false);
+        		}
+
+        		if (!$('#btn-import-file').is(':disabled')) {
+        			$('#btn-import-file').prop('disabled', true);
         		}
         	});
         </script>

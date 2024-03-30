@@ -291,6 +291,7 @@ $route['add-data-import'] = 'DataImport/addData';
 $route['edit-data-import/(:num)'] = 'DataImport/editData/$1';
 $route['process-data-file'] = 'DataImport/processDataFile';
 $route['import-data-file'] = 'DataImport/importDataFile';
+$route['cancel-data-import'] = 'DataImport/cancelDataImport';
 
 /*Change Password*/
 $route['change-password'] = 'Security/viewChangePassword';

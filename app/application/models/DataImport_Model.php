@@ -49,13 +49,7 @@ class DataImport_Model extends CI_Model
 		$query = $this->db->count_all_results($table);
 		// echo $this->db->last_query(); die();
 
-		if (!$query) {
-			$error = $this->db->error();
-			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
-			die();
-		} else {
-			return $query;
-		}
+		return $query;
 	}
 
 	public function getImportDetails($import_hdr_id)
@@ -170,6 +164,12 @@ class DataImport_Model extends CI_Model
 
 	public function saveMaterialInwardData($import_hdr_id, $worksheet_arr)
 	{
+		$record_exists = $this->checkRecordExists($import_hdr_id, 'import_dtl_material_inward');
+
+		if ($record_exists > 0) {
+			$this->deleteExistingRecords($import_hdr_id, 'import_dtl_material_inward');
+		}
+
 		foreach ($worksheet_arr as $key => $value) {
 			$data = array(
 				'import_hdr_id' => $import_hdr_id,
@@ -200,6 +200,12 @@ class DataImport_Model extends CI_Model
 
 	public function saveMaterialInwardMICCData($import_hdr_id, $worksheet_arr)
 	{
+		$record_exists = $this->checkRecordExists($import_hdr_id, 'import_dtl_material_inward_micc');
+
+		if ($record_exists > 0) {
+			$this->deleteExistingRecords($import_hdr_id, 'import_dtl_material_inward_micc');
+		}
+
 		foreach ($worksheet_arr as $key => $value) {
 			$data = array(
 				'import_hdr_id' => $import_hdr_id,
@@ -238,6 +244,12 @@ class DataImport_Model extends CI_Model
 
 	public function saveMaterialInwardReturnData($import_hdr_id, $worksheet_arr)
 	{
+		$record_exists = $this->checkRecordExists($import_hdr_id, 'import_dtl_material_inward_return');
+
+		if ($record_exists > 0) {
+			$this->deleteExistingRecords($import_hdr_id, 'import_dtl_material_inward_return');
+		}
+
 		foreach ($worksheet_arr as $key => $value) {
 			$data = array(
 				'import_hdr_id' => $import_hdr_id,
@@ -270,6 +282,12 @@ class DataImport_Model extends CI_Model
 
 	public function saveMaterialInwardSamplingData($import_hdr_id, $worksheet_arr)
 	{
+		$record_exists = $this->checkRecordExists($import_hdr_id, 'import_dtl_material_inward_sampling');
+
+		if ($record_exists > 0) {
+			$this->deleteExistingRecords($import_hdr_id, 'import_dtl_material_inward_sampling');
+		}
+
 		foreach ($worksheet_arr as $key => $value) {
 			$data = array(
 				'import_hdr_id' => $import_hdr_id,
@@ -303,7 +321,6 @@ class DataImport_Model extends CI_Model
 	public function saveMaterialOutwardData($import_hdr_id, $worksheet_arr)
 	{
 		$record_exists = $this->checkRecordExists($import_hdr_id, 'import_dtl_material_outward');
-		// echo 'record_exists: <pre>'; print_r($record_exists); echo '</pre>'; die();
 
 		if ($record_exists > 0) {
 			$this->deleteExistingRecords($import_hdr_id, 'import_dtl_material_outward');
@@ -339,13 +356,7 @@ class DataImport_Model extends CI_Model
 		$query = $this->db->count_all_results($table);
 		// echo $this->db->last_query(); die();
 
-		if (!$query) {
-			$error = $this->db->error();
-			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
-			die();
-		} else {
-			return $query;
-		}
+		return $query;
 	}
 
 	public function deleteExistingRecords($import_hdr_id, $table)
@@ -357,6 +368,26 @@ class DataImport_Model extends CI_Model
 		);
 
 		$query = $this->db->update($table, $data, array('import_hdr_id' => $import_hdr_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
+		}
+	}
+
+	public function changeImportStatus($import_hdr_id, $status_id)
+	{
+		/*1-Open, 2-Completed, 3-Cancelled*/
+		$data = array(
+			'status ' => $status_id,
+			'modifiedby' => $this->getLoggedInUserID(),
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('import_hdr', $data, array('import_hdr_id' => $import_hdr_id));
 
 		if (!$query) {
 			$error = $this->db->error();	

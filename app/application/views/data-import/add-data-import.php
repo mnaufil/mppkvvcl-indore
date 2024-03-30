@@ -336,7 +336,7 @@
         				type: 'POST',
         				processData: false,
         				contentType: false,
-        				dataType : 'json',
+        				// dataType : 'json',
         				data: formData,
         				success: function(response) {
         					// console.log(response);
@@ -428,7 +428,7 @@
                     		$('#btn-import-file-cancel').attr('data-import-hdr-id', response.import_hdr_id);	
         				},
         				error: function(xhr, status, error) {
-        					// console.log(xhr);
+        					console.log(xhr);
         					let error_msg = xhr.responseJSON.message;
 
         					$('.process-loader').attr('hidden', true);

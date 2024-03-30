@@ -2,7 +2,7 @@
 /**
  * 
  */
-class Migration_Create_import_material_out_table extends CI_Migration
+class Migration_Create_import_dtl_material_inward_table extends CI_Migration
 {
 	function __construct()
 	{
@@ -13,7 +13,7 @@ class Migration_Create_import_material_out_table extends CI_Migration
 	public function up()
 	{
 		$fields = array(
-			'import_material_out_id' => array(
+			'import_material_in_id' => array(
 				'type' => 'INT',
 				'constraint' => 11,
 				'unsigned' => TRUE,
@@ -28,32 +28,52 @@ class Migration_Create_import_material_out_table extends CI_Migration
 			'lot_no' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'circle' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'material_description' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'unit' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
-			'issue_quantity' => array(
+			'name_of_vendor' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
-			'issue_date' => array(
+			'di_no' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
+			),
+			'di_date' => array(
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
+				'null' => TRUE
+			),
+			'di_quantity' => array(
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
+				'null' => TRUE
+			),
+			'received_quantity' => array(
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
+				'null' => TRUE
+			),
+			'received_date' => array(
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
+				'null' => TRUE
 			),
 			'error_message' => array(
 				'type' => 'VARCHAR',
@@ -99,14 +119,14 @@ class Migration_Create_import_material_out_table extends CI_Migration
 
 		$this->dbforge->add_field($fields);
 
-		$this->dbforge->add_key('import_material_out_id', TRUE);
+		$this->dbforge->add_key('import_material_in_id', TRUE);
 
-		$this->dbforge->create_table('import_material_out', TRUE);
+		$result = $this->dbforge->create_table('import_dtl_material_inward', TRUE);
 	}
 
 	public function down()
 	{
-		$this->dbforge->drop_table('import_material_out', TRUE);
+		$this->dbforge->drop_table('import_dtl_material_inward', TRUE);
 	}
 }
 

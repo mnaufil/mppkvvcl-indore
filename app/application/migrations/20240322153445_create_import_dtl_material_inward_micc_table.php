@@ -2,7 +2,7 @@
 /**
  * 
  */
-class Migration_Create_import_material_in_micc_table extends CI_Migration
+class Migration_Create_import_dtl_material_inward_micc_table extends CI_Migration
 {
 	function __construct()
 	{
@@ -28,92 +28,92 @@ class Migration_Create_import_material_in_micc_table extends CI_Migration
 			'lot_no' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'circle' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'material_description' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'unit' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'name_of_vendor' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'di_no' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'di_date' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'di_quantity' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'received_quantity' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'received_date' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'sampling_quantity' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'sampling_seal_date' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'micc_no' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'micc_date' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'billing_status' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'amount_in_cr_60' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'amount_in_cr_100' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'remark' => array(
 				'type' => 'VARCHAR',
 				'constraint' => 1000,
-				'null' => FALSE
+				'null' => TRUE
 			),
 			'error_message' => array(
 				'type' => 'VARCHAR',
@@ -161,12 +161,12 @@ class Migration_Create_import_material_in_micc_table extends CI_Migration
 
 		$this->dbforge->add_key('import_material_in_micc_id', TRUE);
 
-		$this->dbforge->create_table('import_material_in_micc', TRUE);
+		$this->dbforge->create_table('import_dtl_material_inward_micc', TRUE);
 	}
 
 	public function down()
 	{
-		$this->dbforge->drop_table('import_material_in_micc', TRUE);
+		$this->dbforge->drop_table('import_dtl_material_inward_micc', TRUE);
 	}
 }
 

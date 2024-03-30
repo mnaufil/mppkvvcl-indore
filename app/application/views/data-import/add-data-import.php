@@ -336,7 +336,7 @@
         				type: 'POST',
         				processData: false,
         				contentType: false,
-        				// dataType : 'json',
+        				dataType : 'json',
         				data: formData,
         				success: function(response) {
         					// console.log(response);

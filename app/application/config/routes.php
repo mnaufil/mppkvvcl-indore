@@ -81,6 +81,7 @@ $route['getcircles/(:num)'] = 'Dashboard/getcircles/$1';
 $route['getdivisions/(:num)'] = 'Dashboard/getdivisions/$1';
 $route['getlocationsfilter/(:num)/(:any)/(:any)/(:any)'] = 'Dashboard/getlocationsfilter/$1/$2/$3/$4';
 $route['statistics-popup/(:any)/(:any)'] = 'Dashboard/statisticspopup/$1/$2';
+// $route['statistics-popup/(:any)'] = 'Dashboard/statisticspopup/$1';
 $route['changeweekmonthval/(:any)/(:any)/(:any)/(:any)'] = 'Dashboard/changeweekmonthval/$1/$2/$3/$4';
 $route['getweekdate/(:any)/(:any)'] = 'Dashboard/getweekdate/$1/$2';
 $route['formhtmltable'] = 'Dashboard/formhtmltable';
@@ -283,6 +284,13 @@ $route['users/(:num)'] = 'Security/edituserspage/$1';
 $route['update-users'] = 'Security/updateusers';
 $route['delete-user/(:num)'] = 'Security/deleteuser/$1';
 $route['check-user-exists'] = 'Security/checkUserExists';
+
+/*Data Import*/
+$route['data-import'] = 'DataImport/index';
+$route['add-data-import'] = 'DataImport/addData';
+$route['edit-data-import/(:num)'] = 'DataImport/editData/$1';
+$route['process-data-file'] = 'DataImport/processDataFile';
+$route['import-data-file'] = 'DataImport/importDataFile';
 
 /*Change Password*/
 $route['change-password'] = 'Security/viewChangePassword';

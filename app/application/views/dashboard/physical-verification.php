@@ -91,22 +91,39 @@
 	            											<th></th>
 	            											<th>S/S</th>
 	            											<th>Feeders</th>
+	            											<th>Not Started</th>
 	            											<th>0% - 25%</th>
 	            											<th>25% - 50%</th>
 	            											<th>50% - 75%</th>
 	            											<th>75% - 90%</th>
 	            											<th>90% - 100%</th>
+	            											<th>DTL Reviewed</th>
 	            											<th>100%</th>
 	            										</tr>
 	            									</thead>
 	            									<tbody>
 	            										<?php foreach ($verification_data as $key => $value) { ?>
 	            										<tr data-contract-id="<?php echo $value['contract_id']; ?>" data-package-no="<?php echo $value['package_no']; ?>">
+	            											<!-- Lot No. -->
 	            											<td style="text-align: left;"><?php echo $value['package_no']; ?></td>
+	            											<!-- Contractor(TKC) -->
 	            											<td style="text-align: left;"><?php echo $value['contractor_name']; ?></td>
+	            											<!-- Type of Work -->
 	            											<td style="text-align: left;"><?php echo $value['typeofwork']; ?></td>
+	            											<!-- S/S -->
 	            											<td style="text-align: center;"><?php echo $value['ss']; ?></td>
+	            											<!-- Feeders -->
 	            											<td style="text-align: center;"><?php echo $value['feeders']; ?></td>
+	            											<td style="text-align: center;" data-slab="Not Started">
+	            												<?php 	if ($value['Not Started'] != 0) {
+	            															$data_not_started = '<a href="javascript:void(0)" onclick="showFeedersModal(this)">'.$value['Not Started'].'</a>';
+	            														} else {
+	            															$data_not_started = $value['Not Started'];
+	            														} 
+	            												?>
+	            												<?php echo $data_not_started; ?>
+	            											</td>
+	            											<!-- 0% - 25% -->
 	            											<td style="text-align: center;" data-slab="0% - 25%">
 	            												<?php if ($value['0% - 25%'] != 0) {
 	            														$data_0_25 = '<a href="javascript:void(0)" onclick="showFeedersModal(this)">'.$value['0% - 25%'].'</a>';
@@ -116,6 +133,7 @@
 	            												?>
 	            												<?php echo $data_0_25; ?>
             												</td>
+            												<!-- 25% - 50% -->
 	            											<td style="text-align: center;" data-slab="25% - 50%">
 	            												<?php if ($value['25% - 50%'] != 0) {
 	            														$data_25_50 = '<a href="#" onclick="showFeedersModal(this)">'.$value['25% - 50%'].'</a>';
@@ -125,6 +143,7 @@
 	            												?>
 	            												<?php echo $data_25_50; ?>
 	            											</td>
+	            											<!-- 50% - 75% -->
 	            											<td style="text-align: center;" data-slab="50% - 75%">
 	            												<?php if ($value['50% - 75%'] != 0) {
 	            														$data_50_75 = '<a href="#" onclick="showFeedersModal(this)">'.$value['50% - 75%'].'</a>';
@@ -134,6 +153,7 @@
 	            												?>
 	            												<?php echo $data_50_75; ?>
 	            											</td>
+	            											<!-- 75% - 90% -->
 	            											<td style="text-align: center;" data-slab="75% - 90%">
 	            												<?php if ($value['75% - 90%'] != 0) {
 	            														$data_75_90 = '<a href="#" onclick="showFeedersModal(this)">'.$value['75% - 90%'].'</a>';
@@ -143,6 +163,7 @@
 	            												?>
 	            												<?php echo $data_75_90; ?>
 	            											</td>
+	            											<!-- 90% - 100% -->
 	            											<td style="text-align: center;" data-slab="90% - 100%">
 	            												<?php if ($value['90% - 100%'] != 0) {
 	            														$data_90_100 = '<a href="#" onclick="showFeedersModal(this)">'.$value['90% - 100%'].'</a>';
@@ -152,6 +173,17 @@
 	            												?>
 	            												<?php echo $data_90_100; ?>
             												</td>
+            												<!-- DTL Reviewed -->
+            												<td style="text-align: center;" data-slab="DTL Reviewed">
+            													<?php 	if ($value['DTL Reviewed'] != 0) {
+            																$data_dtl_reviewed = '<a href="#" onclick="showFeedersModal(this)">'.$value['100%'].'</a>';
+            															} else {
+            																$data_dtl_reviewed = $value['DTL Reviewed'];
+            															} 
+            													?>
+            													<?php echo $data_dtl_reviewed; ?>
+            												</td>
+            												<!-- 100% -->
 	            											<td style="text-align: center;" data-slab="100%">
 	            												<?php if ($value['100%'] != 0) {
 	            														$data_100 = '<a href="#" onclick="showFeedersModal(this)">'.$value['100%'].'</a>';

@@ -139,10 +139,10 @@ class PSDashboardApi extends REST_Controller
 								} else {
 									$formatted_date = date('Y-m-d', strtotime($date));
 
-									$this->benchmark->mark('sp_call_start');
+									// $this->benchmark->mark('sp_call_start');
 									$feeders_data = $this->psdashboard_model->getFeedersData($formatted_date, $lot_no);
 									// echo 'feeder_data: <pre>'; print_r($feeders_data); echo '</pre>'; die();
-									$this->benchmark->mark('sp_call_end');
+									// $this->benchmark->mark('sp_call_end');
 
 									$feeder_details = $feeders_data[0];
 									$feeder_progress = $feeders_data[1];
@@ -189,9 +189,9 @@ class PSDashboardApi extends REST_Controller
 
 										// $this->benchmark->mark('array_formation_end');
 
-										echo 'no.of feeders: '.count($feeder_details).'<br/>';
+										/*echo 'no.of feeders: '.count($feeder_details).'<br/>';
 										echo 'SP Call: '.$this->benchmark->elapsed_time('sp_call_start', 'sp_call_end');
-										echo '<br/>Array Formation: '.$this->benchmark->elapsed_time('array_formation_start', 'array_formation_end').'<br/>';
+										echo '<br/>Array Formation: '.$this->benchmark->elapsed_time('array_formation_start', 'array_formation_end').'<br/>';*/
 
 										$errors = NULL;
 							            $message = NULL;

@@ -139,10 +139,7 @@ class PSDashboardApi extends REST_Controller
 								} else {
 									$formatted_date = date('Y-m-d', strtotime($date));
 
-									// $this->benchmark->mark('sp_call_start');
 									$feeders_data = $this->psdashboard_model->getFeedersData($formatted_date, $lot_no);
-									// echo 'feeder_data: <pre>'; print_r($feeders_data); echo '</pre>'; die();
-									// $this->benchmark->mark('sp_call_end');
 
 									$feeder_details = $feeders_data[0];
 									$feeder_progress = $feeders_data[1];
@@ -153,10 +150,8 @@ class PSDashboardApi extends REST_Controller
 							            $status_code = 200;
 							            $data = [];
 									} else {
-										$this->benchmark->mark('array_formation_start');
 										$modified_arr = $this->modifyFeedersData($feeder_details, $feeder_progress);
 										$data = array_values($modified_arr);
-										// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 
 										/*foreach ($feeder_details as $fd_key => $fd_value) {
 											$data[$fd_key]['package_no'] = $fd_value['package_no'];
@@ -187,12 +182,6 @@ class PSDashboardApi extends REST_Controller
 											$data[$fd_key]['status_of_work'] = $fd_value['status'];
 										}*/
 
-										// $this->benchmark->mark('array_formation_end');
-
-										/*echo 'no.of feeders: '.count($feeder_details).'<br/>';
-										echo 'SP Call: '.$this->benchmark->elapsed_time('sp_call_start', 'sp_call_end');
-										echo '<br/>Array Formation: '.$this->benchmark->elapsed_time('array_formation_start', 'array_formation_end').'<br/>';*/
-
 										$errors = NULL;
 							            $message = NULL;
 							            $status_code = 200;	
@@ -215,14 +204,10 @@ class PSDashboardApi extends REST_Controller
 
 	public function modifyFeedersData($feeder_details, $feeder_progress)
 	{
-		// echo 'feeder_details: <pre>'; print_r($feeder_details); echo '</pre>';
-		// echo 'feeder_progress: <pre>'; print_r($feeder_progress); echo '</pre>';
-
 		$modified_feeder_details = [];
 		$modified_feeder_progress = [];
 
 		foreach ($feeder_details as $key => $value) {
-			// echo 'value: <pre>'; print_r($value); echo '</pre>'; 
 			$modified_feeder_details[$value['feeder_id']]['package_no'] = $value['package_no'];
 			$modified_feeder_details[$value['feeder_id']]['package_id'] = $value['package_id'];
 			$modified_feeder_details[$value['feeder_id']]['lot_no'] = $value['package_group_no'];
@@ -239,9 +224,6 @@ class PSDashboardApi extends REST_Controller
 			$modified_feeder_details[$value['feeder_id']]['BOQ_cost'] = number_format($value['BoQCost'], 2);
 			$modified_feeder_details[$value['feeder_id']]['estimated_executed_cost'] = $value['EstimatedExecutedCost'];
 			$modified_feeder_details[$value['feeder_id']]['status_of_work'] = $value['status'];
-
-
-			// echo 'modified_feeder_details: <pre>'; print_r($modified_feeder_details); echo '</pre>'; die();
 		}
 
 		foreach ($feeder_progress as $key => $value) {
@@ -249,14 +231,7 @@ class PSDashboardApi extends REST_Controller
 			$modified_feeder_progress[$value['feeder_id']]['work_completed'][$value['report_head']] = $value['workProgressQty'];
 		}
 
-		// echo 'modified_feeder_progress: <pre>'; print_r($modified_feeder_progress); echo '</pre>'; die();
-
 		$modified_feeders_data = array_replace_recursive($modified_feeder_details, $modified_feeder_progress);
-
-
-		// echo '$modified_feeders_data: <pre>'; print_r($modified_feeders_data); echo '</pre>'; die();
-
-		// die();
 
 		return $modified_feeders_data;
 	}
@@ -332,10 +307,8 @@ class PSDashboardApi extends REST_Controller
 								$errors = NULL;					            
 					            $status_code = 200;
 					            $data = $feeder_result;
-
 							}
 						}
-
 					}
 				}
 			}

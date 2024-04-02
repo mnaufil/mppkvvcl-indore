@@ -1776,6 +1776,53 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
+	public function insertBOQQty($contract_location_id, $activity_id, $unit_id, $boq_val)
+	{
+		$data = array(
+			'contract_location_id' => $contract_location_id,
+			'typeofwork_activity_id' => $activity_id,
+			'unit_id' => $unit_id,
+			'boq' => $boq_val,
+			'is_active' => 1,
+			'createdby' => $this->getLoggedInUserID(),
+			'createddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->insert('contract_location_boq', $data);
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {				
+				return $this->db->affected_rows();
+			}
+		}
+	}
+
+	public function updateBOQQty($contract_location_id, $activity_id, $boq_val)
+	{
+		$data = array(
+			'boq' => $boq_val,
+			'modifiedby' => $this->getLoggedInUserID(),
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('contract_location_boq', $data, array('contract_location_id' => $contract_location_id, 'typeofwork_activity_id' => $activity_id));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {
+				return $this->db->affected_rows();
+			}	
+		}
+	}
+
 	public function getErectedQuantity($pp_id, $activity_id)
 	{
 		$this->db->select('erected_qty');

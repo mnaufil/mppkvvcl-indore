@@ -54,7 +54,7 @@ class PhysicalProgress extends CI_Controller
           $pp_list_status_ids = $this->pp_model->getStatusIDsForList();
           $pp_list_status_ids = implode(',', $pp_list_status_ids);
           
-          $result = $this->pp_model->getPhysicalProgressSheets($pp_list_status_ids, NULL, 0, 1000);
+          $result = $this->pp_model->getPhysicalProgressSheets($pp_list_status_ids, NULL, 0, 500);
 
           foreach ($result as $key => $value) {
                $submitted_by_tkc_ncr = $this->pp_model->getNCRSubmittedByTKCList($value['contract_location_id']);
@@ -391,7 +391,11 @@ class PhysicalProgress extends CI_Controller
 
                          if (str_contains($key, 'boq')) {
                               $boq_val = $value;
-                              continue;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
+                              continue; 
                          }
 
                          $erected_val = $value;
@@ -411,7 +415,11 @@ class PhysicalProgress extends CI_Controller
 
                          if (str_contains($key, 'boq')) {
                               $boq_val = $value;
-                              continue;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
+                              continue; 
                          }
 
                          $erected_val = $value;
@@ -430,7 +438,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
                               continue; 
                          }
 
@@ -450,8 +462,12 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
-                              continue; 
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
+                              continue;
                          }
 
                          $erected_val = $value;
@@ -470,8 +486,12 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
-                              continue; 
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
+                              continue;
                          }
 
                          $erected_val = $value;
@@ -490,8 +510,12 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
-                              continue; 
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
+                              continue;
                          }
 
                          $erected_val = $value;
@@ -510,7 +534,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
                               continue; 
                          }
 
@@ -530,7 +558,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
                               continue; 
                          }
 
@@ -550,7 +582,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
                               continue; 
                          }
 
@@ -570,7 +606,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
                               continue; 
                          }
 
@@ -590,7 +630,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
                               continue; 
                          }
 
@@ -610,7 +654,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
                               continue; 
                          }
 
@@ -630,7 +678,11 @@ class PhysicalProgress extends CI_Controller
                          }
 
                          if (str_contains($key, 'boq')) {
-                             $boq_val = $value;
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
                               continue; 
                          }
 
@@ -769,6 +821,25 @@ class PhysicalProgress extends CI_Controller
                }
 
                redirect('physical-verification');
+          }
+     }
+
+     public function updateBOQQty($key, $boq_val, $contract_location_id)
+     {
+          $key_array = explode('_', $key);
+          $activity_id = end($key_array);
+
+          // Check if boq value already exists
+          $result = $this->pp_model->getBOQ($activity_id, $contract_location_id);
+
+          if (!$result) {
+               $unit_id = $this->pp_model->getActivityData($activity_id, 'unit_id');
+
+               // Inserting the BOQ Qty value
+               $this->pp_model->insertBOQQty($contract_location_id, $activity_id, $unit_id, $boq_val);
+          } else {
+               // Updating the BOQ Qty value
+               $this->pp_model->updateBOQQty($contract_location_id, $activity_id, $boq_val);
           }
      }
 

@@ -139,7 +139,9 @@ class PSDashboardApi extends REST_Controller
 								} else {
 									$formatted_date = date('Y-m-d', strtotime($date));
 
+									$this->benchmark->mark('sp_call_start');
 									$feeders_data = $this->psdashboard_model->getFeedersData($formatted_date, $lot_no);
+									$this->benchmark->mark('sp_call_end');
 
 									$feeder_details = $feeders_data[0];
 									$feeder_progress = $feeders_data[1];
@@ -150,6 +152,7 @@ class PSDashboardApi extends REST_Controller
 							            $status_code = 200;
 							            $data = [];
 									} else {
+										$this->benchmark->mark('array_formation_start');
 										foreach ($feeder_details as $fd_key => $fd_value) {
 											$data[$fd_key]['package_no'] = $fd_value['package_no'];
 											$data[$fd_key]['package_id'] = $fd_value['package_id'];
@@ -178,6 +181,12 @@ class PSDashboardApi extends REST_Controller
 											$data[$fd_key]['estimated_executed_cost'] = $fd_value['EstimatedExecutedCost'];
 											$data[$fd_key]['status_of_work'] = $fd_value['status'];
 										}
+
+										$this->benchmark->mark('array_formation_end');
+
+										echo 'no.of feeders: '.count($feeder_details).'<br/>';
+										echo 'SP Call: '.$this->benchmark->elapsed_time('sp_call_start', 'sp_call_end');
+										echo '<br/>Array Formation: '.$this->benchmark->elapsed_time('array_formation_start', 'array_formation_end').'<br/>';
 
 										$errors = NULL;
 							            $message = NULL;

@@ -141,6 +141,7 @@ class PSDashboardApi extends REST_Controller
 
 									$this->benchmark->mark('sp_call_start');
 									$feeders_data = $this->psdashboard_model->getFeedersData($formatted_date, $lot_no);
+									// echo 'feeder_data: <pre>'; print_r($feeders_data); echo '</pre>'; die();
 									$this->benchmark->mark('sp_call_end');
 
 									$feeder_details = $feeders_data[0];
@@ -153,7 +154,11 @@ class PSDashboardApi extends REST_Controller
 							            $data = [];
 									} else {
 										$this->benchmark->mark('array_formation_start');
-										foreach ($feeder_details as $fd_key => $fd_value) {
+										$modified_arr = $this->modifyFeedersData($feeder_details, $feeder_progress);
+										$data = array_values($modified_arr);
+										// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+
+										/*foreach ($feeder_details as $fd_key => $fd_value) {
 											$data[$fd_key]['package_no'] = $fd_value['package_no'];
 											$data[$fd_key]['package_id'] = $fd_value['package_id'];
 											$data[$fd_key]['lot_no'] = $fd_value['package_group_no'];
@@ -180,9 +185,9 @@ class PSDashboardApi extends REST_Controller
 											$data[$fd_key]['BOQ_cost'] = number_format($fd_value['BoQCost'], 2);
 											$data[$fd_key]['estimated_executed_cost'] = $fd_value['EstimatedExecutedCost'];
 											$data[$fd_key]['status_of_work'] = $fd_value['status'];
-										}
+										}*/
 
-										$this->benchmark->mark('array_formation_end');
+										// $this->benchmark->mark('array_formation_end');
 
 										echo 'no.of feeders: '.count($feeder_details).'<br/>';
 										echo 'SP Call: '.$this->benchmark->elapsed_time('sp_call_start', 'sp_call_end');
@@ -206,6 +211,54 @@ class PSDashboardApi extends REST_Controller
 		}
 
 		$this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+	}
+
+	public function modifyFeedersData($feeder_details, $feeder_progress)
+	{
+		// echo 'feeder_details: <pre>'; print_r($feeder_details); echo '</pre>';
+		// echo 'feeder_progress: <pre>'; print_r($feeder_progress); echo '</pre>';
+
+		$modified_feeder_details = [];
+		$modified_feeder_progress = [];
+
+		foreach ($feeder_details as $key => $value) {
+			// echo 'value: <pre>'; print_r($value); echo '</pre>'; 
+			$modified_feeder_details[$value['feeder_id']]['package_no'] = $value['package_no'];
+			$modified_feeder_details[$value['feeder_id']]['package_id'] = $value['package_id'];
+			$modified_feeder_details[$value['feeder_id']]['lot_no'] = $value['package_group_no'];
+			$modified_feeder_details[$value['feeder_id']]['contractor'] = $value['contractor_name'];
+			$modified_feeder_details[$value['feeder_id']]['circle'] = $value['circle_name'];
+			$modified_feeder_details[$value['feeder_id']]['vidhansabha'] = $value['vidhansabha'];
+			$modified_feeder_details[$value['feeder_id']]['district'] = $value['district'];
+			$modified_feeder_details[$value['feeder_id']]['division'] = $value['division_name'];
+			$modified_feeder_details[$value['feeder_id']]['substation'] = $value['location_name'];
+			$modified_feeder_details[$value['feeder_id']]['typeofwork'] = $value['typeofwork'];
+			$modified_feeder_details[$value['feeder_id']]['feeder_id'] = $value['feeder_id'];
+			$modified_feeder_details[$value['feeder_id']]['charging_status'] = $value['charging_status'];
+			$modified_feeder_details[$value['feeder_id']]['estimate_created'] = $value['estimate_created'];
+			$modified_feeder_details[$value['feeder_id']]['BOQ_cost'] = number_format($value['BoQCost'], 2);
+			$modified_feeder_details[$value['feeder_id']]['estimated_executed_cost'] = $value['EstimatedExecutedCost'];
+			$modified_feeder_details[$value['feeder_id']]['status_of_work'] = $value['status'];
+
+
+			// echo 'modified_feeder_details: <pre>'; print_r($modified_feeder_details); echo '</pre>'; die();
+		}
+
+		foreach ($feeder_progress as $key => $value) {
+			$modified_feeder_progress[$value['feeder_id']]['scope_as_per_award'][$value['report_head']] = $value['totalAwardQty'];
+			$modified_feeder_progress[$value['feeder_id']]['work_completed'][$value['report_head']] = $value['workProgressQty'];
+		}
+
+		// echo 'modified_feeder_progress: <pre>'; print_r($modified_feeder_progress); echo '</pre>'; die();
+
+		$modified_feeders_data = array_replace_recursive($modified_feeder_details, $modified_feeder_progress);
+
+
+		// echo '$modified_feeders_data: <pre>'; print_r($modified_feeders_data); echo '</pre>'; die();
+
+		// die();
+
+		return $modified_feeders_data;
 	}
 
 	public function updateFeederData_post()

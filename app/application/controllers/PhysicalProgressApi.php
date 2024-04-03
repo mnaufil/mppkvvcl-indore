@@ -121,8 +121,10 @@ class PhysicalProgressApi extends REST_Controller
 
             $sheet_result['mode'] = (($reported_date == date('Y-m-d')) || ($reported_date == '') || $day == 'today') ? 'new' : 'previous';
 
+            $userdata = $this->getUserData($logged_user_role_id);
+            $sheet_result['user_role'] = $userdata['role'];
+
             $data['sheet_data'] = $sheet_result;
-            $data['userdata'] = $this->getUserData($logged_user_role_id);
 
             $errors = null;
             $message = null;

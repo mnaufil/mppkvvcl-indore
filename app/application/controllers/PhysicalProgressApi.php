@@ -174,6 +174,17 @@ class PhysicalProgressApi extends REST_Controller
                 foreach ($activities as $value) {
                     foreach ($value['tab_body'] as $act_key => $act_value) {
                         $activity_id = $act_value['activity_id'];
+
+                        if (isset($act_value['boq']) && is_numeric($act_value['boq'])) {
+                            $boq_val = $act_value['boq'];
+                            $unit_id = $act_value['unit_id'];
+
+                            $contract_location_id = $prev_sheet_data['contract_location_id'];
+
+                            //Updating BOQ qty value in contract_location_boq
+                            $this->updateBOQQty($activity_id, $boq_val, $contract_location_id, $unit_id);    
+                        }
+
                         $erected_qty = (isset($act_value['erected_qty']) && is_numeric($act_value['erected_qty'])) ? $act_value['erected_qty'] : NULL;
 
                         //Calculating the pending activities
@@ -267,6 +278,20 @@ class PhysicalProgressApi extends REST_Controller
         }
 
         $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+    }
+
+    public function updateBOQQty($activity_id, $boq_val, $contract_location_id, $unit_id)
+    {
+        // Check if boq value already exists
+        $result = $this->pp_model->getBOQ($activity_id, $contract_location_id);
+
+        if (!$result) {
+            // Inserting the BOQ Qty value
+            $this->pp_model->insertBOQQty($contract_location_id, $activity_id, $unit_id, $boq_val);
+        } else {
+            // Updating the BOQ Qty value
+            $this->pp_model->updateBOQQty($contract_location_id, $activity_id, $boq_val);
+        }
     }
 
     public function get_observations_post()

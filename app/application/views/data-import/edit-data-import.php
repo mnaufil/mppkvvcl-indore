@@ -317,7 +317,7 @@
         				dataType : 'json',
         				data: formData,
         				success: function(response) {
-        					// console.log(response);
+        					console.log(response);
 
         					$('.process-loader').attr('hidden', true);
 
@@ -418,7 +418,7 @@
         			dataType: 'json',
         			data: {import_hdr_id: import_hdr_id},
         			success: function(response) {
-        				// console.log(response);
+        				console.log(response);
 
         				$('.process-loader').attr('hidden', true);
 

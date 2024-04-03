@@ -326,6 +326,11 @@
         			formData.append('import_type', import_type);
         			formData.append('import_sub_type', import_sub_type);
 
+        			if (typeof $(this).data('import-hdr-id') !== 'undefined') {
+        				let import_hdr_id = $(this).data('import-hdr-id');
+        				formData.append('import_hdr_id', import_hdr_id);
+        			}
+
         			$('.process-loader').removeAttr('hidden');
     				$('.process-loader').find('.process-loader-message').html('Please wait while the system is processing the uploaded file.');
 
@@ -339,7 +344,7 @@
         				dataType : 'json',
         				data: formData,
         				success: function(response) {
-        					// console.log(response);
+        					console.log(response);
         					$('.process-loader').attr('hidden', true);
 
         					$('.toast-body').text(response.message);
@@ -425,6 +430,7 @@
                     			$('#btn-import-file').attr('data-import-hdr-id', response.import_hdr_id);
                     		}
 
+                    		$('#btn-process-file').attr('data-import-hdr-id', response.import_hdr_id);	
                     		$('#btn-import-file-cancel').attr('data-import-hdr-id', response.import_hdr_id);	
         				},
         				error: function(xhr, status, error) {
@@ -455,7 +461,7 @@
         			dataType: 'json',
         			data: {import_hdr_id: import_hdr_id},
         			success: function(response) {
-        				// console.log(response);
+        				console.log(response);
 
         				$('.process-loader').attr('hidden', true);
 

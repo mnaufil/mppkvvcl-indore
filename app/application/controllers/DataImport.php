@@ -129,8 +129,10 @@ class DataImport extends CI_Controller
 								unset($worksheet_arr[1]);
 
 								if (empty($import_hdr_id)) {
+									$response['test'] = 'save';
 									$import_hdr_id = $this->di_model->saveImportTypes($type, $sub_type);
 								} else {
+									$response['test'] = 'update';
 									$import_hdr_id = $this->di_model->updateImportTypes($import_hdr_id, $type, $sub_type);
 								}
 								
@@ -209,7 +211,6 @@ class DataImport extends CI_Controller
 
 		if (!empty($_POST)) {
 			$import_hdr_id = $this->input->post('import_hdr_id');
-
 			$import_data_count = $this->di_model->importUploadedData($import_hdr_id); //Uncomment Later
 
 			if ($import_data_count == 0) {

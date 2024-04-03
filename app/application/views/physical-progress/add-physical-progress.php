@@ -768,9 +768,13 @@
 																									<td><?php echo $v2['unit_name']; ?></td>
 																									<!-- BOQ Qty -->
 																									<td class="boq-qty">
-																										<?php echo $v2['boq']; ?>
 																										<?php $hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_boq_'.$v2['typeofwork_activity_id']; ?>
+																										<?php if ($userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Admin' || $userdata['role'] == 'Field Supervisor') { ?>
+																										<input class="form-control form-control-sm mb-4" type="text" name="<?php echo $hidden_input_name; ?>" value="<?php echo $v2['boq']; ?>">
+																										<?php } else { ?>
+																										<?php echo $v2['boq']; ?>
 																										<input type="hidden" name="<?php echo $hidden_input_name; ?>" id="<?php echo $hidden_input_name; ?>" value="<?php echo $v2['boq']; ?>">
+																										<?php } ?>
 																									</td>
 																									<!-- Erected Qty -->
 																									<td class="erected-qty">
@@ -903,9 +907,13 @@
 																									<td><?php echo $v2['unit_name']; ?></td>
 																									<!-- BOQ Qty -->
 																									<td class="boq-qty">
-																										<?php echo $v2['boq']; ?>
 																										<?php $hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_boq_'.$v2['typeofwork_activity_id']; ?>
+																										<?php if ($userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Admin' || $userdata['role'] == 'Field Supervisor') { ?>
+																										<input class="form-control form-control-sm mb-4" type="text" name="<?php echo $hidden_input_name; ?>" value="<?php echo $v2['boq']; ?>">
+																										<?php } else { ?>
+																										<?php echo $v2['boq']; ?>
 																										<input type="hidden" name="<?php echo $hidden_input_name; ?>" id="<?php echo $hidden_input_name; ?>" value="<?php echo $v2['boq']; ?>">
+																										<?php } ?>
 																									</td>
 																									<!-- Erected Qty -->
 																									<td class="erected-qty">
@@ -1163,9 +1171,13 @@
 																									<td><?php echo $v2['unit_name']; ?></td>
 																									<!-- BOQ Qty -->
 																									<td class="boq-qty">
-																										<?php echo $v2['boq']; ?>
 																										<?php $hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_boq_'.$v2['typeofwork_activity_id']; ?>
+																										<?php if ($userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Admin' || $userdata['role'] == 'Field Supervisor') { ?>
+																										<input class="form-control form-control-sm mb-4" type="text" name="<?php echo $hidden_input_name; ?>" value="<?php echo $v2['boq']; ?>">
+																										<?php } else { ?>
+																										<?php echo $v2['boq']; ?>
 																										<input type="hidden" name="<?php echo $hidden_input_name; ?>" id="<?php echo $hidden_input_name; ?>" value="<?php echo $v2['boq']; ?>">
+																										<?php } ?>
 																									</td>
 																									<!-- Erected Qty -->
 																									<td class="erected-qty">
@@ -1300,7 +1312,7 @@
 																									<!-- BOQ Qty -->
 																									<td class="boq-qty">
 																										<?php $hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_boq_'.$v2['typeofwork_activity_id']; ?>
-																										<?php if ($userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Admin') { ?>
+																										<?php if ($userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Admin' || $userdata['role'] == 'Field Supervisor') { ?>
 																										<input class="form-control form-control-sm mb-4" type="text" name="<?php echo $hidden_input_name; ?>" value="<?php echo $v2['boq']; ?>">	
 																										<?php } else { ?>
 																										<?php echo $v2['boq']; ?>
@@ -1849,29 +1861,12 @@
       $(document).ready(function() {
 
 	      // Displaying observation dropdown, remark input and file upload on status YES selection (without BOQ groups)
-       	$('input[name^="civil_work_"]').on('change', function() {
+       	$('input[name^="civil_work_"], input[name^="electrical_"], input[name^="sub-station_items_"]').on('change', function() {
        		//Changing status of form to edited by setting below variable true
 					form_change = true;
-
 					//Applying observations, if any
        		getObservationsForWithoutBOQ($(this));
-       	});	      
-
-	      $('input[name^="electrical_"]').on('change', function() {
-        	//Changing status of form to edited by setting below variable true
-        	form_change = true;
-
-        	//Applying observations, if any
-       		getObservationsForWithoutBOQ($(this));
-	      });
-
-	      $('input[name^="sub-station_items_"]').on('change', function() {
-	      	//Changing status of form to edited by setting below variable true
-        	form_change = true;
-
-        	//Applying observations, if any
-       		getObservationsForWithoutBOQ($(this));
-	      });
+       	});
 
 	      // Displaying progress(%),observation dropdown, remark input and file upload on entering value in erected qty field (with BOQ groups)
 	      $('input[name^="33kv_feeder_"], input[name^="dl_to_ag_coated_conductor_"], input[name^="11kv_feeder_"], input[name^="11kv_feeder_separation_"], input[name^="33kv_interconnection_line_"], input[name^="additional_dtr_"], input[name^="bare_to_cable_"], input[name^="cable_augmentation_"], input[name^="11_kv_bifurcation_"], input[name^="11_kv_interconnection_"], input[name^="33_kv_augmentation_"], input[name^="11_kv_augmentation_"], input[name^="substation_rennovation_"]').on('input', function() {
@@ -1894,104 +1889,6 @@
 						}
 					}
 	      });
-
-	      /*$('input[name^="11kv_feeder_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-
-	      	getObservationsForWithBOQ(this);
-	      });*/
-
-	      /*$('input[name^="11kv_feeder_separation_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-
-	      	getObservationsForWithBOQ(this);
-	      });*/
-
-	      /*$('input[name^="33kv_interconnection_line_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-					
-					getObservationsForWithBOQ(this);	
-	      });*/
-
-	      /*$('input[name^="additional_dtr_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-					
-					getObservationsForWithBOQ(this);	
-	      });*/
-
-	      /*$('input[name^="bare_to_cable_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-					
-					getObservationsForWithBOQ(this);	
-	      });*/
-
-	      /*$('input[name^="cable_augmentation_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-					
-					getObservationsForWithBOQ(this);	
-	      });*/
-
-	      /*$('input[name^="11_kv_bifurcation_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-					
-					getObservationsForWithBOQ(this);	
-	      });*/
-
-	      /*$('input[name^="11_kv_interconnection_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-					
-					getObservationsForWithBOQ(this);	
-	      });*/
-
-	      /*$('input[name^="33_kv_augmentation_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-					
-					getObservationsForWithBOQ(this);	
-	      });*/
-
-	      /*$('input[name^="11_kv_augmentation_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-					
-					getObservationsForWithBOQ(this);	
-	      });*/
-
-	      /*$('input[name^="dl_to_ag_coated_conductor_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-
-					let input_name = $(this).attr('name');
-
-					if (input_name.search('boq') == -1) {
-						getObservationsForWithBOQ(this);	
-					} else {
-						let boq_qty = $(this).val();
-
-						if (!$.isNumeric(boq_qty)) {
-							$('.toast-body').text('Enter only digits');
-			      	$('.toast').toast('show');
-
-			      	// Setting input value to blank
-			      	$(this).val('');
-						}
-					}
-	      });*/
-
-	      /*$('input[name^="substation_rennovation_"]').on('input', function() {
-	      	//Changing status of form to edited by setting below variable true
-					form_change = true;
-					
-					getObservationsForWithBOQ(this);	
-	      });*/
 
 	      //Changing form status on filling remark
 	      $('textarea[name="sheetRemark"]').on('input', function() {

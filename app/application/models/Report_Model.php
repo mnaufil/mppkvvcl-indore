@@ -54,7 +54,7 @@ class Report_Model extends CI_Model
 	function loadPackages()
 	{
 		$contract_status_list = $this->getContractStatusList();
-		$query = $this->db->query("SELECT DISTINCT package_no FROM contract where status_id = ".$contract_status_list['Open']);
+		$query = $this->db->query("SELECT package_no FROM contract where status_id = ".$contract_status_list['Open']." ORDER BY CAST(package_no AS UNSIGNED), package_no");
 		// echo $this->db->last_query(); die();
 		if($query)
 		{
@@ -138,6 +138,67 @@ class Report_Model extends CI_Model
 
 		$result = $query->result();
 		return $result;
+	}
+
+	public function getPackageNos()
+	{
+		$user_id = $this->getLoggedInUserID();
+		$user_role = $this->getUserRoleName($user_id);
+
+		$contract_status_list = $this->getContractStatusList();
+
+		if ($user_role == 'Admin') {
+			$this->db->distinct();
+			$this->db->select('package_group_no');			
+			$this->db->where(array('status_id ' => $contract_status_list['Open']));
+			$this->db->order_by('package_group_no', 'ASC');
+
+			$query = $this->db->get('contract');
+			// echo $this->db->last_query(); die();
+		}
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['package_group_no']);
+				}
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getCircles()
+	{
+		$user_id = $this->getLoggedInUserID();
+		$user_role = $this->getUserRoleName($user_id);
+
+		if ($user_role == 'Admin') {
+			$this->db->select('circle_id, circle_name');
+			$query = $this->db->get_where('mst_circle', array('is_active' => 1, 'deletedby' => NULL));
+		}
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
 	}
 
 	public function getRegionData()
@@ -826,7 +887,7 @@ class Report_Model extends CI_Model
 		$_SESSION['spQuery'] = "CALL sp_rpt_non_conformance_report($sessionId,'$package','$region', '$circle', NULL, '$startDate', '$endDate', $status)";
 
 		$query1 = $this->db->query("CALL sp_rpt_non_conformance_report($sessionId,'$package','$region', '$circle', NULL, '$startDate', '$endDate', $status)");		
-		// echo $this->db->last_query(); die();
+		echo $this->db->last_query(); die();
 		
 		if($query1)
 		{
@@ -962,7 +1023,346 @@ class Report_Model extends CI_Model
 			return $result;
 		}
 	}
-	
+
+	public function generateMaterialInwardSamplingReport($package_no, $circle, $status, $from_date, $to_date)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_sampling(".$user_id.", ".$package_no.", ".$status.", ".$circle.", '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_in_sampling(".$user_id.", ".$package_no.", ".$status.", ".$circle.", '".$from_date."', '".$to_date."')");
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;
+		}
+	}
+
+	public function generateMaterialInwardMICCDetailsReport($package_no, $circle, $status, $di_no, $from_date, $to_date)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_micc(".$user_id.", ".$package_no.", ".$di_no.", ".$status.", ".$circle.", '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_in_micc(".$user_id.", ".$package_no.", ".$di_no.", ".$status.", ".$circle.", '".$from_date."', '".$to_date."')");
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;
+		}
+	}
+
+	public function generateMaterialInwardReport($package_no, $circle, $from_date, $to_date)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_in(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_in(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;
+		}
+	}
+
+	public function generateMaterialInwardReturnReport($package_no, $circle, $from_date, $to_date)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_return(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_in_return(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;
+		}
+	}
+
+	public function generateMaterialOutwardReport($package_no, $circle, $from_date, $to_date)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_out(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_out(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;
+		}
+	}
+
+	public function generateMaterialStockReport($package_no, $circle, $from_date, $to_date)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_stock(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";		
+		$query = $this->db->query("CALL sp_rpt_material_stock(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;
+		}
+	}
+
+	public function generateMaterialBalanceQuantityReport($package_no)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_balance_quantity(".$user_id.", ".$package_no.")";
+		$query = $this->db->query("CALL sp_rpt_material_balance_quantity(".$user_id.", ".$package_no.")");
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;
+		}
+	}
+
+	public function generateTKCPhysicalReport()
+	{
+		$package = $this->input->post('packageNo');
+		$sessionId = $_SESSION['userId'];
+
+		$feederId = $this->input->post('feederId');
+
+		if($feederId == "")
+		{
+			$feederId = 'NULL';
+		}
+
+		$spRegion = 'NULL';
+		$spCircle = 'NULL';
+		$spDivision = 'NULL';
+
+		if(!empty($this->input->post('region')))
+		{
+			$allRegion = implode(",",  $this->input->post('region'));
+			$spRegion = $allRegion;
+		}
+		
+		if(!empty($this->input->post('circle')))
+		{
+			$allCircle = implode(",",  $this->input->post('circle'));
+			$spCircle = $allCircle;
+		}
+
+		if(!empty($this->input->post('division')))
+		{
+			$allDivision = implode(",",  $this->input->post('division'));
+			$spDivision = $allDivision;
+		}
+
+		$query = $this->db->query("CALL sp_rpt_tkc_physical_progress_consolidatedActivityWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)");
+		// echo $this->db->last_query(); die();
+		$_SESSION['spQuery'] = "CALL sp_rpt_tkc_physical_progress_consolidatedActivityWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)";		
+		
+		if($query)
+		{
+			$result =  $query->result();
+
+			mysqli_next_result( $this->db->conn_id );
+			$query->free_result();
+
+			$mainArray = array();
+			$feederIdArray = array();
+			$feederNameArray = array();
+			$regionArray = array();
+			$circleArray = array();
+			$divisionArray = array();
+			$awardNoArray = array();
+			$contractNameArray = array();
+			$dateTimeArray = array();
+
+			foreach($result as $res)
+			{
+				$mainArray['scheme_name'] = $res->scheme_name;
+				$mainArray['discom'] = $res->discom;
+
+				if($feederId == "NULL")
+				{				
+					array_Push($feederIdArray,"-");
+					array_Push($feederNameArray, "-");
+
+					if (!empty($this->input->post('region'))) {
+						array_Push($regionArray, $res->region_name);	
+					} else {
+						array_Push($regionArray, "-");	
+					}
+
+					if (!empty($this->input->post('circle'))) {
+						array_Push($circleArray, $res->circle_name);
+					} else {
+						array_Push($circleArray, "-");	
+					}
+
+					if (!empty($this->input->post('division'))) {
+						array_Push($divisionArray, $res->division_name);
+					} else {
+						array_Push($divisionArray, "-");
+					}
+					
+					array_Push($awardNoArray, $res->award_no);
+					array_Push($contractNameArray, $res->contractor_name);
+					array_Push($dateTimeArray, $res->datetime);
+				}
+				else
+				{
+					array_Push($feederIdArray, $res->feeder_id);
+					array_Push($feederNameArray, $res->feeder_name);
+					array_Push($regionArray, $res->region_name);
+					array_Push($circleArray, $res->circle_name);
+					array_Push($divisionArray, $res->division_name);
+					array_Push($awardNoArray, $res->award_no);
+					array_Push($contractNameArray, $res->contractor_name);
+					array_Push($dateTimeArray, $res->datetime);
+				}
+			}
+
+			$mainArray['feeder_id'] = implode(",", array_unique($feederIdArray));
+			$mainArray['feeder_name'] = implode(",", array_unique($feederNameArray));
+			$mainArray['region_name'] = implode(",", array_unique($regionArray));
+			$mainArray['circle_name'] = implode(",", array_unique($circleArray));
+			$mainArray['division_name'] = implode(",", array_unique($divisionArray));
+			$mainArray['award_no'] = implode(",", array_unique($awardNoArray));
+			$mainArray['contractor_name'] = implode(",", array_unique($contractNameArray));
+			$mainArray['datetime'] = implode(",", array_unique($dateTimeArray));
+
+			$mainArray['result'] = $result;
+			return $mainArray;
+		}
+	}
+
+	public function generateTKCPhysicalReportFeederWise()
+	{
+		$package = $this->input->post('packageNo');
+		$sessionId = $_SESSION['userId'];
+		$feederId = $this->input->post('feederId');
+
+		if($feederId == "")
+		{
+			$feederId = 'NULL';
+		}
+
+		$spRegion = "NULL";
+		$spCircle = 'NULL';
+		$spDivision = 'NULL';
+		
+		if(!empty($this->input->post('region')))
+		{
+			$allRegion = implode(",",  $this->input->post('region'));
+			$spRegion = "'".$allRegion."'";
+		}
+		
+		if(!empty($this->input->post('circle')))
+		{
+			$allCircle = implode(",",  $this->input->post('circle'));
+			$spCircle = "'".$allCircle."'";
+		}
+
+		if(!empty($this->input->post('division')))
+		{
+			$allDivision = implode(",",  $this->input->post('division'));
+			$spDivision = "'".$allDivision."'";
+		}
+
+		$query = $this->db->query("CALL sp_rpt_tkc_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
+		// echo $this->db->last_query(); die();
+		$_SESSION['spQuery'] = "CALL sp_rpt_tkc_physical_progress_feederWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)";
+		
+		if($query)
+		{
+			$result = $query->result_array();
+			return $result;
+		}
+	}
 
 	public function convertpdf() 
 	{
@@ -1219,6 +1619,31 @@ class Report_Model extends CI_Model
 		echo $html;
 	}
 
+	public function getMaterialStatusList()
+	{
+		$this->db->select('mst_status.status_id, mst_status.name');
+		$this->db->from('mst_status');
+		$this->db->join('mst_module', 'mst_status.module_id = mst_module.module_id', 'INNER');
+		$this->db->where(array('mst_module.name' => 'Material Status'));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function getFeederLocationData($feeder_id)
 	{
 		$this->db->select('region_id, circle_id, division_id');
@@ -1242,10 +1667,13 @@ class Report_Model extends CI_Model
 
 	public function getFeedersLocationDataByPackageNo($package_no)
 	{
+		$contract_status_list = $this->getContractStatusList();
+		
 		$this->db->select('contract_location.region_id, contract_location.circle_id, contract_location.division_id');
 		$this->db->from('contract_location');
 		$this->db->join('contract', 'contract_location.contract_id = contract.contract_id', 'INNER');
-		$this->db->where(array('contract.package_no' => $package_no));
+		$this->db->like('contract.package_no', $package_no);
+		$this->db->where(array('status_id ' => $contract_status_list['Open']));
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -1285,6 +1713,39 @@ class Report_Model extends CI_Model
 
 			if ($query->num_rows() > 0) {
 				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getLoggedInUserID()
+	{
+		$userdata = $_SESSION['loggedData'];
+		return $userdata->user_id;
+	}
+
+	public function getUserRoleName($user_id)
+	{
+		$this->db->select('mst_role.name');
+		$this->db->from('mst_role');
+		$this->db->join('mst_user', 'mst_user.role_id = mst_role.role_id', 'INNER');
+		$this->db->where(array('mst_user.user_id' => $user_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['name'];
 			}
 
 			return $query_result;

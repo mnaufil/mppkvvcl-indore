@@ -1,7 +1,6 @@
-<!doctype html>
-<html lang="en" dir="ltr">
-
-   <head>
+<!DOCTYPE html>
+<html>
+	<head>
       <!-- META DATA -->
       <meta charset="UTF-8">
       <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
@@ -42,9 +41,8 @@
       </style>
    </head>
 
-   <body class="app sidebar-mini ltr light-mode">
-
-      <!-- GLOBAL-LOADER -->
+	<body class="app sidebar-mini ltr light-mode">
+		<!-- GLOBAL-LOADER -->
       <div id="global-loader">
          <img src="<?php echo base_url('assets/images/loader.svg'); ?>" class="loader-img" alt="Loader">
       </div>
@@ -52,9 +50,9 @@
 
       <!-- PAGE -->
       <div class="page">
-         <div class="page-main">
-
-            <!-- App-Header -->
+      	<div class="page-main">
+      		
+      		<!-- App-Header -->
             <?php $this->load->view('include/header');?>
             <!-- App-Header Ends -->
 
@@ -62,54 +60,51 @@
             <?php $this->load->view('include/side-bar');?>
             <!-- App-Sidebar Ends -->
 
-            <!--app-content open-->
+            <!-- App Content -->
             <div class="main-content app-content mt-0">
-               <div class="side-app">
+            	<div class="side-app">
+            		
+            		<!-- Container -->
+            		<div class="main-container container-fluid">
 
-                  <!-- CONTAINER -->
-                  <div class="main-container container-fluid">
-
-                     <!-- PAGE-HEADER -->
+            			<!-- Page Haeder -->
                      <div class="page-header">
-                        <h1 class="page-title">Report Name: Physical Progress</h1>
+                        <h1 class="page-title">Report Name: TKC Physical Progress</h1>
                      </div>
-                     <!-- PAGE-HEADER END -->
+                     <!-- Page Haeder Ends -->
 
-                     <!-- ROW OPEN -->
+                     <!-- Row -->
                      <div class="row">
-                        <div class="col-lg-12 col-md-12">
-                           <div class="card">
-                              <div class="card-body">
-                                 <div class="form-row mt-2 mb-2">
-                                    <div class="col-xl-12">
-                                       <label class="form-label">Report Description:</label>
+                     	<div class="col-lg-12 col-md-12">
+                     		<div class="card">
+                     			<div class="card-body">
+                     				
+                     				<div class="form-row mt-2 mb-2">
+                     					<div class="col-xl-12">
+                     						<label class="form-label">Report Description:</label>
                                        <p class="report-desc">Choose the Package No and/or the Feeder ID to view the status summary.</p>
-                                    </div>
-                                 </div>
-                                 <!-- <form class="needs-validation" novalidate method="post" action="<?php //echo base_url('generate-report'); ?>"> -->
-                                    <!-- For time being -->
-                                 <form id="generatePhysicalReport" name="generatePhysicalReport" method="post" action="<?php echo base_url('generate-physical-report'); ?>">
-                                    <div class="form-row">
-                                       <!-- Package No -->
-                                       <div class="col-xl-4 mb-3">
+                     					</div>
+                     				</div>
+
+                     				<form id="generateTKCPhysicalProgressReport" name="generateTKCPhysicalProgressReport" method="POST" action="<?php echo base_url('generate-tkc-physical-progress-report') ?>">
+                     					<!-- Row1 -->
+                     					<div class="form-row">
+                     						<!-- Package No -->
+                     						<div class="col-xl-4 mb-3">
                                           <label for="packageNo" class="form-label">Lot No.
                                              <span class="text-red">*</span>
                                           </label>
                                           <select  class="form-control select2-show-search form-select select2-hidden-accessible" id="packageNo" name="packageNo" required>
                                              <option value="select" selected disabled>Select Lot</option>
                                              <?php foreach($packages as $package) { ?>
-                                                <option value="<?php echo $package->package_no;?>" <?php if($postpackage==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
-                                             <?php } ?>
+                                                   <option value="<?php echo $package->package_no;?>" <?php if($postpackage==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
+                                                <?php } ?>
                                            </select>
                                        </div>
                                        <!-- Region -->
                                        <div class="col-xl-4 mb-3">
                                           <label class="form-label" for="region">Region</label>
                                           <select class="filter-multi" id="region" name="region[]" multiple="multiple">
-                                             <?php //foreach($regions as $region) { ?>
-                                             <!-- <option value="<?php //echo $region->region_id;?>" <?php //if(in_array($region->region_id, $allRegion)) { ?> selected <?php //} ?>><?php //echo $region->region_name;?></option> -->
-                                             <?php //} ?>
-
                                              <?php foreach ($regions as $key => $value) { ?>
                                                 <?php $selected = (isset($sel_region) && in_array($value->region_id, $sel_region)) ? 'selected' : ''; ?>
                                              <option value="<?php echo $value->region_id; ?>" <?php echo $selected; ?>><?php echo $value->region_name; ?></option>
@@ -120,10 +115,6 @@
                                        <div class="col-xl-4 mb-3">
                                           <label class="form-label" for="circle">Circle</label>
                                           <select class="filter-multi" id="circle" name="circle[]" multiple="multiple">
-                                             <?php //foreach($circles as $circle) { ?>
-                                             <!-- <option value="<?php //echo $circle->circle_id;?>" <?php //if(in_array($circle->circle_id, $allCircle)) { ?> selected <?php //} ?>><?php //echo $circle->circle_name;?></option> -->
-                                             <?php //} ?>
-
                                              <?php foreach ($circles as $key => $value) { 
                                                       foreach ($value as $k => $val) {
                                                          $selected = (isset($sel_circle) && in_array($k, $sel_circle)) ? 'selected' : ''; 
@@ -138,10 +129,6 @@
                                        <div class="col-xl-4 mb-3">
                                           <label class="form-label" for="division">Division</label>
                                           <select class="filter-multi" id="division" name="division[]" multiple="multiple">
-                                             <?php //foreach($divisions as $division) { ?>
-                                             <!-- <option value="<?php //echo $division->division_id;?>" <?php //if(in_array($division->division_id, $allDivision)) { ?> selected <?php //} ?>><?php //echo $division->division_name;?></option> -->
-                                             <?php //} ?>
-
                                              <?php foreach ($divisions as $key => $value) { 
                                                       foreach ($value as $k => $val) {
                                                          $selected = (isset($sel_division) && in_array($k, $sel_division)) ? 'selected' : '';
@@ -158,11 +145,11 @@
                                           <input type="text" class="form-control" id="feederId" name="feederId" value="<?php echo $postfeederId; ?>" onkeyup="showfeeders(this.value)">
                                           <div class="list-group list-view-contractor" id="list_view_feeders" style="width:100%"></div>
                                        </div>
-                                    </div>
-
-                                    <div class="form-row">
-                                       <!-- Report Type -->
-                                       <div class="col-xl-12 mb-3">
+                     					</div>
+                     					<!-- Row2 -->
+                     					<div class="form-row">
+                     						<!-- Report Type -->
+                     						<div class="col-xl-12 mb-3">
                                           <label class="form-label" for="reportType">Report Type<span class="text-red">*</span></label>
                                           <div class="form-group">
                                              <div class="custom-controls">
@@ -177,20 +164,23 @@
                                              </div>
                                           </div>
                                        </div>
-                                    </div>
+                     					</div>
 
-                                    <button class="btn btn-success mb-3 mt-3" type="submit" >Generate</button>
-                                    <a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('view-report'); ?>">Clear</a>
+                     					<button class="btn btn-success mb-3 mt-3" type="submit" >Generate</button>
+                                    <a class="btn btn-light mb-3 mt-3" href="<?php echo base_url('tkc-physical-progress-report'); ?>">Clear</a>
                                     <a class="btn btn-primary mb-3 mt-3" href="<?php echo base_url('reports'); ?>">Back</a>
-                                 </form>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <!-- ROW CLOSED -->
+                     				</form>
 
+                     			</div>
+                     		</div>
+                     	</div>
+                     </div>
+                     <!-- Row Ends -->
+
+                     <!-- Response Row -->
                      <?php if (isset($feeder_access) && $feeder_access) { ?>
-                        <!-- Report Row -->
+
+                     	<!-- Report Row -->
                         <?php if(!empty($reportData) && $reportType == 2) { ?>
                            <?php if (is_array($reportData)) { ?>
                            <div class="row" id="report-table" >
@@ -387,8 +377,9 @@
                            <?php } ?>
                         <?php } ?>
                         <!-- Report Row Ends -->   
-                     <?php } elseif(isset($feeder_access) && !$feeder_access) { ?>
-                        <div class="row">
+
+                     <?php } elseif (isset($feeder_access) && !$feeder_access) { ?>
+                     	<div class="row">
                            <div class="col-lg-12">
                               <div class="card">
                                  <div class="card-body bg-danger text-white pt-2 rounded-2">
@@ -401,21 +392,24 @@
                            </div>
                         </div>
                      <?php } ?>
+	                  <!-- Response Row Ends -->
 
-                  </div>
-                  <!-- CONTAINER CLOSED -->
+            		</div>
 
-               </div>
+            		<!-- Container Ends-->
+
+            	</div>
             </div>
-            <!--app-content closed-->
+            <!-- App Content Ends -->
 
-         </div>
+      	</div>
 
-         <!-- Footer -->
+      	<!-- Footer -->
          <?php $this->load->view('include/footer');?>
          <!-- Footer Ends -->
 
       </div>
+      <!-- PAGE END -->
 
       <!-- BACK-TO-TOP -->
       <a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>
@@ -473,10 +467,10 @@
 
       <!-- MULTIPLE SELECT JS -->
       <script src="<?php echo base_url('assets/plugins/multipleselect/multiple-select.js'); ?>"></script>
-      <script src="<?php echo base_url('assets/plugins/multipleselect/multi-select.js'); ?>"></script> 
+      <script src="<?php echo base_url('assets/plugins/multipleselect/multi-select.js'); ?>"></script>
 
-       <script>
-         var baseUrl = "<?php echo base_url(); ?>";
+      <script type="text/javascript">
+      	var baseUrl = "<?php echo base_url(); ?>";
 
          let circles = <?php echo json_encode($circles) ?>;         
          let divisions = <?php echo json_encode($divisions) ?>;
@@ -562,7 +556,7 @@
             $('#division').multipleSelect();
          });
 
-         $('#generatePhysicalReport').on('submit', function(event) {
+         $('#generateTKCPhysicalProgressReport').on('submit', function(event) {
             let package_no = $('#packageNo option:selected').val();
             let report_type = $('input[name="reportType"]:checked');
 
@@ -622,8 +616,7 @@
             $("#feederId").empty();
             $("#feederId").val(feederId);
             $("#list_view_feeders").html("");
-         }         
+         }
       </script>
-   </body>
-
+	</body>
 </html>

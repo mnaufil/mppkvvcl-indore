@@ -138,6 +138,46 @@
                                                                     <a href="<?php echo base_url('invoicing-payment-report');?>"><i class="ti ti-player-record-filled"></i> Updated Position of Invoicing and Payment</a>
                                                                 </li>
                                                             <?php } ?>
+                                                            <?php if (in_array('Material Inward Sampling', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('material-inward-sampling-report');?>"><i class="ti ti-player-record-filled"></i> Material Inward Sampling</a>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (in_array('Material Inward MICC Details', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('material-inward-micc-details-report');?>"><i class="ti ti-player-record-filled"></i> Material Inward MICC Details</a>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (in_array('Material Inward', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('material-inward-report');?>"><i class="ti ti-player-record-filled"></i> Material Inward</a>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (in_array('Material Inward Return', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('material-inward-return-report');?>"><i class="ti ti-player-record-filled"></i> Material Inward Return</a>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (in_array('Material Outward', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('material-outward-report');?>"><i class="ti ti-player-record-filled"></i> Material Outward</a>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (in_array('Material Stock', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('material-stock-report');?>"><i class="ti ti-player-record-filled"></i> Material Stock</a>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (in_array('Material Balance Quantity', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('material-balance-quantity-report');?>"><i class="ti ti-player-record-filled"></i> Material Balance Quantity</a>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (in_array('TKC Physical Progress', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('tkc-physical-progress-report');?>"><i class="ti ti-player-record-filled"></i> TKC Physical Progress</a>
+                                                                </li>
+                                                            <?php } ?>
                                                         </ul> 
                                                     </div> 
                                                 </div>

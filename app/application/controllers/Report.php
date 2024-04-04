@@ -892,7 +892,6 @@ class Report extends CI_Controller
 		$this->load->view('report/cash-flow-report', $data);
 	}
 
-
 	public function invoicingPaymentReport()
 	{	
 		$data['packageNo'] = ""; 
@@ -923,6 +922,595 @@ class Report extends CI_Controller
 
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('report/invoicing-payment-report', $data);
+	}
+
+	public function materialInwardSamplingReport()
+	{
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+		$status_list = $this->Report_Model->getMaterialStatusList();
+		$status_list = $this->modifyMaterialStatusList($status_list);
+
+		$data['package_nos'] = $package_nos;
+		$data['circles'] = $circles;
+		$data['status_list'] = $status_list;
+		$data['title'] = 'Material Inward Sampling Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-inward-sampling-report', $data);
+	}
+
+	public function generateMaterialInwardSamplingReport()
+	{
+		$data['package_no'] = $package_no = $this->input->post('packageNo');
+		$data['circle'] = $circle = $this->input->post('circle');
+		$data['status'] = $status = $this->input->post('status');
+
+		$data['material_received_date'] = $material_received_date = $this->input->post('matrerialReceivedDate');
+		$dates_arr = explode(' - ', $material_received_date);
+		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
+		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
+
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+		$status_list = $this->Report_Model->getMaterialStatusList();
+		$status_list = $this->modifyMaterialStatusList($status_list);
+
+		if ($this->checkLocationAccess(NULL, $package_no)) {
+			$report_data = $this->Report_Model->generateMaterialInwardSamplingReport($package_no, $circle, $status, $from_date, $to_date);
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'Material Inward Sampling';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			$data['report_data'] = !empty($report_data) ? $report_data : 'No Records Found';
+			$data['package_nos'] = $package_nos;
+			$data['circles'] = $circles;
+			$data['status_list'] = $status_list;
+			
+			$data['feeder_access'] = true;
+		} else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'Material Inward Sampling Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-inward-sampling-report', $data);
+	}
+
+	public function materialInwardMICCDetailsReport()
+	{
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+		$status_list = $this->Report_Model->getMaterialStatusList();
+		$status_list = $this->modifyMaterialStatusList($status_list);
+
+		$data['package_nos'] = $package_nos;
+		$data['circles'] = $circles;
+		$data['status_list'] = $status_list;
+		$data['title'] = 'Material Inward MICC Details Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-inward-micc-details-report', $data);
+	}
+
+	public function generateMaterialInwardMICCDetailsReport()
+	{
+		$data['package_no'] = $package_no = $this->input->post('packageNo');
+		$data['circle'] = $circle = $this->input->post('circle');
+		$data['status'] = $status = $this->input->post('status');
+		$data['di_no'] = $di_no = $this->input->post('di_no');
+
+		$data['material_received_date'] = $material_received_date = $this->input->post('matrerialReceivedDate');
+		$dates_arr = explode(' - ', $material_received_date);
+		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
+		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
+
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+		$status_list = $this->Report_Model->getMaterialStatusList();
+		$status_list = $this->modifyMaterialStatusList($status_list);
+
+		if ($this->checkLocationAccess(NULL, $package_no)) {
+			$report_data = $this->Report_Model->generateMaterialInwardMICCDetailsReport($package_no, $circle, $status, $di_no, $from_date, $to_date);	
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'Material Inward MICC Details';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			$data['report_data'] = !empty($report_data) ? $report_data : 'No Records Found';
+			$data['package_nos'] = $package_nos;
+			$data['circles'] = $circles;
+			$data['status_list'] = $status_list;
+			
+			$data['feeder_access'] = true;
+		} else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'Material Inward MICC Details Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-inward-micc-details-report', $data);
+	}
+
+	public function materialInwardReport()
+	{
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();		
+
+		$data['package_nos'] = $package_nos;
+		$data['circles'] = $circles;
+		$data['title'] = 'Material Inward Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-inward-report', $data);
+	}
+
+	public function generateMaterialInwardReport()
+	{
+		$data['package_no'] = $package_no = $this->input->post('packageNo');
+		$data['circle'] = $circle = $this->input->post('circle');
+
+		$data['material_received_date'] = $material_received_date = $this->input->post('matrerialReceivedDate');
+		$dates_arr = explode(' - ', $material_received_date);
+		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
+		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
+
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		if ($this->checkLocationAccess(NULL, $package_no)) {
+			$report_data = $this->Report_Model->generateMaterialInwardReport($package_no, $circle, $from_date, $to_date);
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'Material Inward';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			$data['report_data'] = !empty($report_data) ? $report_data : 'No Records Found';
+			$data['package_nos'] = $package_nos;
+			$data['circles'] = $circles;
+			
+			$data['feeder_access'] = true;
+		} else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'Material Inward Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-inward-report', $data);
+	}
+
+	public function materialInwardReturnReport()
+	{
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+		
+		$data['package_nos'] = $package_nos;
+		$data['circles'] = $circles;
+		$data['title'] = 'Material Inward Return Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die()
+		$this->load->view('report/material-inward-return-report', $data);
+	}
+
+	public function generateMaterialInwardReturnReport()
+	{
+		$data['package_no'] = $package_no = $this->input->post('packageNo');
+		$data['circle'] = $circle = $this->input->post('circle');
+
+		$data['material_return_date'] = $material_return_date = $this->input->post('matrerialReturnDate');
+		$dates_arr = explode(' - ', $material_return_date);
+		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
+		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
+
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		if ($this->checkLocationAccess(NULL, $package_no)) {
+			$report_data = $this->Report_Model->generateMaterialInwardReturnReport($package_no, $circle, $from_date, $to_date);
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'Material Inward Return';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			$data['report_data'] = !empty($report_data) ? $report_data : 'No Records Found';
+			$data['package_nos'] = $package_nos;
+			$data['circles'] = $circles;
+			
+			$data['feeder_access'] = true;
+		} else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'Material Inward Return Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die()
+		$this->load->view('report/material-inward-return-report', $data);
+	}
+
+	public function materialOutwardReport()
+	{
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		$data['package_nos'] = $package_nos;
+		$data['circles'] = $circles;
+		$data['title'] = 'Material Outward Report';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-outward-report', $data);
+	}
+
+	public function generateMaterialOutwardReport()
+	{
+		$data['package_no'] = $package_no = $this->input->post('packageNo');
+		$data['circle'] = $circle = $this->input->post('circle');
+
+		$data['material_issue_date'] = $material_issue_date = $this->input->post('matrerialIssueDate');
+		$dates_arr = explode(' - ', $material_issue_date);
+		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
+		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
+
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		if ($this->checkLocationAccess(NULL, $package_no)) {
+			$report_data = $this->Report_Model->generateMaterialOutwardReport($package_no, $circle, $from_date, $to_date);
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'Material Outward';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			$data['report_data'] = !empty($report_data) ? $report_data : 'No Records Found';
+			$data['package_nos'] = $package_nos;
+			$data['circles'] = $circles;
+			
+			$data['feeder_access'] = true;
+		} else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'Material Outward Report';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-outward-report', $data);
+	}
+
+	public function materialStockReport()
+	{
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		$data['package_nos'] = $package_nos;
+		$data['circles'] = $circles;
+		$data['title'] = 'Material Stock Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-stock-report', $data);
+	}
+
+	public function generateMaterialStockReport()
+	{
+		$data['package_no'] = $package_no = $this->input->post('packageNo');
+		$data['circle'] = $circle = $this->input->post('circle');
+
+		$data['date_range'] = $date_range = $this->input->post('dateRange');
+		$dates_arr = explode(' - ', $date_range);
+		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
+		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
+
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		if ($this->checkLocationAccess(NULL, $package_no)) {
+			$report_data = $this->Report_Model->generateMaterialStockReport($package_no, $circle, $from_date, $to_date);
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'Material Stock';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			$data['report_data'] = !empty($report_data) ? $report_data : 'No Records Found';
+			$data['package_nos'] = $package_nos;
+			$data['circles'] = $circles;
+			
+			$data['feeder_access'] = true;
+		}	else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'Material Stock Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-stock-report', $data);
+	}
+
+	public function materialBalanceQuantityReport()
+	{
+		$package_nos = $this->Report_Model->getPackageNos();
+
+		$data['package_nos'] = $package_nos;
+		$data['title'] = 'Material Balance Quantity Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-balance-quantity-report', $data);
+	}
+
+	public function generateMaterialBalanceQuantityReport()
+	{
+		$data['package_no'] = $package_no = $this->input->post('packageNo');
+
+		$package_nos = $this->Report_Model->getPackageNos();
+
+		if ($this->checkLocationAccess(NULL, $package_no)) {
+			$report_data = $this->Report_Model->generateMaterialBalanceQuantityReport($package_no);
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'Material Balance Quantity';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			$data['report_data'] = !empty($report_data) ? $report_data : 'No Records Found';
+			$data['package_nos'] = $package_nos;
+			
+			$data['feeder_access'] = true;
+		} else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'Material Balance Quantity Report';
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material-balance-quantity-report', $data);
+	}
+
+	public function tkcPhysicalProgressReport()
+	{
+		$data['packages'] = $this->Report_Model->loadPackages();
+		$data['regions'] = $user_regions = $this->Report_Model->loadRegions();
+		$user_circles = $this->Report_Model->loadCircles();
+	  $user_divisions = $this->Report_Model->loadDivisions();
+
+		$data['reportType'] = "";
+	  $data['postpackage'] = "";
+	  $data['postregion'] = "";
+		$data['postcircle'] = "";
+		$data['poststatus'] = "";
+		$data['postfeederId'] = "";
+		$data['reportData'] = array();
+		$data['allRegion'] = array();
+		$data['allCircle'] = array();
+		$data['allDivision'] = array();
+		
+		$user_regions = $this->getRegionIDs($user_regions);
+		$user_circles = $this->getCirlceIDs($user_circles);
+		$user_divisions = $this->getDivisionIDs($user_divisions);
+
+		/*$region_data = $this->Report_Model->getRegionData();
+		$data['region_data'] = $region_data;*/
+
+		$circle_data = $this->Report_Model->getCircleData($user_circles);
+		$data['circles'] = $this->groupCircleData($circle_data);
+
+		$division_data = $this->Report_Model->getDivisionData($user_divisions);
+		$data['divisions'] = $this->groupDivisionData($division_data);
+		$data['title'] = 'TKC Physical Progress Report';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/tkc-physical-progress-report', $data);
+	}
+
+	public function generateTKCPhysicalProgressReport()
+	{
+		$data['postpackage'] = $package = $this->input->post('packageNo');
+		$data['postfeederId'] = $feederId = $this->input->post('feederId');
+
+		$data['packages'] = $this->Report_Model->loadPackages();
+
+		$data['regions'] = $user_regions = $this->Report_Model->loadRegions();
+		$user_regions = $this->getRegionIDs($user_regions);
+
+		$user_circles = $this->Report_Model->loadCircles();
+		$user_circles = $this->getCirlceIDs($user_circles);
+		$circle_data = $this->Report_Model->getCircleData($user_circles);
+		$data['circles'] = $this->groupCircleData($circle_data);
+
+		$user_divisions = $this->Report_Model->loadDivisions();
+		$user_divisions = $this->getDivisionIDs($user_divisions);
+		$division_data = $this->Report_Model->getDivisionData($user_divisions);
+		$data['divisions'] = $this->groupDivisionData($division_data);
+
+		$data['reportType'] = $reportType = $this->input->post('reportType');
+
+		if ($this->checkLocationAccess($this->input->post('feederId'), $this->input->post('packageNo'))) {
+			$data['feeder_access'] = true;
+
+			$data['sel_region'] = (!empty($this->input->post('region'))) ? $this->input->post('region') : [];
+			$data['sel_circle'] = (!empty($this->input->post('circle'))) ? $this->input->post('circle') : [];
+			$data['sel_division'] = (!empty($this->input->post('division'))) ? $this->input->post('division') : [];
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'TKC Physical Progress';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			if($reportType == 2)
+			{
+				$reportData = $this->Report_Model->generateTKCPhysicalReport();
+
+				if (empty($reportData['result'])) {
+					$data['reportData'] = 'No Records Found';
+				} else {
+					$data['reportData'] = $reportData;
+				}
+			} elseif ($reportType == 1)
+			{
+				$reportData = $this->Report_Model->generateTKCPhysicalReportFeederWise();
+
+				if (empty($reportData)) {
+					$data['reportData'] = 'No Records Found';
+				} else {
+					$myVar = $reportData[0];
+					$onlyKeys = array();
+
+					foreach($myVar as $key => $value) {
+						array_push($onlyKeys, $key);
+					}
+
+					$data['onlyKeys'] = $onlyKeys;
+
+					$mainHeadingArray = $subHeadingArray = $subSubHeadingArray = [];
+
+					foreach($data['onlyKeys'] as $mainHeading)
+					{
+						if ($mainHeading == 'feeder_id' || $mainHeading == 'region_name' || $mainHeading == 'circle_name' || $mainHeading == 'division_name') {
+							continue;
+						}
+
+						$explode = explode("__", $mainHeading);
+						array_push($mainHeadingArray, $explode[0]);
+	 					array_push($subHeadingArray, $explode[1].' ('.$explode[2].')');
+	 					array_push($subSubHeadingArray, $explode[3]);
+					}
+
+					$mainHeadingArray = array_unique($mainHeadingArray);
+
+					$header_count = [];
+					foreach ($mainHeadingArray as $group_name) {
+						$header_count[$group_name] = 0;
+						foreach ($data['onlyKeys'] as $value) {
+							$match = '/^'.$group_name.'__/';
+							if (preg_match($match, $value)) {
+								$header_count[$group_name]++;
+							}
+						}
+					}
+
+					$data['mainHeadingArray'] = $header_count;
+					$data['subHeadingArray'] = $subHeadingArray;
+					$data['subSubHeadingArray'] = $subSubHeadingArray;
+
+					// Modifying reportData
+					$modified_report_data = [];
+					
+					foreach ($reportData as $key => $value) {
+						$i = 1;
+						foreach ($value as $k => $val) {
+							if (str_contains($k, 'boq_qty')) {
+								$boq_key = 'boq_qty_'.$i;
+								$modified_report_data[$value['feeder_id']][$boq_key] = $val;
+
+								$i++;
+							} elseif (str_contains($k, 'erection_qty')) {
+								$erection_key = 'erection_qty_'.$i;
+								$modified_report_data[$value['feeder_id']][$erection_key] = $val;
+
+								$i++;
+							} elseif (str_contains($k, 'region_name')) {
+								$modified_report_data[$value['feeder_id']]['region_name'] = $val;
+							} elseif (str_contains($k, 'circle_name')) {
+								$modified_report_data[$value['feeder_id']]['circle_name'] = $val;
+							} elseif (str_contains($k, 'division_name')) {
+								$modified_report_data[$value['feeder_id']]['division_name'] = $val;
+							}
+						}
+					}
+
+					$data['reportData'] = $modified_report_data;
+				}
+			}
+		} else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'TKC Physical Progress Report';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/tkc-physical-progress-report', $data);
+	}
+
+	public function modifyMaterialStatusList($status_list)
+	{
+		$modified_status_list = [];
+
+		foreach ($status_list as $key => $value) {
+			switch ($value['status_id']) {
+				case '4':
+					$modified_status_list[$key]['status_id'] = $value['status_id'];
+					$modified_status_list[$key]['name'] = 'All';
+					break;
+				case '5':
+					$modified_status_list[$key]['status_id'] = $value['status_id'];
+					$modified_status_list[$key]['name'] = 'Pending';
+					break;
+				case '6':
+					$modified_status_list[$key]['status_id'] = $value['status_id'];
+					$modified_status_list[$key]['name'] = 'Completed';
+					break;
+				
+				default:
+					// code...
+					break;
+			}
+		}
+
+		return $modified_status_list;
 	}
 	
 	public function convertPdf()

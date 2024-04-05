@@ -63,7 +63,7 @@ class Security extends CI_Controller
 			$package_access = '';
 
 			if ($user_role_id == 8) {
-				$package_access = $this->input->post('package_access');
+				$package_access = implode(',', $this->input->post('package_access'));
 			} else {
 				$full_site_access = ($this->input->post('full_site_access') == 0) ? false : true;
 			}
@@ -92,7 +92,7 @@ class Security extends CI_Controller
 				}
 			}
 
-			redirect('users');			
+			redirect('users');
 		}
 	}
 
@@ -144,59 +144,70 @@ class Security extends CI_Controller
 		$data['regions'] = $this->Security_Model->loadRegions($userID);	
 		$data['circles'] = $this->Security_Model->loadCircles();
 		$data['divisions'] = $this->Security_Model->loadDivisions();
+		$data['packages'] = $this->Security_Model->loadPackages();
 		$data['userdata'] = $this->Security_Model->loadUserData($userID);
 		$data['selectedRegionsArray'] = array_unique($selectedRegionsArray);
 		$data['selectedCirclesArray'] = array_unique($selectedCirclesArray);
 		$data['selectedDivisionsArray'] = array_unique($selectedDivisionsArray);
+
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('security/user/edit-user', $data);
 	}
 
-
-
 	public function updateusers()
 	{
-		try
-	 	{	
-	 		$this->form_validation->set_rules('name', 'Name of User', 'required'); 
-			$this->form_validation->set_rules('email', 'Email', 'required'); 
-			$this->form_validation->set_rules('contact', 'Contact', 'required'); 
-			$this->form_validation->set_rules('designation', 'Designation', 'required'); 
-			$this->form_validation->set_rules('location', 'Location', 'required');
+		$user_id = $this->input->post('user_id');
+		$user_name = $this->input->post('name');
+		$user_email = $this->input->post('email');
+		$user_contact = $this->input->post('contact');
+		$user_designation = $this->input->post('designation');
+		$user_location = $this->input->post('location');
+		$user_role_id = $this->input->post('role');
+		$user_reporting_id = (isset($_POST['reportingManager'])) ? $this->input->post('reportingManager') : '';
 
-			$this->form_validation->set_rules('reportingManager', 'Reporting Manager', 'required');
-			$this->form_validation->set_rules('role', 'Role', 'required');
+		$full_site_access = false;
+		$package_access = '';
 
-			/*echo '<pre>';
-			print_r($_POST); die;*/
-			$user_id = $this->input->post('user_id');
-			if($this->form_validation->run())
-			{
-				$return = $this->Security_Model->updateusers();
-				if($return)
-				{
-					$this->session->set_flashdata('success','User Updated Successfully');
-					redirect('users/'.$user_id);
-				}
-			}
-			else 
-			{
-					$this->session->set_flashdata('error',validation_errors());
-					redirect('users/'.$user_id);
-			}
-	 	}
-
-	 	catch (Exception $e)
-		{
-        		log_message('error: ',$e->getMessage());
-        		//return;
+		if ($user_role_id == 8) {
+			$package_access = implode(',', $this->input->post('package_access'));
+		} else {
+			$full_site_access = ($this->input->post('full_site_access') == 0) ? false : true;
 		}
 
+		$updated_user_id = $this->Security_Model->updateUser($user_id, $user_name, $user_email, $user_contact, $user_designation, $user_location, $user_role_id, $user_reporting_id, $package_access, $full_site_access);
+
+		if ($updated_user_id && $user_role_id != 8) {
+			$regionsArray = $this->input->post('regions');
+
+			for ($i=0; $i < count($regionsArray); $i++) { 
+				$region =  $regionsArray[$i];
+
+				$circleArray = $this->input->post('circles'.$region);
+
+				for ($j=0; $j <count($circleArray); $j++) { 
+					$circle =  $circleArray[$j];
+
+					$divisionArray = $this->input->post('divisions'.$circle);
+
+					for ($k=0; $k < count($divisionArray); $k++) { 
+						$division = $divisionArray[$k];
+
+						$site_exists = $this->Security_Model->checkRegionCircleDivisionExists($user_id, $region, $circle, $division);
+
+						if (empty($site_exists)) {
+							$this->Security_Model->saveRegionCircleDivision($updated_user_id, $region, $circle, $division);
+						}
+					}
+				}
+			}
+		}
+
+		redirect('users');		
 	}
 
-
-	 public function deleteuser($userID)
+	public function deleteuser($userID)
 	{
-		 echo $result = $this->Security_Model->deleteuser($userID);		 
+		echo $result = $this->Security_Model->deleteuser($userID);		 
 	}
 
 	public function roles()
@@ -553,7 +564,6 @@ class Security extends CI_Controller
 
 		return $modified_module_arr;
 	}
-
 
 	public function viewChangePassword()
 	{

@@ -56,6 +56,122 @@ class Security_Model extends CI_Model
         }
     }
 
+    public function updateUser($user_id, $user_name, $user_email, $user_contact, $user_designation, $user_location, $user_role_id, $user_reporting_id, $package_access, $full_site_access)
+    {
+        $data = array(
+            'username' => $user_name,
+            'email' => $user_email,
+            'password' => md5('Password'),
+            'contact_no' => $user_contact,
+            'designation' => $user_designation,
+            'location' => $user_location,
+            'reportingto_user_id' => $user_reporting_id,
+            'role_id' => $user_role_id,
+            'is_full_data_access' => $full_site_access,
+            'package_access' => (!empty($package_access)) ? $package_access : NULL,
+            'is_active' => 1,
+            'modifiedby' => $_SESSION['loggedData']->user_id,
+            'modifieddate' => date ('Y-m-d H:i:s')
+        );
+
+        $query = $this->db->update('mst_user', $data, array('user_id' => $user_id));
+
+        if (!$query) {
+            $error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {
+            return $user_id;
+        }
+
+
+        $returnArray = array();
+        $user_id = $this->input->post('user_id');
+        $insertArray = array(
+            "username" => $this->input->post('name'),
+            "email" => $this->input->post('email'),
+            "contact_no" => $this->input->post('contact'),
+            "designation" => $this->input->post('designation'),
+            "location" => $this->input->post('location'),
+            "reportingto_user_id" => $this->input->post('reportingManager'),
+            "role_id" => $this->input->post('role'),
+            "is_active" => 1,
+            "createdby" => $_SESSION['loggedData']->user_id,
+            "createddate" => date ('Y-m-d H:i:s')
+        );
+
+        $this->db->where("user_id", $user_id);
+        $query = $this->db->update("mst_user", $insertArray);
+        //echo $this->db->last_query(); die;
+        //$last_id = $this->db->insert_id(); 
+
+        if(!$query)
+        {
+            $this->session->set_flashdata('error','Error in Updating User');
+            redirect('users/'.$user_id);
+            return;
+        }
+        else
+        {
+           // print_r($_POST); die;
+            if(isset($_POST['regions']))
+            {
+                $this->db->where("user_id", $user_id);
+                $this->db->delete("mst_user_data_access");
+                //die;
+            $regionsArray = $_POST['regions'];
+                for($i=0;$i<count($regionsArray);$i++)
+                {
+                    $region =  $regionsArray[$i];
+                    $circleArray = $_POST['circles'.$region];
+                    for($j=0;$j<count($_POST['circles'.$region]);$j++)
+                    {
+                        $circle =  $circleArray[$j];
+                        $divisionArray =  $_POST['divisions'.$circle];
+                        for($k=0;$k<count($_POST['divisions'.$circle]);$k++)
+                        {
+                            $division = $divisionArray[$k];
+                            $insertGrantArray = array(
+                                "user_id" => $user_id,
+                                "region_id" => $region,
+                                "circle_id" => $circle,
+                                "division_id" => $division
+                            );
+                            //$this->db->where("user_id", $user_id);
+                            $this->db->insert("mst_user_data_access", $insertGrantArray);
+                        }
+                    }
+                }
+               
+            }
+             return true;
+        }
+
+
+       // return $returnArray;
+
+    }
+
+    public function checkRegionCircleDivisionExists($user_id, $region, $circle, $division)
+    {
+        $query = $this->db->get_where('mst_user_data_access', array('user_id' => $user_id, 'region_id' => $region, 'circle_id' => $circle, 'division_id' => $division));
+        // echo $this->db->last_query(); die();
+
+        if (!$query) {
+            $error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {
+            $query_result = [];
+
+            if ($query->num_rows() > 0) {
+                $query_result = $query->row_array();
+            }
+
+            return $query_result;
+        }
+    }
+
     public function checkEmailExists($email)
     {
         $query = $this->db->get_where('mst_user', array('email' => $email, 'is_active' => 1, 'deletedby' => NULL));
@@ -229,8 +345,15 @@ class Security_Model extends CI_Model
 
     function loadSingleUsers($userId)
     {
-        $this->db->where("user_id", $userId);
-        $query = $this->db->get("mst_user");
+        /*$this->db->where("user_id", $userId);
+        $query = $this->db->get("mst_user");*/
+
+        $this->db->select('mst_user.*, mst_role.name as user_role');
+        $this->db->from('mst_user');
+        $this->db->join('mst_role', 'mst_user.role_id = mst_role.role_id', 'INNER');
+        $this->db->where(array('mst_user.user_id' => $userId));
+        $query = $this->db->get();
+
         $result = $query->row();
        // print_r($result); die;
         return $result;
@@ -245,8 +368,7 @@ class Security_Model extends CI_Model
         return $result;
     }
 
-
-     function loadSelectedRegions($userId)
+    function loadSelectedRegions($userId)
     {
         
       
@@ -274,7 +396,7 @@ class Security_Model extends CI_Model
        // print_r($result); die;
     }
 
-     function checkCirclesUsersInData($userId, $region_id)
+    function checkCirclesUsersInData($userId, $region_id)
     {
         $this->db->where("user_id", $userId);
         $this->db->where("region_id", $region_id);
@@ -292,8 +414,7 @@ class Security_Model extends CI_Model
        // print_r($result); die;
     }
 
-
-     function loadSelectedCircles($userId, $region_id)
+    function loadSelectedCircles($userId, $region_id)
     {
         
         $this->db->where("region_id", $region_id);
@@ -305,78 +426,6 @@ class Security_Model extends CI_Model
         print_r($result); die;
         return $result;
     }
-
-
-
-    function updateusers()
-    {
-        $returnArray = array();
-        $user_id = $this->input->post('user_id');
-        $insertArray = array(
-            "username" => $this->input->post('name'),
-            "email" => $this->input->post('email'),
-            "contact_no" => $this->input->post('contact'),
-            "designation" => $this->input->post('designation'),
-            "location" => $this->input->post('location'),
-            "reportingto_user_id" => $this->input->post('reportingManager'),
-            "role_id" => $this->input->post('role'),
-            "is_active" => 1,
-            "createdby" => $_SESSION['loggedData']->user_id,
-            "createddate" => date ('Y-m-d H:i:s')
-        );
-
-        $this->db->where("user_id", $user_id);
-        $query = $this->db->update("mst_user", $insertArray);
-        //echo $this->db->last_query(); die;
-        //$last_id = $this->db->insert_id(); 
-
-        if(!$query)
-        {
-            $this->session->set_flashdata('error','Error in Updating User');
-            redirect('users/'.$user_id);
-            return;
-        }
-        else
-        {
-           // print_r($_POST); die;
-            if(isset($_POST['regions']))
-            {
-                $this->db->where("user_id", $user_id);
-                $this->db->delete("mst_user_data_access");
-                //die;
-            $regionsArray = $_POST['regions'];
-                for($i=0;$i<count($regionsArray);$i++)
-                {
-                    $region =  $regionsArray[$i];
-                    $circleArray = $_POST['circles'.$region];
-                    for($j=0;$j<count($_POST['circles'.$region]);$j++)
-                    {
-                        $circle =  $circleArray[$j];
-                        $divisionArray =  $_POST['divisions'.$circle];
-                        for($k=0;$k<count($_POST['divisions'.$circle]);$k++)
-                        {
-                            $division = $divisionArray[$k];
-                            $insertGrantArray = array(
-                                "user_id" => $user_id,
-                                "region_id" => $region,
-                                "circle_id" => $circle,
-                                "division_id" => $division
-                            );
-                            //$this->db->where("user_id", $user_id);
-                            $this->db->insert("mst_user_data_access", $insertGrantArray);
-                        }
-                    }
-                }
-               
-            }
-             return true;
-        }
-
-
-       // return $returnArray;
-
-    }
-
 
     function deleteuser($userID)
     {

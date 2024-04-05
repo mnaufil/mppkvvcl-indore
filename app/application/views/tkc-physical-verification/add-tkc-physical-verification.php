@@ -313,7 +313,11 @@
 	                  							<!-- Tabs -->
 	                  							<ul class="nav panel-tabs" role="tablist">
 	                  								<?php foreach ($sheet_data['activities_group_name'] as $key => $value) { ?>
-	                  								<?php if (preg_match('/^\d/', $value['name'])) {
+	                  								<?php if (str_contains($value['name'], '/')) {
+																						$value['name'] = str_replace('/', ' ', $value['name']);
+																					}
+
+	                  											if (preg_match('/^\d/', $value['name'])) {
 	                  												$tab_name_arr = explode(' ', $value['name']);
 	                  												$tab_name_str = str_replace($tab_name_arr[0].' ', '', $value['name']);
 	                  												$tab = strtolower(str_replace(' ', '-', $tab_name_str.' '.$tab_name_arr[0]));
@@ -409,7 +413,7 @@
 																								<th>BOQ Qty</th>
 																								<th>Verified Qty</th>
 																								<th>Progress in %</th>
-	                  														<?php } elseif ($k1 == '33kv Interconnection Line') { ?>
+	                  														<?php } elseif ($k1 == '33kv Interconnection Line' || $k1 == '11 kv Bifurcation' || $k1 == '11 kv Interconnection' || $k1 == '33 kv Augmentation' || $k1 == '11 kv Augmentation' || $k1 == 'Additional DTR' || $k1 == 'Bare to Cable' || $k1 == 'Cable Augmentation' || $k1 == 'DL to AG/Coated conductor' || $k1 == 'Substation Rennovation') { ?>
 	                  														<th style="width: 10px;">Sr.No</th>
 																								<th style="width: 200px;">Activity</th>
 																								<th>Unit</th>
@@ -708,7 +712,7 @@
 	                  														</tr>
 	                  														<!-- tr close -->
 	                  													<?php } ?>
-	                  												<?php } elseif ($k1 == '33kv Interconnection Line') { ?>
+	                  												<?php } elseif ($k1 == '33kv Interconnection Line' || $k1 == '11 kv Bifurcation' || $k1 == '11 kv Interconnection' || $k1 == '33 kv Augmentation' || $k1 == '11 kv Augmentation' || $k1 == 'Additional DTR' || $k1 == 'Bare to Cable' || $k1 == 'Cable Augmentation' || $k1 == 'DL to AG/Coated conductor' || $k1 == 'Substation Rennovation') { ?>
 	                  													<?php foreach ($v1 as $k2 => $v2) { ?>
 	                  														<!-- tr open -->
 	                  														<tr data-table-row="<?php echo $k2; ?>" data-seqno="<?php echo $v2['seqno'];?>" data-activity-id="<?php echo $v2['typeofwork_activity_id'];?>" data-unit-id="<?php echo $v2['unit_id'];?>">
@@ -721,7 +725,12 @@
 																									<!-- BOQ Qty -->
 																									<td class="boq-qty">
 																										<?php echo $v2['boq']; ?>
-																										<?php $hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_boq_'.$v2['typeofwork_activity_id']; ?>
+																										<?php if (str_contains($k1, '/')) {
+																														$k1 = str_replace('/', ' ', $k1);
+																													}
+
+																													$hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_boq_'.$v2['typeofwork_activity_id'];
+																										?>
 																										<input type="hidden" name="<?php echo $hidden_input_name; ?>" id="<?php echo $hidden_input_name; ?>" value="<?php echo $v2['boq']; ?>">
 																									</td>
 																									<!-- Erected Qty -->
@@ -765,52 +774,7 @@
 	                  			</div>
 	                  		</div>
 	                  		<?php } ?>
-	                  		<!-- Row7 Mark Complete Button -->
-	                  		<?php //if (!isset($sheet_type)) { ?>
-	                    		<?php //if ($sheet_data['sheet_status'] == 'Open' || $sheet_data['sheet_status'] == 'In Process') { ?>
-	                    			<!-- <div class="form-row">
-			                    		<div class="col-xl-12">
-		                              <a href="javascript:void(0)" class="btn btn-success btn-add" id="markComplete">Mark as Complete</a>
-		                           </div>
-			                    	</div> -->	
-	                    		<?php //} ?>
-	                    	<?php //} ?>
-	                    	<!-- Row8 Upload Completion File -->
-	                    	<?php //$hidden_upload_photo = ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) ? '' : 'hidden'; ?>
-              					<!-- <div class="form-row completionFile" <?php echo $hidden_upload_photo; ?>>
-              						<div class="col-xl-12 mb-3">
-              							<label for="completionFile" class="form-label mt-0">Upload Completion File
-              								<span class="text-red">*</span>
-              							</label>
-              							<input class="form-control" type="file" id="completionFile" name="completionFile[]" multiple>
-              							<div class="text-wrap mt-2" id="preview-img-ppsheet-complete"></div>
-              						</div>
-              					</div> -->
-              					<?php //if (($sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') && isset($sheet_data['ppsheet_completion_file'])) { ?>
-              						<!-- <div class="form-row completion-photo-row">
-              							<div class="col-xl-12">
-              								<label for="completionFile" class="form-label mt-0">Completion File
-              								<div class="text-wrap">
-              									<?php foreach ($sheet_data['ppsheet_completion_file'] as $key => $value) { ?>
-              										<?php $obs_file_id = 'image-'.$key; ?>
-              										<div class="file-image-1" data-pp-file-id=<?php echo $value['physical_progress_file_id']; ?>>
-              											<a href="javascript:void(0)" onclick="showImageModal(this)">
-              												<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="">
-              											</a>
-              											<ul class="icons">
-              												<li>
-              													<a href="javascript:void(0)" data-photo-for="sheet_completion_photo" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="<?php echo $obs_file_id; ?>" data-photo-action="edit">
-              														<i class="fe fe-trash"></i>
-              													</a>
-              												</li>
-              											</ul>
-              										</div>
-              									<?php } ?>
-              								</div>
-              							</div>
-              						</div> -->
-              					<?php //} ?>
-	                    	<!-- Row9 Remark -->
+	                    	<!-- Row7 Remark -->
 	                    	<div class="form-row">
               						<div class="col-xl-12 mb-3">
               							<label for="sheetRemark" class="form-label mt-0">Remark <span class="text-red" id="remarkSpan"></span></label>
@@ -980,7 +944,7 @@
     	});
 
     	// Displaying progress(%),observation dropdown, remark input and file upload on entering value in erected qty field (with BOQ groups)
-      $('input[name^="33kv_feeder_"], input[name^="11kv_feeder_"], input[name^="11kv_feeder_separation_"], input[name^="33kv_interconnection_line_"]').on('input', function() {
+      $('input[name^="33kv_feeder_"], input[name^="dl_to_ag_coated_conductor_"], input[name^="11kv_feeder_"], input[name^="11kv_feeder_separation_"], input[name^="33kv_interconnection_line_"], input[name^="additional_dtr_"], input[name^="bare_to_cable_"], input[name^="cable_augmentation_"], input[name^="11_kv_bifurcation_"], input[name^="11_kv_interconnection_"], input[name^="33_kv_augmentation_"], input[name^="11_kv_augmentation_"], input[name^="substation_rennovation_"]').on('input', function() {
       	// alert('here'); return false;
       	//Changing status of form to edited by setting below variable true
 				form_change = true;
@@ -1168,69 +1132,6 @@
       		$('#remarkSpan').text('*');
       	}
       });
-
-      /*$('#completionFile').on('change', function(event) {
-      	sheet_completion_photo_file_list = [];
-
-    		//Get the selected image files
-    		let files = $(this)[0].files;
-
-    		if (files.length > 0) {
-    			if (files.length > 5) {
-    				$('.toast-body').text('Only 5 images can be uploaded.');
-	      		$('.toast').toast('show');
-
-	      		return false;
-    			}
-
-    			if ($('.completion-photo-row').find('.file-image-1').length > 0) {
-    				let previous_uploaded_photos = $('.completion-photo-row').find('.file-image-1').length;
-
-    				if (previous_uploaded_photos + files.length > 5) {
-							$('.toast-body').text('Only 5 images can be uploaded.');
-		      		$('.toast').toast('show');
-		      		return false;
-						}
-    			}
-
-    			if ($('.completion-photo-row').length == 0) {
-    				//Clearing previously uploaded images
-  					$('#preview-img-ppsheet-complete').empty();
-    			}
-
-    			//Loop trough all the selected images
-    			for (var i = 0; i < files.length; i++) {
-  					// Pushing each file in an array
-						sheet_completion_photo_file_list.push(files[i]);
-
-						let obs_file_id = 'image-'+i;
-						// let file_name = files[i].name;
-
-  					let html_img = '';
-  					html_img += '<div class="file-image-1">';
-      			html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="">';
-      			html_img += '</a>';
-      			html_img += '<ul class="icons">';
-      			html_img += '<li>';
-      			html_img += '<a href="javascript:void(0)" data-photo-for="sheet_completion_photo" onclick="deleleObservationPhoto(this)" data-obs-file-id="'+obs_file_id+'" class="btn bg-danger" data-photo-action="add">';
-      			html_img += '<i class="fe fe-trash"></i>';
-      			html_img += '</a>';
-      			html_img += '</li>';
-      			html_img += '</ul>';
-      			html_img += '</div>';
-
-      			if ($('.completion-photo-row').find('.file-image-1').length > 0) {
-      				$('.completion-photo-row').find('.text-wrap').append(html_img);
-      			} else {
-      				$('#preview-img-ppsheet-complete').append(html_img);	
-      			}	      			
-    			}
-    		}
-
-    		form_change = true;
-    		sheet_completion_photo_uploaded = true;
-      });*/
 
       //Check if there's any change in the form before submitting the form
       $('#addTKCPhysicalVerificationSheet').on('submit', function(event) {

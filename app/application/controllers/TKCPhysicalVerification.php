@@ -151,6 +151,15 @@ class TKCPhysicalVerification extends CI_Controller
            	$feeder_11kv_activities = array();
            	$feeder_separation_11kv_activities = array();
            	$interconnection_line_33kv_activites = array();
+           	$additional_dtr_activities = array();
+           	$bare_to_cable_activities = array();
+           	$cable_augmentation_activities = array();
+           	$bifurcation_11_kv_activities = array();
+           	$interconnection_11_kv_activities = array();
+           	$augmentation_33_kv_activities = array();
+           	$augmentation_11_kv_activities = array();
+           	$dl_to_ag_coated_conductor_activities = array();
+           	$substation_rennovation_activities = array();
 
            	foreach ($post_data as $key => $value) {
            		if (str_contains($key, 'civil_work')) { //withoutBOQ
@@ -239,6 +248,141 @@ class TKCPhysicalVerification extends CI_Controller
                     $interconnection_line_33kv_activites[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
                     $interconnection_line_33kv_activites[$key]['erected_qty'] = $value;
            		}
+
+           		if (str_contains($key, 'additional_dtr')) { //withBOQ
+                 	if (str_contains($key, 'boq')) {
+                    	$boq_val = $value;
+                        continue;
+                    }
+
+                        $erected_val = $value;
+
+                    $input_name = explode('_', $key);
+                    $additional_dtr_activities[$key]['tkc_physical_progress_id'] = $tkc_pp_id;
+                    $additional_dtr_activities[$key]['activity_id'] = end($input_name);
+                    $additional_dtr_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
+                    $additional_dtr_activities[$key]['erected_qty'] = $value;
+                }
+
+                if (str_contains($key, 'bare_to_cable')) { //withBOQ
+                 	if (str_contains($key, 'boq')) {
+                    	$boq_val = $value;
+                        continue;
+                    }
+
+                    $erected_val = $value;
+
+                    $input_name = explode('_', $key);
+                    $bare_to_cable_activities[$key]['tkc_physical_progress_id'] = $tkc_pp_id;
+                    $bare_to_cable_activities[$key]['activity_id'] = end($input_name);
+                    $bare_to_cable_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
+                    $bare_to_cable_activities[$key]['erected_qty'] = $value;
+                }
+
+                if (str_contains($key, 'cable_augmentation')) { //withBOQ
+                	if (str_contains($key, 'boq')) {
+                        $boq_val = $value;
+                        continue;
+                    }
+
+                    $erected_val = $value;
+
+                    $input_name = explode('_', $key);
+                    $cable_augmentation_activities[$key]['tkc_physical_progress_id'] = $tkc_pp_id;
+                    $cable_augmentation_activities[$key]['activity_id'] = end($input_name);
+                    $cable_augmentation_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
+                    $cable_augmentation_activities[$key]['erected_qty'] = $value;
+                }
+
+                if (str_contains($key, '11_kv_bifurcation')) { //withBOQ
+                	if (str_contains($key, 'boq')) {
+                        $boq_val = $value;
+                      	continue;
+                    }
+
+                    $erected_val = $value;
+
+                    $input_name = explode('_', $key);
+                    $bifurcation_11_kv_activities[$key]['tkc_physical_progress_id'] = $tkc_pp_id;
+                    $bifurcation_11_kv_activities[$key]['activity_id'] = end($input_name);
+                    $bifurcation_11_kv_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
+                    $bifurcation_11_kv_activities[$key]['erected_qty'] = $value;
+                }
+
+                if (str_contains($key, '11_kv_interconnection')) { //withBOQ
+                	if (str_contains($key, 'boq')) {
+                    	$boq_val = $value;
+                      	continue;
+                    }
+
+                    $erected_val = $value;
+
+                    $input_name = explode('_', $key);
+                    $interconnection_11_kv_activities[$key]['tkc_physical_progress_id'] = $tkc_pp_id;
+                    $interconnection_11_kv_activities[$key]['activity_id'] = end($input_name);
+                    $interconnection_11_kv_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
+                    $interconnection_11_kv_activities[$key]['erected_qty'] = $value;
+                }
+
+                if (str_contains($key, '33_kv_augmentation')) { //withBOQ
+                	if (str_contains($key, 'boq')) {
+                    	$boq_val = $value;
+                      	continue;
+                    }
+
+                    $erected_val = $value;
+
+                    $input_name = explode('_', $key);
+                    $augmentation_33_kv_activities[$key]['tkc_physical_progress_id'] = $tkc_pp_id;
+                    $augmentation_33_kv_activities[$key]['activity_id'] = end($input_name);
+                    $augmentation_33_kv_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
+                    $augmentation_33_kv_activities[$key]['erected_qty'] = $value;
+                }
+
+                if (str_contains($key, '11_kv_augmentation')) { //withBOQ
+                	if (str_contains($key, 'boq')) {
+                    	$boq_val = $value;
+                      	continue;
+                    }
+
+                    $erected_val = $value;
+
+                    $input_name = explode('_', $key);
+                    $augmentation_11_kv_activities[$key]['tkc_physical_progress_id'] = $tkc_pp_id;
+                    $augmentation_11_kv_activities[$key]['activity_id'] = end($input_name);
+                    $augmentation_11_kv_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
+                    $augmentation_11_kv_activities[$key]['erected_qty'] = $value;
+                }
+
+                if (str_contains($key, 'dl_to_ag_coated_conductor')) { //withBOQ
+                	if (str_contains($key, 'boq')) {
+                    	$boq_val = $value;
+                        continue;
+                    }
+
+                    $erected_val = $value;
+
+                    $input_name = explode('_', $key);
+                    $dl_to_ag_coated_conductor_activities[$key]['tkc_physical_progress_id'] = $tkc_pp_id;
+                    $dl_to_ag_coated_conductor_activities[$key]['activity_id'] = end($input_name);
+                    $dl_to_ag_coated_conductor_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
+                    $dl_to_ag_coated_conductor_activities[$key]['erected_qty'] = $value;
+                }
+
+                if (str_contains($key, 'substation_rennovation')) { //withBOQ
+                	if (str_contains($key, 'boq')) {
+                    	$boq_val = $value;
+                        continue;
+                    }
+
+                    $erected_val = $value;
+
+                    $input_name = explode('_', $key);
+                    $substation_rennovation_activities[$key]['tkc_physical_progress_id'] = $tkc_pp_id;
+                    $substation_rennovation_activities[$key]['activity_id'] = end($input_name);
+                    $substation_rennovation_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val);
+                    $substation_rennovation_activities[$key]['erected_qty'] = $value;
+                }
            	}
 
            	if (!empty($civil_work_activities)) {
@@ -268,6 +412,42 @@ class TKCPhysicalVerification extends CI_Controller
             if (!empty($interconnection_line_33kv_activites)) {
             	array_push($pp_sheet_activities, $interconnection_line_33kv_activites);
             }
+
+            if (!empty($additional_dtr_activities)) {
+            	array_push($pp_sheet_activities, $additional_dtr_activities);     
+           	}
+
+           	if (!empty($bare_to_cable_activities)) {
+                array_push($pp_sheet_activities, $bare_to_cable_activities);     
+           	}
+
+           	if (!empty($cable_augmentation_activities)) {
+                array_push($pp_sheet_activities, $cable_augmentation_activities);     
+           	}
+
+           	if (!empty($bifurcation_11_kv_activities)) {
+                array_push($pp_sheet_activities, $bifurcation_11_kv_activities);     
+           	}
+
+           	if (!empty($interconnection_11_kv_activities)) {
+                array_push($pp_sheet_activities, $interconnection_11_kv_activities);     
+           	}
+
+           	if (!empty($augmentation_33_kv_activities)) {
+                array_push($pp_sheet_activities, $augmentation_33_kv_activities);     
+           	}
+
+           	if (!empty($augmentation_11_kv_activities)) {
+                array_push($pp_sheet_activities, $augmentation_11_kv_activities);     
+           	}
+
+           	if (!empty($dl_to_ag_coated_conductor_activities)) {
+                array_push($pp_sheet_activities, $dl_to_ag_coated_conductor_activities);     
+           	}
+
+           	if (!empty($substation_rennovation_activities)) {
+                array_push($pp_sheet_activities, $substation_rennovation_activities);     
+           	}
 
             //Inserting sheet activities in the table
             foreach ($pp_sheet_activities as $key => $value) {
@@ -515,13 +695,17 @@ class TKCPhysicalVerification extends CI_Controller
 
 	public function calculateStatusForWithBOQ($erected_val, $boq_val)
     {
-    	if ($erected_val == 0) {
-        	return $status_id = 0;
-        } elseif ($erected_val > 0 && $erected_val < $boq_val) {
-        	return $status_id = 2;
-        } elseif ($erected_val == $boq_val) {
-        	return $status_id = 1;
-      	}
+    	if ($boq_val == 0) {
+    		return $status_id = 3;
+    	} else {
+    		if ($erected_val == 0) {
+	        	return $status_id = 0;
+	        } elseif ($erected_val > 0 && $erected_val < $boq_val) {
+	        	return $status_id = 2;
+	        } elseif ($erected_val == $boq_val) {
+	        	return $status_id = 1;
+	      	}	
+    	}
     }
 
 	public function calculateTaskRatio($site, $mode, $reported_date = NULL)

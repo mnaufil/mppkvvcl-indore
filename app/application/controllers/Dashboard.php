@@ -280,15 +280,19 @@ class Dashboard extends CI_Controller
     }
 
 	
-	 public function statisticspopup($packageNo, $contractId)
+	// public function statisticspopup($packageNo, $contractId) //Original
+    public function statisticspopup($packageNo, $stage)
     {
-		$this->Dashboard_Model->statisticspopup($packageNo, $contractId);
+		// $this->Dashboard_Model->statisticspopup($packageNo, $contractId); //Original
+        $this->Dashboard_Model->statisticspopup($packageNo, $stage);
     }
 
 
-    public function changeweekmonthval($datevalue, $packageNo, $contract_id, $stage)
+    // public function changeweekmonthval($datevalue, $packageNo, $contract_id, $stage) /*Original Code*/
+    public function changeweekmonthval($datevalue, $packageNo, $stage)
     {
-        $this->Dashboard_Model->changeweekmonthval($datevalue, $packageNo, $contract_id, $stage);
+        // $this->Dashboard_Model->changeweekmonthval($datevalue, $packageNo, $contract_id, $stage); /*Original Code*/
+        $this->Dashboard_Model->changeweekmonthval($datevalue, $packageNo, $stage);
     }
 
 
@@ -302,8 +306,10 @@ class Dashboard extends CI_Controller
         $this->Dashboard_Model->formhtmltable();
     }
 
-    public function weekdatedropdownload($contractId, $stage)
+    // public function weekdatedropdownload($contractId, $stage) /*Original Code*/
+    public function weekdatedropdownload($packageNo, $stage)
     {
-        $this->Dashboard_Model->weekdatedropdownload($contractId, $stage);
+        // $this->Dashboard_Model->weekdatedropdownload($contractId, $stage); /*Original Code*/
+        $this->Dashboard_Model->weekdatedropdownload($packageNo, $stage);
     }
 }

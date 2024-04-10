@@ -122,8 +122,9 @@
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
                                 <div class="row">
                                     <?php foreach($statistics as $stats) { ?>
+                                        <?php //echo 'stats: <pre>'; print_r($stats); echo '</pre>'; die(); ?>
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3 out-box">
-                                        <a onclick="showmodal('<?php echo $stats->package_no;?>', '<?php echo $stats->typeofwork;?>', '<?php echo $stats->contract_id;?>');">
+                                        <a onclick="showmodal('<?php echo $stats->package_no;?>', '<?php echo $stats->typeofwork;?>', '<?php echo $stats->contract_id;?>', <?php echo $stats->stage_id; ?>);">
                                             <div class="card  rounded-0">
                                                 <div class="card-body p-1" style="    background: #f4f4f4;">
                                                     <div class="row main-box-start">
@@ -131,7 +132,7 @@
                                                             <p class=" fw-medium company-name text-truncate mb-2 mt-1">
                                                                 <b><?php echo $stats->contractor_name;?></b></p>
                                                             <span class="badge badge-soft-danger fs-12"
-                                                                style="background-color: #f79a48;"><?php echo $stats->package_no;?></span>
+                                                                style="background-color: #f79a48;"><?php echo 'Lot '.$stats->package_no;?></span>
                                                             <p class="box-with-company-name mb-0"></p>
                                                         </div>
                                                         <div class="col-sm-7 mt-1 first-col-data">
@@ -239,43 +240,38 @@
                                             <span aria-hidden="true">×</span>
                                         </button>
                                     </div>
-									<div id="loadpopup_body">
-                                    
-									</div>
+									<div id="loadpopup_body"></div>
+                                    <?php foreach($statistics as $stats) { ?>
+                                    <div class="tohide row" style="display: none;" id="tohide<?php echo $stats->package_no;?>">
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="card" >
+                                                <div class="card-header">
+                                                    <h3 class="card-title"><?php echo $stats->package_no;?> - Physical Progress</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="chart-container">
+                                                        <!-- <canvas id="pp<?php //echo $stats->contract_id;?>" class="h-275"></canvas> -->
+                                                        <canvas id="pp<?php echo $stats->package_no;?>" class="h-275"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-
-                                     <?php foreach($statistics as $stats) { ?>
-
-                                     <div class="tohide row" style="display: none;" id="tohide<?php echo $stats->contract_id;?>">
-                                      <div class="col-lg-6 col-md-12">
-                                <div class="card" >
-                                    <div class="card-header">
-                                        <h3 class="card-title"><?php echo $stats->package_no;?> - Physical Progress</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="chart-container">
-                                            <canvas id="pp<?php echo $stats->contract_id;?>" class="h-275"></canvas>
+                                        <div class="col-lg-6 col-md-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h3 class="card-title"><?php echo $stats->package_no?> - Financial Progress</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="chart-container">
+                                                        <!-- <canvas id="fd<?php //echo $stats->contract_id;?>" class="h-275"></canvas> -->
+                                                        <canvas id="fd<?php echo $stats->package_no;?>" class="h-275"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-
-                            <div class="col-lg-6 col-md-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3 class="card-title"><?php echo $stats->package_no?> - Financial Progress</h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="chart-container">
-                                            <canvas id="fd<?php echo $stats->contract_id;?>" class="h-275"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                             </div>
-
-                         <?php } ?>
+                                    <?php } ?>
 
 
 
@@ -310,7 +306,7 @@
        
        
 
-                 <?php $this->load->view('include/footer');?>
+    <?php $this->load->view('include/footer');?>
 
 
     <!-- BACK-TO-TOP -->
@@ -450,85 +446,102 @@
         });
 		
 		
-		function showmodal(package_no, typeofwork, contractId)
+		function showmodal(package_no, typeofwork, contractId, stage_id)
 		{
+            // console.log(package_no);  return false;
             $("#psa").html(typeofwork);
-            linechart(contractId);
-            var package = package_no.split(' ');
-           // alert(package[1])
-			 $.ajax({url: baseUrl+"statistics-popup/"+package[1]+"/"+contractId, success: function(result){
-				// $.ajax({url: baseUrl+"statistics-popup/"+package_no, success: function(result){
-						$("#loadpopup_body").empty();
-						$("#loadpopup_body").html(result);
-						$("#obs_list_modal").modal("show");
+            // linechart(contractId);
+            linechart(package_no);
+            // return false;
+            // var package = package_no.split(' ');
 
-					}});
+            // console.log(baseUrl+"statistics-popup/"+package_no+"/"+contractId);
+			$.ajax({
+                // url: baseUrl+"statistics-popup/"+package[1]+"/"+contractId, //Original
+                // url: baseUrl+"statistics-popup/"+package_no+"/"+contractId, 
+                url: baseUrl+"statistics-popup/"+package_no+"/"+stage_id,
+                success: function(result)
+                {
+    			    $("#loadpopup_body").empty();
+    				$("#loadpopup_body").html(result);
+    				$("#obs_list_modal").modal("show");
+			    }
+            });
 		}
-
-
 
         function changeweekMonthVal(dateValue)
         {
-            console.log('dateValue:' + dateValue);
+            // console.log('dateValue:' + dateValue);
             var package_no = $("#packageNo").val();
-            var contract_id = $("#contractId").val();
+            // var contract_id = $("#contractId").val();
             var stageValue = $("#stageChange").val();
             //alert(package_no);
+
+            // console.log('package_no: '+ package_no);
+            // console.log('contract_id: '+ contract_id);
+            // console.log('stageValue: '+ stageValue);
+            // return false;
+
             if(dateValue=="week")
             {
-                 $.ajax({url: baseUrl+"changeweekmonthval/"+dateValue+"/"+package_no+"/"+"/"+contract_id+"/"+stageValue, success: function(result){
-                    $("#weekMonthChange").empty();
-                    $("#weekMonthChange").html(result);
-
-                    }});
-
-               
+                $.ajax({
+                    // url: baseUrl+"changeweekmonthval/"+dateValue+"/"+package_no+"/"+"/"+contract_id+"/"+stageValue, /*Original Code*/
+                    url: baseUrl+"changeweekmonthval/"+dateValue+"/"+package_no+"/"+stageValue,
+                    success: function(result) {
+                        // console.log(result); return false;
+                        $("#weekMonthChange").empty();
+                        $("#weekMonthChange").html(result);
+                    }
+                });
             }
+
             if(dateValue=="month")
             {
                 $("#weekMonthChange").empty();
-                 $.ajax({url: baseUrl+"getweekdate/"+contract_id+"/"+stageValue, success: function(result){
+                $.ajax({
+                    // url: baseUrl+"getweekdate/"+contract_id+"/"+stageValue,  /*Original Code*/
+                    url: baseUrl+"getweekdate/"+package_no+"/"+stageValue, 
+                    success: function(result) {
+                        // console.log(result);
                         var res = JSON.parse(result);
                         //console.log("res="+res[0].contract_start_date);
                         var min = res[0].contract_start_date;
                         var max = res[0].stage_date;
-                          $("#weekMonthChange").html('<input type="date" name="monthdate" id="monthdate" onchange="selectdate(this.value)" value="'+max+'" min="'+min+'" max="'+max+'"/>');
+                        $("#weekMonthChange").html('<input type="date" name="monthdate" id="monthdate" onchange="selectdate(this.value)" value="'+max+'" min="'+min+'" max="'+max+'"/>');
+                    }
+                });
 
-                    }});
-
-              /*  $("#weekMonthChange").html('<input type="date" name="monthdate" id="monthdate" onchange="selectdate(this.value)" value="'+baseDate+'" min="2023-01-01" max="2023-12-31"/>');*/
-
+                /*  $("#weekMonthChange").html('<input type="date" name="monthdate" id="monthdate" onchange="selectdate(this.value)" value="'+baseDate+'" min="2023-01-01" max="2023-12-31"/>');*/
             }
         }
 
-
-
         function changeStage(stageValue)
         {
-
             var weekmonthselect = $("#weekmonthselect").val();
             if(weekmonthselect=="week" || weekmonthselect=="month")
             {
-                 /*var package_no = $("#packageNo").val();
-                 $.ajax({url: baseUrl+"change-stage/"+stageValue+"/"+package_no, success: function(result){
-                // $.ajax({url: baseUrl+"statistics-popup/"+package_no, success: function(result){
+                /*var package_no = $("#packageNo").val();
+                $.ajax({url: baseUrl+"change-stage/"+stageValue+"/"+package_no, success: function(result){
+                // $.ajax({
+                    url: baseUrl+"statistics-popup/"+package_no, 
+                    success: function(result){
                         $("#loadpopup_body").empty();
                         $("#loadpopup_body").html(result);
                         $("#obs_list_modal").modal("show");
-
                     }});*/
                 changeweekMonthVal(weekmonthselect);
             }
 
-           formhtmltable();
+            setTimeout(formhtmltable, 1000);
         }
 
         function selectdate(dateValue)
         {
             formhtmltable();
         }
+
         function weekdatedropdown()
-        {
+        {            
             formhtmltable();
         }
 
@@ -540,53 +553,47 @@
             var weekdatedropdown = $("#weekdatedropdown").val();
             var package_no = $("#packageNo").val();
 
-             var data = {};
-             data.stageValue = stageValue;
-             data.weekmonthselect = weekmonthselect;
-             data.monthdate = monthdate;
-             data.weekdatedropdown = weekdatedropdown;
-             data.packageno = package_no;
-              $("#showvalues").empty();
-               $("#showvalues").append("<center>Please wait...</center>");
-              $.ajax({
-                 type: "POST",
-                 url: baseUrl+"formhtmltable",
-                 //data: {name: 'John'},
-                 data: data,
-                 success: function(data){
-                 //alert(data);
-                
-                 $("#showvalues").html(data);
-                 },
-                 error: function(xhr, status, error){
-                 console.error(xhr);
-                 }
-             });
-
-
+            var data = {};
+            data.stageValue = stageValue;
+            data.weekmonthselect = weekmonthselect;
+            data.monthdate = monthdate;
+            data.weekdatedropdown = weekdatedropdown;
+            data.packageno = package_no;
+            $("#showvalues").empty();
+            $("#showvalues").append("<center>Please wait...</center>");
+            
+            $.ajax({
+                type: "POST",
+                url: baseUrl+"formhtmltable",
+                //data: {name: 'John'},
+                data: data,
+                success: function(data){                
+                    $("#showvalues").html(data);
+                },
+                error: function(xhr, status, error){
+                    console.error(xhr);
+                }
+            });
         }
 
-
-        function weekdatedropdownload(contractId, stage)
-        {
-           
-              $.ajax({
-                 type: "GET",
-                 url: baseUrl+"weekdatedropdownload/"+contractId+"/"+stage,
-                 //data: {name: 'John'},
-                 //data: data,
-                 success: function(data){
-                 //alert(data);
+        // function weekdatedropdownload(contractId, stage) /*Original Code*/
+        function weekdatedropdownload(packageNo, stage)
+        {  
+            $.ajax({
+                type: "GET",
+                // url: baseUrl+"weekdatedropdownload/"+contractId+"/"+stage, /*Original Code*/
+                url: baseUrl+"weekdatedropdownload/"+packageNo+"/"+stage,
+                //data: {name: 'John'},
+                //data: data,
+                success: function(data) {
                     $("#weekMonthChange").empty();
-                 $("#weekMonthChange").html(data);
-                 },
-                 error: function(xhr, status, error){
-                 console.error(xhr);
-                 }
-             });
+                    $("#weekMonthChange").html(data);
+                },
+                error: function(xhr, status, error){
+                    console.error(xhr);
+                }
+            });
         }
-
-
     </script>
 
 </body>

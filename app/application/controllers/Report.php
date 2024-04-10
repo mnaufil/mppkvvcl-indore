@@ -131,9 +131,10 @@ class Report extends CI_Controller
 
 					$mainHeadingArray = $subHeadingArray = $subSubHeadingArray = [];
 
+					// echo 'onlyKeys: <pre>'; print_r($data['onlyKeys']); echo '</pre>'; die();
 					foreach($data['onlyKeys'] as $mainHeading)
 					{
-						if ($mainHeading == 'feeder_id' || $mainHeading == 'region_name' || $mainHeading == 'circle_name' || $mainHeading == 'division_name') {
+						if ($mainHeading == 'feeder_id' || $mainHeading == 'region_name' || $mainHeading == 'circle_name' || $mainHeading == 'division_name' || $mainHeading == 'pstatus') {
 							continue;
 						}
 
@@ -182,6 +183,8 @@ class Report extends CI_Controller
 								$modified_report_data[$value['feeder_id']]['circle_name'] = $val;
 							} elseif (str_contains($k, 'division_name')) {
 								$modified_report_data[$value['feeder_id']]['division_name'] = $val;
+							} elseif (str_contains($k, 'pstatus')) {
+								$modified_report_data[$value['feeder_id']]['pstatus'] = $val;
 							}
 						}
 					}

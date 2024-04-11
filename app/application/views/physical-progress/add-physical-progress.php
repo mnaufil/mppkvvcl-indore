@@ -2407,8 +2407,9 @@
 
 					if (erected_qty > 0) {
 						//Calculating Progress in %
-						let boq_qty = $(tr).find('td').eq(3).text();
-						let progress = (parseFloat(erected_qty) / parseFloat(boq_qty)) * 100;
+						// let boq_qty = $(tr).find('td').eq(3).text();
+						// let progress = (parseFloat(erected_qty) / parseFloat(boq_qty)) * 100;
+						let progress = (erected_qty / boq_qty) * 100;
 						// $(tr).find('td').eq(5).text(Math.round(progress));
 						$(tr).find('td').eq(5).text(parseFloat(progress).toFixed(2));
 

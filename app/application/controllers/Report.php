@@ -131,7 +131,6 @@ class Report extends CI_Controller
 
 					$mainHeadingArray = $subHeadingArray = $subSubHeadingArray = [];
 
-					// echo 'onlyKeys: <pre>'; print_r($data['onlyKeys']); echo '</pre>'; die();
 					foreach($data['onlyKeys'] as $mainHeading)
 					{
 						if ($mainHeading == 'feeder_id' || $mainHeading == 'region_name' || $mainHeading == 'circle_name' || $mainHeading == 'division_name' || $mainHeading == 'pstatus') {

@@ -760,8 +760,6 @@ class PhysicalProgress extends CI_Controller
                     array_push($pp_sheet_activities, $substation_rennovation_activities);     
                }
 
-               // echo 'pp_sheet_activities: <pre>'; print_r($pp_sheet_activities); echo '</pre>'; die();
-
                //Inserting sheet activities in the table
                foreach ($pp_sheet_activities as $key => $value) {
                     foreach ($value as $k1 => $v1) {

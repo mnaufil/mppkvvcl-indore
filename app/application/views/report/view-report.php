@@ -362,7 +362,7 @@
                                                       <td><?php echo $reportData[$key]['division_name']; ?></td>
                                                       <td><?php echo $key; ?></td>
                                                       <td><?php echo $reportData[$key]['pstatus']; ?></td>
-                                                      <?php $value = array_slice($value, 3); ?>
+                                                      <?php $value = array_slice($value, 4); ?>
                                                       <?php foreach ($value as $val) { ?>
                                                       <td style="text-align:center;"><?php echo $val; ?></td>
                                                       <?php } ?>

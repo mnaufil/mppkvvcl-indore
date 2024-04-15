@@ -48,7 +48,11 @@ class DataImport extends CI_Controller
 	{
 		$import_details = $this->di_model->getImportDetails($import_hdr_id);
 
-		$validation_result = $this->di_model->validateUploadedData($import_hdr_id);
+		if ($import_details['import_type'] == 'Material') {
+			$validation_result = $this->di_model->validateMaterialUploadedData($import_hdr_id);
+		} else if ($import_details['import_type'] == 'Invoice') {
+			$validation_result = $this->di_model->validateInvoiceUploadedData($import_hdr_id);
+		}		
 
 		$valid_records = $invalid_records = [];
 		foreach ($validation_result as $key => $value) {
@@ -61,8 +65,12 @@ class DataImport extends CI_Controller
 
 		$import_type = strtolower(str_replace(' ', '_', $import_details['import_type']));
 		$import_sub_type = strtolower(str_replace(' ', '_', $import_details['sub_type']));
-		$import_type_str = $import_type.'_'.$import_sub_type;
-
+		if (!empty($import_sub_type)) {
+			$import_type_str = $import_type.'_'.$import_sub_type;
+		} else {
+			$import_type_str = $import_type;	
+		}		
+		
 		$format_file_path = 'assets/data-import-samples/'.$import_type.'/'.$import_type_str.'.xlsx';
 
 		$format_headers = $this->getFormatFileHeaders($import_type, $import_type_str);
@@ -89,7 +97,7 @@ class DataImport extends CI_Controller
 		if (!empty($_POST)) {
 			$import_hdr_id = isset($_POST['import_hdr_id']) ? $this->input->post('import_hdr_id') : '';
 			$import_type = $type = $this->input->post('import_type');
-			$import_sub_type = $sub_type = $this->input->post('import_sub_type');
+			$import_sub_type = $sub_type = (isset($_POST['import_sub_type'])) ? $this->input->post('import_sub_type') : '';
 
 			if (!empty($_FILES)) {
 				$data_file = $_FILES['dataFile'];
@@ -100,9 +108,13 @@ class DataImport extends CI_Controller
 					if (in_array($data_file['type'], $allowedTypes)) {
 						if (is_uploaded_file($data_file['tmp_name'])) {
 							$import_type = strtolower(str_replace(' ', '_', $import_type));
-							$import_sub_type = strtolower(str_replace(' ', '_', $import_sub_type));
 
-							$import_type_str = $import_type.'_'.$import_sub_type;
+							if (!empty($import_sub_type)) {
+								$import_sub_type = strtolower(str_replace(' ', '_', $import_sub_type));
+								$import_type_str = $import_type.'_'.$import_sub_type;
+							} else {
+								$import_type_str = $import_type;
+							}
 
 							// Getting headers of sample format sheet
 							$sample_headers = $this->getFormatFileHeaders($import_type, $import_type_str);
@@ -134,8 +146,9 @@ class DataImport extends CI_Controller
 								} else {
 									$response['test'] = 'update';
 									$import_hdr_id = $this->di_model->updateImportTypes($import_hdr_id, $type, $sub_type);
-								}
+								} //Uncomment Later
 								
+								// Uncomment Later
 								switch ($import_type_str) {
 									case 'material_inward':
 										$this->di_model->saveMaterialInwardData($import_hdr_id, $worksheet_arr);
@@ -152,12 +165,19 @@ class DataImport extends CI_Controller
 									case 'material_outward':
 										$this->di_model->saveMaterialOutwardData($import_hdr_id, $worksheet_arr);
 										break;
+									case 'invoice':
+										$this->di_model->saveInvoiceData($import_hdr_id, $worksheet_arr);
+										break;
 									default:
 										// code...
 										break;
-								}
+								}								
 
-								$validate_data = $this->di_model->validateUploadedData($import_hdr_id);
+								if ($import_type == 'material') {
+									$validate_data = $this->di_model->validateMaterialUploadedData($import_hdr_id);	
+								} elseif ($import_type == 'invoice') {
+									$validate_data = $this->di_model->validateInvoiceUploadedData($import_hdr_id);
+								}
 
 								$valid_records = $invalid_records = [];
 
@@ -211,7 +231,13 @@ class DataImport extends CI_Controller
 
 		if (!empty($_POST)) {
 			$import_hdr_id = $this->input->post('import_hdr_id');
-			$import_data_count = $this->di_model->importUploadedData($import_hdr_id); //Uncomment Later
+			$import_type = $this->input->post('import_type');
+
+			if ($import_type == 'Material') {
+				$import_data_count = $this->di_model->importMaterialUploadedData($import_hdr_id); //Uncomment Later	
+			} elseif ($import_type == 'Invoice') {
+				$import_data_count = $this->di_model->importInvoiceUploadedData($import_hdr_id); //Uncomment Later	
+			}
 
 			if ($import_data_count == 0) {
 				http_response_code(400);

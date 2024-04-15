@@ -43,7 +43,11 @@ class DataImport_Model extends CI_Model
 		$import_type = strtolower(str_replace(' ', '_', $import_type));
 		$sub_type = strtolower(str_replace(' ', '_', $sub_type));
 
-		$table = 'import_dtl_'.$import_type.'_'.$sub_type;
+		if ($import_type == 'invoice') {
+			$table = 'integration_staging_RDSS_invoice_detail';
+		} else if ($import_type == 'material') {
+			$table = 'import_dtl_'.$import_type.'_'.$sub_type;	
+		}
 
 		$this->db->where(array('import_hdr_id' => $import_hdr_id, 'is_active' => 1, 'deletedby' => NULL));
 		$query = $this->db->count_all_results($table);
@@ -355,6 +359,73 @@ class DataImport_Model extends CI_Model
 		}
 	}
 
+	public function saveInvoiceData($import_hdr_id, $worksheet_arr)
+	{
+		$record_exists = $this->checkRecordExists($import_hdr_id, 'integration_staging_RDSS_invoice_detail');
+
+		if ($record_exists > 0) {
+			$this->deleteExistingRecords($import_hdr_id, 'integration_staging_RDSS_invoice_detail');
+		}
+
+		foreach ($worksheet_arr as $key => $value) {
+			$data = array(
+				'import_hdr_id' => $import_hdr_id,
+				'INVOICE_ID' => $value[0],
+				'INVOICE_NUM' => $value[1],
+				'INVOICE_DATE' => $value[2],
+				'CREATION_DATE' => $value[3],
+				'INVOICE_AMOUNT' => $value[4],
+				'AMOUNT_PAID' => $value[5],
+				'INVOICE_CATEGEORY' => $value[6],
+				'INVOICE_TYPE' => $value[7],
+				'ORG_ID' => $value[8],
+				'OU_NAME' => $value[9],
+				'VENDOR_ID' => $value[10],
+				'VENDOR_CODE' => $value[11],
+				'VENDOR_NAME' => $value[12],
+				'VENDOR_SITE_CODE' => $value[13],
+				'VOUCHER' => $value[14],
+				'INVOICE_DESCRIPTION' => $value[15],
+				'GL_DATE' => $value[16],
+				'PAYMENT_TERMS' => $value[17],
+				'PAYMENT_STATUS_FLAG' => $value[18],
+				'PAYMENT_STATUS' => $value[19],
+				'VALIDATION_STATUS' => $value[20],
+				'ACCOUNTED_STATUS' => $value[21],
+				'APPROVAL_STATUS' => $value[22],
+				'TERM_DATE' => $value[23],
+				'SOURCE' => $value[24],
+				'BALANCE' => $value[25],
+				'LAST_PAYMENT_DATE' => $value[26],
+				'ATTRIBUTE_CATEGORY' => $value[27],
+				'CONTRACT_NUMBER' => $value[28],
+				'SCHEME_CODE' => $value[29],
+				'GST_TAX' => $value[30],
+				'LIN_TAX' => $value[31],
+				'TDS_GST_AMT' => $value[32],
+				'TDS_IT_AMT' => $value[33],
+				'CONTRACT_DESCRIPTION' => $value[34],
+				'BG_ADVANCE_TYPE' => $value[35],
+				'CREDIT_INVOICE_NUM' => $value[36],
+				'CREDIT_INVOICE_AMT' => $value[37],
+				'PO_HEADER_ID' => $value[38],
+				'PROJECT_ID' => $value[39],
+				'SYSDATE' => $value[40],
+				'is_active' => 1,
+				'createdby' => $this->getLoggedInUserID(),
+				'createddate' => date('Y-m-d H:i:s')
+			);
+
+			$query = $this->db->insert('integration_staging_RDSS_invoice_detail', $data);
+
+			if (!$query) {
+				$error = $this->db->error();	
+				echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+				die();
+			}
+		}
+	}
+
 	public function checkRecordExists($import_hdr_id, $table)
 	{
 		$this->db->where(array('import_hdr_id' => $import_hdr_id, 'is_active' => 1, 'deletedby' => NULL));
@@ -403,7 +474,7 @@ class DataImport_Model extends CI_Model
 		}
 	}
 
-	public function validateUploadedData($import_hdr_id)
+	public function validateMaterialUploadedData($import_hdr_id)
 	{
 		$user_id = $this->getLoggedInUserID();
 
@@ -425,7 +496,29 @@ class DataImport_Model extends CI_Model
 		}
 	}
 
-	public function importUploadedData($import_hdr_id)
+	public function validateInvoiceUploadedData($import_hdr_id)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		$query = $this->db->query('CALL sp_validate_invoice_import_data('.$user_id.', '.$import_hdr_id.')');
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function importMaterialUploadedData($import_hdr_id)
 	{
 		$user_id = $this->getLoggedInUserID();
 
@@ -437,7 +530,33 @@ class DataImport_Model extends CI_Model
 			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
 			die();
 		} else {
-			return $this->db->affected_rows();
+			$result = $query->row_array();
+
+			mysqli_next_result( $this->db->conn_id);
+			$query->free_result();
+
+			return $result['rows_inserted'];
+		}
+	}
+
+	public function importInvoiceUploadedData($import_hdr_id)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		$query = $this->db->query('CALL sp_import_invoice('.$user_id.', '.$import_hdr_id.')');
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$result = $query->row_array();
+
+			mysqli_next_result( $this->db->conn_id);
+			$query->free_result();
+
+			return $result['rows_inserted'];
 		}
 	}
 

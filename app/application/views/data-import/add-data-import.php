@@ -82,7 +82,7 @@
 		                                                <span class="text-red">*</span>
 		                                            </label>
 		                                            <select class="form-control select2" id="importType" name="importType">
-		                                            	<option value="select" selected>Select Import Type</option>
+		                                            	<option value="select" selected disabled>Select Import Type</option>
 		                                            	<?php foreach ($import_types as $value) { ?>
 		                                            	<option value="<?php echo $value['type_name']; ?>"><?php echo $value['type_name']; ?></option>	
 		                                            	<?php } ?>
@@ -270,22 +270,39 @@
         	$('select[name="importType"]').change(function(event) {
         		let selected_import_type = $(this).val();
 
-        		let import_sub_type = import_sub_types[selected_import_type];
-
-        		let sub_type_html = '<option value="select" selected disabled>Select Import Sub Type</option>';
-
-        		$.each(import_sub_type, function(index, value) {
-        			sub_type_html += '<option value="'+value.sub_type_name+'">'+value.sub_type_name+'</option>';
-        		});
-
-        		$('select[name="importSubType"]').empty().append(sub_type_html);
-
         		if ($('#download-format-div').is(":visible")) {
         			$('#download-format-div').prop('hidden', true);
         		}
 
         		if ($('#file-upload-div').is(":visible")) {
         			$('#file-upload-div').prop('hidden', true);
+        		}
+
+        		if (selected_import_type != 'Invoice') {
+        			if ($('#import-sub-type').is(':hidden')) {
+        				$('#import-sub-type').prop('hidden', false);	
+        			}
+
+        			let import_sub_type = import_sub_types[selected_import_type];
+
+	        		let sub_type_html = '<option value="select" selected disabled>Select Import Sub Type</option>';
+
+	        		$.each(import_sub_type, function(index, value) {
+	        			sub_type_html += '<option value="'+value.sub_type_name+'">'+value.sub_type_name+'</option>';
+	        		});
+
+	        		$('select[name="importSubType"]').empty().append(sub_type_html);	
+        		} else if (selected_import_type == 'Invoice') {
+        			selected_import_type = selected_import_type.toLowerCase();
+        			let download_url = '<?php echo base_url() ?>' + "assets/data-import-samples/" + selected_import_type + "/" + selected_import_type + ".xlsx";
+
+        			$('#import-sub-type').prop('hidden', true);
+
+        			$('#download-btn').attr('href', download_url);
+	        		$('#download-btn').attr('download', selected_import_type + '.xlsx');
+
+	        		$('#download-format-div').prop('hidden', false);
+	        		$('#file-upload-div').prop('hidden', false);
         		}
         	});
 
@@ -321,10 +338,12 @@
         			formData.append('dataFile', $('#dataFileUpload')[0].files[0]);
 
         			let import_type = $('select[name="importType"]').val();
-        			let import_sub_type = $('select[name="importSubType"]').val();
-
         			formData.append('import_type', import_type);
-        			formData.append('import_sub_type', import_sub_type);
+
+        			if ($('select[name="importSubType"]').is(":visible")) {
+        				let import_sub_type = $('select[name="importSubType"]').val();
+        				formData.append('import_sub_type', import_sub_type);
+        			}
 
         			if (typeof $(this).data('import-hdr-id') !== 'undefined') {
         				let import_hdr_id = $(this).data('import-hdr-id');
@@ -334,9 +353,9 @@
         			$('.process-loader').removeAttr('hidden');
     				$('.process-loader').find('.process-loader-message').html('Please wait while the system is processing the uploaded file.');
 
-    				$('#btn-process-file').prop('disabled', true);
+    				// $('#btn-process-file').prop('disabled', true); //Uncomment Later
 
-        			$.ajax({
+    				$.ajax({
         				url: '<?php echo base_url('process-data-file') ?>',
         				type: 'POST',
         				processData: false,
@@ -344,7 +363,8 @@
         				dataType : 'json',
         				data: formData,
         				success: function(response) {
-        					console.log(response);
+        					console.log(response); 
+        					// return false;
         					$('.process-loader').attr('hidden', true);
 
         					$('.toast-body').text(response.message);
@@ -362,7 +382,7 @@
                     		});
 
                     		$('#table-valid-records > thead').find('tr').empty().append(valid_thead_html);
-                    		
+
                     		$.each(response.valid_records, function(index, value) {
                     			valid_tbody_html += '<tr>';
 
@@ -375,7 +395,11 @@
                     					val = val.replace('%', '');
                     				}
 
-                    				val = val.trim().replace(/ /g,'_').toLowerCase();
+                    				if (import_type != 'Invoice') {
+                    					val = val.trim().replace(/ /g,'_').toLowerCase();
+                    				} else if (import_type == 'Invoice') {
+                    					val = val.trim().replace(/ /g,'_').toUpperCase();
+                    				}
 
                     				let td_val = (value[val] == null) ? '' : value[val];
                     				valid_tbody_html += '<td>'+ td_val +'</td>';
@@ -409,7 +433,11 @@
                     					val = val.replace('%', '');
                     				}
 
-                    				val = val.trim().replace(/ /g,'_').toLowerCase();
+                    				if (import_type != 'Invoice') {
+                    					val = val.trim().replace(/ /g,'_').toLowerCase();
+                    				} else if (import_type == 'Invoice') {
+                    					val = val.trim().replace(/ /g,'_').toUpperCase();
+                    				}
 
                     				let td_val = (value[val] == null) ? '' : value[val];
                     				invalid_tbody_html += '<td>'+ td_val +'</td>';
@@ -449,6 +477,7 @@
 
         	$('#btn-import-file').click(function(event) {
         		let import_hdr_id = $(this).attr('data-import-hdr-id');
+        		let import_type = $('select[name="importType"]').val();
 
         		$('.process-loader').removeAttr('hidden');
 				$('.process-loader').find('.process-loader-message').html('Please wait while the system is importing the data.');
@@ -459,9 +488,10 @@
         			url: '<?php echo base_url('import-data-file') ?>',
         			type: 'POST',
         			dataType: 'json',
-        			data: {import_hdr_id: import_hdr_id},
+        			data: {import_hdr_id: import_hdr_id, import_type: import_type},
         			success: function(response) {
         				console.log(response);
+        				// return false;
 
         				$('.process-loader').attr('hidden', true);
 
@@ -473,6 +503,7 @@
                         }, 2000);
         			},
         			error: function(xhr, status, error) {
+        				console.log(xhr);
         				$('.process-loader').attr('hidden', true);
         				$('#btn-import-file').prop('disabled', false);
 

@@ -36,10 +36,9 @@ class Dashboard_Model extends CI_Model
     function showgraph($packageNo, $stage_id)
     {
         $userId = $_SESSION['userId'];
-        //echo "CALL sp_get_dashboard_statistics_popup_graph($userId, '$packageNo')"; 
         // $query = $this->db->query("CALL sp_get_dashboard_statistics_popup_graph($userId, '$packageNo')"); /*Original Code*/
-        // $query = $this->db->query("CALL sp_get_dashboard_statistics_popup_graphCombineLot(".$userId.", ".$packageNo.")");
-        $query = $this->db->query("CALL bkp_sk_sp_get_dashboard_statistics_popup_graphCombineLot(".$userId.", ".$packageNo.", ".$stage_id.")");
+        $query = $this->db->query("CALL sp_get_dashboard_statistics_popup_graphCombineLot(".$userId.", ".$packageNo.", ".$stage_id.")");
+        // $query = $this->db->query("CALL bkp_sk_sp_get_dashboard_statistics_popup_graphCombineLot(".$userId.", ".$packageNo.", ".$stage_id.")");
         // echo $this->db->last_query(); die();
         if($query)
         {

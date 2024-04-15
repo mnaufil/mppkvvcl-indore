@@ -348,7 +348,6 @@ class Dashboard_Model extends CI_Model
         // $result_multiple = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup_weekdate_stage($contractId)");       
         
         //$result = $this->GetMultipleQueryResult("call sp_get_dashboard_statistics_popup(1,'102','month',NULL, NULL,NULL)");
-
         $allValues = $result[1];
         $allKeys = array_keys($result[1][0]);
         $mainHeaders = array();
@@ -429,7 +428,7 @@ class Dashboard_Model extends CI_Model
                 
                     // $valueTd .= '<td align="center">'.$allValues[$val.'_Percent'].'</td>'; //Original Code
 
-                    if (isset($allValues[$val.'_Percent'])) {
+                    if (isset($allValues[0][$val.'_Percent'])) {
                         $valueTd .= '<td align="center">'.$all_value[$val.'_Percent'].'</td>';
                     } else {
                         $valueTd .= '<td align="center">0.00%</td>';
@@ -529,7 +528,6 @@ class Dashboard_Model extends CI_Model
                             </table>
                         </div>
                     </div>';
-        
         echo $html;
     }
 

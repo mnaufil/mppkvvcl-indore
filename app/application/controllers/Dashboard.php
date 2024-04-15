@@ -32,9 +32,11 @@ class Dashboard extends CI_Controller
         $this->load->view('dashboard/dashboard', $data); 
     }
 
-    public function showgraph($packageNo)
+    // public function showgraph($packageNo) /*Original Code*/
+    public function showgraph($packageNo, $stage_id)
     {
-        echo $this->Dashboard_Model->showgraph($packageNo);
+        // echo $this->Dashboard_Model->showgraph($packageNo); /*Original Code*/
+        echo $this->Dashboard_Model->showgraph($packageNo, $stage_id);
     }
     public function logout()
     {

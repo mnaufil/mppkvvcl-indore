@@ -243,7 +243,7 @@
 									<div id="loadpopup_body"></div>
                                     <?php foreach($statistics as $stats) { ?>
                                     <div class="tohide row" style="display: none;" id="tohide<?php echo $stats->package_no;?>">
-                                        <div class="col-lg-6 col-md-12">
+                                        <div class="col-lg-6 col-md-12" id="physical-graph-div">
                                             <div class="card" >
                                                 <div class="card-header">
                                                     <h3 class="card-title"><?php echo $stats->package_no;?> - Physical Progress</h3>
@@ -257,7 +257,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-6 col-md-12">
+                                        <div class="col-lg-6 col-md-12" id="financial-graph-div">
                                             <div class="card">
                                                 <div class="card-header">
                                                     <h3 class="card-title"><?php echo $stats->package_no?> - Financial Progress</h3>
@@ -451,7 +451,8 @@
             // console.log(package_no);  return false;
             $("#psa").html(typeofwork);
             // linechart(contractId);
-            linechart(package_no);
+            // linechart(package_no);
+            linechart(package_no, stage_id);
             // return false;
             // var package = package_no.split(' ');
 
@@ -515,8 +516,10 @@
             }
         }
 
-        function changeStage(stageValue)
+        function changeStage(stageValue, package_no)
         {
+            console.log('stageValue: ' + stageValue); 
+            let stage_arr = stageValue.split(' ');
             var weekmonthselect = $("#weekmonthselect").val();
             if(weekmonthselect=="week" || weekmonthselect=="month")
             {
@@ -533,6 +536,9 @@
             }
 
             setTimeout(formhtmltable, 1000);
+            setTimeout(function() {
+                linechart(package_no, stage_arr[1]);
+            }, 2000);
         }
 
         function selectdate(dateValue)

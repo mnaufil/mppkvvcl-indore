@@ -87,7 +87,8 @@ $route['changeweekmonthval/(:any)/(:any)/(:any)'] = 'Dashboard/changeweekmonthva
 $route['getweekdate/(:any)/(:any)'] = 'Dashboard/getweekdate/$1/$2';
 $route['formhtmltable'] = 'Dashboard/formhtmltable';
 $route['weekdatedropdownload/(:any)/(:any)'] = 'Dashboard/weekdatedropdownload/$1/$2';
-$route['showgraph/(:any)'] = 'Dashboard/showgraph/$1';
+// $route['showgraph/(:any)'] = 'Dashboard/showgraph/$1';
+$route['showgraph/(:any)/(:any)'] = 'Dashboard/showgraph/$1/$2';
 
 
 $route['progress/(:any)'] = 'Dashboard/physicalachievement/$1';

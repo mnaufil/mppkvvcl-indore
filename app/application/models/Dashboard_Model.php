@@ -32,12 +32,14 @@ class Dashboard_Model extends CI_Model
         }
     }
    
-    function showgraph($packageNo)
+    // function showgraph($packageNo)
+    function showgraph($packageNo, $stage_id)
     {
         $userId = $_SESSION['userId'];
         //echo "CALL sp_get_dashboard_statistics_popup_graph($userId, '$packageNo')"; 
         // $query = $this->db->query("CALL sp_get_dashboard_statistics_popup_graph($userId, '$packageNo')"); /*Original Code*/
-        $query = $this->db->query("CALL sp_get_dashboard_statistics_popup_graphCombineLot(".$userId.", ".$packageNo.")");
+        // $query = $this->db->query("CALL sp_get_dashboard_statistics_popup_graphCombineLot(".$userId.", ".$packageNo.")");
+        $query = $this->db->query("CALL bkp_sk_sp_get_dashboard_statistics_popup_graphCombineLot(".$userId.", ".$packageNo.", ".$stage_id.")");
         // echo $this->db->last_query(); die();
         if($query)
         {
@@ -607,7 +609,7 @@ class Dashboard_Model extends CI_Model
         {   
             $stageResult =  $stageQuery->result();
             /* $stageDropdown .= '<select id="stageChange" onchange="changeStage(this.value)"><option value="All">All</option>';*/
-            $stageDropdown .= '<select id="stageChange" onchange="changeStage(this.value)">';
+            $stageDropdown .= '<select id="stageChange" onchange="changeStage(this.value, '.$packageNo.')">';
             $selected = "";
             foreach($stageResult as $res)
             {

@@ -1,21 +1,22 @@
 /*LIne-Chart */
-function linechart(package_no) {
+// function linechart(package_no) {
+function linechart(package_no, stage_id) {
     $(".tohide").hide();
-    $("#tohide"+package_no).show();
+    let chart_div = $("#tohide"+package_no);
+    // $("#tohide"+package_no).show();
+    $(chart_div).show();
     // $("fd"+package_no).show();
     var res;
     $.ajax({
-        url: baseUrl+"showgraph/"+package_no, 
+        // url: baseUrl+"showgraph/"+package_no, 
+        url: baseUrl+"showgraph/"+package_no+"/"+stage_id, 
         success: function(result) {
             // console.log(result);return false; 
             res = JSON.parse(result);
-            console.log(res); 
-            console.log("pp"+package_no);
-            /*console.log("Pa = "+res.labelArray);
-            console.log("Pa = "+res.packageTargetArray);
-            console.log("Pa = "+res.packageActualArray);*/
+            /*console.log(res); 
+            console.log("pp"+package_no);*/
               
-            var labelRemove=     res.labelArray.toString();  
+            var labelRemove = res.labelArray.toString();  
             labelRemoveSplit = labelRemove.split(',');
             //console.log("labelRemove After   = "+labelRemoveSplit); 
 
@@ -29,10 +30,14 @@ function linechart(package_no) {
             financeActualSplit = financeActualArray.split(',');
 
             var financeTargetArray = res.financeTargetArray.toString();
-            financeTargetSplit = financeTargetArray.split(',');       
+            financeTargetSplit = financeTargetArray.split(',');
+
+            $(chart_div).find('#physical-graph-div .chart-container canvas').remove();
+            let pp_canvas_id = 'pp'+package_no;
+            $(chart_div).find('#physical-graph-div .chart-container').append('<canvas id="'+pp_canvas_id+'" class="h-275"></canvas>');
     
-            //var ctx = document.getElementById("chartLine").getContext('2d');
-            var ctx = document.getElementById("pp"+package_no).getContext('2d');
+            // var ctx = document.getElementById("pp"+package_no).getContext('2d');
+            var ctx = document.getElementById(pp_canvas_id).getContext('2d');
 
             var myChart = new Chart(ctx, {
                 type: 'bar',
@@ -107,8 +112,13 @@ function linechart(package_no) {
 
             "use strict";
             /*LIne-Chart */
-            //var ctx = document.getElementById("chartLine1").getContext('2d');
-            var ctx = document.getElementById("fd"+package_no).getContext('2d');
+            $(chart_div).find('#financial-graph-div .chart-container canvas').remove();
+            let fd_canvas_id = 'fd'+package_no;
+            $(chart_div).find('#financial-graph-div .chart-container').append('<canvas id="'+fd_canvas_id+'" class="h-275"></canvas>');
+
+            // var ctx = document.getElementById("fd"+package_no).getContext('2d');
+            var ctx = document.getElementById(fd_canvas_id).getContext('2d');
+
             var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {

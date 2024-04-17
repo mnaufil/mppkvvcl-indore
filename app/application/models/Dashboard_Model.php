@@ -955,7 +955,8 @@ class Dashboard_Model extends CI_Model
     {
         $user_id = $_SESSION['loggedData']->user_id;
 
-        $query = $this->db->query("CALL sp_get_dashboard_physical_verification_feeder_popup(".$user_id.", '".$date."', '".$package_no."', '".$slab."', ".$region.", ".$circle.", ".$division.")");
+        $sql_stmt = $_SESSION['pvdashboard_query'] = "CALL sp_get_dashboard_physical_verification_feeder_popup(".$user_id.", '".$date."', '".$package_no."', '".$slab."', ".$region.", ".$circle.", ".$division.")";
+        $query = $this->db->query($sql_stmt);
         // echo $this->db->last_query(); die();
 
         if (!$query) {
@@ -1036,6 +1037,24 @@ class Dashboard_Model extends CI_Model
         } else {
             $query_result = [];
 
+            if ($query->num_rows() > 0) {
+                $query_result = $query->result_array();
+            }
+
+            return $query_result;
+        }
+    }
+    
+    public function executeQuery($session_query)
+    {
+        $query = $this->db->query($session_query);
+
+        if (!$query) {
+            $error = $this->db->error();
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {
+            $query_result = [];
             if ($query->num_rows() > 0) {
                 $query_result = $query->result_array();
             }

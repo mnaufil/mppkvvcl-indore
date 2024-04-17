@@ -259,6 +259,7 @@
 	    							<div class="col-md-3">
 	    								<button class="btn btn-primary mt-6 p-2" type="button" onclick="applyFilter()">Apply Filters</button>
 	    								<button type="button" class="btn btn-danger mt-6 ml-0 p-2" onclick="clearFilter()">CLEAR</button>
+	    								<a href="<?php echo base_url('export-physical-verification-dashbaord') ?>" class="btn btn-success mt-6 p-2" type="button" id="export-btn">Export</a>
 	    							</div>
 	    						</div>
 	    					</form>

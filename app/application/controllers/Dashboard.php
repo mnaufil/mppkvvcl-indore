@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); 
 
+require APPPATH.'libraries/PhpXlsxGenerator.php';
 class Dashboard extends CI_Controller
 {
     function __construct()
@@ -313,5 +314,32 @@ class Dashboard extends CI_Controller
     {
         // $this->Dashboard_Model->weekdatedropdownload($contractId, $stage); /*Original Code*/
         $this->Dashboard_Model->weekdatedropdownload($packageNo, $stage);
+    }
+
+    public function exportPhysicalVerificationData()
+    {
+        // Excel file name for download 
+        $fileName = "Physical_verification_Dashboard_Feeders_Data_".date('Y-m-d').".xlsx";
+
+        // $excel_data = [];
+        $excel_data[] = array('REGION/CIRCLE/DIVISION', 'SITE LOCATION', 'FEEDER ID', 'TASK', 'OBSERVATION', 'LAST REPORTED BY', 'LAST REPORTED DATE', 'STATUS');
+
+        // Fetch records from database and store in an array
+        $session_query = $_SESSION['pvdashboard_query'];
+        $result = $this->Dashboard_Model->executeQuery($session_query);
+
+        if (!empty($result)) {
+            foreach ($result as $key => $value) {
+                $temp_data = array($value['region_circle_division'], $value['site_location'], $value['feeder_id'], $value['task'], $value['observation'], $value['username'], $value['reported_date'], $value['name']);
+
+                array_push($excel_data, $temp_data);
+            }
+        }
+
+        // Export data to excel and download as xlsx file
+        $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excel_data);
+        $xlsx->downloadAs($fileName);
+
+        exit;
     }
 }

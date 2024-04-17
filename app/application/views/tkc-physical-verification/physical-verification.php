@@ -118,16 +118,13 @@
                           				</div>  
                                   <?php } ?>
                           				<!-- Contract No -->
-                          				<?php if ($userdata['role'] != 'TKC') { ?>
                                   <div class="col-md-2">
                                     <div class="form-group">
                                       <label class="form-label m-0" for="tenderAwardNo">Contract No.</label>
                                       <input class="form-control" type="text" name="tenderAwardNo" id="tenderAwardNo" value="<?php echo (isset($filters)) ? $filters['tenderAwardNo']['value'] : ''; ?>">
                                     </div>
-                                  </div>  
-                                  <?php } ?>
+                                  </div>
                                   <!-- Type Of Work -->
-                                  <?php if ($userdata['role'] != 'TKC') { ?>
                                   <div class="col-md-2">
                                   	<div class="form-group">
                                   		<label class="form-label m-0" for="typeOfWork">Type Of Work</label>
@@ -140,8 +137,7 @@
                                   			<?php } ?>
                                   		</select>
                                   	</div>
-                                  </div>
-                                	<?php } ?>                                  
+                                  </div>                         
                                   <!-- Site Location -->
                                   <div class="col-md-2">
                                   	<div class="form-group">
@@ -241,7 +237,7 @@
                                   <!-- Status -->
                                   <div class="col-md-2">
                                     <div class="form-group">
-                                      <label class="form-label" for="status">Status</label>                               
+                                      <label class="form-label" for="status">Status</label>
                                       <select multiple="multiple" class="filter-multi" name="status[]" id="status">
                                         <!-- <option value="All">All</option> -->
                                         <?php $selected_status = (isset($filters)) ? $filters['status']['id'] : ''; ?>    

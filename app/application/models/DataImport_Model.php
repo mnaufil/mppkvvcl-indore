@@ -188,6 +188,7 @@ class DataImport_Model extends CI_Model
 				'di_quantity' => $value[8],
 				'received_quantity' => $value[9],
 				'received_date' => $value[10],
+				'mrad_date' => $value[11],
 				'is_active' => 1,
 				'createdby' => $this->getLoggedInUserID(),
 				'createddate' => date('Y-m-d H:i:s')

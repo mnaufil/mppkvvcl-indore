@@ -1364,6 +1364,16 @@ class Report_Model extends CI_Model
 		}
 	}
 
+	public function generateMaterialDIIssuedButMaterialNotReceivedReport($package_no, $circle, $from_date, $to_date)
+	{
+		// code...
+	}
+
+	public function generateMaterialReceivedButMRADNotDoneReport($package_no, $circle, $from_date, $to_date)
+	{
+		// code...
+	}
+
 	public function convertpdf() 
 	{
 		$downloadfile="test.pdf"; 

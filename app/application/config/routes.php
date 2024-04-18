@@ -197,6 +197,10 @@ $route['material-balance-quantity-report'] = 'Report/materialBalanceQuantityRepo
 $route['generate-material-balance-quantity-report'] = 'Report/generateMaterialBalanceQuantityReport';
 $route['tkc-physical-progress-report'] = 'Report/tkcPhysicalProgressReport';
 $route['generate-tkc-physical-progress-report'] = 'Report/generateTKCPhysicalProgressReport';
+$route['material_di_issued_but_material_not_received_report'] = 'Report/materialDIIssuedButMaterialNotReceivedReport';
+$route['generate-material-di-issued-but-material-not-received-report'] = 'Report/generateMaterialDIIssuedButMaterialNotReceivedReport';
+$route['material_received_but_mrad_not_done_report'] = 'Report/materialReceivedButMRADNotDoneReport';
+$route['generate-material-received-but-mrad-not-done-report'] = 'Report/generateMaterialReceivedButMRADNotDoneReport';
 $route['convert-pdf'] = 'Report/convertPdf';
 $route['show-feeders/(:num)'] = 'Report/showfeeders/$1';
 

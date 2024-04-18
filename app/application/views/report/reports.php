@@ -178,6 +178,16 @@
                                                                     <a href="<?php echo base_url('tkc-physical-progress-report');?>"><i class="ti ti-player-record-filled"></i> TKC Physical Progress</a>
                                                                 </li>
                                                             <?php } ?>
+                                                            <?php if (in_array('Material DI Issued but Material not Received', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('material_di_issued_but_material_not_received_report');?>"><i class="ti ti-player-record-filled"></i> Material DI Issued but Material not Received</a>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (in_array('Material Received but MRAD not done', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('material_received_but_mrad_not_done_report');?>"><i class="ti ti-player-record-filled"></i> Material Received but MRAD not done</a>
+                                                                </li>
+                                                            <?php } ?>
                                                         </ul> 
                                                     </div> 
                                                 </div>

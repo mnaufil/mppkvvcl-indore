@@ -1487,6 +1487,127 @@ class Report extends CI_Controller
 		$this->load->view('report/tkc-physical-progress-report', $data);
 	}
 
+	public function materialDIIssuedButMaterialNotReceivedReport()
+	{
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		$data['package_nos'] = $package_nos;
+		$data['circles'] = $circles;
+		$data['title'] = 'Material DI Issued but Material not Received';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material_di_issued_but_material_not_received_report', $data);
+	}
+
+	public function generateMaterialDIIssuedButMaterialNotReceivedReport()
+	{
+		$data['package_no'] = $package_no = $this->input->post('packageNo');
+		$data['circle'] = $circle = (isset($_POST['circle'])) ? $this->input->post('circle') : '';
+
+		$data['date_range'] = $date_range = $this->input->post('diReceivedDateRange');
+		if (!empty($date_range)) {
+			$dates_arr = explode(' - ', $date_range);
+			$from_date = date('Y-m-d', strtotime($dates_arr[0]));
+			$to_date = date('Y-m-d', strtotime($dates_arr[1]));	
+		} else {
+			$from_date = '';
+			$to_date = '';
+		}
+
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		if ($this->checkLocationAccess(NULL, $package_no)) {
+			$report_data = $this->Report_Model->generateMaterialDIIssuedButMaterialNotReceivedReport($package_no, $circle, $from_date, $to_date);
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'Material DI Issued but Material not Received';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			$data['report_data'] = !empty($report_data) ? $report_data : 'No Records Found';
+			$data['package_nos'] = $package_nos;
+			$data['circles'] = $circles;
+			
+			$data['feeder_access'] = true;
+		} else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'Material DI Issued but Material not Received';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material_di_issued_but_material_not_received_report', $data);		
+	}
+
+	public function materialReceivedButMRADNotDoneReport()
+	{
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		$data['package_nos'] = $package_nos;
+		$data['circles'] = $circles;
+		$data['title'] = 'Material Received but MRAD not done';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material_received_but_mrad_not_done_report', $data);
+	}
+
+	public function generateMaterialReceivedButMRADNotDoneReport()
+	{
+		// echo '<pre>'; print_r($_POST); echo '</pre>';
+		$data['package_no'] = $package_no = $this->input->post('packageNo');
+		$data['circle'] = $circle = (isset($_POST['circle'])) ? $this->input->post('circle') : '';
+
+		$data['date_range'] = $date_range = $this->input->post('materialReceivedDateRange');
+		if (!empty($date_range)) {
+			$dates_arr = explode(' - ', $date_range);
+			$from_date = date('Y-m-d', strtotime($dates_arr[0]));
+			$to_date = date('Y-m-d', strtotime($dates_arr[1]));	
+		} else {
+			$from_date = '';
+			$to_date = '';
+		}
+
+		$package_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		if ($this->checkLocationAccess(NULL, $package_no)) {
+			$report_data = $this->Report_Model->generateMaterialReceivedButMRADNotDoneReport($package_no, $circle, $from_date, $to_date);
+
+			$user_role_id = $_SESSION['loggedData']->role_id;
+			$report_name = 'Material DI Issued but Material not Received';
+			$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+			$data['download_access'] = false;
+			foreach ($report_access as $key => $value) {
+				if (str_contains($value['access_key'], 'download')) {
+					$data['download_access'] = true;
+				}
+			}
+
+			$data['report_data'] = !empty($report_data) ? $report_data : 'No Records Found';
+			$data['package_nos'] = $package_nos;
+			$data['circles'] = $circles;
+			
+			$data['feeder_access'] = true;
+		} else {
+			$data['feeder_access'] = false;
+		}
+
+		$data['title'] = 'Material Received but MRAD not done';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/material_received_but_mrad_not_done_report', $data);
+	}
+
 	public function modifyMaterialStatusList($status_list)
 	{
 		$modified_status_list = [];

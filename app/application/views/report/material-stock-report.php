@@ -194,16 +194,16 @@
 	          					</div>
 	          					<?php } else { ?>
 	          					<div class="row">
-					                  	<div class="col-lg-12">
-					                    	<div class="card">
-					                    		<div class="card-body">
-					                      			<div class="row">
-					                        			<h4 class="pt-3"><strong><?php echo $report_data; ?></strong></h4>
-					                        		</div>
-					                      		</div>
-					                    	</div>
-					                  	</div>
-					               	</div>
+				                  	<div class="col-lg-12">
+				                    	<div class="card">
+				                    		<div class="card-body">
+				                      			<div class="row">
+				                        			<h4 class="pt-3"><strong><?php echo $report_data; ?></strong></h4>
+				                        		</div>
+				                      		</div>
+				                    	</div>
+				                  	</div>
+				               	</div>
 	          					<?php } ?>
 	          				<?php } elseif (isset($feeder_access) && !$feeder_access) { ?>
 	          					<div class="row">
@@ -232,67 +232,69 @@
 
 	   		<!-- App-Footer -->
 	        <?php $this->load->view('include/footer');?>
-	        <!-- App-Footer Ends -->
+	        <!-- App-Footer Ends -->	        
+	   	</div>
+	   	<!-- PAGE ENDS -->
 
-	        <!-- BACK-TO-TOP -->
-	   		<a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>
+	   	<!-- BACK-TO-TOP -->
+   		<a href="#top" id="back-to-top"><i class="fa fa-angle-up"></i></a>
 
-		   	<!-- JQUERY JS -->
-		   	<script src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
+	   	<!-- JQUERY JS -->
+	   	<script src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
 
-		   	<!-- BOOTSTRAP JS -->
-		   	<script src="<?php echo base_url('assets/plugins/bootstrap/js/popper.min.js'); ?>"></script>
-		   	<script src="<?php echo base_url('assets/plugins/bootstrap/js/bootstrap.min.js'); ?>"></script>
+	   	<!-- BOOTSTRAP JS -->
+	   	<script src="<?php echo base_url('assets/plugins/bootstrap/js/popper.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/bootstrap/js/bootstrap.min.js'); ?>"></script>
 
-		   	<!-- INPUT MASK JS-->
-		   	<script src="<?php echo base_url('assets/plugins/input-mask/jquery.mask.min.js'); ?>"></script>
+	   	<!-- INPUT MASK JS-->
+	   	<script src="<?php echo base_url('assets/plugins/input-mask/jquery.mask.min.js'); ?>"></script>
 
-			<!-- TypeHead js -->
-			<script src="<?php echo base_url('assets/plugins/bootstrap5-typehead/autocomplete.js'); ?>"></script>
-		   	<script src="<?php echo base_url('assets/js/typehead.js'); ?>"></script>
+		<!-- TypeHead js -->
+		<script src="<?php echo base_url('assets/plugins/bootstrap5-typehead/autocomplete.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/js/typehead.js'); ?>"></script>
 
-		   	<!-- SELECT2 JS -->
-		   	<script src="<?php echo base_url('assets/plugins/select2/select2.full.min.js'); ?>"></script>
+	   	<!-- SELECT2 JS -->
+	   	<script src="<?php echo base_url('assets/plugins/select2/select2.full.min.js'); ?>"></script>
 
-		   	<!-- FORMVALIDATION JS -->
-		   	<script src="<?php echo base_url('assets/js/form-validation.js'); ?>"></script>
+	   	<!-- FORMVALIDATION JS -->
+	   	<script src="<?php echo base_url('assets/js/form-validation.js'); ?>"></script>
 
-	   		<!-- Perfect SCROLLBAR JS-->
-		   	<script src="<?php echo base_url('assets/plugins/p-scroll/perfect-scrollbar.js'); ?>"></script>
-		   	<script src="<?php echo base_url('assets/plugins/p-scroll/pscroll.js'); ?>"></script>
-		   	<script src="<?php echo base_url('assets/plugins/p-scroll/pscroll-1.js'); ?>"></script>
+   		<!-- Perfect SCROLLBAR JS-->
+	   	<script src="<?php echo base_url('assets/plugins/p-scroll/perfect-scrollbar.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/p-scroll/pscroll.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/plugins/p-scroll/pscroll-1.js'); ?>"></script>
 
-		   	<!-- SIDE-MENU JS -->
-		   	<script src="<?php echo base_url('assets/plugins/sidemenu/sidemenu.js'); ?>"></script>
+	   	<!-- SIDE-MENU JS -->
+	   	<script src="<?php echo base_url('assets/plugins/sidemenu/sidemenu.js'); ?>"></script>
 
-		   	<!-- SIDEBAR JS -->
-		   	<script src="<?php echo base_url('assets/plugins/sidebar/sidebar.js'); ?>"></script>
+	   	<!-- SIDEBAR JS -->
+	   	<script src="<?php echo base_url('assets/plugins/sidebar/sidebar.js'); ?>"></script>
 
-		   	<!-- Color Theme js -->
-		   	<script src="<?php echo base_url('assets/js/themeColors.js'); ?>"></script>
+	   	<!-- Color Theme js -->
+	   	<script src="<?php echo base_url('assets/js/themeColors.js'); ?>"></script>
 
-		   	<!-- Sticky js -->
-		   	<script src="<?php echo base_url('assets/js/sticky.js'); ?>"></script>
+	   	<!-- Sticky js -->
+	   	<script src="<?php echo base_url('assets/js/sticky.js'); ?>"></script>
 
-		   	<!-- CUSTOM JS -->
-		   	<script src="<?php echo base_url('assets/js/custom.js'); ?>"></script>
+	   	<!-- CUSTOM JS -->
+	   	<script src="<?php echo base_url('assets/js/custom.js'); ?>"></script>
 
-		   	<!-- Custom-switcher -->
-		   	<script src="<?php echo base_url('assets/js/custom-swicher.js'); ?>"></script>
+	   	<!-- Custom-switcher -->
+	   	<script src="<?php echo base_url('assets/js/custom-swicher.js'); ?>"></script>
 
-		   	<!-- Switcher js -->
-		   	<script src="<?php echo base_url('assets/switcher/js/switcher.js'); ?>"></script>
+	   	<!-- Switcher js -->
+	   	<script src="<?php echo base_url('assets/switcher/js/switcher.js'); ?>"></script>
 
-		   	<!-- SWEET-ALERT JS -->
-		   	<script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
-		   	<script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
+	   	<!-- SWEET-ALERT JS -->
+	   	<script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
+	   	<script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
 
-	   		<!-- DATERANGE PICKER JS -->
-		   	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-		   	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+   		<!-- DATERANGE PICKER JS -->
+	   	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	   	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-		   	<script type="text/javascript">
-		   		$('input[name="dateRange"]').daterangepicker({
+	   	<script type="text/javascript">
+	   		$('input[name="dateRange"]').daterangepicker({
 	   			autoUpdateInput: false,
 	            locale: {
 	                format: 'DD-MM-YYYY'
@@ -332,8 +334,6 @@
 		           	event.preventDefault();
 	   			}
 	   		});
-		   	</script>
-	   	</div>
-	   	<!-- PAGE ENDS -->
+	   	</script>
 	</body>
 </html>

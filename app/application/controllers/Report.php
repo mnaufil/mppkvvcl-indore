@@ -1503,7 +1503,7 @@ class Report extends CI_Controller
 	public function generateMaterialDIIssuedButMaterialNotReceivedReport()
 	{
 		$data['package_no'] = $package_no = $this->input->post('packageNo');
-		$data['circle'] = $circle = (isset($_POST['circle'])) ? $this->input->post('circle') : '';
+		$data['circle'] = $circle = (isset($_POST['circle'])) ? $this->input->post('circle') : 'NULL';
 
 		$data['date_range'] = $date_range = $this->input->post('diReceivedDateRange');
 		if (!empty($date_range)) {
@@ -1511,8 +1511,8 @@ class Report extends CI_Controller
 			$from_date = date('Y-m-d', strtotime($dates_arr[0]));
 			$to_date = date('Y-m-d', strtotime($dates_arr[1]));	
 		} else {
-			$from_date = '';
-			$to_date = '';
+			$from_date = 'NULL';
+			$to_date = 'NULL';
 		}
 
 		$package_nos = $this->Report_Model->getPackageNos();
@@ -1564,7 +1564,7 @@ class Report extends CI_Controller
 	{
 		// echo '<pre>'; print_r($_POST); echo '</pre>';
 		$data['package_no'] = $package_no = $this->input->post('packageNo');
-		$data['circle'] = $circle = (isset($_POST['circle'])) ? $this->input->post('circle') : '';
+		$data['circle'] = $circle = (isset($_POST['circle'])) ? $this->input->post('circle') : 'NULL';
 
 		$data['date_range'] = $date_range = $this->input->post('materialReceivedDateRange');
 		if (!empty($date_range)) {
@@ -1572,8 +1572,8 @@ class Report extends CI_Controller
 			$from_date = date('Y-m-d', strtotime($dates_arr[0]));
 			$to_date = date('Y-m-d', strtotime($dates_arr[1]));	
 		} else {
-			$from_date = '';
-			$to_date = '';
+			$from_date = 'NULL';
+			$to_date = 'NULL';
 		}
 
 		$package_nos = $this->Report_Model->getPackageNos();

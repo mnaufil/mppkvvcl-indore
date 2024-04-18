@@ -159,11 +159,31 @@
 	          												<table class="table border table-bordered text-nowrap text-md-nowrap table-sm mb-0">
 	          													<thead>
 	          														<tr>
-	          															
+	          															<th scope="col">Lot No</th>
+	          															<th scope="col">Circle</th>
+	          															<th scope="col">Material Description</th>
+	          															<th scope="col">Unit</th>
+	          															<th scope="col">Name of Vendor</th>
+	          															<th scope="col">DI No</th>
+	          															<th scope="col">DI Date</th>
+	          															<th scope="col">DI Quantity</th>
+	          															<th scope="col">DI Amount</th>
 	          														</tr>
 	          													</thead>
 	          													<tbody>
-	          														
+	          														<?php foreach ($variable as $key => $value) { ?>
+	          														<tr>
+	          															<td><?php echo $value['lot_no']; ?></td>
+	          															<td><?php echo $value['circle']; ?></td>
+	          															<td><?php echo $value['material_description']; ?></td>
+	          															<td><?php echo $value['unit']; ?></td>
+	          															<td><?php echo $value['name_of_vendor']; ?></td>
+	          															<td><?php echo $value['di_no']; ?></td>
+	          															<td><?php echo $value['di_date']; ?></td>
+	          															<td><?php echo $value['di_quantity']; ?></td>
+	          															<td><?php echo $value['di_amount']; ?></td>
+	          														</tr>
+	          														<?php } ?>
 	          													</tbody>
 	          												</table>
 	          											</div>

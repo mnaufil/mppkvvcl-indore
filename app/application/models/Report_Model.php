@@ -1366,12 +1366,54 @@ class Report_Model extends CI_Model
 
 	public function generateMaterialDIIssuedButMaterialNotReceivedReport($package_no, $circle, $from_date, $to_date)
 	{
-		// code...
+		$user_id = $this->getLoggedInUserID();
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_DI_issued_but_material_not_received(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_DI_issued_but_material_not_received(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;	
+		}
 	}
 
 	public function generateMaterialReceivedButMRADNotDoneReport($package_no, $circle, $from_date, $to_date)
 	{
-		// code...
+		$user_id = $this->getLoggedInUserID();
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_received_but_MRAD_not_done(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_received_but_MRAD_not_done(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;	
+		}
 	}
 
 	public function convertpdf() 

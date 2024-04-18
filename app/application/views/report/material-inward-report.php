@@ -169,8 +169,10 @@
 		          														<th scope="col">DI No</th>
 		          														<th scope="col">DI Date</th>
 		          														<th scope="col">DI Quantity</th>
+		          														<th scope="col">DI Amount</th>
 		          														<th scope="col">Received Quantity</th>
 		          														<th scope="col">Received Date</th>
+		          														<th scope="col">MRAD Date</th>
 		          													</tr>
 		          												</thead>
 		          												<tbody>
@@ -184,8 +186,10 @@
 		          														<td><?php echo $value['di_no']; ?></td>
 		          														<td><?php echo $value['di_date']; ?></td>
 		          														<td><?php echo $value['di_quantity']; ?></td>
+		          														<td><?php echo $value['di_amount']; ?></td>
 		          														<td><?php echo $value['received_quantity']; ?></td>
 		          														<td><?php echo date('d-m-Y', strtotime($value['received_date'])); ?></td>
+		          														<td><?php echo date('d-m-Y', strtotime($value['mrad_date'])); ?></td>
 		          													</tr>
 		          													<?php } ?>
 		          												</tbody>

@@ -14,7 +14,8 @@ class Migration_Add_MRADdate_field_to_import_dtl_material_inward_table extends C
 	{
 		$fields = array(
 			'mrad_date' => array(
-				'type' => 'DATE',
+				'type' => 'VARCHAR',
+				'constraint' => 1000,
 				'null' => TRUE,
 				'after' => 'received_date'
 			),

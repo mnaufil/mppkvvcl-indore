@@ -129,8 +129,8 @@ class DataImport extends CI_Controller
 
 							$header_not_found_count = 0;
 
-							foreach ($header_arr as $header) {
-								if (!in_array($header, $sample_headers)) {
+							foreach ($sample_headers as $s_header) {
+								if (!in_array($s_header, $header_arr)) {
 									$header_not_found_count++;
 								}
 							}

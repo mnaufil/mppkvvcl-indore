@@ -330,6 +330,9 @@
                                                       <th></th>
                                                       <th></th>
                                                       <th></th>
+                                                      <th></th>
+                                                      <th></th>
+                                                      <th></th>
                                                       <th colspan="<?php echo $value; ?>"><?php echo $key;?></th>
                                                       <?php  } ?>
                                                    </tr> 
@@ -338,6 +341,9 @@
                                                       <th>Region</th>
                                                       <th>Circle</th>
                                                       <th>Division</th>
+                                                      <th>Vidhansabha</th>
+                                                      <th>Loksabha</th>
+                                                      <th>District</th>
                                                       <th>Feeder ID</th>
                                                       <th>Status</th>
                                                       <?php foreach ($subHeadingArray as $key) { ?>
@@ -345,6 +351,9 @@
                                                       <?php  } ?>
                                                    </tr> 
                                                    <tr>
+                                                      <th></th>
+                                                      <th></th>
+                                                      <th></th>
                                                       <th></th>
                                                       <th></th>
                                                       <th></th>
@@ -360,9 +369,12 @@
                                                       <td><?php echo $reportData[$key]['region_name']; ?></td>
                                                       <td><?php echo $reportData[$key]['circle_name']; ?></td>
                                                       <td><?php echo $reportData[$key]['division_name']; ?></td>
+                                                      <td><?php echo $reportData[$key]['vidhansabha']; ?></td>
+                                                      <td><?php echo $reportData[$key]['loksabha']; ?></td>
+                                                      <td><?php echo $reportData[$key]['district']; ?></td>
                                                       <td><?php echo $key; ?></td>
                                                       <td><?php echo $reportData[$key]['pstatus']; ?></td>
-                                                      <?php $value = array_slice($value, 4); ?>
+                                                      <?php $value = array_slice($value, 7); ?>
                                                       <?php foreach ($value as $val) { ?>
                                                       <td style="text-align:center;"><?php echo $val; ?></td>
                                                       <?php } ?>

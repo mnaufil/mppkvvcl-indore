@@ -72,24 +72,40 @@ class Dashboard extends CI_Controller
     public function physicalachievement($mileStoneId =null)
     {
         $data['regions'] = $this->Dashboard_Model->loadRegions();
-        if($mileStoneId == null)
-        {
+
+        $data['type_of_work'] = $this->Dashboard_Model->getTypeOfWorkList();
+
+        if($mileStoneId == null) {
            $mileStoneId = date('Y-m-d');
-        }
-        else
-        {
+        } else {
             $mileStoneId = $mileStoneId;
         }
 
         $previousMonth = date('M y', strtotime($mileStoneId. '-1 month'));
         $actualMonth = date('M y', strtotime($mileStoneId));
 
+        $contractor = 'NULL';
+        $type_of_work = 'NULL';
+        if (!empty($_POST)) {
+            $contractor = (!empty($this->input->post('contractor'))) ? $this->input->post('contractor') : 'NULL';
+
+            if ($contractor != 'NULL') {
+                $contractor = "'".$contractor."'";
+            }
+
+            $type_of_work = isset($_POST['typeOfWork']) ? $this->input->post('typeOfWork') : 'NULL';
+            $mileStoneId = $this->input->post('filterDate');
+        }
+
         $data['stages'] = $this->Dashboard_Model->loadStagesDash();
-        $data['physicals'] = $this->Dashboard_Model->physicalprogress($mileStoneId);
+        $data['physicals'] = $this->Dashboard_Model->physicalprogress($mileStoneId, $contractor, $type_of_work);
         $data['previousMonth'] = $previousMonth;
         $data['actualMonth'] = $actualMonth;
         $data['milestoneid'] = $mileStoneId;
+        $data['contractor'] = str_replace("'", '', $contractor);
+        $data['type_of_work_id'] = $type_of_work;
 
+        // echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
         $this->load->view('dashboard/physical-achievement', $data); 
     }
 

@@ -7,12 +7,11 @@ class Dashboard_Model extends CI_Model
         parent::__construct();       
     }
 
-    function physicalprogress($date)
+    function physicalprogress($date, $contractor, $type_of_work)
     {
         $userId = $_SESSION['userId'];
-        //$date = date('Y-m-d');
-        
-        $query = $this->db->query("CALL sp_get_dashboard_physical_progress($userId, '$date')");
+
+        $query = $this->db->query("CALL sp_get_dashboard_physical_progress($userId, '$date', $contractor, $type_of_work)");
         // echo $this->db->last_query(); die();
         
         if($query)
@@ -1028,6 +1027,27 @@ class Dashboard_Model extends CI_Model
         $this->db->where(array('mst_division.is_active' => 1, 'mst_division.deletedby' => NULL));
 
         $query = $this->db->get();
+        // echo $this->db->last_query(); die();
+
+        if (!$query) {
+            $error = $this->db->error();
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {
+            $query_result = [];
+
+            if ($query->num_rows() > 0) {
+                $query_result = $query->result_array();
+            }
+
+            return $query_result;
+        }
+    }
+
+    public function getTypeOfWorkList()
+    {
+        $this->db->select('typeofwork_id, name');
+        $query = $this->db->get_where('mst_typeofwork', array('is_active' => 1, 'deletedby' => NULL));
         // echo $this->db->last_query(); die();
 
         if (!$query) {

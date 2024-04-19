@@ -87,11 +87,40 @@
                             <!-- ROW-1 -->
                             <div class="row">
                                 <div class="col-xl-12">
-                                    <div class="card">
-                                        <div class="card-body mt-3 mb-3"> 
-                                            <div class="table-responsive"> 
-                                                <table class="table border text-wrap text-md-nowrap table-bordered mb-0">
-                                                    <thead>
+                                    <div class="card">                                        
+                                        <div class="card-body mt-3 mb-3">
+                                            <form id="physicalAchievementFilter" name="physicalAchievementFilter" method="POST" action="<?php echo base_url('progress'); ?>">
+                                                <div class="row">
+                                                    <!-- Contractor(TKC) -->
+                                                    <div class="col-md-4">
+                                                        <label class="form-label" for="contractor">Contractor(TKC)</label>
+                                                        <?php $contractor_value = ($contractor != 'NULL') ? $contractor : ''; ?>
+                                                        <input type="text" name="contractor" id="contractor" class="form-control" onkeyup="showtkclist(this.value)" value="<?php echo $contractor_value; ?>">
+                                                        <div class="list-group list-view-contractor" id="list-view"></div>
+                                                    </div>
+                                                    <!-- Type of Work -->
+                                                    <div class="col-md-4">
+                                                        <label class="form-label" for="typeOfWork">Type of Work</label>
+                                                        <select class="form-control" name="typeOfWork" id="typeOfWork">
+                                                            <option value="select" selected disabled>Select Type of Work</option>
+                                                            <?php foreach ($type_of_work as $key => $value) { ?>
+                                                            <?php $selected = ($type_of_work_id == $value['typeofwork_id']) ? 'selected' : ''; ?>
+                                                            <option value="<?php echo $value['typeofwork_id']; ?>" <?php echo $selected; ?>><?php echo $value['name']; ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <input type="hidden" name="filterDate" value="<?php echo $milestoneid; ?>">
+                                                    <!-- Filter Button -->
+                                                    <div class="col-md-4">
+                                                        <button class="btn btn-primary mt-4 p-2" type="submit">Apply Filters</button>
+                                                        <button type="button" class="btn btn-danger mt-4 ml-0 p-2" onclick="clearFilterProgress()">CLEAR</button>
+                                                    </div>
+                                                </div>
+                                            </form> 
+                                            <!-- <div class="table-responsive mt-3" style="overflow: scroll;height: calc(100vh - 129px);">  -->
+                                            <div class="table-responsive mt-3"> 
+                                                <table class="table border text-wrap text-md-nowrap table-bordered mb-0 physical-progress-dashboard">
+                                                    <thead >
                                                         <tr>
                                                             <!--th>Sr No.</th-->  
                                                             <th>Lot No</th> 
@@ -106,9 +135,7 @@
                                                             <th>Status of Commissioning (%)</th> 
                                                             <th>Slippage in percentage (%) </th>
                                                         </tr>
-                                                    </thead> 
-                                                    <tbody>
-                                                       <tr>
+                                                        <tr>
                                                             <!--th></th-->   
                                                             <th></th>   
                                                             <th></th>   
@@ -122,6 +149,9 @@
                                                             <th></th>   
                                                             <th></th>
                                                        </tr>
+                                                    </thead> 
+                                                    <tbody>
+                                                       
                                                         
                                                         <?php foreach ($physicals as $key) {
                                                             
@@ -413,6 +443,64 @@
 
                 $('#select-circle').empty().append('<option value="" selected disabled>Select Circle</option>');
                 $('#select-division').empty().append('<option value="" selected disabled>Select Division</option>');
+            }
+
+            //Displays contractor search list view
+            function showtkclist(tkcValue) {
+                $.ajax({
+                    type: 'POST',
+                    url: '<?php echo base_url('search-contractor-pp') ?>',
+                    dataType: 'json',
+                    data: {contractor: tkcValue},
+                    success: function(response){
+                        console.log(response); 
+
+                        $('#list-view').show();
+                        $('#list-view').empty();
+
+                        var html = '';
+
+                        let contractor_data = response.contractor_data;
+
+                        if ($.isEmptyObject(contractor_data)) {
+                            html += 'No Contractor Found';
+                        } else {
+                            $.each(contractor_data, function(index, value) {
+                                html += '<a href="javascript:void(0)" class="p-2 list-group-item list-group-item-action flex-column align-items-start" data-typeofwork-id="'+value.typeofwork_id+'" data-contract-id="'+value.contract_id+'" onclick=applyContractorDetails(this)>';
+                                html += '<div class="d-flex w-100 justify-content-between">';
+                                html += '<h4 class="mb-1 contractor-name"><strong>'+value.contractor_name+'</strong></h4>';
+                                html += '<small class="text-muted contract-date">Contract Date : <span class="text-primary"> '+value.tender_award_date+'</span></small>';
+                                html += '</div>';
+                                html += '<p class="mb-0 type-of-work">Type Of Work: <span class="text-primary"> '+value.typeofwork_name+'</span></p>';
+                                html += '<small class="text-muted contract-no">Contract No: <span class="text-primary">'+value.tender_award_no+'</span></small>';
+                                html += '</a>';
+                            });
+                        }
+
+                        $('#list-view').append(html);
+                    },
+                    error: function(xhr, status, error){
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+
+            function applyContractorDetails(anchor) {
+                $('#list-view').hide();
+
+                let contractor_name = $(anchor).find('.contractor-name').text();
+                $('input[name="contractor"]').val(contractor_name);
+            }
+
+            $(document).click(function() {
+                var list_view = $('#list-view');
+                if (!list_view.is(event.target) && !list_view.has(event.target).length) {
+                    list_view.hide();
+                }
+            });
+
+            function clearFilterProgress() {
+                window.location.href = baseUrl + "progress";
             }
         </script>
 

@@ -39,6 +39,7 @@ class Dashboard extends CI_Controller
         // echo $this->Dashboard_Model->showgraph($packageNo); /*Original Code*/
         echo $this->Dashboard_Model->showgraph($packageNo, $stage_id);
     }
+
     public function logout()
     {
         $this->session->sess_destroy();
@@ -49,7 +50,6 @@ class Dashboard extends CI_Controller
     {
         $this->load->view('dashboard/pert-chart'); 
     }
-
 
     public function statstable($mileStoneId =null)
     {
@@ -67,7 +67,6 @@ class Dashboard extends CI_Controller
 
         $this->load->view('dashboard/dashboard-table', $data); 
     }
-
    
     public function physicalachievement($mileStoneId =null)
     {
@@ -213,13 +212,30 @@ class Dashboard extends CI_Controller
 
     public function physicalVerification($date = NULL)
     {
+        $data['type_of_work'] = $this->Dashboard_Model->getTypeOfWorkList();
+
         if ($date == NULL) {
             $data['date'] = $date = date('Y-m-d');
         } else {
             $data['date'] = $date;
         }
 
-        $data['verification_data'] = $this->Dashboard_Model->getPhysicalVerificationData($date);
+        $contractor = 'NULL';
+        $type_of_work = 'NULL';
+        if (!empty($_POST)) {
+            $contractor = (!empty($this->input->post('contractor'))) ? $this->input->post('contractor') : 'NULL';
+
+            if ($contractor != 'NULL') {
+                $contractor = "'".$contractor."'";
+            }
+
+            $type_of_work = isset($_POST['typeOfWork']) ? $this->input->post('typeOfWork') : 'NULL';
+            $data['date'] = $date = $this->input->post('filterDate');
+        }
+
+        $data['verification_data'] = $this->Dashboard_Model->getPhysicalVerificationData($date, $contractor, $type_of_work);
+        $data['contractor'] = str_replace("'", '', $contractor);
+        $data['type_of_work_id'] = $type_of_work;
 
         // echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
         $this->load->view('dashboard/physical-verification', $data);
@@ -297,7 +313,6 @@ class Dashboard extends CI_Controller
     {
         $this->Dashboard_Model->getlocationsfilter($packageNo, $regionId, $circleId, $divisionId);
     }
-
 	
 	// public function statisticspopup($packageNo, $contractId) //Original
     public function statisticspopup($packageNo, $stage)
@@ -306,7 +321,6 @@ class Dashboard extends CI_Controller
         $this->Dashboard_Model->statisticspopup($packageNo, $stage);
     }
 
-
     // public function changeweekmonthval($datevalue, $packageNo, $contract_id, $stage) /*Original Code*/
     public function changeweekmonthval($datevalue, $packageNo, $stage)
     {
@@ -314,8 +328,7 @@ class Dashboard extends CI_Controller
         $this->Dashboard_Model->changeweekmonthval($datevalue, $packageNo, $stage);
     }
 
-
-      public function getweekdate($packageNo, $stage)
+    public function getweekdate($packageNo, $stage)
     {
         $this->Dashboard_Model->getweekdate($packageNo, $stage);
     }

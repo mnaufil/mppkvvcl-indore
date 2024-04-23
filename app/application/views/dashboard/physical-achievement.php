@@ -35,6 +35,25 @@
 
         <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/temp.css'); ?>">
 
+        <style>
+            #myTable {
+              width: 100%;
+            }
+
+            #myTable th, #myTable td {
+              border: 1px solid #ddd;
+              padding: 8px;
+              text-align: left;
+            }
+
+            #myTable thead th {
+              position: sticky;
+              top: -2px;
+              background-color: white;
+              z-index: 1;
+            }
+        </style>
+
     </head>
 
     <body class="app sidebar-mini ltr light-mode">
@@ -118,8 +137,8 @@
                                                 </div>
                                             </form> 
                                             <!-- <div class="table-responsive mt-3" style="overflow: scroll;height: calc(100vh - 129px);">  -->
-                                            <div class="table-responsive mt-3"> 
-                                                <table class="table border text-wrap text-md-nowrap table-bordered mb-0 physical-progress-dashboard">
+                                            <div class="table-responsive mt-3" style="height: calc(100vh - 250px); border-top: 1px solid #ddd;"> 
+                                                <table class="table border text-wrap text-md-nowrap table-bordered mb-0 physical-progress-dashboard" id="myTable">
                                                     <thead >
                                                         <tr>
                                                             <!--th>Sr No.</th-->  
@@ -135,7 +154,7 @@
                                                             <th>Status of Commissioning (%)</th> 
                                                             <th>Slippage in percentage (%) </th>
                                                         </tr>
-                                                        <tr>
+                                                        <tr style="position: sticky; width: 100%; top: 58px; background: #fff;" >
                                                             <!--th></th-->   
                                                             <th></th>   
                                                             <th></th>   
@@ -365,6 +384,15 @@
         <script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>        
         
         <script>
+            window.onload = function() {
+                var tableHead = document.querySelector("#myTable thead");
+                var tableBody = document.querySelector("#myTable tbody");
+
+                tableBody.addEventListener("scroll", function() {
+                    tableHead.style.transform = "translateY(" + this.scrollTop + "px)";
+                });
+            };
+
             function changepp(stageId)
             {
                 window.location.href = baseUrl+"progress/"+stageId;

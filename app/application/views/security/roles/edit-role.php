@@ -143,6 +143,8 @@
 	                                    										  	} else {
 	                                    										  		$check_full_access = strtolower(str_replace(' ','', $val)).'_fullaccess';	
 	                                    										  	}
+	                                    										  } elseif ($val == 'Physical Verification') {
+	                                    										  	$check_full_access = strtolower(str_replace('Physical ', '', $val)).'_fullaccess';
 	                                    										  } else {
 	                                    											$check_full_access = strtolower(str_replace(' ','_', $val)).'_fullaccess';
 	                                    										  }
@@ -160,6 +162,8 @@
 	                                    										  	} else {
 	                                    										  		$check_view = strtolower(str_replace(' ','', $val)).'_view';	
 	                                    										  	}
+	                                    										  } elseif ($val == 'Physical Verification') {
+	                                    										  	$check_view = strtolower(str_replace('Physical ','', $val)).'_view';
 	                                    										  } else {
 	                                    										  	$check_view = strtolower(str_replace(' ','_', $val)).'_view';
 	                                    										  }
@@ -179,6 +183,8 @@
 	                                    										  	} else {
 	                                    										  		$check_add = strtolower(str_replace(' ','', $val)).'_add';	
 	                                    										  	}
+	                                    										  } elseif ($val == 'Physical Verification') {
+	                                    										  	$check_add = strtolower(str_replace('Physical ','', $val)).'_add';
 	                                    										  } else {
 	                                    											$check_add = strtolower(str_replace(' ','_', $val)).'_add';	  	
 	                                    										  }
@@ -198,6 +204,8 @@
 	                                    										  	} else {
 	                                    										  		$check_update = strtolower(str_replace(' ','', $val)).'_update';	
 	                                    										  	}
+	                                    										  } elseif ($val == 'Physical Verification') {
+	                                    										  	$check_update = strtolower(str_replace('Physical ','', $val)).'_update';
 	                                    										  } else {
 	                                    											$check_update = strtolower(str_replace(' ','_', $val)).'_update';	  	
 	                                    										  }
@@ -217,6 +225,8 @@
 	                                    										  	} else {
 	                                    										  		$check_delete = strtolower(str_replace(' ','', $val)).'_delete';	
 	                                    										  	}
+	                                    										  } elseif ($val == 'Physical Verification') {
+	                                    										  	$check_delete = strtolower(str_replace('Physical ','', $val)).'_delete';
 	                                    										  } else {
 	                                    											$check_delete = strtolower(str_replace(' ','_', $val)).'_delete';	  	
 	                                    										  }
@@ -228,7 +238,7 @@
 	                                    								<!-- Download -->
 	                                    								<td class="text-center">
 	                                    									<?php if ($val == 'Physical Progress' || $val == 'Financial Progress') {
-	                                    											$check_download = strtolower(str_replace(' Progress','', $val)).'_download';		
+	                                    											$check_download = strtolower(str_replace(' Progress','', $val)).'_download';
 	                                    										  } elseif (str_contains($val, 'Type of Work')) {
 	                                    										  	if (preg_match('/\bType of Work - \b/', $val)) {
 	                                    										  		$check_name = str_replace(' - ', '_',$val);
@@ -236,6 +246,8 @@
 	                                    										  	} else {
 	                                    										  		$check_download = strtolower(str_replace(' ','', $val)).'_download';	
 	                                    										  	}
+	                                    										  } elseif ($val == 'Physical Verification') {
+	                                    										  	$check_download = strtolower(str_replace('Physical ','', $val)).'_download';
 	                                    										  } else {
 	                                    											$check_download = strtolower(str_replace(' ','_', $val)).'_download';
 	                                    										  }

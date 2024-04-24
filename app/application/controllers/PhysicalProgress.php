@@ -850,7 +850,9 @@ class PhysicalProgress extends CI_Controller
           $award_date = date("d-m-Y", strtotime($sheet_result['tender_award_date']));
           $sheet_result['tender_award_date'] = $award_date;
 
-          $sheet_result['task_ratio'] = $this->calculateTaskRatio($sheet_result, $mode, $reported_date);
+          $sheet_result['task_ratio'] = $task_ratio = $this->calculateTaskRatio($sheet_result, $mode, $reported_date);
+          $task_ratio_arr = explode(' / ', $task_ratio);
+          $sheet_result['work_completion'] = round(((int)$task_ratio_arr[0] / (int)$task_ratio_arr[1]) * 100);
 
           if (!empty($sheet_result['activities_list'])) {
                $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);

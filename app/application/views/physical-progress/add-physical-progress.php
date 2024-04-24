@@ -782,7 +782,9 @@
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>">	
 																										<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
-																											<?php $erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty']; ?>
+																											<?php //$erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty']; 
+																														$erected_qty = (isset($v2['erected_qty'])) ? (($v2['erected_qty'] == 0) ? '' : $v2['erected_qty']) : '';
+																											?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>">	
 																										<?php } ?>																										
 																									</td>
@@ -806,37 +808,39 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
-																											<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) 
+																											<?php if (isset($v2['status_id'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) 
 																														{
-																															$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
-																															$obs_list_count = count($v2['applied_observations']);
-																															$obs_complete_count = 0;
-																															$ncr_submitted_by_tkc_count = 0;
-																															foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																																if (!empty($aovalue['completion_photos'])) {
-																																	$obs_complete_count++;
+																																$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
+																																$obs_list_count = count($v2['applied_observations']);
+																																$obs_complete_count = 0;
+																																$ncr_submitted_by_tkc_count = 0;
+																																foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																	if (!empty($aovalue['completion_photos'])) {
+																																		$obs_complete_count++;
+																																	}
+
+																																	if ($aovalue['observation_status'] == 'Submitted by TKC')
+																																	{
+																																		$ncr_submitted_by_tkc_count++;
+																																	}
 																																}
 
-																																if ($aovalue['observation_status'] == 'Submitted by TKC')
-																																{
-																																	$ncr_submitted_by_tkc_count++;
+																																if ($obs_list_count > 0) {
+																																	$obs_ratio = $obs_complete_count.' / '.$obs_list_count;
 																																}
-																															}
 
-																															if ($obs_list_count > 0) {
-																																$obs_ratio = $obs_complete_count.' / '.$obs_list_count;
-																															}
-
-																															$observation_flag = ($obs_list_count == 0) ? 'no observation' : (($obs_complete_count == $obs_list_count) ? 'observation complete' : 'observation pending');
-																											?>
-																											<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
-																											<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
-																												<span class="fe fe-more-vertical"> </span>
-																											</button>
-																											<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
-																											<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
-																											<?php } ?>
-																											<?php } ?>																											
+																																$observation_flag = ($obs_list_count == 0) ? 'no observation' : (($obs_complete_count == $obs_list_count) ? 'observation complete' : 'observation pending');
+																												?>
+																												<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
+																												<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
+																													<span class="fe fe-more-vertical"> </span>
+																												</button>
+																												<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																												<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																												<?php } ?>
+																												<?php } ?>
+																											<?php } ?>																						
 																										</td>
 																									<?php } ?>
 																									<!-- Remark -->
@@ -846,14 +850,16 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="remark">
-																											<?php $obs_remarks = []; ?>
-																											<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																															if (empty($aovalue['completion_photos'])) {
-																																array_push($obs_remarks, $aovalue['remark']);
+																											<?php if (isset($v2['applied_observations'])) { ?>
+																												<?php $obs_remarks = []; ?>
+																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																if (empty($aovalue['completion_photos'])) {
+																																	array_push($obs_remarks, $aovalue['remark']);
+																																}
 																															}
-																														}
-																											?>
-																											<?php echo implode(', ', $obs_remarks); ?>
+																												?>
+																												<?php echo implode(', ', $obs_remarks); ?>	
+																											<?php } ?>
 																										</td>
 																									<?php } ?>
 																									<!-- File Upload -->
@@ -863,17 +869,19 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="fileupload">
-																											<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																															if (empty($aovalue['completion_photos'])) {
-																																foreach ($aovalue['observation_photos'] as $obskey => $obsvalue) {
-																											?>						
-																											<a href="javascript:void(0)" class="thumbnail m-0 border-0 d-inline-block" onclick="showImageModal(this)">
-																												<img src="<?php echo base_url($obsvalue['file_path']); ?>" alt="thumb1" class="thumbimg p-1 rounded-1" style="width:50px; border: 1px solid #ddd;">
-																											</a>
-																											<?php			}
+																											<?php if (isset($v2['applied_observations'])) { ?>
+																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																if (empty($aovalue['completion_photos'])) {
+																																	foreach ($aovalue['observation_photos'] as $obskey => $obsvalue) {
+																												?>						
+																												<a href="javascript:void(0)" class="thumbnail m-0 border-0 d-inline-block" onclick="showImageModal(this)">
+																													<img src="<?php echo base_url($obsvalue['file_path']); ?>" alt="thumb1" class="thumbimg p-1 rounded-1" style="width:50px; border: 1px solid #ddd;">
+																												</a>
+																												<?php			}
+																																}
 																															}
-																														}
-																											?>
+																												?>	
+																											<?php } ?>
 																										</td>
 																									<?php } ?>
 																								</tr>
@@ -921,7 +929,9 @@
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>">	
 																										<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
-																											<?php $erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty']; ?>
+																											<?php //$erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty']; 
+																														$erected_qty = (isset($v2['erected_qty'])) ? (($v2['erected_qty'] == 0) ? '' : $v2['erected_qty']) : '';
+																											?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>">	
 																										<?php } ?>
 																									</td>
@@ -945,33 +955,35 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
-																											<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) { ?>
-																												<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
-																															$obs_list_count = count($v2['applied_observations']);
-																															$obs_complete_count = 0;
-																															$ncr_submitted_by_tkc_count = 0;
-																															foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																																if (!empty($aovalue['completion_photos'])) {
-																																	$obs_complete_count++;
+																											<?php if (isset($v2['status_id'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) { ?>
+																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
+																																$obs_list_count = count($v2['applied_observations']);
+																																$obs_complete_count = 0;
+																																$ncr_submitted_by_tkc_count = 0;
+																																foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																	if (!empty($aovalue['completion_photos'])) {
+																																		$obs_complete_count++;
+																																	}
+
+																																	if ($aovalue['observation_status'] == 'Submitted by TKC')
+																																	{
+																																		$ncr_submitted_by_tkc_count++;
+																																	}
 																																}
 
-																																if ($aovalue['observation_status'] == 'Submitted by TKC')
-																																{
-																																	$ncr_submitted_by_tkc_count++;
+																																if ($obs_list_count > 0) {
+																																	$obs_ratio = $obs_complete_count.' / '.$obs_list_count;
 																																}
-																															}
-
-																															if ($obs_list_count > 0) {
-																																$obs_ratio = $obs_complete_count.' / '.$obs_list_count;
-																															}
-																												?>
-																												<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
-																												<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
-																													<span class="fe fe-more-vertical"> </span>
-																												</button>
-																												<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
-																												<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
-																												<?php } ?>
+																													?>
+																													<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
+																													<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
+																														<span class="fe fe-more-vertical"> </span>
+																													</button>
+																													<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																													<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																													<?php } ?>
+																												<?php } ?>	
 																											<?php } ?>
 																										</td>
 																									<?php } ?>
@@ -982,14 +994,16 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="remark">
-																											<?php $obs_remarks = []; ?>
-																											<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																															if (empty($aovalue['completion_photos'])) {
-																																array_push($obs_remarks, $aovalue['remark']);
+																											<?php if (isset($v2['applied_observations'])) { ?>
+																												<?php $obs_remarks = []; ?>
+																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																if (empty($aovalue['completion_photos'])) {
+																																	array_push($obs_remarks, $aovalue['remark']);
+																																}
 																															}
-																														}
-																											?>
-																											<?php echo implode(', ', $obs_remarks); ?>
+																												?>
+																												<?php echo implode(', ', $obs_remarks); ?>	
+																											<?php } ?>
 																										</td>
 																									<?php } ?>
 																									<!-- File Upload -->
@@ -999,17 +1013,19 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="fileupload">
-																											<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																															if (empty($aovalue['completion_photos'])) {
-																																foreach ($aovalue['observation_photos'] as $obskey => $obsvalue) {
-																											?>
-																											<a href="javascript:void(0)" class="thumbnail m-0 border-0 d-inline-block" onclick="showImageModal(this)">
-																												<img src="<?php echo base_url($obsvalue['file_path']); ?>" alt="thumb1" class="thumbimg p-1 rounded-1" style="width:50px; border: 1px solid #ddd;">
-																											</a>
-																											<?php			}
+																											<?php if (isset($v2['applied_observations'])) { ?>
+																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																if (empty($aovalue['completion_photos'])) {
+																																	foreach ($aovalue['observation_photos'] as $obskey => $obsvalue) {
+																												?>
+																												<a href="javascript:void(0)" class="thumbnail m-0 border-0 d-inline-block" onclick="showImageModal(this)">
+																													<img src="<?php echo base_url($obsvalue['file_path']); ?>" alt="thumb1" class="thumbimg p-1 rounded-1" style="width:50px; border: 1px solid #ddd;">
+																												</a>
+																												<?php			}
+																																}
 																															}
-																														}
-																											?>
+																												?>	
+																											<?php } ?>
 																										</td>
 																									<?php } ?>
 																								</tr>
@@ -1185,7 +1201,9 @@
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>">	
 																										<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
-																											<?php $erected_qty = (isset($v2['erected_qty']) && $v2['erected_qty'] == 0) ? '': $v2['erected_qty']; ?>
+																											<?php //$erected_qty = (isset($v2['erected_qty']) && $v2['erected_qty'] == 0) ? '': $v2['erected_qty']; 
+																														$erected_qty = (isset($v2['erected_qty'])) ? (($v2['erected_qty'] == 0) ? '' : $v2['erected_qty']) : '';
+																											?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>">	
 																										<?php } ?>																										
 																									</td>
@@ -1209,33 +1227,35 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
-																											<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) { ?>
-																												<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
-																															$obs_list_count = count($v2['applied_observations']);
-																															$obs_complete_count = 0;
-																															$ncr_submitted_by_tkc_count = 0;
-																															foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																																if (!empty($aovalue['completion_photos'])) {
-																																	$obs_complete_count++;
+																											<?php if (isset($v2['status_id'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) { ?>
+																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
+																																$obs_list_count = count($v2['applied_observations']);
+																																$obs_complete_count = 0;
+																																$ncr_submitted_by_tkc_count = 0;
+																																foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																	if (!empty($aovalue['completion_photos'])) {
+																																		$obs_complete_count++;
+																																	}
+
+																																	if ($aovalue['observation_status'] == 'Submitted by TKC')
+																																	{
+																																		$ncr_submitted_by_tkc_count++;
+																																	}
 																																}
 
-																																if ($aovalue['observation_status'] == 'Submitted by TKC')
-																																{
-																																	$ncr_submitted_by_tkc_count++;
+																																if ($obs_list_count > 0) {
+																																	$obs_ratio = $obs_complete_count.' / '.$obs_list_count;
 																																}
-																															}
-
-																															if ($obs_list_count > 0) {
-																																$obs_ratio = $obs_complete_count.' / '.$obs_list_count;
-																															}
-																												?>
-																												<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
-																												<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
-																													<span class="fe fe-more-vertical"> </span>
-																												</button>
-																												<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
-																												<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
-																												<?php } ?>
+																													?>
+																													<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
+																													<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
+																														<span class="fe fe-more-vertical"> </span>
+																													</button>
+																													<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																													<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																													<?php } ?>
+																												<?php } ?>	
 																											<?php } ?>
 																										</td>
 																									<?php } ?>
@@ -1246,14 +1266,16 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="remark">
-																											<?php $obs_remarks = []; ?>
-																											<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																															if (empty($aovalue['completion_photos'])) {
-																																array_push($obs_remarks, $aovalue['remark']);
+																											<?php if (isset($v2['applied_observations'])) { ?>
+																												<?php $obs_remarks = []; ?>
+																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																if (empty($aovalue['completion_photos'])) {
+																																	array_push($obs_remarks, $aovalue['remark']);
+																																}
 																															}
-																														}
-																											?>
-																											<?php echo implode(', ', $obs_remarks); ?>
+																												?>
+																												<?php echo implode(', ', $obs_remarks); ?>	
+																											<?php } ?>
 																										</td>
 																									<?php } ?>
 																									<!-- File Upload -->
@@ -1263,17 +1285,19 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="fileupload">
-																											<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																															if (empty($aovalue['completion_photos'])) {
-																																foreach ($aovalue['observation_photos'] as $obskey => $obsvalue) {
-																											?>
-																											<a href="javascript:void(0)" class="thumbnail m-0 border-0 d-inline-block" onclick="showImageModal(this)">
-																												<img src="<?php echo base_url($obsvalue['file_path']); ?>" alt="thumb1" class="thumbimg p-1 rounded-1" style="width:50px; border: 1px solid #ddd;">
-																											</a>
-																											<?php			}
+																											<?php if (isset($v2['applied_observations'])) { ?>
+																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																if (empty($aovalue['completion_photos'])) {
+																																	foreach ($aovalue['observation_photos'] as $obskey => $obsvalue) {
+																												?>
+																												<a href="javascript:void(0)" class="thumbnail m-0 border-0 d-inline-block" onclick="showImageModal(this)">
+																													<img src="<?php echo base_url($obsvalue['file_path']); ?>" alt="thumb1" class="thumbimg p-1 rounded-1" style="width:50px; border: 1px solid #ddd;">
+																												</a>
+																												<?php			}
+																																}
 																															}
-																														}
-																											?>
+																												?>	
+																											<?php } ?>
 																										</td>
 																									<?php } ?>
 																								</tr>
@@ -1325,7 +1349,9 @@
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>">	
 																										<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
-																											<?php $erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty']; ?>
+																											<?php //$erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty'];
+																														$erected_qty = (isset($v2['erected_qty'])) ? (($v2['erected_qty'] == 0) ? '' : $v2['erected_qty']) : '';
+																												 ?>
 																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>">	
 																										<?php } ?>
 																									</td>
@@ -1349,32 +1375,34 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
-																											<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) { ?>
-																												<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
-																															$obs_list_count = count($v2['applied_observations']);
-																															$obs_complete_count = 0;
-																															$ncr_submitted_by_tkc_count = 0;
-																															foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																																if (!empty($aovalue['completion_photos'])) {
-																																	$obs_complete_count++;
+																											<?php if (isset($v2['status_id'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) { ?>
+																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
+																																$obs_list_count = count($v2['applied_observations']);
+																																$obs_complete_count = 0;
+																																$ncr_submitted_by_tkc_count = 0;
+																																foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																	if (!empty($aovalue['completion_photos'])) {
+																																		$obs_complete_count++;
+																																	}
+
+																																	if ($aovalue['observation_status'] == 'Submitted by TKC')
+																																	{
+																																		$ncr_submitted_by_tkc_count++;
+																																	}
 																																}
 
-																																if ($aovalue['observation_status'] == 'Submitted by TKC')
-																																{
-																																	$ncr_submitted_by_tkc_count++;
+																																if ($obs_list_count > 0) {
+																																	$obs_ratio = $obs_complete_count.' / '.$obs_list_count;
 																																}
-																															}
-
-																															if ($obs_list_count > 0) {
-																																$obs_ratio = $obs_complete_count.' / '.$obs_list_count;
-																															}
-																												?>
-																												<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
-																												<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
-																													<span class="fe fe-more-vertical"> </span>
-																												</button>
-																												<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
-																												<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																													?>
+																													<span class="obs_ratio"><?php echo ($obs_list_count > 0) ? $obs_ratio : ''; ?></span>
+																													<button id="btn-obs-<?php echo $row_id; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $table; ?>" data-table-row="<?php echo  $row_id; ?>" data-activity-id="<?php echo $activity_id; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
+																														<span class="fe fe-more-vertical"> </span>
+																													</button>
+																													<?php if ($ncr_submitted_by_tkc_count > 0) { ?>
+																													<span class="badge ms-2 bg-danger"><?php echo $ncr_submitted_by_tkc_count; ?></span>
+																													<?php } ?>
 																												<?php } ?>
 																											<?php } ?>
 																										</td>
@@ -1386,14 +1414,16 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="remark">
-																											<?php $obs_remarks = []; ?>
-																											<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																															if (empty($aovalue['completion_photos'])) {
-																																array_push($obs_remarks, $aovalue['remark']);
+																											<?php if (isset($v2['applied_observations'])) { ?>
+																												<?php $obs_remarks = []; ?>	
+																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																if (empty($aovalue['completion_photos'])) {
+																																	array_push($obs_remarks, $aovalue['remark']);
+																																}
 																															}
-																														}
-																											?>
-																											<?php echo implode(', ', $obs_remarks); ?>
+																												?>
+																												<?php echo implode(', ', $obs_remarks); ?>
+																											<?php } ?>
 																										</td>
 																									<?php } ?>
 																									<!-- File Upload -->
@@ -1403,17 +1433,19 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="fileupload">
-																											<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
-																															if (empty($aovalue['completion_photos'])) {
-																																foreach ($aovalue['observation_photos'] as $obskey => $obsvalue) {
-																											?>
-																											<a href="javascript:void(0)" class="thumbnail m-0 border-0 d-inline-block" onclick="showImageModal(this)">
-																												<img src="<?php echo base_url($obsvalue['file_path']); ?>" alt="thumb1" class="thumbimg p-1 rounded-1" style="width:50px; border: 1px solid #ddd;">
-																											</a>
-																											<?php			}
+																											<?php if (isset($v2['applied_observations'])) { ?>
+																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
+																																if (empty($aovalue['completion_photos'])) {
+																																	foreach ($aovalue['observation_photos'] as $obskey => $obsvalue) {
+																												?>
+																												<a href="javascript:void(0)" class="thumbnail m-0 border-0 d-inline-block" onclick="showImageModal(this)">
+																													<img src="<?php echo base_url($obsvalue['file_path']); ?>" alt="thumb1" class="thumbimg p-1 rounded-1" style="width:50px; border: 1px solid #ddd;">
+																												</a>
+																												<?php			}
+																																}
 																															}
-																														}
-																											?>
+																												?>	
+																											<?php } ?>
 																										</td>
 																									<?php } ?>
 																								</tr>

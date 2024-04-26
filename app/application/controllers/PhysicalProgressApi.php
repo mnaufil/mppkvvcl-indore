@@ -119,6 +119,44 @@ class PhysicalProgressApi extends REST_Controller
                 $sheet_result['activities_list'] = $activities_list;
             }
 
+            $pp_status_list = $this->pp_model->getStatusList();
+            $pp_status_list = $this->modify_pp_status_ids($pp_status_list);
+
+            if ($sheet_result['status_id'] == $pp_status_list['Reviewed'] || $sheet_result['status_id'] == $pp_status_list['Completed']) {
+                // Fetching sheet complete photo
+                $sheet_completion_photo = $this->pp_model->getPhysicalProgressCompletionFile($pp_id);
+
+                //Temporary Code
+                $arrContextOptions = array(
+                    "ssl" => array(
+                        'cafile' => '/path/to/bundle/cacert.pem',
+                        "verify_peer" => false,
+                        "verify_peer_name" => false
+                    ),
+                );
+
+                $sheet_completion_files = [];
+                foreach ($sheet_completion_photo as $key => $value) {
+                    $temp_files = [];
+                    $ext = pathinfo($value['file_path'], PATHINFO_EXTENSION); 
+
+                    // Get the image and convert into string
+                    $file_path = base_url($value['file_path']);
+                    $image = file_get_contents($file_path, false, stream_context_create($arrContextOptions));
+                    // $image = file_get_contents($file_path);
+
+                    // Encode the image string data into base64
+                    $image_base64 = 'data:image/'.$ext.';base64,'.base64_encode($image);
+
+                    array_push($temp_files, $image_base64);
+                    array_push($sheet_completion_files, $temp_files);
+                }
+
+                $sheet_result['sheet_completion_photo'] = $sheet_completion_files;
+            } else {
+                $sheet_result['sheet_completion_photo'] = '';
+            }
+
             $sheet_result['mode'] = (($reported_date == date('Y-m-d')) || ($reported_date == '') || $day == 'today') ? 'new' : 'previous';
 
             $userdata = $this->getUserData($logged_user_role_id);

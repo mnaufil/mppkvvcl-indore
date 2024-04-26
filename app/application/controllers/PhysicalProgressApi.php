@@ -359,7 +359,7 @@ class PhysicalProgressApi extends REST_Controller
                     $status_id = 2;
 
                     //Saving the physical progress sheet and obtaining its ID
-                    $pp_id = $this->pp_model->savePhysicalProgressSheetAPI($prev_pp_sheet_data['contract_id'], $prev_pp_sheet_data['contract_location_id'], $prev_pp_sheet_data['site_location'], NULL, NULL, NULL, NULL, $status_id, $is_draft, $user_id);
+                    $pp_id = $this->pp_model->savePhysicalProgressSheetAPI($prev_pp_sheet_data['contract_id'], $prev_pp_sheet_data['contract_location_id'], $prev_pp_sheet_data['site_location'], NULL, NULL, NULL, NULL, NULL, $status_id, $is_draft, $user_id);
                 }
 
                 //Checking if the activity already exists

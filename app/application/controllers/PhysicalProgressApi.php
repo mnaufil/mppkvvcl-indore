@@ -220,7 +220,7 @@ class PhysicalProgressApi extends REST_Controller
                             $contract_location_id = $prev_sheet_data['contract_location_id'];
 
                             //Updating BOQ qty value in contract_location_boq
-                            $this->updateBOQQty($activity_id, $boq_val, $contract_location_id, $unit_id);    
+                            $this->updateBOQQty($activity_id, $boq_val, $contract_location_id, $unit_id, $user_id);    
                         }
 
                         $erected_qty = (isset($act_value['erected_qty']) && is_numeric($act_value['erected_qty'])) ? $act_value['erected_qty'] : NULL;
@@ -318,17 +318,17 @@ class PhysicalProgressApi extends REST_Controller
         $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
     }
 
-    public function updateBOQQty($activity_id, $boq_val, $contract_location_id, $unit_id)
+    public function updateBOQQty($activity_id, $boq_val, $contract_location_id, $unit_id, $user_id)
     {
         // Check if boq value already exists
         $result = $this->pp_model->getBOQ($activity_id, $contract_location_id);
 
         if (!$result) {
             // Inserting the BOQ Qty value
-            $this->pp_model->insertBOQQty($contract_location_id, $activity_id, $unit_id, $boq_val);
+            $this->pp_model->insertBOQQty($contract_location_id, $activity_id, $unit_id, $boq_val, $user_id);
         } else {
             // Updating the BOQ Qty value
-            $this->pp_model->updateBOQQty($contract_location_id, $activity_id, $boq_val);
+            $this->pp_model->updateBOQQty($contract_location_id, $activity_id, $boq_val, $user_id);
         }
     }
 

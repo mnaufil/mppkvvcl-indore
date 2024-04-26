@@ -1771,7 +1771,7 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
-	public function insertBOQQty($contract_location_id, $activity_id, $unit_id, $boq_val)
+	public function insertBOQQty($contract_location_id, $activity_id, $unit_id, $boq_val, $user_id = NULL)
 	{
 		$data = array(
 			'contract_location_id' => $contract_location_id,
@@ -1779,7 +1779,7 @@ class PhysicalProgress_Model extends CI_Model
 			'unit_id' => $unit_id,
 			'boq' => $boq_val,
 			'is_active' => 1,
-			'createdby' => $this->getLoggedInUserID(),
+			'createdby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),
 			'createddate' => date('Y-m-d H:i:s')
 		);
 
@@ -1796,11 +1796,11 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
-	public function updateBOQQty($contract_location_id, $activity_id, $boq_val)
+	public function updateBOQQty($contract_location_id, $activity_id, $boq_val, $user_id = NULL)
 	{
 		$data = array(
 			'boq' => $boq_val,
-			'modifiedby' => $this->getLoggedInUserID(),
+			'modifiedby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),
 			'modifieddate' => date('Y-m-d H:i:s')
 		);
 

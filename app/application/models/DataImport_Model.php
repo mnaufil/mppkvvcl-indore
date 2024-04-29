@@ -412,6 +412,8 @@ class DataImport_Model extends CI_Model
 				'PO_HEADER_ID' => $value[38],
 				'PROJECT_ID' => $value[39],
 				'SYSDATE' => $value[40],
+				'integration_datetime' => date('Y-m-d H:i:s'),
+				'processed_datetime' => date('Y-m-d H:i:s'),
 				'is_active' => 1,
 				'createdby' => $this->getLoggedInUserID(),
 				'createddate' => date('Y-m-d H:i:s')

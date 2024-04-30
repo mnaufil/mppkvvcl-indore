@@ -345,7 +345,7 @@ class Dashboard extends CI_Controller
         $this->Dashboard_Model->weekdatedropdownload($packageNo, $stage);
     }
 
-    public function exportPhysicalVerificationData()
+    public function exportPhysicalVerificationDataPopup()
     {
         // Excel file name for download 
         $fileName = "Physical_verification_Dashboard_Feeders_Data_".date('Y-m-d').".xlsx";
@@ -369,6 +369,34 @@ class Dashboard extends CI_Controller
 
         // Export data to excel and download as xlsx file
         $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excel_data);
+        $xlsx->downloadAs($fileName);
+
+        exit;
+    }
+
+    public function exportPhysicalVerificationData()
+    {
+        // Excel file name for download 
+        $fileName = "Physical_Verification_Dashboard_Table_Data_".date('Y-m-d').".xlsx";
+
+        // $excel_data = [];
+        $excel_data[] = array('LOT NO', 'NAME OF TKC', 'TYPE OF WORK', '<center>TOTAL PROVISION AS PER LOA</center>', NULL,'<center>PHYSICAL VERIFICATION (FEEDERS COUNT)</center>');
+        $excel_data[] = array(NULL, NULL, NULL, '<center>S/S</center>', '<center>NOS</center>', '<center>NOT STARTED</center>', '<center>0% - 25%</center>', '<center>25% - 50%</center>', '<center>50% - 75%</center>', '<center>75% - 90%</center>', '<center>90% - 100%</center>', '<center>DTL REVIEWED</center>', '<center>100%</center>');
+
+        // Fetch records from database and store in an array
+        $session_query = $_SESSION['pvdashboard_query'];
+        $result = $this->Dashboard_Model->executeQuery($session_query);
+
+        if (!empty($result)) {
+            foreach ($result as $key => $value) {
+                $temp_data = array('<center>'.$value['package_no'].'</center>', $value['contractor_name'], $value['typeofwork'], '<center>'.$value['ss'].'</center>', '<center>'.$value['feeders'].'</center>', '<center>'.$value['Not Started'].'</center>', '<center>'.$value['0% - 25%'].'</center>', '<center>'.$value['25% - 50%'].'/<center>', '</center>'.$value['50% - 75%'].'</center>', '<center>'.$value['75% - 90%'].'</center>', '<center>'.$value['90% - 100%'].'</center>', '<center>'.$value['DTL Reviewed'].'<center>', '<center>'.$value['100%'].'</center>');
+
+                array_push($excel_data, $temp_data);
+            }
+        }
+
+        // Export data to excel and download as xlsx file
+        $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excel_data)->mergeCells('D1:E1')->mergeCells('F1:M1');
         $xlsx->downloadAs($fileName);
 
         exit;

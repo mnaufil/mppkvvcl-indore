@@ -932,7 +932,9 @@ class Dashboard_Model extends CI_Model
     public function getPhysicalVerificationData($date, $contractor, $type_of_work)
     {
         $user_id = $_SESSION['loggedData']->user_id;
-        $query = $this->db->query("CALL sp_get_dashboard_physical_verification(".$user_id.", '".$date."', ".$contractor.", ".$type_of_work.")");
+
+        $sql_stmt = $_SESSION['pvdashboard_query'] = "CALL sp_get_dashboard_physical_verification(".$user_id.", '".$date."', ".$contractor.", ".$type_of_work.")";
+        $query = $this->db->query($sql_stmt);
         // echo $this->db->last_query(); die();
 
         if (!$query) {

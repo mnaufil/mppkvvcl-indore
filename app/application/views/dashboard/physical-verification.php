@@ -100,6 +100,7 @@
                                                     <div class="col-md-4">
                                                         <button class="btn btn-primary mt-4 p-2" type="submit">Apply Filters</button>
                                                         <button type="button" class="btn btn-danger mt-4 ml-0 p-2" onclick="clearFilterVerification()">CLEAR</button>
+                                                        <a href="<?php echo base_url('export-physical-verification-dashbaord') ?>" class="btn btn-success mt-4 p-2" type="button" id="export-btn">Export</a>
                                                     </div>
                                                 </div>
                                             </form> 
@@ -287,7 +288,7 @@
 	    							<div class="col-md-3">
 	    								<button class="btn btn-primary mt-6 p-2" type="button" onclick="applyFilter()">Apply Filters</button>
 	    								<button type="button" class="btn btn-danger mt-6 ml-0 p-2" onclick="clearFilter()">CLEAR</button>
-	    								<a href="<?php echo base_url('export-physical-verification-dashbaord') ?>" class="btn btn-success mt-6 p-2" type="button" id="export-btn">Export</a>
+	    								<a href="<?php echo base_url('export-physical-verification-dashbaord-popup') ?>" class="btn btn-success mt-6 p-2" type="button" id="export-btn">Export</a>
 	    							</div>
 	    						</div>
 	    					</form>

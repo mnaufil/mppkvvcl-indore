@@ -389,7 +389,7 @@ class Dashboard extends CI_Controller
 
         if (!empty($result)) {
             foreach ($result as $key => $value) {
-                $temp_data = array('<center>'.$value['package_no'].'</center>', $value['contractor_name'], $value['typeofwork'], '<center>'.$value['ss'].'</center>', '<center>'.$value['feeders'].'</center>', '<center>'.$value['Not Started'].'</center>', '<center>'.$value['0% - 25%'].'</center>', '<center>'.$value['25% - 50%'].'/<center>', '</center>'.$value['50% - 75%'].'</center>', '<center>'.$value['75% - 90%'].'</center>', '<center>'.$value['90% - 100%'].'</center>', '<center>'.$value['DTL Reviewed'].'<center>', '<center>'.$value['100%'].'</center>');
+                $temp_data = array('<center>'.$value['package_no'].'</center>', $value['contractor_name'], $value['typeofwork'], '<center>'.$value['ss'].'</center>', '<center>'.$value['feeders'].'</center>', '<center>'.$value['Not Started'].'</center>', '<center>'.$value['0% - 25%'].'</center>', '<center>'.$value['25% - 50%'].'</center>', '</center>'.$value['50% - 75%'].'</center>', '<center>'.$value['75% - 90%'].'</center>', '<center>'.$value['90% - 100%'].'</center>', '<center>'.$value['DTL Reviewed'].'<center>', '<center>'.$value['100%'].'</center>');
 
                 array_push($excel_data, $temp_data);
             }

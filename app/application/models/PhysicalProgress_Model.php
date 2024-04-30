@@ -2309,7 +2309,8 @@ class PhysicalProgress_Model extends CI_Model
 		$this->db->select('contract_id, contractor_name, tender_award_no, tender_award_date, typeofwork_id');
 
 		if (!empty($contractor)) {
-			$this->db->like('contractor_name', $contractor);	
+			$this->db->like('contractor_name', $contractor);
+			$this->db->where(array('status_id !=' => 0));
 		}
 		
 		$query = $this->db->get('contract');

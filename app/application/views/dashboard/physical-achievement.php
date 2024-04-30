@@ -154,7 +154,7 @@
                                                             <th>Status of Commissioning (%)</th> 
                                                             <th>Slippage in percentage (%) </th>
                                                         </tr>
-                                                        <tr style="position: sticky; width: 100%; top: 58px; background: #fff;" >
+                                                        <tr style="position: sticky; width: 100%; top: 58px;">
                                                             <!--th></th-->   
                                                             <th></th>   
                                                             <th></th>   

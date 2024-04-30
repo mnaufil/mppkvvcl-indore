@@ -32,6 +32,25 @@
 	    <link href="<?php echo base_url('assets/switcher/demo.css'); ?>" rel="stylesheet">
 
 	    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/temp.css'); ?>">
+
+	    <style>
+            #physical-verification-table {
+              width: 100%;
+            }
+
+            #physical-verification-table th, #physical-verification-table td {
+              border: 1px solid #ddd;
+              padding: 8px;
+              text-align: left;
+            }
+
+            #physical-verification-table thead th {
+              position: sticky;
+              top: -2px;
+              background-color: white;
+              z-index: 1;
+            }
+        </style>
 	</head>
 	<body class="app sidebar-mini ltr light-mode">
 		<!-- GLOBAL-LOADER -->
@@ -104,7 +123,7 @@
                                                     </div>
                                                 </div>
                                             </form> 
-	            							<div class="table-responsive mt-3">
+	            							<div class="table-responsive mt-3" style="height: calc(100vh - 250px); border-top: 1px solid #ddd;">
 	            								<table class="table border text-wrap text-md-nowrap table-bordered mb-0" id="physical-verification-table">
 	            									<thead>
 	            										<tr>
@@ -112,14 +131,14 @@
 	            											<th>Name of TKC</th>
 	            											<th>Type of Work</th>
 	            											<th colspan="2">Total Provision As Per LOA</th>
-	            											<th colspan="8">Physical Verification (Feeders Count)</th>
+	            											<th colspan="8" style="text-align: center;">Physical Verification (Feeders Count)</th>
 	            										</tr>
-	            										<tr>
+	            										<tr style="position: sticky; width: 100%; top: 50px;">
 	            											<th></th>
 	            											<th></th>
 	            											<th></th>
-	            											<th>S/S</th>
-	            											<th>NOS</th>
+	            											<th style="text-align: center;">S/S</th>
+	            											<th style="text-align: center;">NOS</th>
 	            											<th>Not Started</th>
 	            											<th>0% - 25%</th>
 	            											<th>25% - 50%</th>

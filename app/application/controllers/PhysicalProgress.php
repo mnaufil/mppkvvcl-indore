@@ -377,6 +377,7 @@ class PhysicalProgress extends CI_Controller
                $augmentation_11_kv_activities = array();
                $dl_to_ag_coated_conductor_activities = array();
                $substation_rennovation_activities = array();
+               $mixed_dtr_activities = array();
                
                foreach ($post_data as $key => $value) {
                     if (str_contains($key, 'civil_work')) { //withoutBOQ
@@ -717,6 +718,30 @@ class PhysicalProgress extends CI_Controller
                          $substation_rennovation_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
                          $substation_rennovation_activities[$key]['erected_qty'] = $value;
                     }
+
+                    if (str_contains($key, 'mix_dtr')) { //withBOQ
+                         if (str_contains($key,'observation')) {
+                              $observation_flag = $value;
+                              continue;
+                         }
+
+                         if (str_contains($key, 'boq')) {
+                              $boq_val = $value;
+
+                              //Updating BOQ qty value in contract_location_boq
+                              $this->updateBOQQty($key, $boq_val, $contract_location_id);
+
+                              continue; 
+                         }
+
+                         $erected_val = $value;
+
+                         $input_name = explode('_', $key);
+                         $mixed_dtr_activities[$key]['physical_progress_id'] = $pp_id;
+                         $mixed_dtr_activities[$key]['activity_id'] = end($input_name);
+                         $mixed_dtr_activities[$key]['activity_status_id'] = $this->calculateStatusForWithBOQ($erected_val, $boq_val, $observation_flag);
+                         $mixed_dtr_activities[$key]['erected_qty'] = $value;
+                    }
                }
                
                if (!empty($civil_work_activities)) {
@@ -781,6 +806,10 @@ class PhysicalProgress extends CI_Controller
 
                if (!empty($substation_rennovation_activities)) {
                     array_push($pp_sheet_activities, $substation_rennovation_activities);     
+               }
+
+               if (!empty($mixed_dtr_activities)) {
+                    array_push($pp_sheet_activities, $mixed_dtr_activities);
                }
 
                //Inserting sheet activities in the table

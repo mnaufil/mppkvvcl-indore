@@ -491,11 +491,15 @@ class Setup_Model extends CI_Model
 		$result = $query->result();
 		return $result;*/
 
+		$package_group_no = $this->getPackageGroupNo($contractID);
+
 		$this->db->select('contract_material.*,mst_unit.name');
-		$this->db->where("contract_material.contract_id", $contractID);			
+		// $this->db->where("contract_material.contract_id", $contractID);			
+		$this->db->where("contract_material.package_group_no", $package_group_no['package_group_no']);			
 		$this->db->from('contract_material');
 		$this->db->join('mst_unit', 'mst_unit.unit_id  = contract_material.unit_id', 'inner');
 		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
 
 		$result = $query->result();
      	//creating session
@@ -1363,6 +1367,27 @@ class Setup_Model extends CI_Model
    		if(count($rowIndexArray) > 0)
    		{
    			echo "Entered Date is less than rest of Stage dates.";
+   		}
+   	}
+
+   	public function getPackageGroupNo($contractID)
+   	{
+   		$this->db->select('package_group_no');
+   		$query = $this->db->get_where('contract', array('contract_id' => $contractID));
+   		// echo $this->db->last_query(); die();
+
+   		if (!$query) {
+   			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+   		} else {
+   			$query_result = [];
+
+   			if ($query->num_rows() > 0) {
+   				$query_result = $query->row_array();
+   			}
+
+   			return $query_result;
    		}
    	}
 	

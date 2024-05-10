@@ -584,9 +584,9 @@ class Report_Model extends CI_Model
 		 //$query = $this->db->query("CALL sp_rpt_physical_progress($sessionId,$package,$feederId)");		
 		 //$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress($sessionId,$package,$feederId)";
 
-		$query = $this->db->query("CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)");
+		$query = $this->db->query("CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
-		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)";
+		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";
 
 		
 		

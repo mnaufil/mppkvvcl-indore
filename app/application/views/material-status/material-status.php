@@ -244,7 +244,7 @@
                                                          <td>
                                                             <!-- Complete Later -->
                                                             <?php if (!empty($user_access) && isset($user_access['view'])) { ?>
-                                                            <!-- <a href="<?php echo base_url('view-material-status'); ?>" class="btn btn-sm">
+                                                            <!-- <a href="<?php //echo base_url('view-material-status/'.$value['material_status_id']); ?>" class="btn btn-sm">
                                                                <span class="fa fa-eye fa-lg action-btn-table"></span>
                                                             </a>
                                                             &nbsp;&nbsp; -->   

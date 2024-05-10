@@ -11,9 +11,9 @@ class MaterialStatus_Model extends CI_Model
 
 	public function getMaterialsStatusList()
 	{
-		$this->db->select('material_status.material_status_id, material_status.contract_id, material_status.offer_letter_no, material_status.offer_letter_date, material_status.status_id, mst_status.name as status, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.typeofwork_id');
+		$this->db->select('material_status.material_status_id, material_status.package_group_no, material_status.offer_letter_no, material_status.offer_letter_date, material_status.status_id, mst_status.name as status, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.typeofwork_id');
 		$this->db->from('material_status');
-		$this->db->join('contract', 'material_status.contract_id = contract.contract_id', 'INNER');
+		$this->db->join('contract', 'material_status.package_group_no = contract.package_group_no', 'INNER');
 		$this->db->join('mst_status', 'material_status.status_id = mst_status.status_id', 'INNER');
 		$this->db->where(array('material_status.is_draft' => 0, 'material_status.is_active' => 1, 'material_status.deletedby' => NULL));
 
@@ -43,9 +43,9 @@ class MaterialStatus_Model extends CI_Model
 
 	public function getMaterialData($material_status_id)
 	{
-		$this->db->select('material_status.material_status_id, material_status.contract_id, material_status.discom, material_status.offer_letter_no, material_status.offer_letter_date, material_status.offer_letter_date, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.typeofwork_id, mst_status.name as status');
+		$this->db->select('material_status.material_status_id, material_status.package_group_no, material_status.discom, material_status.offer_letter_no, material_status.offer_letter_date, material_status.offer_letter_date, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.typeofwork_id, mst_status.name as status');
 		$this->db->from('material_status');
-		$this->db->join('contract', 'material_status.contract_id = contract.contract_id' , 'INNER');
+		$this->db->join('contract', 'material_status.package_group_no = contract.package_group_no' , 'INNER');
 		$this->db->join('mst_status', 'material_status.status_id = mst_status.status_id', 'INNER');
 		$this->db->where('material_status.material_status_id', $material_status_id);
 		$this->db->where('material_status.is_draft', 0);
@@ -792,9 +792,12 @@ class MaterialStatus_Model extends CI_Model
 		}
 	}
 
-	public function checkContractExists($contract_id)
+	// public function checkContractExists($contract_id)
+	public function checkContractExists($package_group_no)
 	{
-		$query = $this->db->get_where('material_status', array('contract_id' => $contract_id, 'is_draft' => 0, 'is_active' => 1, 'deletedby' => NULL));
+		// $query = $this->db->get_where('material_status', array('contract_id' => $contract_id, 'is_draft' => 0, 'is_active' => 1, 'deletedby' => NULL));
+		$query = $this->db->get_where('material_status', array('package_group_no' => $package_group_no, 'is_draft' => 0, 'is_active' => 1, 'deletedby' => NULL));
+		// echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();
@@ -967,12 +970,14 @@ class MaterialStatus_Model extends CI_Model
 	}
 
 	public function getCircleList($contract_id)
+	// public function getCircleList($package_group_no)
 	{
 		$this->db->distinct();
 		$this->db->select('contract_location.circle_id, mst_circle.circle_name');
 		$this->db->from('contract_location');
 		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
-		$this->db->where('contract_location.contract_id', $contract_id);
+		// $this->db->where('contract_location.contract_id', $contract_id);
+		$this->db->where_in('contract_location.contract_id', $contract_id);
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
 
@@ -988,6 +993,32 @@ class MaterialStatus_Model extends CI_Model
 			}
 
 			return $query_result;
+		}
+	}
+
+	public function getContractID($package_group_no)
+	{
+		$package_group_no = 2;
+		$this->db->select('contract_id');
+		$query = $this->db->get_where('contract', array('package_group_no' => $package_group_no));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();	
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['contract_id']);
+				}
+
+				return $query_result;
+			}
 		}
 	}
 

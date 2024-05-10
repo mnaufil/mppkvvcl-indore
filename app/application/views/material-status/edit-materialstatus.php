@@ -85,7 +85,8 @@
                                             <!-- Material Status ID -->
                                             <input type="hidden" name="material_status_id" id="material_status_id" value="<?php echo $material_data['material_status_id']; ?>">
                                             <!-- Contract ID -->
-                                            <input type="hidden" name="contract_id" id="contract_id" value="<?php echo $material_data['contract_id']; ?>">
+                                            <!-- <input type="hidden" name="contract_id" id="contract_id" value="<?php echo $material_data['contract_id']; ?>"> -->
+                                            <input type="hidden" name="package_group_no" id="package_group_no" value="<?php echo $material_data['package_group_no']; ?>">
 
                                             <div class="card-body">
                                                 <!-- Row1 -->
@@ -271,7 +272,7 @@
                                                                                 <?php } ?>
                                                                             <?php } ?>
                                                                         </td>
-                                                                    </tr>    
+                                                                    </tr>
                                                                     <?php } ?>
                                                                 </tbody>
                                                             </table>
@@ -664,8 +665,6 @@
         <script src="<?php echo base_url('assets/plugins/edit-table/material-status/material-status-received.js'); ?>"></script>
         <script src="<?php echo base_url('assets/plugins/edit-table/material-status/material-status-random-sampling.js'); ?>"></script>
         <script src="<?php echo base_url('assets/plugins/edit-table/material-status/material-edit-table.js'); ?>"></script>
-
-        
 
         <script type="text/javascript">
             $(document).ready(function() {

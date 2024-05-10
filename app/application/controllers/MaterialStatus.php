@@ -110,7 +110,9 @@ class MaterialStatus extends CI_Controller
                $approve_quantity = 0;
 
                // Getting Earlier Approved Quantity if any
-               $contract_data = $this->ms_model->checkContractExists($material_data['contract_id']);
+               // $contract_data = $this->ms_model->checkContractExists($material_data['contract_id']);
+               $contract_data = $this->ms_model->checkContractExists($material_data['package_group_no']);
+
                foreach ($contract_data as $cd_key => $cd_value) {
                     $material_details_data = $this->ms_model->getMaterialStatusDetailData($cd_value['material_status_id'], $value['contract_material_id']);
 
@@ -129,7 +131,12 @@ class MaterialStatus extends CI_Controller
           }
 
           $data['material_data'] = $material_data;
-          $data['circle_data'] = $this->ms_model->getCircleList($material_data['contract_id']);
+
+          $contract_id_arr = $this->ms_model->getContractID($material_data['package_group_no']);
+
+          // $data['circle_data'] = $this->ms_model->getCircleList($material_data['contract_id']);
+          $data['circle_data'] = $this->ms_model->getCircleList($contract_id_arr);
+
           $data['work_list'] = $this->ms_model->getTypeOfWorkList();
           $data['sampling_lab_data'] = $this->ms_model->getSamplingLabData();
           $data['title'] = 'Edit Material Status';
@@ -138,9 +145,40 @@ class MaterialStatus extends CI_Controller
           $this->load->view('material-status/edit-materialstatus', $data);
      }
 
-     public function viewMaterialStatus()
+     public function viewMaterialStatus($material_status_id)
      {
-          echo "View Material Status";
+          $material_data = $this->ms_model->getMaterialData($material_status_id);
+          $material_data['offer_letter_date'] = date('d-m-Y', strtotime($material_data['offer_letter_date']));
+          $material_data['tender_award_date'] = date('d-m-Y', strtotime($material_data['tender_award_date']));
+
+          foreach ($material_data['material_details'] as $key => $value) {
+               $approve_quantity = 0;
+
+               // Getting Earlier Approved Quantity if any
+               // $contract_data = $this->ms_model->checkContractExists($material_data['contract_id']);
+               $contract_data = $this->ms_model->checkContractExists($material_data['package_group_no']);
+               foreach ($contract_data as $cd_key => $cd_value) {
+                    $material_details_data = $this->ms_model->getMaterialStatusDetailData($cd_value['material_status_id'], $value['contract_material_id']);
+
+                    foreach ($material_details_data as $mdd_key => $mdd_value) {
+                         $accepted_quantities_data = $this->ms_model->getMaterialAcceptedQuantityData($mdd_value['material_status_detail_id']);
+
+                         foreach ($accepted_quantities_data as $aq_key => $aq_value) {
+                              if (strtotime($aq_value['accepted_report_date']) < strtotime($material_data['offer_letter_date'])) {
+                                   $approve_quantity += $aq_value['accepted_quantity'];
+                              }
+                         }
+                    }
+               }
+
+               $material_data['material_details'][$key]['earlier_approved_quantity'] = number_format((float)$approve_quantity, 2, '.', '');
+          }
+
+          $data['material_data'] = $material_data;
+          $data['title'] = 'View Material Status';
+
+          // echo '<pre>'; print_r($data); echo '</pre>'; die();
+          $this->load->view('material-status/view-materialstatus', $data);
      }
 
      public function saveMaterialStatus()

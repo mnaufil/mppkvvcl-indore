@@ -887,7 +887,7 @@ class Report_Model extends CI_Model
 		$_SESSION['spQuery'] = "CALL sp_rpt_non_conformance_report($sessionId,'$package','$region', '$circle', NULL, '$startDate', '$endDate', $status)";
 
 		$query1 = $this->db->query("CALL sp_rpt_non_conformance_report($sessionId,'$package','$region', '$circle', NULL, '$startDate', '$endDate', $status)");		
-		echo $this->db->last_query(); die();
+		// echo $this->db->last_query(); die();
 		
 		if($query1)
 		{

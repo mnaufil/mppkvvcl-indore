@@ -74,7 +74,7 @@
 			                				<div class="form-row mt-2 mb-2">
 			                					<div class="col-xl-12">
 			                						<label class="form-label">Report Description:</label>
-                                    				<p class="report-desc">View the cash flow by RDSS, Jabalpur for the month.</p>
+                                    				<p class="report-desc">View the cash flow by RDSS, Indore for the month.</p>
 			                					</div>
 			                				</div>
 			                				<!-- Form -->

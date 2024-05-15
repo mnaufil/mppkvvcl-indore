@@ -1528,7 +1528,22 @@
               							<textarea rows="3" cols="50" class="form-control" name="sheetRemark" <?php echo $readonly; ?>><?php echo $sheet_data['remark']; ?></textarea>
               						</div>
               					</div>
-              					<!-- Row10 Submit -->
+              					<!-- Row10 Charging Status -->
+              					<div class="form-row">
+              						<div class="col-xl-3 mb-3">
+              							<label for="charging_status" class="form-label mt-0">Charging Status</label>
+              							<?php $charging_status_disabled = ($sheet_data['sheet_status'] == 'Completed') ? 'disabled' : (($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Field Supervisor')) ? 'disabled' : ''); ?>
+              							<div class="form-check" style="float: left;margin-right: 10px;"> 
+              								<input class="form-check-input" type="radio" name="charging_status" value="yes" <?php echo $charging_status_disabled; ?> <?php echo ($sheet_data['charging_status'] == 'yes') ? 'checked' : '';?>>
+              								<label class="form-check-label" for="flexRadioDefault1"> Yes </label>
+              							</div>
+              							<div class="form-check" style="float: left;">
+              								<input class="form-check-input" type="radio" name="charging_status" value="no" <?php echo ($sheet_data['charging_status'] == 'no' || $sheet_data['charging_status'] == NULL) ? 'checked' : '';?> <?php echo $charging_status_disabled; ?>>
+              								<label class="form-check-label" for="flexRadioDefault2"> No </label>
+              							</div>
+              						</div>
+              					</div>
+              					<!-- Row11 Submit -->
               					<div class="form-row">
               						<div class="col-xl-6 mt-5 mb-3">
               							<?php if (!isset($sheet_type)) { 
@@ -1929,6 +1944,10 @@
 					sheet_remark_change = true;
 	      });
 
+	      $('input[name="charging_status"]').change(function() {
+	      	form_change = true;
+	      });
+
 	      //Check if the sheet activities meet the conditions to change the sheet status to Complete
 	      $('#markComplete').click(function() {
 	      	let activities_remaining = 0;
@@ -1958,7 +1977,15 @@
 			      	}		
       			} else {
 	      			let progress_val = $(value).find('.progress-percent').text();
-	      			let boq_qty = $.trim($(value).find('.boq-qty').text());
+
+	      			let boq_div = $(value).find('.boq-qty');
+	      			let boq_qty = '';
+
+	      			if ($(boq_div).find('input').length > 0) {
+	      				boq_qty = $.trim($(boq_div).find('input').val());
+	      			} else {
+	      				boq_qty = $.trim($(boq_div).text());	
+	      			}
 
 	      			if (boq_qty != 0) {
 	      				if (progress_val != 100) {

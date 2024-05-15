@@ -131,7 +131,7 @@ class PhysicalProgress_Model extends CI_Model
 
 	public function getSheetDetail($mode, $ppsheet_id, $contract_id, $contract_location_id, $reported_date = NULL, $type = NULL)
 	{
-		$this->db->select('physical_progress.*, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.package_no, contract.typeofwork_id,contract_location.region_id, contract_location.circle_id, contract_location.division_id,contract_location.location_name, contract_location.feeder_name, contract_location.feeder_id, contract_location.geo_code');
+		$this->db->select('physical_progress.*, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.package_no, contract.typeofwork_id,contract_location.region_id, contract_location.circle_id, contract_location.division_id,contract_location.location_name, contract_location.feeder_name, contract_location.feeder_id, contract_location.geo_code, contract_location.charging_status');
 		$this->db->from('physical_progress');
 		$this->db->join('contract', 'physical_progress.contract_id = contract.contract_id', 'inner');
 		$this->db->join('contract_location', 'physical_progress.contract_id = contract_location.contract_id AND physical_progress.contract_location_id = contract_location.contract_location_id', 'inner');
@@ -1837,6 +1837,27 @@ class PhysicalProgress_Model extends CI_Model
 			}
 
 			return $query_result;
+		}
+	}
+
+	public function updateChargingStatus($contract_location_id, $charging_status)
+	{
+		$data = array(
+			'charging_status' => $charging_status,
+			'modifiedby' => $this->getLoggedInUserID(),
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('contract_location', $data, array('contract_location_id' => $contract_location_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {
+				return $this->db->affected_rows();
+			}
 		}
 	}
 

@@ -266,7 +266,7 @@ class PhysicalProgress extends CI_Controller
                          $sheet_result['work_completion'] = '-';
                     }
 
-                    $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);                    
+                    $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);
                     $sheet_result['activities_list'] = $activities_list;
                }
 
@@ -339,6 +339,7 @@ class PhysicalProgress extends CI_Controller
                $reported_by_id = $this->pp_model->getReportedByID($reported_by_name);
                $reported_date = date('Y-m-d', strtotime($this->input->post('reportedDate')));
                $remark = $this->input->post('sheetRemark');
+               $charging_status = $this->input->post('charging_status');
                $status_id = 2;
                $is_draft = 0;
 
@@ -829,6 +830,9 @@ class PhysicalProgress extends CI_Controller
                          }
                     }
                }
+
+               // Updating charging status in contract_location table
+               $this->pp_model->updateChargingStatus($contract_location_id, $charging_status);
 
                $remaining_activity_count = $this->pp_model->getAppliedActivitiesListForSheetStatusCalculation($pp_id);
                if ($remaining_activity_count == 0) {

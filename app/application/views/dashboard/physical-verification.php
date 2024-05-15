@@ -325,6 +325,7 @@
 	    										<th>Feeder ID</th>
 	    										<th>Task</th>
 	    										<th>Observation</th>
+	    										<th>Charging Status</th>
 	    										<th>Last Reported By</th>
 	    										<th>Last Reported Date</th>
 	    										<th>Status</th>
@@ -335,6 +336,7 @@
 	    									<tr>
 	    										<!-- <td></td>
 	    										<td></td> -->
+	    										<td></td>
 	    										<td></td>
 	    										<td></td>
 	    										<td></td>
@@ -510,6 +512,7 @@
         						tbody_html += '<td>'+ value.feeder_id +'</td>';
         						tbody_html += '<td>'+ value.task +'</td>';
         						tbody_html += '<td>'+ value.observation +'</td>';
+        						tbody_html += '<td>'+ value.charging_status +'</td>';
         						tbody_html += '<td>'+ value.username +'</td>';
         						tbody_html += '<td>'+ value.reported_date +'</td>';
         						tbody_html += '<td class="'+ status_color +'">'+ value.name +'</td>';

@@ -224,7 +224,7 @@
             												<!-- DTL Reviewed -->
             												<td style="text-align: center;" data-slab="DTL Reviewed">
             													<?php 	if ($value['DTL Reviewed'] != 0) {
-            																$data_dtl_reviewed = '<a href="#" onclick="showFeedersModal(this)">'.$value['100%'].'</a>';
+            																$data_dtl_reviewed = '<a href="#" onclick="showFeedersModal(this)">'.$value['DTL Reviewed'].'</a>';
             															} else {
             																$data_dtl_reviewed = $value['DTL Reviewed'];
             															} 

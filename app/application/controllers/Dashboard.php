@@ -134,6 +134,7 @@ class Dashboard extends CI_Controller
             $result[$key]['erection_cum_invoice_raised'] = $this->convertToCrore($value['erection_cum_invoice_raised']);
             $result[$key]['erection_cum_amount_disbursed'] = $this->convertToCrore($value['erection_cum_amount_disbursed']);
             $result[$key]['mobilisation_advance'] = $this->convertToCrore($value['mobilisation_advance']);
+            $result[$key]['moblisation_adv_adjusted_amount'] = $this->convertToCrore($value['moblisation_adv_adjusted_amount']);
             $result[$key]['payment_of_taxes'] = $this->convertToCrore($value['payment_of_taxes']);
             $result[$key]['total_disbursement_amount'] = $this->convertToCrore($value['total_disbursement_amount']);
         }

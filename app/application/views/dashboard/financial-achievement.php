@@ -91,7 +91,7 @@
 	            											<th>Contract Price (Rs. In cr.)</th>
 	            											<th>Effective Date</th>
 	            											<th colspan="3">Stage Data</th>
-	            											<th colspan="11">Disbursement Amount(Rs. in Cr.) upto <?php echo $current_date; ?></th>
+	            											<th colspan="12">Disbursement Amount(Rs. in Cr.) upto <?php echo $current_date; ?></th>
 	            											<th>Acheivement (%)</th>
 	            										</tr>
 	            										<tr>
@@ -109,6 +109,7 @@
 	            											<th colspan="2">Erection during the Month <?php echo $current_month; ?></th>
 	            											<th colspan="2">Erection Cumm. upto the period</th>
 	            											<th>Mobilization Advance</th>
+	            											<th>Mobilization Advance Adjusted</th>
 	            											<th>Payment of Taxes</th>
 	            											<th>Total Disbursement Amount</th>
 	            											<th></th>
@@ -131,6 +132,7 @@
 	            											<th>Amount Disbursed</th>
 	            											<th>Invoice Raised</th>
 	            											<th>Amount Disbursed</th>
+	            											<th></th>
 	            											<th></th>
 	            											<th></th>
 	            											<th></th>
@@ -159,6 +161,7 @@
 	            												<td style="text-align: center;"><?php echo ($value['erection_cum_invoice_raised'] == '-') ? $value['erection_cum_invoice_raised'] : '&#8377;'.$value['erection_cum_invoice_raised']; ?></td>
 	            												<td style="text-align: center;"><?php echo ($value['erection_cum_amount_disbursed'] == '-') ? $value['erection_cum_amount_disbursed'] : '&#8377;'.$value['erection_cum_amount_disbursed']; ?></td>
 	            												<td style="text-align: center;"><?php echo ($value['mobilisation_advance'] == '-') ? $value['mobilisation_advance'] : '&#8377;'.$value['mobilisation_advance']; ?></td>
+	            												<td style="text-align: center;"><?php echo ($value['moblisation_adv_adjusted_amount'] == '-') ? $value['moblisation_adv_adjusted_amount'] : '&#8377;'.$value['moblisation_adv_adjusted_amount']; ?></td>
 	            												<td style="text-align: center;"><?php echo ($value['payment_of_taxes'] == '-') ? $value['payment_of_taxes'] : '&#8377;'.$value['payment_of_taxes']; ?></td>
 	            												<td style="text-align: center;"><?php echo ($value['total_disbursement_amount'] == '-') ? $value['total_disbursement_amount'] : '&#8377;'.$value['total_disbursement_amount']; ?></td>
 	            												<td style="text-align: center;"><?php echo $value['per_achievement']; ?></td>

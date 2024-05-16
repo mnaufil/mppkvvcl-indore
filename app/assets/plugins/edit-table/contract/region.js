@@ -204,19 +204,25 @@ class BSTable1 {
             }
 			else if(i=='1')
 			{
-                $.ajax({url: baseUrl+"loadsessioncircle/"+rowIndex, success: function(result){
+                $.ajax({
+                    url: baseUrl+"loadsessioncircle/"+rowIndex,
+                    success: function(result){
+                        console.log(result);
                         inputs = result;
                         $td.html(div + result); 
                     }});
+
 				input = '<div id="loadcircles"><select class="form-control" ><option value="Select">Select Circle</option></select></div>';
 				//$td.html(input)
 			}
 			else if(i=='2')
 			{
-                $.ajax({url: baseUrl+"loadsessiondivision/"+rowIndex, success: function(result){
+                $.ajax({
+                    url: baseUrl+"loadsessiondivision/"+rowIndex, 
+                    success: function(result){
                         inputs = result;
                         $td.html(div + result); 
-                    }});
+                }});
 				input = '<div id="loaddivisions"><select class="form-control"><option value="Select">Select Division</option></select></div>';
 				$td.html(input)
 			}

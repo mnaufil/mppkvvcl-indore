@@ -53,7 +53,6 @@ class Setup_Model extends CI_Model
 	
 	function loadRegions($rowIndex)
 	{
-		
 		$this->db->where("is_active", "1");
 		$query = $this->db->get("mst_region");
 		$result = $query->result();
@@ -85,18 +84,20 @@ class Setup_Model extends CI_Model
 	{
 		$this->db->where("region_id", $regionId);	
 		$this->db->where("is_active", "1");
+
 		$query = $this->db->get("mst_circle");
+
 		$result = $query->result();
-		//return $result;
+		
 		$select = '<select class="form-control" onchange="selectdivision(this.value, '.$rowIndex.')" id="dynamiccircleregion'.$rowIndex.'"><option value="Select">Select Circle</option>';
+
 		foreach($result as $res)
 		{
-			 $select .= '<option value='.$res->circle_id.'>'.$res->circle_name.'</option>';
+			$select .= '<option value='.$res->circle_id.'>'.$res->circle_name.'</option>';
 		}
+
 		echo $select .= '</select>';
 	}
-	
-	
 	
 	function loadDivision($circleId, $rowIndex)
 	{
@@ -119,14 +120,26 @@ class Setup_Model extends CI_Model
 		$select = '<div id="loadcircles"><select class="form-control" ><option value="Select">Select Circle</option>';
 
 		if(isset($_SESSION['acceptregion']) && count($_SESSION['acceptregion']) > 0 && isset($_SESSION['acceptregion'][$circleId]))
-			{
-				$selected = "selected";
+		{
+			$region_id = $_SESSION['acceptregion'][$circleId]['region'];
+			$this->db->where("region_id", $region_id);
+			$this->db->where("is_active", "1");
 
-				 $select .= '<option value='.$_SESSION['acceptregion'][$circleId]['circle'].' '.$selected.'>'.$_SESSION['acceptregion'][$circleId]['circle_text'].'</option>';
+			$query = $this->db->get("mst_circle");
+
+			$result = $query->result();
+
+			foreach ($result as $res) {
+				$selected = ($res->circle_id == $_SESSION['acceptregion'][$circleId]['circle']) ? 'selected' : '';
+				$select .= '<option value='.$res->circle_id.' '.$selected.'>'.$res->circle_name.'</option>';
 			}
 
-			echo $select .= '</select></div>';
-			
+			/*$selected = "selected";
+
+			$select .= '<option value='.$_SESSION['acceptregion'][$circleId]['circle'].' '.$selected.'>'.$_SESSION['acceptregion'][$circleId]['circle_text'].'</option>';*/
+		}
+
+		echo $select .= '</select></div>';
 	}
 
 	function loadSessionDivision($circleId)
@@ -134,14 +147,26 @@ class Setup_Model extends CI_Model
 		$select = '<div id="loaddivisions"><select class="form-control" ><option value="Select">Select Divisions</option>';
 
 		if(isset($_SESSION['acceptregion']) && count($_SESSION['acceptregion']) > 0 && isset($_SESSION['acceptregion'][$circleId]))
-			{
-				$selected = "selected";
+		{
+			$circle_id = $_SESSION['acceptregion'][$circleId]['circle'];
+			$this->db->where("circle_id", $circle_id);
+			$this->db->where("is_active", "1");
 
-				 $select .= '<option value='.$_SESSION['acceptregion'][$circleId]['division'].' '.$selected.'>'.$_SESSION['acceptregion'][$circleId]['division_text'].'</option>';
+			$query = $this->db->get("mst_division");
+
+			$result = $query->result();
+
+			foreach ($result as $res) {
+				$selected = ($res->division_id == $_SESSION['acceptregion'][$circleId]['division']) ? 'selected' : '';
+				$select .= '<option value='.$res->division_id.' '.$selected.'>'.$res->division_name.'</option>';	
 			}
 
-			echo $select .= '</select></div>';
-			
+			/*$selected = "selected";
+
+			$select .= '<option value='.$_SESSION['acceptregion'][$circleId]['division'].' '.$selected.'>'.$_SESSION['acceptregion'][$circleId]['division_text'].'</option>';*/
+		}
+
+		echo $select .= '</select></div>';			
 	}
 
     function addcontract()

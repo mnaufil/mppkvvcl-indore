@@ -733,21 +733,23 @@ class BSTable1 {
 }
 
 function selectcircle(val, rowIndex)
-		{
-			 $.ajax({url: baseUrl+"loadcircle/"+val+"/"+rowIndex, success: function(result){
-							
-							$("#loadcircles").empty();
-							$("#loadcircles").html(result);
-						
-			}});
-		}
+{
+    $.ajax({
+        url: baseUrl+"loadcircle/"+val+"/"+rowIndex,
+        success: function(result){
+			$("#loadcircles").empty();
+			$("#loadcircles").html(result);
+
+            selectdivision(val, rowIndex);
+		}});
+	}
 		
 function selectdivision(val, rowIndex)
-		{
-			 $.ajax({url: baseUrl+"loaddivision/"+val+"/"+rowIndex, success: function(result){
-							
-							$("#loaddivisions").empty();
-							$("#loaddivisions").html(result);
-						
-			}});
-		}		
+{
+    $.ajax({
+        url: baseUrl+"loaddivision/"+val+"/"+rowIndex, 
+        success: function(result){
+			$("#loaddivisions").empty();
+			$("#loaddivisions").html(result);
+		}});
+}		

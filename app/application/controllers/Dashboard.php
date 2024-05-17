@@ -382,7 +382,7 @@ class Dashboard extends CI_Controller
 
         // $excel_data = [];
         $excel_data[] = array('LOT NO', 'NAME OF TKC', 'TYPE OF WORK', '<center>TOTAL PROVISION AS PER LOA</center>', NULL,'<center>PHYSICAL VERIFICATION (FEEDERS COUNT)</center>');
-        $excel_data[] = array(NULL, NULL, NULL, '<center>S/S</center>', '<center>NOS</center>', '<center>NOT STARTED</center>', '<center>0% - 25%</center>', '<center>25% - 50%</center>', '<center>50% - 75%</center>', '<center>75% - 90%</center>', '<center>90% - 100%</center>', '<center>DTL REVIEWED</center>', '<center>100%</center>');
+        $excel_data[] = array(NULL, NULL, NULL, '<center>S/S</center>', '<center>NOS</center>', '<center>NOT STARTED</center>', '<center>Below 25%</center>', '<center>25% - 50%</center>', '<center>50% - 75%</center>', '<center>75% - 90%</center>', '<center>90% - 100%</center>', '<center>DTL REVIEWED</center>', '<center>100%</center>');
 
         // Fetch records from database and store in an array
         $session_query = $_SESSION['pvdashboard_query'];

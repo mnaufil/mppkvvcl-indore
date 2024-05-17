@@ -140,7 +140,8 @@
 	            											<th style="text-align: center;">S/S</th>
 	            											<th style="text-align: center;">NOS</th>
 	            											<th>Not Started</th>
-	            											<th>0% - 25%</th>
+	            											<!-- <th>0% - 25%</th> -->
+	            											<th>Below 25%</th>
 	            											<th>25% - 50%</th>
 	            											<th>50% - 75%</th>
 	            											<th>75% - 90%</th>

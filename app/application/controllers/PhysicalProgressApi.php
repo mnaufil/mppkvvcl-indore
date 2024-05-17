@@ -189,6 +189,7 @@ class PhysicalProgressApi extends REST_Controller
             $geo_code = $this->post('geo_code');
             $is_inrange = ($this->post('is_inrange') == 'yes') ? 1 : 0;
             $sheet_remark = $this->post('sheet_remark');
+            $charging_status = $this->post('charging_status');
             $activities = $this->post('activities');
             $sheet_completion_file = $this->post('sheet_completion_file');
             // $status_id = $this->post('status_id');
@@ -242,6 +243,9 @@ class PhysicalProgressApi extends REST_Controller
                         }
                     }
                 }
+
+                // Updating charging status in contract_location table
+                $this->pp_model->updateChargingStatus($prev_sheet_data['contract_location_id'], $charging_status, $user_id);
 
                 $alert_message = '';
                 //If all the activities are marked as complete, uploading the sheet completion photo

@@ -1840,11 +1840,11 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
-	public function updateChargingStatus($contract_location_id, $charging_status)
+	public function updateChargingStatus($contract_location_id, $charging_status, $user_id = NULL)
 	{
 		$data = array(
 			'charging_status' => $charging_status,
-			'modifiedby' => $this->getLoggedInUserID(),
+			'modifiedby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),
 			'modifieddate' => date('Y-m-d H:i:s')
 		);
 

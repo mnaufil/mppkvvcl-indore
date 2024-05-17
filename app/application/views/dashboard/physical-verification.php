@@ -595,7 +595,7 @@
         				data: {slab:slab, contract_id:contract_id, package_no:package_no,date:date, region_id:selected_region_id, circle_id:selected_circle_id, division_id:selected_division_id},
         				success: function(response) {
         					let feeders_list = response.feeders_data;
-        					console.log(feeders_list);
+        					// console.log(feeders_list);
         					if (!$.isEmptyObject(feeders_list)) {
 	        					let tbody_html = '';
 	        					let contractor = '';

@@ -352,7 +352,7 @@ class Dashboard extends CI_Controller
         $fileName = "Physical_verification_Dashboard_Feeders_Data_".date('Y-m-d').".xlsx";
 
         // $excel_data = [];
-        $excel_data[] = array('REGION', 'CIRCLE', 'DIVISION', 'DISTRICT', 'VIDHANSABHA', 'LOKSABHA', 'SITE LOCATION', 'FEEDER ID', 'TASK', 'OBSERVATION', 'LAST REPORTED BY', 'LAST REPORTED DATE', 'STATUS');
+        $excel_data[] = array('REGION', 'CIRCLE', 'DIVISION', 'DISTRICT', 'VIDHANSABHA', 'LOKSABHA', 'SITE LOCATION', 'FEEDER ID', 'TASK', 'OBSERVATION', 'CHARGING STATUS', 'LAST REPORTED BY', 'LAST REPORTED DATE', 'STATUS');
 
         // Fetch records from database and store in an array
         $session_query = $_SESSION['pvdashboard_query'];
@@ -362,7 +362,9 @@ class Dashboard extends CI_Controller
             foreach ($result as $key => $value) {
                 $location_data = $this->splitLocation($value['region_circle_division']);
 
-                $temp_data = array($location_data['region'], $location_data['circle'], $location_data['division'], $value['district'], $value['vidhansabha'], $value['loksabha'], $value['site_location'], $value['feeder_id'], $value['task'], $value['observation'], $value['username'], $value['reported_date'], $value['name']);
+                $charging_status = ($value['charging_status'] == '') ? 'NA' : $value['charging_status'];
+
+                $temp_data = array($location_data['region'], $location_data['circle'], $location_data['division'], $value['district'], $value['vidhansabha'], $value['loksabha'], $value['site_location'], '<center>'.$value['feeder_id'].'</center>', '<center>'.$value['task'].'</center>', '<center>'.$value['observation'].'</center>', '<center>'.$charging_status.'</center>', $value['username'], '<center>'.$value['reported_date'].'</center>', $value['name']);
 
                 array_push($excel_data, $temp_data);
             }

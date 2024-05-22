@@ -405,6 +405,57 @@ class Dashboard extends CI_Controller
         exit;
     }
 
+    public function exportFinancialData($date)
+    {
+        // Excel file name for download 
+        $fileName = "Financial_Progress_Dashboard_Table_Data_".date('Y-m-d').".xlsx";
+
+        $disbursement_amount_heading = 'DISBURSEMENT AMOUNT (RS. IN CR.) UPTO '.date('d.m.y', strtotime($date));
+        $supply_heading = 'SUPPLY DURING THE MONTH '.date("M'y", strtotime($date));
+        $erection_heading = 'ERECTION DURING THE MONTH '.date("M'y", strtotime($date));
+
+        $excel_data[] = array('SR NO', 'LOT NO', 'NAME OF TKC', 'TYPE OF WORK', '<center>CONTRACT PRICE (RS. IN CR.)</center>', '<center>EFFECTIVE DATE</center>', '<center>STAGE DATA</center>', NULL, NULL, '<center>'.$disbursement_amount_heading.'</center>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Achievement (%)');
+        $excel_data[] = array(NULL, NULL, NULL, NULL, NULL, NULL, '<center>STAGE</center>', '<center>TARGET DATE</center>', '<center>TARGET (RS. IN CR.)</center>', '<center>'.$supply_heading.'</center>', NULL, '<center>SUPPLY CUMM. UPTO THE PERIOD</center>', NULL, '<center>'.$erection_heading.'</center>', NULL, '<center>ERECTION CUMM. UPTO THE PERIOD<center>', NULL, 'MOBILIZATION ADVANCE', 'MOBILIZATION ADVANCE ADJUSTED', 'PAYMENT OF TAXES', 'TOTAL DISBURSEMENT AMOUNT', NULL);
+        $excel_data[] = array(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '<center>INVOICE RAISED</center>', '<center>AMOUNT DISBURSED</center>', '<center>INOICE RAISED</center>', '<center>AMOUNT DISBURSED</center>', '<center>INVOICE RAISED</center>', '<center>AMOUNT DISBURSED</center>', '<center>INVOICE RAISED</center>', '<center>AMOUNT DISBURSED</center>', NULL, NULL, NULL, NULL, NULL);
+
+        // Fetch records from database and store in an array
+        $session_query = $_SESSION['pvdashboard_query'];
+        $result = $this->Dashboard_Model->executeQuery($session_query);
+
+        if (!empty($result)) {
+            foreach ($result as $key => $value) {
+                $contract_price = $this->convertToCrore($value['contract_price']);
+
+                $effective_date = date('d-m-y', strtotime($value['effective_date']));
+                $stage_name = (!empty($value['stage_name'])) ? $value['stage_name'] : '-';
+                $stage_date = (!empty($value['stage_date'])) ? date('d-m-Y', strtotime($value['stage_date'])) : '-';
+
+                $supply_invoice_raised = ($value['supply_invoice_raised'] == '-') ? $value['supply_invoice_raised'] : $this->convertToCrore($value['supply_invoice_raised']);
+                $supply_amount_disbursed = ($value['supply_amount_disbursed'] == '-') ? $value['supply_amount_disbursed'] : $this->convertToCrore($value['supply_amount_disbursed']);
+                $supply_cumm_invoice_raised = ($value['supply_cum_invoice_raised'] == '-') ? $value['supply_cum_invoice_raised'] : $this->convertToCrore($value['supply_cum_invoice_raised']);
+                $supply_cumm_amount_disbursed = ($value['supply_cum_amount_disbursed'] == '-') ? $value['supply_cum_amount_disbursed'] : $this->convertToCrore($value['supply_cum_amount_disbursed']);
+                $erection_invoice_raised = ($value['erection_invoice_raised'] == '-') ? $value['erection_invoice_raised'] : $this->convertToCrore($value['erection_invoice_raised']);
+                $erection_amount_disbursed = ($value['erection_amount_disbursed'] == '-') ? $value['erection_amount_disbursed'] : $this->convertToCrore($value['erection_amount_disbursed']);
+                $erection_cumm_invoice_raised = ($value['erection_cum_invoice_raised'] == '-') ? $value['erection_cum_invoice_raised'] : $this->convertToCrore($value['erection_cum_invoice_raised']);
+                $erection_cumm_amount_disbursed = ($value['erection_cum_amount_disbursed'] == '-') ? $value['erection_cum_amount_disbursed'] : $this->convertToCrore($value['erection_cum_amount_disbursed']);
+                $mobilisation_advance = ($value['mobilisation_advance'] == '-') ? $value['mobilisation_advance'] : $this->convertToCrore($value['mobilisation_advance']);
+                $mobilisation_adv_adjusted_amount = ($value['moblisation_adv_adjusted_amount'] == '-') ? $value['moblisation_adv_adjusted_amount'] : $this->convertToCrore($value['moblisation_adv_adjusted_amount']);
+                $payment_of_taxes = ($value['payment_of_taxes'] == '-') ? $value['payment_of_taxes'] : $this->convertToCrore($value['payment_of_taxes']);
+                $total_disbursement_amount = ($value['total_disbursement_amount'] == '-') ? $value['total_disbursement_amount'] : $this->convertToCrore($value['total_disbursement_amount']);
+
+                $temp_data = array('<center>'.++$key.'</center>', '<center>'.$value['package_no'].'</center>', $value['contractor_name'], $value['type_of_work'], '<center>'.$contract_price.'</center>', '<center>'.$effective_date.'</center>', '<center>'.$stage_name.'</center>', '<center>'.$stage_date.'</center>', '<center>'.$value['target'].'</center>', '<center>'.$supply_invoice_raised.'</center>', '<center>'.$supply_amount_disbursed.'</center>', '<center>'.$supply_cumm_invoice_raised.'</center>', '<center>'.$supply_cumm_amount_disbursed.'</center>', '<center>'.$erection_invoice_raised.'</center>', '<center>'.$erection_amount_disbursed.'</center>', '<center>'.$erection_cumm_invoice_raised.'</center>', '<center>'.$erection_cumm_amount_disbursed.'</center>', '<center>'.$mobilisation_advance.'</center>', '<center>'.$mobilisation_adv_adjusted_amount.'</center>', '<center>'.$payment_of_taxes.'</center>', '<center>'.$total_disbursement_amount.'</center>', '<center>'.$value['per_achievement'].'</center>');
+
+                array_push($excel_data, $temp_data);
+            }
+        }
+
+        // Export data to excel and download as xlsx file
+        $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excel_data)->mergeCells('G1:I1')->mergeCells('J1:U1')->mergeCells('J2:K2')->mergeCells('L2:M2')->mergeCells('N2:O2')->mergeCells('P2:Q2');
+        $xlsx->downloadAs($fileName);
+
+        exit;
+    }
+
     public function splitLocation($location)
     {
         $location_arr = explode('/', $location);

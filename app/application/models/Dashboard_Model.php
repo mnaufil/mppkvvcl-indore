@@ -911,7 +911,8 @@ class Dashboard_Model extends CI_Model
     public function getFinancialDashboardData($date)
     {
         $user_id = $_SESSION['loggedData']->user_id;
-        $query = $this->db->query("CALL sp_get_dashboard_financial_progress(".$user_id.", '".$date."')");
+        $sql_stmt = $_SESSION['pvdashboard_query'] = "CALL sp_get_dashboard_financial_progress(".$user_id.", '".$date."')";
+        $query = $this->db->query($sql_stmt);
         // echo $this->db->last_query(); die();
 
         if (!$query) {

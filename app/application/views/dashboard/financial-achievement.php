@@ -79,6 +79,14 @@
 	            				<div class="col-xl-12">
 	            					<div class="card">
 	            						<div class="card-body mt-3 mb-3">
+	            							<div class="row">
+	            								<!-- Export Button -->
+	            								<div class="col-sm-12 col-md-9s mb-3">
+	            									<div class="dts-buttons btn-group flex-wrap" style="float:right;">
+	            										<a href="<?php echo base_url('export-financial-dashbaord/'.$date) ?>" class="btn btn-success p-2" type="button" id="export-btn">Export</a>	
+	            									</div>
+	            								</div>
+	            							</div>
 	            							<div class="table-responsive">
 	            								<table class="table border text-wrap text-md-nowrap table-bordered mb-0" id="financial-table">
 	            									<thead>
@@ -142,28 +150,50 @@
 	            									<tbody>
 	            										<?php foreach ($contract_data as $key => $value) { ?>
 	            											<tr>
+	            												<!-- SR No -->
 	            												<td><?php echo ++$key; ?></td>
 	            												<!-- <td style="text-align: left;"><?php //echo 'Lot - '.$value['package_no']; ?></td> -->
+	            												<!-- Lot No -->
 	            												<td style="text-align: left;"><?php echo $value['package_no']; ?></td>
+	            												<!-- Name of TKC -->
 	            												<td style="text-align: left;"><?php echo $value['contractor_name']; ?></td>
+	            												<!-- Type of Work -->
 	            												<td style="text-align: left;"><?php echo $value['type_of_work']; ?></td>
+	            												<!-- Contract Price -->
 	            												<td style="text-align: center;"><?php echo '&#8377;'.$value['contract_price']; ?></td>
+	            												<!-- Effective Date -->
 	            												<td style="text-align: center;"><?php echo date('d-m-y', strtotime($value['effective_date'])); ?></td>
+	            												<!-- Stage -->
 	            												<td style="text-align: center;"><?php echo (!empty($value['stage_name'])) ? $value['stage_name'] : '-'; ?></td>
+	            												<!-- Target Date -->
 	            												<td style="text-align: center;"><?php echo (!empty($value['stage_date'])) ? date('d-m-Y', strtotime($value['stage_date'])) : '-'; ?></td>
+	            												<!-- Target -->
 	            												<td style="text-align: center;"><?php echo ($value['target'] == '-') ? $value['target'] : '&#8377;'.$value['target']; ?></td>
+	            												<!-- Supply during the month (Invoice Raised) -->
 	            												<td style="text-align: center;"><?php echo ($value['supply_invoice_raised'] == '-') ? $value['supply_invoice_raised'] : '&#8377;'.$value['supply_invoice_raised']; ?></td>
+	            												<!-- Supply during the month (Amount Disbursed) -->
 	            												<td style="text-align: center;"><?php echo ($value['supply_amount_disbursed'] == '-') ? $value['supply_amount_disbursed'] : '&#8377;'.$value['supply_amount_disbursed']; ?></td>
+	            												<!-- Supply Cummulative upto the period (Invoice Raised) -->
 	            												<td style="text-align: center;"><?php echo ($value['supply_cum_invoice_raised'] == '-') ? $value['supply_cum_invoice_raised'] : '&#8377;'.$value['supply_cum_invoice_raised']; ?></td>
+	            												<!-- Supply Cummulative upto the period (Amount Disbursed) -->
 	            												<td style="text-align: center;"><?php echo ($value['supply_cum_amount_disbursed'] == '-') ? $value['supply_cum_amount_disbursed'] : '&#8377;'.$value['supply_cum_amount_disbursed']; ?></td>
+	            												<!-- Erection during the month (Invoice Raised) -->
 	            												<td style="text-align: center;"><?php echo ($value['erection_invoice_raised'] == '-') ? $value['erection_invoice_raised'] : '&#8377;'.$value['erection_invoice_raised']; ?></td>
+	            												<!-- Erection during the month (Amount Disbursed) -->
 	            												<td style="text-align: center;"><?php echo ($value['erection_amount_disbursed'] == '-') ? $value['erection_amount_disbursed'] : '&#8377;'.$value['erection_amount_disbursed']; ?></td>
+	            												<!-- Erection Cummulative upto the period (Invoice Raised) -->
 	            												<td style="text-align: center;"><?php echo ($value['erection_cum_invoice_raised'] == '-') ? $value['erection_cum_invoice_raised'] : '&#8377;'.$value['erection_cum_invoice_raised']; ?></td>
+	            												<!-- Erection Cummulative upto the period (Amount Disbursed) -->
 	            												<td style="text-align: center;"><?php echo ($value['erection_cum_amount_disbursed'] == '-') ? $value['erection_cum_amount_disbursed'] : '&#8377;'.$value['erection_cum_amount_disbursed']; ?></td>
+	            												<!-- Mobilisation Advance -->
 	            												<td style="text-align: center;"><?php echo ($value['mobilisation_advance'] == '-') ? $value['mobilisation_advance'] : '&#8377;'.$value['mobilisation_advance']; ?></td>
+	            												<!-- Mobilisation Advance Adjusted -->
 	            												<td style="text-align: center;"><?php echo ($value['moblisation_adv_adjusted_amount'] == '-') ? $value['moblisation_adv_adjusted_amount'] : '&#8377;'.$value['moblisation_adv_adjusted_amount']; ?></td>
+	            												<!-- Payment of Taxes -->
 	            												<td style="text-align: center;"><?php echo ($value['payment_of_taxes'] == '-') ? $value['payment_of_taxes'] : '&#8377;'.$value['payment_of_taxes']; ?></td>
+	            												<!-- Total Disbursement Amount -->
 	            												<td style="text-align: center;"><?php echo ($value['total_disbursement_amount'] == '-') ? $value['total_disbursement_amount'] : '&#8377;'.$value['total_disbursement_amount']; ?></td>
+	            												<!-- Achievement (%) -->
 	            												<td style="text-align: center;"><?php echo $value['per_achievement']; ?></td>
 	            											</tr>
 	            										<?php } ?>

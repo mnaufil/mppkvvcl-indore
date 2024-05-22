@@ -99,6 +99,7 @@ $route['verification/(:any)'] = 'Dashboard/physicalVerification/$1';
 $route['get-feeders-list'] = 'Dashboard/getFeedersList';
 $route['export-physical-verification-dashbaord-popup'] = 'Dashboard/exportPhysicalVerificationDataPopup';
 $route['export-physical-verification-dashbaord'] = 'Dashboard/exportPhysicalVerificationData';
+$route['export-financial-dashbaord/(:any)'] = 'Dashboard/exportFinancialData/$1';
 
 /*Physical Progress Module*/
 $route['physical-verification'] = 'PhysicalProgress/index';

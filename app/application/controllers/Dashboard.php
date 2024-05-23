@@ -391,15 +391,30 @@ class Dashboard extends CI_Controller
         $result = $this->Dashboard_Model->executeQuery($session_query);
 
         if (!empty($result)) {
+            $total_not_started = $total_0_25 = $total_25_50 = $total_50_75 = $total_75_90 = $total_90_100 = $total_dtl_reviewed = $total_100 = 0;
             foreach ($result as $key => $value) {
+                $total_not_started += $value['Not Started'];
+                $total_0_25 += $value['0% - 25%'];
+                $total_25_50 += $value['25% - 50%'];
+                $total_50_75 += $value['50% - 75%'];
+                $total_75_90 += $value['75% - 90%'];
+                $total_90_100 += $value['90% - 100%'];
+                $total_dtl_reviewed += $value['DTL Reviewed'];
+                $total_100 += $value['100%'];
+
                 $temp_data = array('<center>'.$value['package_no'].'</center>', $value['contractor_name'], $value['typeofwork'], '<center>'.$value['ss'].'</center>', '<center>'.$value['feeders'].'</center>', '<center>'.$value['Not Started'].'</center>', '<center>'.$value['0% - 25%'].'</center>', '<center>'.$value['25% - 50%'].'</center>', '</center>'.$value['50% - 75%'].'</center>', '<center>'.$value['75% - 90%'].'</center>', '<center>'.$value['90% - 100%'].'</center>', '<center>'.$value['DTL Reviewed'].'<center>', '<center>'.$value['100%'].'</center>');
 
                 array_push($excel_data, $temp_data);
             }
+
+            $excel_data[] = array('<right>TOTAL FEEDERS</right>', NULL, NULL, NULL, NULL, '<center>'.$total_not_started.'</center>', '<center>'.$total_0_25.'</center>', '<center>'.$total_25_50.'</center>', '<center>'.$total_50_75.'</center>', '<center>'.$total_75_90.'</center>', '<center>'.$total_90_100.'</center>', '<center>'.$total_dtl_reviewed.'</center>', '<center>'.$total_100.'</center>');
         }
 
+        $array_last_key = array_key_last($excel_data) + 1;
+        $merge_total_cells = 'A'.$array_last_key.':E'.$array_last_key;
+
         // Export data to excel and download as xlsx file
-        $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excel_data)->mergeCells('D1:E1')->mergeCells('F1:M1');
+        $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excel_data)->mergeCells('D1:E1')->mergeCells('F1:M1')->mergeCells($merge_total_cells);
         $xlsx->downloadAs($fileName);
 
         exit;

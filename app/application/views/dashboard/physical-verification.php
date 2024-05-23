@@ -151,6 +151,7 @@
 	            										</tr>
 	            									</thead>
 	            									<tbody>
+	            										<?php $total_not_started = $total_0_25 = $total_25_50 = $total_50_75 = $total_75_90 = $total_90_100 = $total_dtl_reviewed = $total_100 = 0; ?>
 	            										<?php foreach ($verification_data as $key => $value) { ?>
 	            										<tr data-contract-id="<?php echo $value['contract_id']; ?>" data-package-no="<?php echo $value['package_no']; ?>">
 	            											<!-- Lot No. -->
@@ -163,9 +164,11 @@
 	            											<td style="text-align: center;"><?php echo $value['ss']; ?></td>
 	            											<!-- Feeders -->
 	            											<td style="text-align: center;"><?php echo $value['feeders']; ?></td>
+	            											<!-- Not Started -->
 	            											<td style="text-align: center;" data-slab="Not Started">
 	            												<?php 	if ($value['Not Started'] != 0) {
 	            															$data_not_started = '<a href="javascript:void(0)" onclick="showFeedersModal(this)">'.$value['Not Started'].'</a>';
+	            															$total_not_started += $value['Not Started'];
 	            														} else {
 	            															$data_not_started = $value['Not Started'];
 	            														} 
@@ -176,6 +179,7 @@
 	            											<td style="text-align: center;" data-slab="0% - 25%">
 	            												<?php if ($value['0% - 25%'] != 0) {
 	            														$data_0_25 = '<a href="javascript:void(0)" onclick="showFeedersModal(this)">'.$value['0% - 25%'].'</a>';
+	            														$total_0_25 += $value['0% - 25%'];
 	            													  } else {
 	            													  	$data_0_25 = $value['0% - 25%'];
 	            													  }
@@ -186,6 +190,7 @@
 	            											<td style="text-align: center;" data-slab="25% - 50%">
 	            												<?php if ($value['25% - 50%'] != 0) {
 	            														$data_25_50 = '<a href="#" onclick="showFeedersModal(this)">'.$value['25% - 50%'].'</a>';
+	            														$total_25_50 += $value['25% - 50%'];
 	            													  } else {
 	            													  	$data_25_50 = $value['25% - 50%'];
 	            													  }
@@ -196,6 +201,7 @@
 	            											<td style="text-align: center;" data-slab="50% - 75%">
 	            												<?php if ($value['50% - 75%'] != 0) {
 	            														$data_50_75 = '<a href="#" onclick="showFeedersModal(this)">'.$value['50% - 75%'].'</a>';
+	            														$total_50_75 += $value['50% - 75%'];
 	            													  } else {
 	            													  	$data_50_75 = $value['50% - 75%'];
 	            													  }
@@ -206,6 +212,7 @@
 	            											<td style="text-align: center;" data-slab="75% - 90%">
 	            												<?php if ($value['75% - 90%'] != 0) {
 	            														$data_75_90 = '<a href="#" onclick="showFeedersModal(this)">'.$value['75% - 90%'].'</a>';
+	            														$total_75_90 += $value['75% - 90%'];
 	            													  } else {
 	            													  	$data_75_90 = $value['75% - 90%'];
 	            													  }
@@ -216,6 +223,7 @@
 	            											<td style="text-align: center;" data-slab="90% - 100%">
 	            												<?php if ($value['90% - 100%'] != 0) {
 	            														$data_90_100 = '<a href="#" onclick="showFeedersModal(this)">'.$value['90% - 100%'].'</a>';
+	            														$total_90_100 += $value['90% - 100%'];
 	            													  } else {
 	            													  	$data_90_100 = $value['90% - 100%'];
 	            													  }
@@ -226,6 +234,7 @@
             												<td style="text-align: center;" data-slab="DTL Reviewed">
             													<?php 	if ($value['DTL Reviewed'] != 0) {
             																$data_dtl_reviewed = '<a href="#" onclick="showFeedersModal(this)">'.$value['DTL Reviewed'].'</a>';
+            																$total_dtl_reviewed += $value['DTL Reviewed'];
             															} else {
             																$data_dtl_reviewed = $value['DTL Reviewed'];
             															} 
@@ -236,6 +245,7 @@
 	            											<td style="text-align: center;" data-slab="100%">
 	            												<?php if ($value['100%'] != 0) {
 	            														$data_100 = '<a href="#" onclick="showFeedersModal(this)">'.$value['100%'].'</a>';
+	            														$total_100 += $value['100%'];
 	            													  } else {
 	            													  	$data_100 = $value['100%'];
 	            													  }
@@ -244,6 +254,17 @@
             												</td>
 	            										</tr>	
 	            										<?php } ?>
+	            										<tr>
+	            											<th colspan="5" style="text-align: right;">Total Feeders</th>
+	            											<td style="text-align: center;"><?php echo $total_not_started; ?></td>
+	            											<td style="text-align: center;"><?php echo $total_0_25; ?></td>
+	            											<td style="text-align: center;"><?php echo $total_25_50; ?></td>
+	            											<td style="text-align: center;"><?php echo $total_50_75; ?></td>
+	            											<td style="text-align: center;"><?php echo $total_75_90; ?></td>
+	            											<td style="text-align: center;"><?php echo $total_90_100; ?></td>
+	            											<td style="text-align: center;"><?php echo $total_dtl_reviewed; ?></td>
+	            											<td style="text-align: center;"><?php echo $total_100; ?></td>
+	            										</tr>
 	            									</tbody>
 	            								</table>
 	            							</div>

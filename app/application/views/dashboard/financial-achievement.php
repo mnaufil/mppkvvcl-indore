@@ -116,10 +116,10 @@
 	            											<th colspan="2">Supply Cumm. upto the period</th>
 	            											<th colspan="2">Erection during the Month <?php echo $current_month; ?></th>
 	            											<th colspan="2">Erection Cumm. upto the period</th>
-	            											<th>Mobilization Advance</th>
+	            											<th>Mobilization Advance </br>(C)</th>
 	            											<th>Mobilization Advance Adjusted</th>
-	            											<th>Payment of Taxes</th>
-	            											<th>Total Disbursement Amount</th>
+	            											<th>Payment of Taxes </br>(D)</th>
+	            											<th>Total Disbursement Amount </br>(A + B + C + D)</th>
 	            											<th></th>
 	            										</tr>
 	            										<tr>
@@ -135,11 +135,11 @@
 	            											<th>Invoice Raised</th>
 	            											<th>Amount Disbursed</th>
 	            											<th>Invoice Raised</th>
-	            											<th>Amount Disbursed</th>
+	            											<th>Amount Disbursed (A)</th>
 	            											<th>Invoice Raised</th>
 	            											<th>Amount Disbursed</th>
 	            											<th>Invoice Raised</th>
-	            											<th>Amount Disbursed</th>
+	            											<th>Amount Disbursed (B)</th>
 	            											<th></th>
 	            											<th></th>
 	            											<th></th>

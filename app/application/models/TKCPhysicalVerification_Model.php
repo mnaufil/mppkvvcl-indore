@@ -709,6 +709,27 @@ class TKCPhysicalVerification_Model extends CI_Model
 		}
 	}
 
+	public function updateChargingStatus($contract_location_id, $charging_status, $user_id = NULL)
+	{
+		$data = array(
+			'charging_status' => $charging_status,
+			'modifiedby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('contract_location', $data, array('contract_location_id' => $contract_location_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {
+				return $this->db->affected_rows();
+			}
+		}
+	}
+
 	public function getTKCPackageAccess($tkc_user_id)
 	{
 		$this->db->select('mst_user.package_access');

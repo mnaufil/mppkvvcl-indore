@@ -196,6 +196,7 @@ class TKCPhysicalVerificationApi extends REST_Controller
 			$geo_code = $this->post('geo_code');
 			$is_inrange = ($this->post('is_inrange') == 'yes') ? 1 : 0;
 			$sheet_remark = $this->post('sheet_remark');
+			$charging_status = $this->post('charging_status');
 			$activities = $this->post('activities');
 
 			//Fetching sheet details using prev_tkc_pp_id
@@ -236,6 +237,9 @@ class TKCPhysicalVerificationApi extends REST_Controller
                         }
             		}
             	}
+
+            	// Updating charging status in contract_location table
+                $this->tpv_model->updateChargingStatus($prev_sheet_data['contract_location_id'], $charging_status, $user_id);
 
             	$alert_message = '';
             	if ($remaining_activity_count == 0) {

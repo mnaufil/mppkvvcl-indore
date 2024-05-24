@@ -50,7 +50,7 @@ class TKCPhysicalVerification_Model extends CI_Model
 
 	public function getSheetDetail($mode, $ppsheet_id, $contract_id, $contract_location_id, $reported_date = NULL, $type = NULL)
 	{
-		$this->db->select('tkc_physical_progress.*, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.package_no, contract.typeofwork_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_name, contract_location.feeder_id, contract_location.geo_code');
+		$this->db->select('tkc_physical_progress.*, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.package_no, contract.typeofwork_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_name, contract_location.feeder_id, contract_location.geo_code, contract_location.charging_status');
 		$this->db->from('tkc_physical_progress');
 		$this->db->join('contract', 'tkc_physical_progress.contract_id = contract.contract_id', 'INNER');
 		$this->db->join('contract_location', 'tkc_physical_progress.contract_id = contract_location.contract_id AND tkc_physical_progress.contract_location_id = contract_location.contract_location_id', 'INNER');

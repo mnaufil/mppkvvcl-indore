@@ -97,10 +97,11 @@
 				<tr>
 					<td><b>Observation Photos</b></td>
 					<td>
-						<?php 	$obs_photos = explode(',', $value['observation_photos']);
+						<?php 	$obs_photos = explode(', ', $value['observation_photos']);
 								for ($j = 0; $j < count($obs_photos); $j++) { 
 						?>
-						<img src="<?php echo $obs_photos[$j] ?>" width="200">
+						<img src="<?php echo $obs_photos[$j] ?>" width="100" height="100">
+						<br/><br/>
 						<?php 	} ?>
 					</td>
 				</tr>
@@ -111,11 +112,11 @@
 				<tr>
 					<td><b>Completed Photos</b></td>
 					<td>
-						<?php 	$obs_completion_photos = (!empty($value['completion_photos'])) ? explode(',', $value['completion_photos']) : [];
+						<?php 	$obs_completion_photos = (!empty($value['completion_photos'])) ? explode(', ', $value['completion_photos']) : [];
 								if (!empty($obs_completion_photos)) {
 									for ($j = 0; $j < count($obs_completion_photos); $j++) {
 						?>
-						<img src="<?php echo $obs_completion_photos[$j] ?>" width="200">
+						<img src="<?php echo $obs_completion_photos[$j] ?>" width="100" height="100">
 						<?php 		} 
 								}
 						?>

@@ -122,8 +122,13 @@ $route['mark-pp-reviewed-sheet-complete'] = 'PhysicalProgress/markReviewedSheetC
 $route['ncr-review'] = 'NCRReview/index';
 $route['search-ncr-review'] = 'NCRReview/searchNCRReview';
 $route['edit-ncr/(:num)'] = 'NCRReview/editNCR/$1';
+$route['view-ncr/(:num)'] = 'NCRReview/editNCR/$1';
+$route['delete-ncr'] = 'NCRReview/deleteNCR';
 $route['update-NCR-details'] = 'NCRReview/updateNCR';
 $route['send-ncr-mail'] = 'NCRReview/sendNCREmail';
+$route['get-email-recipients-new'] = 'NCRReview/getNCREmailRecipientsNew';
+$route['send-ncr-mail-new'] = 'NCRReview/sendNCREmailNew';
+$route['download-ncr/(:num)'] = 'NCRReview/downloadNCR/$1';
 
 /*Physical Progress Review Module*/
 $route['physical-verification-review'] = 'PhysicalProgressReview/index';

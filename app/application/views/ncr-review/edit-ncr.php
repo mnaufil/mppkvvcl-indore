@@ -91,13 +91,28 @@
 				            		<div class="card">
 				            			<div class="row">
                                             <div class="col-md-12 mt-2">
+                                            	<?php if ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby'])) { ?>
+                                            	<a href="javascript:void(0)" class="btn btn-primary btn-add me-3">Deleted</a>
+                                            	<?php } else { ?>
                                                 <a href="javascript:void(0)" class="btn btn-primary btn-add me-3"><?php echo $ncr_data['observation_status']; ?></a>
+                                            	<?php } ?>
                                             </div>
                                         </div>
+
+                                        <!-- Loading Spinner -->
+			            				<div class="row email-loader m-0 mt-2" hidden>
+			            					<div class="d-flex align-items-center rounded-2 pt-1 pb-1" style="background: #efefef">
+											  	<strong class="email-loader-message">Loading...</strong>
+											  	<div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+											</div>	
+			            				</div>
+			            				<!-- Loading Spinner Ends -->
+
 				            			<div class="card-body p-2">				            				
 				            				<form name="updateNCRDetails" id="updateNCRDetails" method="post" action="<?php echo base_url('update-NCR-details'); ?>" enctype="multipart/form-data">
 				            					<input type="hidden" name="pp_activity_observation_id" value="<?php echo $ncr_data['physical_progress_activity_observation_id']; ?>">
 				            					<input type="hidden" name="contractLocationID" value="<?php echo $ncr_data['contract_location_id']; ?>">
+				            					<input type="hidden" name="feederID" value="<?php echo $ncr_data['feeder_id']; ?>">
 				            					<!-- <input type="hidden" name="typeOfWorkActivityID" value="<?php echo $ncr_data['activity_id']; ?>"> -->
 				            					<!-- Row1 -->
 				            					<div class="row">
@@ -106,7 +121,8 @@
 					            						<label class="form-label" for="observationType">Observation Type
                     										<span class="text-red">*</span>
                     									</label>
-                    									<?php $select_disabled = ($ncr_data['completion_date'] != NULL || $logged_user_role == 'TKC') ? 'disabled' : '';?>
+                    									<?php //$select_disabled = ($ncr_data['completion_date'] != NULL || $logged_user_role == 'TKC') ? 'disabled' : '';?>
+                    									<?php $select_disabled = (($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby'])) || $ncr_data['completion_date'] != NULL || $logged_user_role == 'TKC') ? 'disabled' : '';?>
                     									<select name="observationType" id="observationType" class="form-control form-select" data-bs-placeholder="Select Observation" <?php echo $select_disabled; ?>>
 									                      	<option value="select" disabled>Select Observation</option>
 								                      		<?php foreach ($activity_observations as $key => $value) { ?>
@@ -135,7 +151,8 @@
 					            					<!-- Observation -->
 					            					<div class="col-xl-12">
                     									<label class="form-label" for="remark">Observation</label>
-                    									<?php $remark_readonly = ($ncr_data['completion_date'] != NULL) ? 'readonly' : '';?>
+                    									<?php //$remark_readonly = ($ncr_data['completion_date'] != NULL) ? 'readonly' : '';
+                    									$remark_readonly = ($ncr_data['observation_status'] == 'Closed' || $ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby'])) ? 'readonly' : '';?>
 			                    						<input type="text" class="form-control" id="remark" name="remark" value="<?php echo $ncr_data['remark']; ?>" <?php echo $remark_readonly; ?>>
                   									</div>
 					            				</div>
@@ -147,7 +164,9 @@
                     										<span class="text-red">*</span>
                     									</label>
                     									<?php if ($logged_user_role != 'TKC') { ?>
-                    									<?php $obs_photos_disabled = ($ncr_data['completion_date'] != NULL) ? 'disabled' : '';?>
+                    									<?php //$obs_photos_disabled = ($ncr_data['completion_date'] != NULL) ? 'disabled' : '';
+                											  $obs_photos_disabled = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'disabled' : '';
+                										?>
                     									<input class="form-control" type="file" id="obs_photo" name="obs_photo[]" multiple="" <?php echo $obs_photos_disabled; ?>>
               											<input type="hidden" name="obs_deleted_file_id" value="">
                     									<?php } ?>
@@ -159,7 +178,7 @@
                   													foreach ($ncr_data['observation_files'] as $key => $value) { ?>
                   											<div class="file-image-1" data-ppao-file_id="<?php echo $value['physical_progress_activity_observation_file_id']; ?>">
                   												<a href="javascript:void(0)" onclick="showImageModal(this)">
-										                        	<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="">
+										                        	<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="" width="100" height="100">
 										                        </a>
 										                        <?php if ($ncr_data['completion_date'] == NULL) { ?>
 										                        <ul class="icons">
@@ -167,7 +186,7 @@
 										                        		<a href="javascript:void(0)" data-photo-for="observation" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="image-<?php echo $key; ?>" data-photo-action="edit"><i class="fe fe-trash"></i></a>
 										                        	</li>
 										                        </ul>	
-										                        <?php } ?>              
+										                        <?php } ?>
                   											</div>
                   										<?php			}
                   												} 
@@ -216,7 +235,9 @@
 					            					<!-- Completion Photos -->
 					            					<div class="col-xl-8">
                     									<label class="form-label" for="completion_photo">Completion Photos</label>
-                    									<?php $obs_completion_photos_disabled = ($ncr_data['observation_status'] == 'Closed') ? 'disabled' : '';?>
+                    									<?php //$obs_completion_photos_disabled = ($ncr_data['observation_status'] == 'Closed') ? 'disabled' : '';
+                    										$obs_completion_photos_disabled = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'disabled' : '';
+                    									?>
                     									<input class="form-control" type="file" id="completion_photo" name="completion_photo[]" multiple="" <?php echo $obs_completion_photos_disabled; ?>>
                     									<input type="hidden" name="obs_completion_deleted_file_id" value="">
                     									<!-- Uploaded Images -->
@@ -245,7 +266,10 @@
                           									<div class="input-group-text dates">
                               									<i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                           									</div>
-                          									<?php $readonly = (!empty($ncr_data['completion_date'])) ? 'readonly' : ''; ?>
+                          									<?php //$readonly = (!empty($ncr_data['completion_date'])) ? 'readonly' : ''; 
+                          									$readonly = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';
+                          									$disabled = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'disabled' : '';
+                          									?>
                           									<input type="text" class="form-control" id="completionDate" name="completionDate" value="<?php echo $ncr_data['completion_date']; ?>" <?php echo $readonly; ?>>
                       									</div>
                   									</div>
@@ -258,12 +282,12 @@
 					            						<?php if ($logged_user_role == 'TKC') { ?>
 					            						<button class="btn btn-success" type="submit">Submit</button>
 					            						<?php } else { ?>
-					            						<?php if ($ncr_data['observation_status'] == 'Pending') { ?>
+					            						<?php if ($ncr_data['observation_status'] == 'Pending' && ($ncr_data['is_active'] == 1 && empty($ncr_data['deletedby']))) { ?>
 					            						<input type="hidden" name="changed_observation_status" value="Forwarded">
-					            						<button class="btn btn-success" type="submit">Mark as Forwarded</button>
-					            						<?php } elseif ($ncr_data['observation_status'] == 'Reviewed') { ?>
+					            						<button class="btn btn-success" type="submit">Mark as Forwarded and Send Mail to TKC</button>
+					            						<?php } elseif ($ncr_data['observation_status'] == 'Reviewed' && ($ncr_data['is_active'] == 1 && empty($ncr_data['deletedby']))) { ?>
 					            						<input type="hidden" name="changed_observation_status" value="Closed">
-					            						<button class="btn btn-success" type="submit">Mark as Closed</button>
+					            						<button class="btn btn-success" type="submit">Mark as Closed and Send Mail to TKC</button>
 					            						<?php } ?>
 					            						<?php } ?>
 					            						
@@ -283,6 +307,57 @@
 		        <!-- App-Content Ends -->
 	    	</div>
 	    	<!-- Page Main Ends -->
+
+	    	<!-- Email Recipient Modal -->
+	    	<div class="modal" id="email_recipient_list_modal" data-bs-backdrop="static" aria-hidden="true" aria-labelledby="email_recipient_list_modalLabel" tabindex="-1" style="display: none;" data-bs-focus="true">
+		        <div class="modal-dialog modal-lg" role="document">
+		          	<div class="modal-content">
+			            <div class="modal-header">
+			            	<h5 class="modal-title" id="email_recipient_list_modalLabel">Email Recipient List</h5>
+			              	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()">
+			                	<span aria-hidden="true">×</span>
+			              	</button>
+			            </div>
+		            	<div class="modal-body">
+		              		<!-- To Recipients -->
+			              	<div class="row">
+			              		<div class="col-xl-12" id="to_recipients">
+			              			<label class="form-label" for="">To Recipients</label>
+			              			<!-- <div class="form-check">
+			              				<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+			              				<label class="form-check-label" for="flexCheckDefault"> Default checkbox </label>
+			              			</div> -->
+			              		</div>
+			              	</div>
+			              	<div class="row mt-2">
+				              	<div class="col-xl-12">			              		
+				              		<input type="text" class="form-control" id="add_to_recipient" name="add_to_recipient" placeholder="Add additional TO recipients here comma separated">
+				              	</div>
+			              	</div>
+			              	<!-- CC Recipients -->
+			              	<div class="row">
+			              		<div class="col-xl-12" id="cc_recipients">
+			              			<label class="form-label" for="">CC Recipients</label>
+			              			<!-- <div class="form-check">
+			              				<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+			              				<label class="form-check-label" for="flexCheckDefault"> Default checkbox </label>
+			              			</div> -->
+			              		</div>
+			              	</div>
+			              	<div class="row mt-2">
+				              	<div class="col-xl-12">			              		
+				              		<input type="text" class="form-control" id="add_cc_recipient" name="add_cc_recipient" placeholder="Add additional CC recipients here comma separated">
+				              	</div>
+			              	</div>
+		            	</div>
+		            	<div class="modal-footer">
+		              		<button class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Close</button>
+		              		<button class="btn btn-primary" id="btn-save-list" onclick="updateAndSendEmail()">Confirm Recipients and Send Mail</button>
+		            	</div>
+		          	</div>
+		        </div>
+		    </div>
+	    	<!-- Email Recipient Modal Ends -->
 
 	    	<!-- Image Modal -->
       		<div class="modal fade" id="img-modal" tabindex="-1" aria-hidden="true" style="display: none; text-align: center;">
@@ -443,7 +518,7 @@
 						let html_img = '';
 	          			html_img += '<div class="file-image-1">';
 		      			html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-		      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="">';
+		      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="" width="100" height="100">';
 		      			html_img += '</a>';
 		      			html_img += '<ul class="icons">';
 		      			html_img += '<li>';
@@ -556,7 +631,7 @@
             			let html_img = '';
 			          	html_img += '<div class="file-image-1">';
 		      			html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-		      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="">';
+		      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="" width="100" height="100">';
 		      			html_img += '</a>';
 		      			html_img += '<ul class="icons">';
 		      			html_img += '<li>';
@@ -630,25 +705,194 @@
 
 		  		let completion_files_count = $('#completion_photo')[0].files.length;
 
+		  		let observation_status = '<?php echo $ncr_data['observation_status'] ?>';
+
 		  		if (completion_files_count > 0 && completion_date == '') {
 		  			$('.toast-body').text('Enter completion date');
      				$('.toast').toast('show');
 
      				event.preventDefault();
-		  		}
-
-		  		let observation_status = '<?php echo $ncr_data['observation_status'] ?>';
-
-		  		if (observation_status == 'Reviewed') {
+     				return false;
+		  		} else if (observation_status == 'Reviewed') {
 		  			let previous_uploaded_photos = $('#preview-img-complete').find('.file-image-1').length;
 		  			if (previous_uploaded_photos == 0 && completion_date != '') {
 			  			$('.toast-body').text('Upload completion photo');
 	     				$('.toast').toast('show');
 
 	     				event.preventDefault();
+	     				return false;
 			  		}	
+		  		} else {
+		  			event.preventDefault();
+
+		  			let feeder_id_arr = [];
+			  		let feeder_id = $('input[name="feederID"]').val();
+			  		feeder_id_arr.push(feeder_id);
+
+			  		let ncr_id_arr = [];
+			  		let ncr_id = $('input[name="ncrID"]').val();
+			  		ncr_id_arr.push(ncr_id);
+
+			  		$.ajax({
+	    				type: 'POST',
+	    				url: '<?php echo base_url('get-email-recipients-new') ?>',
+	    				dataType: 'json',
+	    				data: {feeder_id : feeder_id_arr, ncr_id: ncr_id_arr},
+	    				success: function(response) {
+	    					console.log(response);
+	    					// return false;
+
+	    					let to_html = '<label class="form-label" for="">To Recipients</label>';
+	    					let cc_html = '<label class="form-label" for="">CC Recipients</label>';
+
+	    					if (!$.isEmptyObject(response.to)) {
+	    						$.each(response.to, function(index, value) {
+	    							to_html += '<div class="form-check">';
+	    							to_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="to_emails_'+index+'" name="to_emails_'+index+'" checked>';
+	    							to_html += '<label class="form-check-label" for="to_emails_'+index+'"> '+value+' </label>';
+	    							to_html += '</div>';
+	    						});
+
+	    						$('#to_recipients').empty().append(to_html);
+	    					}
+
+	    					if (!$.isEmptyObject(response.cc)) {
+	    						$.each(response.cc, function(index, value) {
+	    							cc_html += '<div class="form-check">';
+	    							cc_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="cc_emails_'+index+'" name="cc_emails_'+index+'" checked>';
+	    							cc_html += '<label class="form-check-label" for="cc_emails_'+index+'"> '+value+' </label>';
+	    							cc_html += '</div>';
+	    						});
+
+	    						$('#cc_recipients').empty().append(cc_html);
+	    					}
+
+	    					$('#email_recipient_list_modal').modal('show');
+	    					return false;
+	    				},
+	    				error: function(xhr, status, error) {
+	    					console.log(xhr.responseText);	
+	    				}
+	    			});
 		  		}
 		  	});
+
+		  	function updateAndSendEmail() {
+		  		/*let pp_activity_observation_id = $('input[name="pp_activity_observation_id"]').val();
+		  		let contract_location_id = $('input[name="contractLocationID"]').val();
+
+		  		let observation_type_id = $('select[name="observationType"]').val();
+		  		let observation_name = $('input[name="observationName"]').val();
+
+		  		let other_observation_name = '';
+		  		if ($('#other-observation-div').is(':visible')) {
+		  			other_observation_name = $('input[name="other_observation"]').val();
+		  		}
+
+		  		let ncr_id = $('input[name="ncrID"]').val();
+		  		let ncr_date = $('input[name="ncrDate"]').val();
+
+		  		let observation_remark = $('input[name="observation_remark"]').val();
+		  		let remark = $('input[name="remark"]').val();
+
+		  		let completion_date = $('input[name="completionDate"]').val();
+
+		  		let changed_observation_status = $('input[name="changed_observation_status"]').val();
+
+		  		let obs_deleted_file_id = $('input[name="obs_deleted_file_id"]').val();
+		  		let obs_completion_deleted_file_id = $('input[name="obs_completion_deleted_file_id"]').val();
+
+		  		let observation_photos = $('#obs_photo')[0].files;
+		  		let observation_completion_photo = $('#completion_photo')[0].files;*/
+
+		  		let formData = new FormData($('#updateNCRDetails')[0]);
+
+		  		// Ajax call to send email
+		  		$.ajax({
+		  			type: 'POST',
+    				url: '<?php echo base_url('update-NCR-details') ?>',
+    				dataType: 'json',
+    				processData: false,
+    				contentType: false,
+    				data: formData,
+    				success: function(response) {
+    					console.log(response);
+
+    					$('.toast-body').text(response.message);
+	        			$('.toast').toast('show');
+
+	        			setTimeout(function() {
+	        				sendEmail();
+	        			}, 2000);
+    				},
+    				error: function(xhr, status, error) {
+    					console.log(xhr); return false;
+    				}
+		  		});		  		
+		  	}
+
+		  	function sendEmail() {
+				let ncr_id_arr = [];
+    			let feeder_IDs = [];
+    			let to_email_recipients = [];
+    			let cc_email_recipients = [];
+    			
+    			ncr_id = $('input[name="ncrID"]').val();
+    			ncr_id_arr.push(ncr_id);
+
+    			feeder_id = $('input[name="feederID"]').val();
+    			feeder_IDs.push(feeder_id);
+
+    			$('#email_recipient_list_modal input[name^="to_emails_"]:checked').each(function() {
+					to_email_recipients.push($(this).val());
+    			});
+
+    			$('#email_recipient_list_modal input[name^="cc_emails_"]:checked').each(function() {
+    				cc_email_recipients.push($(this).val());
+    			});
+
+    			let add_to_recipient = $('#add_to_recipient').val();
+    			let add_cc_recipient = $('#add_cc_recipient').val();
+
+				let modal_inputs = $('#email_recipient_list_modal').find('input[type="text"]');
+
+				$(modal_inputs).each(function(index, value) {
+					$(value).val('');
+				});
+
+				$('#email_recipient_list_modal').modal('hide');
+
+				$('.email-loader').removeAttr('hidden');
+				$('.email-loader').find('.email-loader-message').html('Please wait while the system is generating the NCR report and sending email to the TKC.');
+
+				// Ajax call to send email
+    			$.ajax({
+    				type: 'POST',
+    				url: '<?php echo base_url('send-ncr-mail-new') ?>',
+    				dataType: 'json',
+    				data: {checked_ncr: ncr_id_arr, feeder_id: feeder_IDs, to_email_recipients: to_email_recipients, cc_email_recipients: cc_email_recipients, add_to_recipient: add_to_recipient, add_cc_recipient: add_cc_recipient},
+    				success: function(response) {
+    					// console.log(response);
+    					$('#sendMail').attr('disabled', false);
+    					$('.email-loader').attr('hidden', true);
+
+    					$('.toast-body').text(response.message);
+	        			$('.toast').toast('show');
+
+	        			setTimeout(function() {
+	        				location.reload(true)
+	        			}, 5000);
+    				},
+    				error: function(xhr, status, error) {
+    					$('#sendMail').attr('disabled', false);
+    					$('.email-loader').attr('hidden', true);
+
+    					console.log(xhr.responseText);
+    					$('.toast-body').text('Failed to send email');
+			        	$('.toast').toast('show');
+    				}
+    			});
+    		}
 
 		  	function FileListItem(file) {
 		      	// Clearing empty slots from file

@@ -129,6 +129,30 @@
 						                          							<input type="text" class="form-control" name="feederID" id="feederID" onpaste="changeFormStatus()" oninput="changeFormStatus()" value="<?php echo (isset($filter_data) && !empty($filter_data['feederID']['value'])) ? $filter_data['feederID']['value'] : ''; ?>" />
 						                          						</div>
 						                          					</div>
+						                          					<!-- NCR ID -->
+						                          					<div class="col-md-2">
+						                          						<div class="form-group">
+						                          							<label class="form-label m-0" for="ncrID">NCR ID</label>
+						                          							<input type="text" class="form-control" name="ncrID" id="ncrID" onpaste="changeFormStatus()" oninput="changeFormStatus()" value="<?php echo (isset($filter_data) && !empty($filter_data['ncrID']['value'])) ? $filter_data['ncrID']['value'] : ''; ?>">
+						                          						</div>
+						                          					</div>
+						                          					<!-- Region -->
+						                          					<div class="col-md-2">
+						                          						<div class="form-group">
+						                          							<label class="form-label m-0" for="region">Region</label>
+						                          							<select class="form-control form-select select2 select2-hidden-accessible" name="region" data-bs-placeholder="Select Region" tabindex="-1" aria-hidden="true" id="region" style="width:100%">
+						                          								<option value="select" <?php echo (isset($filter_data) && !empty($filter_data['region']['id'])) ? '' : 'selected'; ?> disabled>Select Region</option>
+						                          								<?php $selected_region = (isset($filter_data)) ? $filter_data['region']['id'] : ''; ?>
+						                          								<?php foreach ($region_list as $key => $value) { ?>
+						                          								<?php $selected = ($value['region_id'] == $selected_region) ? 'selected' : ''; ?>
+						                          								<option value="<?php echo $value['region_id']; ?>" <?php echo $selected; ?>><?php echo $value['region_name']; ?></option>
+						                          								<?php } ?>
+						                          							</select>
+						                          						</div>
+						                          					</div>
+						                          				</div>
+						                          				<!-- Row2 -->
+						                          				<div class="row">
 						                          					<!-- Circle -->
 						                          					<div class="col-md-2">
 						                          						<div class="form-group">
@@ -170,9 +194,6 @@
 										                                      </select>
 						                          						</div>
 						                          					</div>
-						                          				</div>
-						                          				<!-- Row2 -->
-						                          				<div class="row">
 						                          					<!-- Status -->
 						                          					<div class="col-md-2">
 						                          						<div class="form-group">
@@ -185,7 +206,18 @@
 										                                        <?php } ?>
 										                                      </select>
 						                          						</div>
-						                          					</div>			
+						                          					</div>
+						                          					<!-- Last Email Sent -->
+						                          					<div class="col-md-2">
+						                          						<div class="form-group">
+						                          							<label class="form-label">Last Email Sent</label>
+						                          							<div class="form-check mt-2">
+						                          								<?php $checked_email = (isset($filter_data) && $filter_data['last_email_sent']['value'] == 'Yes') ? 'checked' : ''; ?>
+						                          								<input class="form-check-input" type="checkbox" value="Yes" name="last_email_sent" id="last_email_sent" <?php echo $checked_email; ?>>
+						                          								<label class="form-check-label" for="last_email_sent">Yes</label>
+						                          							</div>
+						                          						</div>
+						                          					</div>
 						                          				</div>
 						                          				<!-- Row3 -->
 						                          				<div class="row">
@@ -201,6 +233,41 @@
 				            					</div>
 				            				</div>
 				            				<!-- Search Block Ends -->
+
+				            				<!-- Delete Alert -->
+	                                        <div class="row war-pop" id="ncr-delete-alert" hidden>
+	                                            <div class="col-xl-3 col-sm-6 war-pop-1">
+	                                               <div class="card border p-0 pb-3">
+	                                                    <div class="card-header border-0 pt-3">
+	                                                        <div class="card-options">
+	                                                            <!-- <a href="javascript:void(0)" class="card-options-remove" data-bs-toggle="card-remove" onclick="closeNotificationAlert(this)">
+	                                                               <i class="fe fe-x"></i>
+	                                                            </a> -->
+	                                                        </div>
+	                                                    </div>
+	                                                    <div class="card-body text-center">
+	                                                        <span class="">
+	                                                            <svg xmlns="http://www.w3.org/2000/svg" height="60" width="60" viewBox="0 0 24 24">
+	                                                                <path fill="#f07f8f" d="M20.05713,22H3.94287A3.02288,3.02288,0,0,1,1.3252,17.46631L9.38232,3.51123a3.02272,3.02272,0,0,1,5.23536,0L22.6748,17.46631A3.02288,3.02288,0,0,1,20.05713,22Z"></path>
+	                                                                <circle cx="12" cy="17" r="1" fill="#e62a45"></circle>
+	                                                                <path fill="#e62a45" d="M12,14a1,1,0,0,1-1-1V9a1,1,0,0,1,2,0v4A1,1,0,0,1,12,14Z"></path>
+	                                                            </svg>
+	                                                        </span>
+	                                                        <h4 class="h4 mb-0 mt-3">Warning</h4>
+	                                                        <p class="card-text notification-text">Are you sure you want to delete Division?</p>
+	                                                    </div>
+	                                                    <div class="card-footer text-center border-0 pt-0">
+	                                                        <div class="row">
+	                                                            <div class="text-center">
+	                                                                <a href="javascript:void(0)" class="btn btn-danger notification-delete" data-ncr-id="" onclick="deleteNCR(this)">Delete</a>
+	                                                                <a href="javascript:void(0)" class="btn btn-white me-2" onclick="closeNotificationAlert(this)">Cancel</a>
+	                                                            </div>
+	                                                        </div>
+	                                                    </div>
+	                                                </div>
+	                                            </div>   
+	                                        </div>
+	                                        <!-- Delete Alert Ends -->
 
 				            				<!-- Loading Spinner -->
 				            				<div class="row email-loader m-0 mt-2" hidden>
@@ -240,15 +307,28 @@
 				            										<th class="wd-10p border-bottom-0 sorting sorting_asc" tabindex="11" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Completion Date: activate to sort column descending" style="width: 95.5156px;">Completion Date</th>
 				            										<th class="wd-10p border-bottom-0 sorting sorting_asc" tabindex="12" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Status: activate to sort column descending" style="width: 95.5156px;">Status</th>
 				            										<th class="wd-10p border-bottom-0 sorting sorting_asc" tabindex="13" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Last Email Details: activate to sort column descending" style="width: 95.5156px;">Last Email Details</th>
+				            										<?php if (isset($filter_data) && !empty($filter_data['status']['value']) && $filter_data['status']['value'] == 'Deleted') { ?>
+				            										<th class="wd-10p border-bottom-0 sorting sorting_asc" tabindex="14" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Deleted By: activate to sort column descending" style="width: 95.5156px;">Deleted By</th>
+				            										<?php } else { ?>
+				            										<th class="wd-10p border-bottom-0 sorting sorting_asc" tabindex="14" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Raised By: activate to sort column descending" style="width: 95.5156px;">Raised By</th>
+				            										<?php } ?>
 				            									</tr>
 				            								</thead>
 				            								<tbody>
 				            									<?php foreach ($ncr_data as $key => $value) { ?>
 				            									<tr>
 				            										<!-- Action Buttons -->
+				            										<?php if (isset($filter_data) && !empty($filter_data['status']['value']) && $filter_data['status']['value'] == 'Deleted') { ?>
+				            										<td class="d-flex">
+				            											<a href="<?php echo base_url('view-ncr/'.$value['physical_progress_activity_observation_id']); ?>" class="btn btn-sm">
+		                                                               		<span class="fa fa-eye fa-lg action-btn-table"></span>
+	                                                            		</a>	
+				            										</td>
+				            										<?php } else { ?>
 				            										<td class="d-flex">
 				            											<?php if ($user_role != 'TKC') { ?>
-				            											<input type="checkbox" class="m-2" name="ncrReview_<?php echo $value['ncr_id']; ?>" value="<?php echo $value['ncr_id']; ?>">
+				            											<!-- <input type="checkbox" class="m-2" name="ncrReview_<?php //echo $value['ncr_id']; ?>" value="<?php //echo $value['ncr_id']; ?>"> -->
+				            											<input type="radio" class="m-2" name="ncrReview_radio" id="<?php echo $value['feeder_id']; ?>" value="<?php echo $value['ncr_id']; ?>"> 
 				            											&nbsp;&nbsp;	
 				            											<?php } ?>
 				            											
@@ -259,11 +339,15 @@
 		                                                            	&nbsp;&nbsp;	
 				            											<?php } ?>
 				            											<?php if (!empty($user_access) && (isset($user_access['delete']))) { ?>
-				            											<button  type="button" class="btn btn-sm " name="" >
+				            											<button  type="button" class="btn btn-sm deleteNCR" name="" data-ncr-id="<?php echo $value['ncr_id']; ?>">
 		                                                               		<span class="fe fe-trash-2 fa-lg action-btn-table"> </span>
 	                                                            		</button>	
-				            											<?php } ?>                 	
+				            											<?php } ?> 
+				            											<a href="<?php echo base_url('download-ncr/'.$value['ncr_id']); ?>" id="btn-download" class="btn btn-sm">
+								                                        	<span class="fe fe-download fa-lg action-btn-table"></span>
+								                                        </a>                	
 				            										</td>
+				            										<?php } ?>
 				            										<!-- NCR ID -->
 				            										<td><?php echo $value['ncr_id']; ?></td>
 				            										<!-- NCR Date -->
@@ -308,6 +392,11 @@
 				            											} ?>
 				            											<?php  ?>
 				            										</td>
+				            										<?php if (isset($filter_data) && !empty($filter_data['status']['value']) && $filter_data['status']['value'] == 'Deleted') { ?>
+				            										<td><?php echo $value['deleted_by']; ?></td>
+				            										<?php } else { ?>
+				            										<td><?php echo $value['raised_by']; ?></td>
+				            										<?php } ?>
 				            									</tr>
 				            									<?php } ?>
 				            								</tbody>
@@ -335,6 +424,57 @@
 		        	</div>
 		        </div>
 		        <!-- App-Content Ends -->
+
+		        <!-- Email Recipient Modal -->
+		    	<div class="modal" id="email_recipient_list_modal" data-bs-backdrop="static" aria-hidden="true" aria-labelledby="email_recipient_list_modalLabel" tabindex="-1" style="display: none;" data-bs-focus="true">
+			        <div class="modal-dialog modal-lg" role="document">
+			          <div class="modal-content">
+			            <div class="modal-header">
+			              <h5 class="modal-title" id="email_recipient_list_modalLabel">Email Recipient List</h5>
+			              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()">
+			                <span aria-hidden="true">×</span>
+			              </button>
+			            </div>
+			            <div class="modal-body">
+			              	<!-- To Recipients -->
+			              	<div class="row">
+			              		<div class="col-xl-12" id="to_recipients">
+			              			<label class="form-label" for="">To Recipients</label>
+			              			<!-- <div class="form-check">
+			              				<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+			              				<label class="form-check-label" for="flexCheckDefault"> Default checkbox </label>
+			              			</div> -->
+			              		</div>
+			              	</div>
+			              	<div class="row mt-2">
+				              	<div class="col-xl-12">			              		
+				              		<input type="text" class="form-control" id="add_to_recipient" name="add_to_recipient" placeholder="Add additional TO recipients here comma separated">
+				              	</div>
+			              	</div>
+			              	<!-- CC Recipients -->
+			              	<div class="row">
+			              		<div class="col-xl-12" id="cc_recipients">
+			              			<label class="form-label" for="">CC Recipients</label>
+			              			<!-- <div class="form-check">
+			              				<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+			              				<label class="form-check-label" for="flexCheckDefault"> Default checkbox </label>
+			              			</div> -->
+			              		</div>
+			              	</div>
+			              	<div class="row mt-2">
+				              	<div class="col-xl-12">			              		
+				              		<input type="text" class="form-control" id="add_cc_recipient" name="add_cc_recipient" placeholder="Add additional CC recipients here comma separated">
+				              	</div>
+			              	</div>
+			            </div>
+			            <div class="modal-footer">
+			              <button class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeModal()">Close</button>
+			              <button class="btn btn-primary" id="btn-save-list" onclick="sendEmail(this)">Confirm Recipients and Send Mail</button>
+			            </div>
+			          </div>
+			        </div>
+			      </div>
+		    	<!-- Email Recipient Modal Ends -->
 
 	    	</div>
 	    	<!-- Page Main Ends -->
@@ -487,53 +627,169 @@
 
     		$('#sendMail').click(function(event) {
     			let checked_NCRs = [];
+    			let feeder_IDs = [];
 
 				if ($('input[name^="ncrReview_"]:checked').length > 0) {
-					$(this).attr('disabled', true);
+					if ($('input[name^="ncrReview_"]:checked').length == 1) {
+						$(this).attr('disabled', true);
 
-    				$('input[name^="ncrReview_"]:checked').each(function() {
-	    				checked_NCRs.push($(this).val());
-	    			});
+	    				$('input[name^="ncrReview_"]:checked').each(function() {
+	    					feeder_IDs.push($(this).attr("id"));
+		    				checked_NCRs.push($(this).val());
+		    			});
 
-    				$('.email-loader').removeAttr('hidden');
-    				$('.email-loader').find('.email-loader-message').html('Please wait while the system is generating the NCR report, for the TKC.');
-    				
-	    			// Ajax call to send email
-	    			$.ajax({
-	    				type: 'POST',
-	    				url: '<?php echo base_url('send-ncr-mail') ?>',
-	    				dataType: 'json',
-	    				data: {checked_ncr: checked_NCRs},
-	    				success: function(response) {
-	    					// console.log(response); 
-	    					$('#sendMail').attr('disabled', false);
-	    					$('.email-loader').attr('hidden', true);
+	    				/*$('.email-loader').removeAttr('hidden');
+	    				$('.email-loader').find('.email-loader-message').html('Please wait while the system is generating the NCR report, for the TKC.');*/
+	    				
+		    			// Ajax call to send email
+		    			/*$.ajax({
+		    				type: 'POST',
+		    				url: '<?php echo base_url('send-ncr-mail') ?>',
+		    				dataType: 'json',
+		    				data: {checked_ncr: checked_NCRs},
+		    				success: function(response) {
+		    					// console.log(response); 
+		    					$('#sendMail').attr('disabled', false);
+		    					$('.email-loader').attr('hidden', true);
 
-	    					$('.toast-body').text(response.message);
-		        			$('.toast').toast('show');
+		    					$('.toast-body').text(response.message);
+			        			$('.toast').toast('show');
 
-		        			// return false;
+			        			// return false;
 
-		        			setTimeout(function() {
-		        				location.reload(true)
-		        			}, 5000);
-	    				},
-	    				error: function(xhr, status, error) {
-	    					$('#sendMail').attr('disabled', false);
-	    					$('.email-loader').attr('hidden', true);
+			        			setTimeout(function() {
+			        				location.reload(true)
+			        			}, 5000);
+		    				},
+		    				error: function(xhr, status, error) {
+		    					$('#sendMail').attr('disabled', false);
+		    					$('.email-loader').attr('hidden', true);
 
-	    					console.log(xhr.responseText);
-	    					$('.toast-body').text('Failed to send email');
-				        	$('.toast').toast('show');
-				        	event.preventDefault(); 
-	    				}
-	    			});	
+		    					console.log(xhr.responseText);
+		    					$('.toast-body').text('Failed to send email');
+					        	$('.toast').toast('show');
+					        	event.preventDefault(); 
+		    				}
+		    			});*/
+
+	    				$.ajax({
+		    				type: 'POST',
+		    				url: '<?php echo base_url('get-email-recipients-new') ?>',
+		    				dataType: 'json',
+		    				data: {feeder_id : feeder_IDs, ncr_id: checked_NCRs},
+		    				success: function(response) {
+		    					console.log(response); 
+		    					// return false;
+
+		    					let to_html = '<label class="form-label" for="">To Recipients</label>';
+		    					let cc_html = '<label class="form-label" for="">CC Recipients</label>';
+
+		    					if (!$.isEmptyObject(response.to)) {
+		    						$.each(response.to, function(index, value) {
+		    							to_html += '<div class="form-check">';
+		    							to_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="to_emails_'+index+'" name="to_emails_'+index+'" checked>';
+		    							to_html += '<label class="form-check-label" for="to_emails_'+index+'"> '+value+' </label>';
+		    							to_html += '</div>';
+		    						});
+
+		    						$('#to_recipients').empty().append(to_html);
+		    					}
+
+		    					if (!$.isEmptyObject(response.cc)) {
+		    						$.each(response.cc, function(index, value) {
+		    							// console.log(value);
+		    							cc_html += '<div class="form-check">';
+		    							cc_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="cc_emails_'+index+'" name="cc_emails_'+index+'" checked>';
+		    							cc_html += '<label class="form-check-label" for="cc_emails_'+index+'"> '+value+' </label>';
+		    							cc_html += '</div>';
+		    						});
+
+		    						$('#cc_recipients').empty().append(cc_html);
+		    					}
+
+		    					$('#email_recipient_list_modal').modal('show');
+		    					return false;
+		    				},
+		    				error: function(xhr, status, error) {
+		    					console.log(xhr.responseText);	
+		    				}
+		    			});
+					} else {
+						$('.toast-body').text('Select only one NCR at a time to send mail');
+			        	$('.toast').toast('show');
+			        	event.preventDefault(); 
+					}	
     			} else {
-    				$('.toast-body').text('Select atleast one NCR to send mail');
+    				$('.toast-body').text('Select an NCR to send mail');
 		        	$('.toast').toast('show');
 		        	event.preventDefault(); 
     			}    			
     		});
+
+    		function sendEmail() {
+				let checked_NCRs = [];
+    			let feeder_IDs = [];
+    			let to_email_recipients = [];
+    			let cc_email_recipients = [];
+
+    			$('input[name^="ncrReview_"]:checked').each(function() {
+    				checked_NCRs.push($(this).val());
+    			});
+
+    			$('input[name^="ncrReview_"]:checked').each(function() {
+    				feeder_IDs.push($(this).attr("id"));
+    			});
+
+    			$('#email_recipient_list_modal input[name^="to_emails_"]:checked').each(function() {
+					to_email_recipients.push($(this).val());
+    			});
+
+    			$('#email_recipient_list_modal input[name^="cc_emails_"]:checked').each(function() {
+    				cc_email_recipients.push($(this).val());
+    			});
+
+    			let add_to_recipient = $('#add_to_recipient').val();
+    			let add_cc_recipient = $('#add_cc_recipient').val();
+
+				let modal_inputs = $('#email_recipient_list_modal').find('input[type="text"]');
+
+				$(modal_inputs).each(function(index, value) {
+					$(value).val('');
+				});
+
+				$('#email_recipient_list_modal').modal('hide');
+
+				$('.email-loader').removeAttr('hidden');
+				$('.email-loader').find('.email-loader-message').html('Please wait while the system is generating the NCR report, for the TKC.');
+
+				// Ajax call to send email
+    			$.ajax({
+    				type: 'POST',
+    				url: '<?php echo base_url('send-ncr-mail-new') ?>',
+    				dataType: 'json',
+    				data: {checked_ncr: checked_NCRs, feeder_id: feeder_IDs, to_email_recipients: to_email_recipients, cc_email_recipients: cc_email_recipients, add_to_recipient: add_to_recipient, add_cc_recipient: add_cc_recipient},
+    				success: function(response) {
+    					// console.log(response);
+    					$('#sendMail').attr('disabled', false);
+    					$('.email-loader').attr('hidden', true);
+
+    					$('.toast-body').text(response.message);
+	        			$('.toast').toast('show');
+
+	        			setTimeout(function() {
+	        				location.reload(true)
+	        			}, 2000);
+    				},
+    				error: function(xhr, status, error) {
+    					$('#sendMail').attr('disabled', false);
+    					$('.email-loader').attr('hidden', true);
+
+    					console.log(xhr.responseText);
+    					$('.toast-body').text('Failed to send email');
+			        	$('.toast').toast('show');
+    				}
+    			});
+    		}
 
     		//Check if there's any change in the search form before submitting
     		$('#searchNCRReview').submit(function(event) {
@@ -554,6 +810,11 @@
 
 		      	let multi_select = $(this).find('#status');
 			    if ($(multi_select).val().length > 0) {
+			    	form_change = true;
+			    }
+
+			    let checkbox = $(this).find('#last_email_sent');
+			    if ($(checkbox).prop('checked') == true) {
 			    	form_change = true;
 			    }
 
@@ -597,6 +858,30 @@
 		      	window.location.replace('<?php echo base_url("ncr-review") ?>');
     		});
 
+    		$('#region').on('change', function(event) {
+    			let selected_region_id = $(this).val();
+
+    			let region_circle_data = <?php echo json_encode($region_circle_data) ?>;
+    			let circle_data = region_circle_data[selected_region_id];
+
+    			let html = '';
+    			html += '<option value="select" selected disabled>Select Circle</option>';
+
+    			$.each(circle_data, function(index, value) {
+    				html += '<option value="'+ index +'">'+ value +'</option>';
+    			});
+
+    			$('#circle').empty();
+			    $('#circle').append(html);
+
+			    let selected_division_id = $('#division').val();
+
+			    if (selected_division_id != null) {
+			    	$('#division').empty();
+			    	$('#division').append('<option value="select" selected disabled>Select Division</option>');
+			    }
+    		});
+
     		$('#circle').on('change', function(event) {
     			let selected_circle_id = $(this).val();
 
@@ -613,6 +898,60 @@
 			    $('#division').empty();
 			    $('#division').append(html);
     		});
+
+    		$('.deleteNCR').click(function(event) {
+    			let ncr_id = $(this).data('ncr-id');
+
+    			let alert_text = 'Are you sure you want to delete NCR ID:'+ncr_id+' ?';
+
+    			$('#ncr-delete-alert').find('.notification-text').text(alert_text);
+	            $('#ncr-delete-alert').find('.notification-delete').attr('data-ncr-id', ncr_id);
+	            $('#ncr-delete-alert').removeAttr('hidden');
+    		});
+
+    		function deleteNCR(delete_btn) {
+    			let ncr_id = $(delete_btn).data('ncr-id');
+
+    			// Ajax call to delete the ncr
+    			$.ajax({
+    				type: 'POST',
+    				url: '<?php echo base_url('delete-ncr') ?>',
+    				dataType: 'json',
+    				data: {ncr_id:ncr_id},
+    				success: function(response) {
+    					// console.log(response);
+
+    					$('#ncr-delete-alert').find('.notification-text').text('');
+	                    $('#ncr-delete-alert').find('.notification-delete').attr('data-ncr-id', '');
+
+	                    $('#ncr-delete-alert').attr('hidden', true);
+
+	                    $('.toast-body').text(response.message);
+	                    $('.toast').toast('show');
+
+	                    setTimeout(function() {
+	                        location.reload(true)
+	                    }, 2000);
+    				},
+    				error: function(xhr, status, error) {
+    					$('#ncr-delete-alert').find('.notification-text').text('');
+	                    $('#ncr-delete-alert').find('.notification-delete').attr('data-ncr-id', '');
+
+	                    $('#ncr-delete-alert').attr('hidden', true);
+
+    					$('.toast-body').text(xhr.responseJSON.message);
+	                    $('.toast').toast('show');
+    				}
+    			});
+    		}
+
+    		function closeNotificationAlert(delete_btn) {
+    			// console.log($(delete_btn));
+    			$('#ncr-delete-alert').find('.notification-text').text('');
+                $('#ncr-delete-alert').find('.notification-delete').attr('data-ncr-id', '');
+
+                $('#ncr-delete-alert').attr('hidden', true);
+    		}
 	    </script>
 
 	</body>

@@ -1,5 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); 
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
 class NCRReview extends CI_Controller
 {	
 	function __construct()
@@ -16,7 +20,9 @@ class NCRReview extends CI_Controller
         $this->load->config('email');
         $this->load->library('email');
 
-        // $this->load->library("Mypdf");
+        $this->load->library('image_lib');
+
+        $this->load->library("Pdf");
 
         // Setting Timezone
         date_default_timezone_set("Asia/Calcutta");   //India time (GMT+5:30)
@@ -48,6 +54,11 @@ class NCRReview extends CI_Controller
 			$result[$key]['last_email_details'] = ($value['last_email_details'] != NULL) ? date('d-m-Y h:i a', strtotime($value['last_email_details'])): '';
 		}
 
+		$region_list = $this->ncr_model->getUserRegionList();
+
+		$region_circle_data = $this->ncr_model->getRegionCircleData();
+		$region_circle_data = $this->modifyRegionCircleData($region_circle_data);
+
 		$circle_list = $this->ncr_model->getCircleList();
 		$circle_list = $this->sort_array_by_key($circle_list, 'circle_name');
 
@@ -64,7 +75,9 @@ class NCRReview extends CI_Controller
 		$user_access = $this->sortUserModuleAccess($user_access_data);
 
 		$data['ncr_data'] = $result;
-		$data['circle_list'] = $circle_list;
+		$data['region_list'] = $region_list;
+		$data['region_circle_data'] = $region_circle_data;
+		// $data['circle_list'] = $circle_list;
 		// $data['division_list'] = $division_list;
 		$data['circle_division_data'] = $circle_division_data;
 		$data['status_list'] = $status_list;
@@ -93,6 +106,15 @@ class NCRReview extends CI_Controller
 			$filter_arr['feederID']['label'] = 'Feeder ID';
            	$filter_arr['feederID']['value'] = $feeder_id;
 
+           	$ncr_id = $this->input->post('ncrID');
+           	$filter_arr['ncrID']['label'] = 'NCR ID';
+           	$filter_arr['ncrID']['value'] = $ncr_id;
+
+           	$region = (isset($_POST['region'])) ? $this->input->post('region') : '';
+           	$filter_arr['region']['label'] = 'Region';
+           	$filter_arr['region']['value'] = (isset($_POST['region'])) ? $this->ncr_model->getRegion($region) : '';
+           	$filter_arr['region']['id'] = $region;
+
            	$circle = (isset($_POST['circle'])) ? $this->input->post('circle') : '';
            	$filter_arr['circle']['label'] = 'Circle';
             $filter_arr['circle']['value'] = (isset($_POST['circle'])) ? $this->ncr_model->getCircle($circle) : '';
@@ -114,6 +136,10 @@ class NCRReview extends CI_Controller
             $filter_arr['status']['value'] = (!empty($status_values)) ? implode(', ', $status_values) : '';
            	$filter_arr['status']['id'] = $this->input->post('status');
 
+           	$last_email_sent = $this->input->post('last_email_sent');
+           	$filter_arr['last_email_sent']['label'] = 'Last Email Sent';
+           	$filter_arr['last_email_sent']['value'] = $last_email_sent;
+
            	$user_id = $_SESSION['loggedData']->user_id;
 			$user_role = $this->ncr_model->getUserRoleName($user_id);
 
@@ -125,7 +151,7 @@ class NCRReview extends CI_Controller
 			 	$contract_location_ids = $this->ncr_model->getContractLocationIDsByPackage($package_access_no);
 			}
 
-           	$search_result = $this->ncr_model->searchNCRs($contractor, $package_no, $feeder_id, $circle, $division, $status, $contract_location_ids);
+           	$search_result = $this->ncr_model->searchNCRs($contractor, $package_no, $feeder_id, $ncr_id, $region, $circle, $division, $status, $last_email_sent, $contract_location_ids);
 
            	// Formatting Dates
            	foreach ($search_result as $key => $value) {
@@ -133,7 +159,17 @@ class NCRReview extends CI_Controller
 				$search_result[$key]['completion_date'] = (!empty($value['completion_date'])) ? date('d-m-Y', strtotime($value['completion_date'])) : '';
            	}
 
-           	$circle_list = $this->ncr_model->getCircleList();
+           	$region_list = $this->ncr_model->getUserRegionList();
+
+           	if (!empty($region)) {
+           		$circle_list = $this->ncr_model->getCircleListOfRegion($region);
+           		$data['circle_list'] = $circle_list;
+           	}
+
+           	$region_circle_data = $this->ncr_model->getRegionCircleData();
+           	$region_circle_data = $this->modifyRegionCircleData($region_circle_data);
+
+           	// $circle_list = $this->ncr_model->getCircleList();
 
            	if (!empty($circle)) {
            		$division_list = $this->ncr_model->getDivisionListOfCircle($circle);
@@ -151,7 +187,9 @@ class NCRReview extends CI_Controller
            	$data['ncr_data'] = $search_result;
            	$data['filter_data'] = $filter_arr;
 
-           	$data['circle_list'] = $circle_list;			
+           	// $data['circle_list'] = $circle_list;
+           	$data['region_list'] = $region_list;
+           	$data['region_circle_data'] = $region_circle_data;
 			$data['circle_division_data'] = $circle_division_data;
 			$data['status_list'] = $status_list;
 			$data['user_access'] = $user_access;
@@ -371,8 +409,12 @@ class NCRReview extends CI_Controller
 		}		
 
 		if (!empty($errors)) {
-			$this->session->set_flashdata('error',$errors);
-			redirect('edit-ncr/'.$ncr_id);	
+			/*$this->session->set_flashdata('error',$errors);
+			redirect('edit-ncr/'.$ncr_id);	*/
+			http_response_code(400);
+			$response['message'] = 'Failed to update NCR';
+
+			echo json_encode($response);
 		} else {
 			if ($logged_user_role == 'TKC') {
 				$email_result = $this->sendNCRSubmittedByTKCEmail($contract_location_id, $ncr_id, $pp_activity_obs_id);
@@ -387,8 +429,35 @@ class NCRReview extends CI_Controller
 					$this->session->set_flashdata('error',$errors);
 					redirect('edit-ncr/'.$ncr_id);
 				}
+			} else {
+				http_response_code(200);
+				$response['message'] = 'NCR updated successfully';
+
+				echo json_encode($response);
 			}
 		}
+	}
+
+	public function deleteNCR()
+	{
+		//Default Response
+      	http_response_code(200);
+        $response['message'] = 'NCR deleted successfully';
+
+		if (!empty($_POST)) {
+			$ncr_id = $this->input->post('ncr_id');
+
+			// Updating NCR status
+			$delete_result = $this->ncr_model->deleteNCR($ncr_id);
+
+			if (!$delete_result) {
+				//Default Response
+          		http_response_code(400);
+          		$response['message'] = 'Failed to delete NCR';
+			}
+		}
+
+		echo json_encode($response);
 	}
 
 	public function sendNCRSubmittedByTKCEmail($contract_location_id, $ncr_id, $pp_activity_obs_id)
@@ -444,6 +513,76 @@ class NCRReview extends CI_Controller
 		}
 
 		return $fe_fs_dtl_arr;
+	}
+
+	public function getNCREmailRecipientsNew()
+	{
+		if (!empty($_POST)) {
+			$feeder_id = $this->input->post('feeder_id');
+			$ncr_id = $this->input->post('ncr_id');
+
+			$emails_result = $this->ncr_model->getNCREmailRecipientsNew($feeder_id[0]);
+
+			$to_arr = $cc_arr = [];
+
+			if (!empty($emails_result['tkc_emails'])) {
+				$tkc_emails = explode(',', $emails_result['tkc_emails']);
+				foreach ($tkc_emails as $key => $value) {
+					array_push($to_arr, trim($value));
+				}	
+			}
+
+			if (!empty($emails_result['fe_fs_emails'])) {
+				$fe_fs_emails = explode(',', $emails_result['fe_fs_emails']);
+				foreach ($fe_fs_emails as $key => $value) {
+					array_push($cc_arr, trim($value));
+				}
+			}
+
+			if (!empty($emails_result['dtl_emails'])) {
+				$dtl_emails = explode(',', $emails_result['dtl_emails']);
+				foreach ($dtl_emails as $key => $value) {
+					array_push($cc_arr, trim($value));
+				}	
+			}			
+
+			if (!empty($emails_result['client_emails'])) {
+				$client_emails = explode(',', $emails_result['client_emails']);
+				foreach ($client_emails as $key => $value) {
+					array_push($cc_arr, trim($value));
+				}	
+			}
+
+			if (!empty($emails_result['sgs_emails'])) {
+				$sgs_emails = explode(',', $emails_result['sgs_emails']);
+				foreach ($sgs_emails as $key => $value) {
+					array_push($cc_arr, trim($value));
+				}	
+			}
+
+			$other_emails_arr = $this->ncr_model->getCCBCCEmailIDs();
+
+			foreach ($other_emails_arr as $key => $value) {
+				if ($value['display_name'] == 'CC EMAIL ID') {
+					$mandatory_emails = [];
+					if (!empty($value['fieldvalue'])) {
+						$mandatory_emails = explode(',', $value['fieldvalue']);	
+					}
+				}
+			}
+
+			if (!empty($mandatory_emails)) {
+				foreach ($mandatory_emails as $key => $value) {
+					array_push($cc_arr, trim($value));
+				}
+			}
+
+			$email_recipients['to'] = $to_arr;
+			$email_recipients['cc'] = $cc_arr;
+
+			$response = $email_recipients;
+			echo json_encode($response);
+		}
 	}
 
 	public function sendNCREmail()
@@ -523,6 +662,214 @@ class NCRReview extends CI_Controller
 		}
 	}
 
+	public function sendNCREmailNew()
+	{
+		if (!empty($_POST)) {
+			$checked_ncr_ids = $this->input->post('checked_ncr');
+			$checked_feeder_ids = $this->input->post('feeder_id');
+
+			$to_email_recipients = isset($_POST['to_email_recipients']) ? $this->input->post('to_email_recipients') : [];
+			$cc_email_recipients = isset($_POST['cc_email_recipients']) ? $this->input->post('cc_email_recipients') : [];
+
+			$add_to_recipient = $this->input->post('add_to_recipient');
+			$add_cc_recipient = $this->input->post('add_cc_recipient');
+
+			$user_id = $this->ncr_model->getLoggedInUserID();
+
+			$other_email_ids_data = $this->ncr_model->getCCBCCEmailIDs();
+			foreach ($other_email_ids_data as $key => $value) {
+				$other_email_ids[$value['display_name']] = $value['fieldvalue'];
+			}
+
+			$email_errors = [];
+			$failed_ncr_ids = [];
+			$cc = [];
+			$to = [];
+
+			// Generating NCR Report data
+			$report_data = $this->ncr_model->getNCRReportData($checked_ncr_ids[0], $user_id);
+
+			foreach ($report_data as $r_key => $r_value) {
+				if (!empty($r_value['observation_photos'])) {
+					$observation_photos = explode(',', $r_value['observation_photos']);
+
+					$r_value['observation_photos'] = [];
+					$temp_observation_photos = [];
+					foreach ($observation_photos as $obs_key => $obs_value) {
+						$target_path = 'assets/uploads/observation_files/thumb/';
+						$resized_image = $this->resizeImage($obs_value, 1000, 1000, $target_path);
+
+						$encoded_img = $this->encode_img_base64($resized_image);
+						array_push($temp_observation_photos, $encoded_img);
+					}
+
+					$report_data[$r_key]['observation_photos'] = implode(', ', $temp_observation_photos);
+				}
+
+				if (!empty($r_value['completion_photos'])) {
+					$observation_completion_photos = explode(',', $r_value['completion_photos']);
+
+					$r_value['completion_photos'] = [];
+					$temp_observation_completion_photos = [];
+
+					foreach ($observation_completion_photos as $obs_key => $obs_value) {
+						$target_path = 'assets/uploads/observation_completion_files/thumb/';
+						$resized_image = $this->resizeImage($obs_value, 1000, 1000, $target_path);
+
+						$encoded_img = $this->encode_img_base64($resized_image);
+						array_push($temp_observation_completion_photos, $encoded_img);
+					}
+
+					$report_data[$r_key]['completion_photos'] = implode(', ', $temp_observation_completion_photos);
+				}
+			}
+
+			$pdf_name = $this->createPDF($report_data, $checked_ncr_ids[0]);
+			sleep(5);
+
+			$data['title'] = 'NCR Review';
+			$data['date'] = date('d/m/Y');
+			$data['feeder_id'] = $checked_feeder_ids[0];
+			$data['ncr_id'] = $checked_ncr_ids[0];
+
+			$from = $this->config->item('smtp_user');
+
+			if (!empty($to_email_recipients)) {
+				foreach ($to_email_recipients as $to_email_value) {
+					array_push($to, trim($to_email_value));
+				}
+			}
+
+			if (!empty($cc_email_recipients)) {
+				foreach ($cc_email_recipients as $cc_email_value) {
+					array_push($cc, trim($cc_email_value));
+				}
+			}
+
+			if (!empty($add_to_recipient)) {
+				$add_to_arr = explode(',', $add_to_recipient);
+
+				foreach ($add_to_arr as $add_to_value) {
+					array_push($to, trim($add_to_value));
+				}
+			}
+
+			if (!empty($add_cc_recipient)) {
+				$add_cc_arr = explode(',', $add_cc_recipient);
+
+				foreach ($add_cc_arr as $add_cc_value) {
+					array_push($cc, trim($add_cc_value));
+				}
+			}
+
+			$bcc_str = $other_email_ids['BCC EMAIL ID'];
+			$bcc_arr = explode(',', $bcc_str); 
+			// $bcc_arr[0] = 'mansi.p@benchmarksolution.co.in'; /*Delete Later*/
+
+			$subject = 'NCR Report - '.$checked_ncr_ids[0];
+			$message = $this->load->view('ncr-review/ncr-email-body', $data, true);
+
+			$attachment = $pdf_name;
+
+			// PHP Mailer Code Begins
+			$mail = new PHPMailer(true);
+
+			try {
+				$mail->SMTPDebug = SMTP::DEBUG_OFF;
+				$mail->isSMTP();
+				$mail->Host = 'smtp.gmail.com';
+				$mail->SMTPAuth = true;
+				$mail->Username = 'mppkvvcl.sgs@gmail.com';
+				$mail->Password = 'tarhuogjifshezmd';
+				// $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+				$mail->SMTPSecure = 'tls';
+				$mail->Port = 587;
+				$mail->setFrom($from);
+
+				foreach ($to as $key => $value) {
+					$mail->addAddress($value);
+				}
+
+				foreach ($cc as $key => $value) {
+					$mail->AddCC($value);
+				}
+
+				foreach ($bcc_arr as $key => $value) {
+					$mail->AddBCC($value);
+				}
+
+				$mail->isHTML(true);
+				$mail->Subject = $subject;
+				$mail->Body = $message;
+				$mail->addAttachment($attachment);
+
+				if (!$mail->send()) {
+					$error = $mail->ErrorInfo;
+
+					$response['message'] = 'Failed to send email for NCR ID: '.$checked_ncr_ids[0].'<br/>Error Message: '.$error;
+				} else {
+					if ($this->ncr_model->updateEmailDetails($checked_ncr_ids[0])) { //Uncomment Later
+						$response['message'] = 'Email has been sent successfully for NCR ID: '.$checked_ncr_ids[0];	
+					} 
+
+					// $response['message'] = 'Email has been sent successfully for NCR ID: '.$checked_ncr_ids[0];	//Delete Later
+				}
+			} catch (Exception $e) {
+				$error = $mail->ErrorInfo;
+
+				$response['message'] = 'Failed to send email for NCR ID: '.$checked_ncr_ids[0].'<br/>Error Message: '.$error;
+			}
+
+			echo json_encode($response);
+		}
+	}
+
+	public function resizeImage($image, $width, $height, $target_path)
+	{
+		$image_detail_arr = explode('/', $image);
+		$image_name = end($image_detail_arr);
+
+		$image_name_arr = explode('.', $image_name);
+		$ext = end($image_name_arr);
+
+		$image_name = $image_name_arr[0].'_thumb.'.$ext;
+
+		$config['image_library'] = 'gd2';
+		$config['source_image'] = $image;
+		$config['new_image'] = $target_path;
+		$config['create_thumb'] = TRUE;
+		$config['maintain_ratio'] = TRUE;
+		$config['quality'] = 90;
+		$config['width'] = $width;
+		$config['height'] = $height;
+
+		$this->image_lib->clear();
+	    $this->image_lib->initialize($config);
+	    $this->image_lib->resize();
+
+	    return $target_path.$image_name;
+	}
+
+	public function encode_img_base64($img_path)
+	{
+		$type = pathinfo($img_path, PATHINFO_EXTENSION);
+
+		//Temporary Code
+        $arrContextOptions = array(
+            "ssl" => array(
+                'cafile' => '/path/to/bundle/cacert.pem',
+                "verify_peer" => false,
+                "verify_peer_name" => false
+            ),
+        );
+
+        $img_path = base_url($img_path);
+        // $img_path = 'https://mpwzrdss.co.in/'.$img_path; //Delete Later
+
+		$data = file_get_contents($img_path, false, stream_context_create($arrContextOptions));
+		return 'data:image/'.$type.';base64,'.base64_encode($data);
+	}
+
 	public function createPDF2($report_data, $ncr_ids)
 	{
 		$mpdf = new \Mpdf\Mpdf();
@@ -547,7 +894,7 @@ class NCRReview extends CI_Controller
 		return $pdf_name;
 	}	
 
-	public function createPDF($report_data, $ncr_ids)
+	public function createPDF_old($report_data, $ncr_ids)
 	{
 		$pdf = new Mypdf();
 
@@ -761,6 +1108,65 @@ class NCRReview extends CI_Controller
 		return $pdf_name;
 	}
 
+	public function createPDF($report_data, $ncr_ids, $download = false)
+	{
+		$data['report_data'] = $report_data;
+		$html = $this->load->view('ncr-review/ncr-report', $data, true);
+
+		$ncr_ids = str_replace(',', '_', $ncr_ids);
+
+		$folder_path = 'assets/ncr-pdf/';
+		$pdf_name = $folder_path.'NCR_Review_'.$ncr_ids.'.pdf';
+
+		if ($download) {
+			$this->pdf->createPDFForNCRDownload($html, $pdf_name);
+		} else {
+			$this->pdf->createPDF($html, $pdf_name);
+
+			return $pdf_name;	
+		}
+	}
+
+	public function downloadNCR($ncr_id)
+	{
+		$user_id = $this->ncr_model->getLoggedInUserID();
+
+		// Generating NCR Report data
+		$report_data = $this->ncr_model->getNCRReportData($ncr_id, $user_id);
+
+		foreach ($report_data as $r_key => $r_value) {
+			if (!empty($r_value['observation_photos'])) {
+				$observation_photos = explode(',', $r_value['observation_photos']);
+
+				$r_value['observation_photos'] = [];
+				$temp_observation_photos = [];
+
+				foreach ($observation_photos as $obs_key => $obs_value) {
+					$encoded_img = $this->encode_img_base64($obs_value);
+					array_push($temp_observation_photos, $encoded_img);
+				}
+
+				$report_data[$r_key]['observation_photos'] = implode(', ', $temp_observation_photos);
+			}
+
+			if (!empty($r_value['completion_photos'])) {
+				$observation_completion_photos = explode(',', $r_value['completion_photos']);
+
+				$r_value['completion_photos'] = [];
+				$temp_observation_completion_photos = [];
+
+				foreach ($observation_completion_photos as $obs_key => $obs_value) {
+					$encoded_img = $this->encode_img_base64($obs_value);
+					array_push($temp_observation_completion_photos, $encoded_img);
+				}
+
+				$report_data[$r_key]['completion_photos'] = implode(', ', $temp_observation_completion_photos);
+			}
+		}
+
+		$this->createPDF($report_data, $ncr_id, true);
+	}
+
 	public function getNCRStatusIDs()
     {
         $result = $this->ncr_model->getNCRStatusIDs();
@@ -794,6 +1200,17 @@ class NCRReview extends CI_Controller
 		}
 
 		return $arr;
+	}
+
+	public function modifyRegionCircleData($region_circle_data)
+	{
+		$modified_region_circle_arr = [];
+
+        foreach ($region_circle_data as $key => $value) {
+        	$modified_region_circle_arr[$value['region_id']][$value['circle_id']] = $value['circle_name'];
+        }
+
+        return $modified_region_circle_arr;
 	}
 
 	public function modifyCircleDivisionData($circle_division_data)

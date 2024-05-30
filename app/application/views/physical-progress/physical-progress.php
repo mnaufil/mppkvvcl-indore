@@ -143,14 +143,14 @@
                                   <!-- Site Location -->
                                   <div class="col-md-2">
                                     <div class="form-group">
-                                      <label class="form-label" for="siteLocation">Site Location</label>
+                                      <label class="form-label m-0" for="siteLocation">Site Location</label>
                                       <input class="form-control" type="text" name="siteLocation" id="siteLocation" value="<?php echo (isset($filters)) ? $filters['siteLocation']['value'] : ''; ?>">
                                     </div>
                                   </div>
                                   <!-- Region -->
                                   <div class="col-md-2">
                                     <div class="form-group">
-                                      <label class="form-label" for="region">Region</label>
+                                      <label class="form-label m-0" for="region">Region</label>
                                       <select class="form-control form-select select2 select2-hidden-accessible" name="region" data-bs-placeholder="Select Region" tabindex="-1" aria-hidden="true" id="region" style="width:100%">
                                         <option value="select" <?php echo (isset($filters) && !empty($filters['region']['id'])) ? '' : 'selected'; ?> disabled>Select Region</option>
                                         <?php if (isset($region_list)) { 
@@ -170,19 +170,6 @@
                                 <!-- Row2 -->
                                 <div class="row"> 
                                   <!-- Circle -->
-                                  <!-- <div class="col-md-2">
-                                    <div class="form-group">
-                                      <label class="form-label" for="circle">Circle</label>
-                                      <select class="form-control form-select select2 select2-hidden-accessible" name="circle" data-bs-placeholder="Select Circle" tabindex="-1" aria-hidden="true" id="circle" style="width:100%">
-                                        <option value="select" <?php //echo (isset($filters) && !empty($filters['circle']['id'])) ? '' : 'selected'; ?> disabled>Select Circle</option> 
-                                        <?php //$selected_circle = (isset($filters)) ? $filters['circle']['id'] : ''; ?>    
-                                        <?php //foreach ($circle_list as $value) { ?>
-                                          <?php //$selected = ($value['circle_id'] == $selected_circle) ? 'selected' : ''; ?>
-                                          <option value="<?php //echo $value['circle_id']; ?>"><?php //echo $value['circle_name']; ?></option>
-                                        <?php //} ?>
-                                      </select>
-                                    </div>
-                                  </div> -->
                                   <div class="col-md-2">
                                     <div class="form-group">
                                       <label class="form-label" for="circle">Circle</label>
@@ -202,19 +189,6 @@
                                     </div>
                                   </div>
                                   <!-- Division -->
-                                  <!-- <div class="col-md-2">
-                                    <div class="form-group">
-                                      <label class="form-label" for="division">Division</label>
-                                      <select class="form-control form-select select2 select2-hidden-accessible" name="division" data-bs-placeholder="Select Division" tabindex="-1" aria-hidden="true" id="division" style="width:100%">
-                                        <option value="select" <?php //echo (isset($filters) && !empty($filters['division']['id'])) ? '' : 'selected'; ?> disabled>Select Division</option>
-                                        <?php //$selected_division = (isset($filters)) ? $filters['division']['id'] : ''; ?>    
-                                        <?php //foreach ($division_list as $value) { ?>
-                                          <?php //$selected = ($value['division_id'] == $selected_division) ? 'selected' : ''; ?>
-                                          <option value="<?php //echo $value['division_id']; ?>"><?php //echo $value['division_name']; ?></option>
-                                        <?php //} ?>
-                                      </select>
-                                    </div>
-                                  </div> -->
                                   <div class="col-md-2">
                                     <div class="form-group">
                                       <label class="form-label" for="division">Division</label>
@@ -259,6 +233,18 @@
                                       <input type="text" class="form-control" name="feederID" value="<?php echo (isset($filters)) ? $filters['feederID']['value'] : ''; ?>" />
                                     </div>
                                   </div>
+                                  <!-- Charging Status -->
+                                  <div class="col-md-2">
+                                    <label class="form-label" for="charging_status">Charging Status</label>
+                                    <select class="form-control form-select select2 select2-hidden-accessible" name="chargingStatus" data-bs-placeholder="Charging Status" tabindex="-1" aria-hidden="true" id="chargingStatus" style="width:100%">
+                                      <option value="select" selected disabled>Select Charging Status</option>
+                                      <option value="yes">Yes</option>
+                                      <option value="no">No</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <!-- Row3 -->
+                                <div class="row">
                                   <!-- Status -->
                                   <div class="col-md-2">
                                     <div class="form-group">
@@ -274,7 +260,7 @@
                                     </div>
                                   </div>
                                 </div>
-                                <!-- Row3 -->
+                                <!-- Row4 -->
                                 <div class="row">
                                   <!-- Search Button -->
                                   <div class="col-md-3">
@@ -296,11 +282,12 @@
                             <div class="col-sm-12">
                               <!-- Export Button -->
                               <!-- Uncomment later -->
-                              <!-- <div class="col-sm-12 col-md-9s">
+                              <div class="col-sm-12 col-md-9s">
                                 <div class="dts-buttons btn-group flex-wrap" style="float:right;">
-                                  <button class="btn btn-primary" type="button"><span>Export</span></button>
+                                  <!-- <button class="btn btn-primary" type="button"><span>Export</span></button> -->
+                                  <a href="<?php echo base_url('export-physical-verification-list') ?>" class="btn btn-primary" type="button"><span>Export</span></a>
                                 </div>  
-                              </div> -->
+                              </div>
                               <table class="table table-bordered text-nowrap border-bottom dataTable no-footer" id="basic-datatable" role="grid" aria-describedby="basic-datatable_info">
                                 <thead>
                                   <tr role="row">
@@ -314,9 +301,10 @@
                                     <th class="wd-20p border-bottom-0 sorting" tabindex="7" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Task: activate to sort column descending" style="width: 67.7031px;">Task</th>
                                     <th class="wd-20p border-bottom-0 sorting" tabindex="8" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Observation: activate to sort column descending" style="width: 67.7031px;">Observation</th>
                                     <th class="wd-20p border-bottom-0 sorting" tabindex="9" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Work Completion(In %): activate to sort column descending" style="width: 67.7031px;">Work Completion(In %)</th>
-                                    <th class="wd-15p border-bottom-0 sorting" tabindex="10" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Last Reported By: activate to sort column descending" style="width: 185.141px;">Last Reported By</th>
-                                    <th class="wd-20p border-bottom-0 sorting" tabindex="11" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Last Reported Date: activate to sort column ascending" style="width: 185.141px;">Last Reported Date</th>
-                                    <th class="wd-20p border-bottom-0 sorting" tabindex="12" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 185.141px;">Status</th>
+                                    <th class="wd-20p border-bottom-0 sorting" tabindex="10" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Charging Status: activate to sort column descending" style="width: 67.7031px;">Charging Status</th>
+                                    <th class="wd-15p border-bottom-0 sorting" tabindex="11" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Last Reported By: activate to sort column descending" style="width: 185.141px;">Last Reported By</th>
+                                    <th class="wd-20p border-bottom-0 sorting" tabindex="12" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Last Reported Date: activate to sort column ascending" style="width: 185.141px;">Last Reported Date</th>
+                                    <th class="wd-20p border-bottom-0 sorting" tabindex="13" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 185.141px;">Status</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -324,8 +312,8 @@
                                   <tr>
                                     <?php //$mode = ($value['sheet_status'] == 'Completed') ? 'view' : 'edit'; ?>
                                     <?php $mode = ($value['sheet_status'] == 'Completed' || $value['sheet_status'] == 'Reviewed') ? 'view' : (($value['sheet_status'] == 'In Process') ? 'edit-prev' : 'edit-new'); ?>
+                                    <!-- Action Buttons -->
                                     <td name="bstable-actions">
-                                      <!-- Action Buttons -->
                                       <div class="btn-list">
                                         <?php if (!empty($user_access) && (isset($user_access['view']) || isset($user_access['update']))) { ?>
                                         <a id="bView" type="button" class="btn btn-sm" href="<?php echo base_url('add-physical-progress/'.$mode.'/'.$value['physical_progress_id'].'/'.$value['contract_id'].'/'.$value['contract_location_id']); ?>">
@@ -334,39 +322,39 @@
                                         <?php } ?>                                        
                                       </div>
                                     </td>
+                                    <!-- Contract No -->
                                     <td> 
-                                      <!-- Contract No -->
                                       <?php echo $value['tender_award_no']; ?>
                                     </td> 
+                                    <!-- Contractor(TKC) -->
                                     <td> 
-                                      <!-- Contractor(TKC) -->
                                       <?php echo $value['contractor_name']; ?>
                                     </td>
+                                    <!-- Type of Work -->
                                     <td>
-                                      <!-- Type of Work -->
                                       <?php echo $value['typeofwork_name']; ?>
                                     </td>
+                                    <!-- Region/Circle/Division -->
                                     <td>
-                                      <!-- Region/Circle/Division -->
                                       <?php echo $value['region_name'].'/'.$value['circle_name'].'/'.$value['division_name']; ?>
                                     </td> 
+                                    <!-- Site Location -->
                                     <td style="text-align: center;">
-                                      <!-- Site Location -->
                                       <?php echo $value['site_location']; ?>
                                     </td>
+                                    <!-- Feeder ID -->
                                     <td style="text-align: center;">
-                                      <!-- Feeder ID -->
                                       <?php echo $value['feeder_id']; ?>
                                       <?php if ($value['ncr_submitted_by_tkc_count'] > 0) { ?>
                                       <span class="badge ms-2 bg-danger"><?php echo $value['ncr_submitted_by_tkc_count']; ?></span>  
                                       <?php } ?>
                                     </td> 
+                                    <!-- Task Ratio -->
                                     <td style="text-align: center;">
-                                      <!-- Task Ratio -->
                                       <?php echo $value['cc_task'].' / '. $value['tt_task']; ?>
                                     </td> 
+                                    <!-- Observations Ratio -->
                                     <td style="text-align: center;">
-                                      <!-- Observations Ratio -->
                                       <?php if ($value['cc_observation'] == 0 && $value['tt_observation'] == 0) {
                                               $obs_ratio = '-';
                                             } else {
@@ -375,21 +363,27 @@
                                       ?>
                                       <?php echo $obs_ratio; ?>
                                     </td>
+                                    <!-- Work Completion (In %) -->
                                     <td style="text-align: center;">
-                                      <!-- Work Completion (In %) -->
                                       <?php $work_completion = ($value['tt_task'] != 0) ? ((int)$value['cc_task'] / (int)$value['tt_task']) * 100 : ''; ?>
                                       <?php echo ($work_completion == 0 || $work_completion == 100 || $work_completion == '') ? $work_completion : round($work_completion); ?>
                                     </td>
+                                    <!-- Charging Status -->
+                                    <td style="text-align: center;">
+                                      <?php $charging_status = (empty($value['charging_status'])) ? 'No' : ucfirst($value['charging_status']); 
+                                            echo $charging_status;
+                                      ?>
+                                    </td>
+                                    <!-- Reported By -->
                                     <td>
-                                      <!-- Reported By -->
                                       <?php echo $value['pp_reported_by']; ?>
                                     </td>
+                                    <!-- Reported Date -->
                                     <td style="text-align: center;">
-                                      <!-- Reported Date -->
                                       <?php echo (!empty($value['reported_date'])) ? date('d-m-Y', strtotime($value['reported_date'])) : ''; ?>
                                     </td>
+                                    <!-- Sheet Status -->
                                     <td>
-                                      <!-- Sheet Status -->
                                       <?php if ($value['sheet_status'] == 'Open') {
                                               $text_color = 'text-gray';
                                             } elseif ($value['sheet_status'] == 'In Process') {
@@ -524,7 +518,7 @@
     // Initializing daterangepicker on reportedDate input
     $('input[name="reportedDate"]').daterangepicker({
       autoUpdateInput: false,
-      singleDatePicker: true,
+      // singleDatePicker: true,
       showDropdowns: true,
       locale: {
         format: 'DD-MM-YYYY'
@@ -534,7 +528,8 @@
     var form_change = false;
     //Applying selected date and changing form status
     $('input[name="reportedDate"]').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD-MM-YYYY'));
+      // $(this).val(picker.startDate.format('DD-MM-YYYY')) ;
+      $(this).val(picker.startDate.format('DD-MM-YYYY') + ' - ' + picker.endDate.format('DD-MM-YYYY'));
       form_change = true;
     });     
 

@@ -1,5 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); 
 
+require APPPATH.'libraries/PhpXlsxGenerator.php';
+
 class PhysicalProgress extends CI_Controller
 {
      function __construct()
@@ -142,13 +144,20 @@ class PhysicalProgress extends CI_Controller
                $filter_arr['reportedBy']['value'] = $reported_by;
 
                $reported_date = $this->input->post('reportedDate');
-               $formatted_reported_date = (!empty($reported_date)) ? date('Y-m-d', strtotime($reported_date)) : '';
+               // $formatted_reported_date = (!empty($reported_date)) ? date('Y-m-d', strtotime($reported_date)) : '';
+               $formatted_reported_date_arr = (!empty($reported_date)) ? explode(' - ', $reported_date) : '';
+               $start_date = (!empty($formatted_reported_date_arr)) ? date('Y-m-d', strtotime($formatted_reported_date_arr[0])) : '';
+               $end_date = (!empty($formatted_reported_date_arr)) ? date('Y-m-d', strtotime($formatted_reported_date_arr[1])) : '';
                $filter_arr['reportedDate']['label'] = 'Reported Date';
                $filter_arr['reportedDate']['value'] = $reported_date;
 
                $feeder_id = $this->input->post('feederID');
                $filter_arr['feederID']['label'] = 'Feeder ID';
                $filter_arr['feederID']['value'] = $feeder_id;
+
+               $charging_status = $this->input->post('chargingStatus');
+               $filter_arr['chargingStatus']['label'] = 'Charging Status';
+               $filter_arr['chargingStatus']['value'] = (!empty($charging_status)) ? ucfirst($charging_status) : $charging_status;
 
                $status = (isset($_POST['status'])) ? implode(',', $this->input->post('status')) : '';
                $filter_arr['status']['label'] = 'Status';
@@ -161,7 +170,8 @@ class PhysicalProgress extends CI_Controller
                $filter_arr['status']['value'] = (!empty($status_values)) ? implode(', ', $status_values) : '';
                $filter_arr['status']['id'] = $this->input->post('status');
 
-               $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by_id, $formatted_reported_date, $feeder_id, $status, NULL, 0, 1000);
+               // $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by_id, $formatted_reported_date, $feeder_id, $charging_status, $status, NULL, 0, 1000);
+               $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by_id, $start_date, $end_date, $feeder_id, $charging_status, $status, NULL, 0, 1000);
 
                foreach ($search_result as $key => $value) {
                     $submitted_by_tkc_ncr = $this->pp_model->getNCRSubmittedByTKCList($value['contract_location_id']);
@@ -1190,6 +1200,42 @@ class PhysicalProgress extends CI_Controller
                
                echo json_encode($response);
           }
+     }
+
+     public function exportPhysicalVerificationList()
+     {
+          // Excel file name for download 
+          $fileName = "Feeders_Data_".date('Y-m-d').".xlsx";
+
+          // $excel_data = [];
+          $excel_data[] = array('<center>CONTRACT NO</center>', '<center>CONTRACTOR</center>', '<center>TYPE OF WORK</center>', '<center>REGION</center>', '<center>CIRCLE</center>', '<center>DIVISION</center>', '<center>SITE LOCATION</center>', '<center>FEEDER ID</center>', '<center>TASK</center>', '<center>OBSERVATION</center>', '<center>WORK COMPLETION (IN %)</center>', '<center>CHARGING STATUS</center>', '<center>LAST REPORTED BY</center>', '<center>LAST REPORTED DATE</center>', '<center>STATUS</center>');
+
+          // Fetch records from database and store in an array
+          $session_query = $_SESSION['feeder_query'];
+          $result = $this->pp_model->executeQuery($session_query);
+
+          if (!empty($result)) {
+               foreach ($result as $key => $value) {
+                    $obs_ratio = ($value['cc_observation'] == 0 && $value['tt_observation'] == 0) ? '-' : $value['cc_observation'].' / '. $value['tt_observation'];
+
+                    $work_completion = ($value['tt_task'] != 0) ? ((int)$value['cc_task'] / (int)$value['tt_task']) * 100 : '';
+                    $work_completion_per = ($work_completion == 0 || $work_completion == 100 || $work_completion == '') ? $work_completion : round($work_completion);
+
+                    $charging_status = (empty($value['charging_status'])) ? 'No' : ucfirst($value['charging_status']);
+
+                    $reported_date = (!empty($value['reported_date'])) ? date('d-m-Y', strtotime($value['reported_date'])) : '';
+
+                    $temp_data = array('<center>'.$value['tender_award_no'].'</center>', $value['contractor_name'], $value['typeofwork_name'], $value['region_name'], $value['circle_name'], $value['division_name'], $value['site_location'], '<center>'.$value['feeder_id'].'</center>', '<center>'.$value['cc_task'].' / '. $value['tt_task'].'</center>', '<center>'.$obs_ratio.'</center>', '<center>'.$work_completion_per.'</center>', '<center>'.$charging_status.'</center>', $value['pp_reported_by'], '<center>'.$reported_date.'</center>', '<center>'.$value['sheet_status'].'</center>');
+
+                    array_push($excel_data, $temp_data);
+               }
+          }
+
+          // Export data to excel and download as xlsx file
+          $xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excel_data);
+          $xlsx->downloadAs($fileName);
+
+          exit;
      }
 
      public function getNCRStatusIDs()

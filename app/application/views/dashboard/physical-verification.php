@@ -137,7 +137,7 @@
 	            											<th></th>
 	            											<th></th>
 	            											<th></th>
-	            											<th style="text-align: center;">S/S</th>
+	            											<th style="text-align: center;">S/S / Capacitor Bank</th>
 	            											<th style="text-align: center;">NOS</th>
 	            											<th>Not Started</th>
 	            											<!-- <th>0% - 25%</th> -->
@@ -151,8 +151,14 @@
 	            										</tr>
 	            									</thead>
 	            									<tbody>
-	            										<?php $total_not_started = $total_0_25 = $total_25_50 = $total_50_75 = $total_75_90 = $total_90_100 = $total_dtl_reviewed = $total_100 = 0; ?>
-	            										<?php foreach ($verification_data as $key => $value) { ?>
+	            										<?php $ss_count = $capacitor_count = $total_feeders = $total_not_started = $total_0_25 = $total_25_50 = $total_50_75 = $total_75_90 = $total_90_100 = $total_dtl_reviewed = $total_100 = 0; ?>
+	            										<?php foreach ($verification_data as $key => $value) { 
+	            												if ($value['typeofwork'] == 'Capacitor Bank') {
+	            													$capacitor_count += $value['ss'];
+	            												} else {
+	            													$ss_count += $value['ss'];
+	            												}
+	            										?>
 	            										<tr data-contract-id="<?php echo $value['contract_id']; ?>" data-package-no="<?php echo $value['package_no']; ?>">
 	            											<!-- Lot No. -->
 	            											<td style="text-align: left;"><?php echo $value['package_no']; ?></td>
@@ -163,7 +169,10 @@
 	            											<!-- S/S -->
 	            											<td style="text-align: center;"><?php echo $value['ss']; ?></td>
 	            											<!-- Feeders -->
-	            											<td style="text-align: center;"><?php echo $value['feeders']; ?></td>
+	            											<td style="text-align: center;">
+	            												<?php echo $value['feeders']; ?>
+	            												<?php $total_feeders += $value['feeders']; ?>
+            												</td>
 	            											<!-- Not Started -->
 	            											<td style="text-align: center;" data-slab="Not Started">
 	            												<?php 	if ($value['Not Started'] != 0) {
@@ -255,7 +264,9 @@
 	            										</tr>	
 	            										<?php } ?>
 	            										<tr>
-	            											<th colspan="5" style="text-align: right;">Total Feeders</th>
+	            											<th colspan="3" style="text-align: right;">Total Feeders</th>
+	            											<td style="text-align:center;"><?php echo $ss_count.' / '.$capacitor_count; ?></td>
+	            											<td style="text-align:center;"><?php echo $total_feeders; ?></td>
 	            											<td style="text-align: center;"><?php echo $total_not_started; ?></td>
 	            											<td style="text-align: center;"><?php echo $total_0_25; ?></td>
 	            											<td style="text-align: center;"><?php echo $total_25_50; ?></td>

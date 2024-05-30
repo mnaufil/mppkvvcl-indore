@@ -531,7 +531,7 @@ class Dashboard_Model extends CI_Model
     }
 
     function getWeekDropdownDate($contractId)
-    {        
+    {
         $weekOrMonthQuery2 = $this->db->query("CALL sp_get_dashboard_statistics_popup_weekdate($contractId)"); 
         $select = "";
         //$weekOrMonthQuery = $this->db->query("CALL sp_get_dashboard_statistics_popup_weekdate('102')"); 
@@ -574,7 +574,7 @@ class Dashboard_Model extends CI_Model
 
     // function weekdatedropdownload($contractId, $stage) /*Original Code*/
     function weekdatedropdownload($packageNo, $stage)
-    {        
+    {
         // $weekOrMonthQuery2 = $this->db->query("CALL sp_get_dashboard_statistics_popup_weekdate($contractId, $stage)"); /*Original Code*/
         $weekOrMonthQuery2 = $this->db->query("CALL sp_get_dashboard_statistics_popup_weekdate($packageNo, $stage)"); 
        

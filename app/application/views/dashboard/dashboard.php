@@ -122,7 +122,6 @@
                             <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
                                 <div class="row">
                                     <?php foreach($statistics as $stats) { ?>
-                                        <?php //echo 'stats: <pre>'; print_r($stats); echo '</pre>'; die(); ?>
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3 out-box">
                                         <a onclick="showmodal('<?php echo $stats->package_no;?>', '<?php echo $stats->typeofwork;?>', '<?php echo $stats->contract_id;?>', <?php echo $stats->stage_id; ?>);">
                                             <div class="card  rounded-0">

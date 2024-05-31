@@ -380,7 +380,7 @@ class PhysicalProgress_Model extends CI_Model
 
 		$query = $this->db->query($sql_stmt);
 
-		echo $this->db->last_query(); die();
+		// echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();

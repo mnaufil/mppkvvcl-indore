@@ -134,7 +134,7 @@ class Setup extends CI_Controller
 		$data['contractdetails'] =  $this->Setup_Model->loadSingleContract($contractID);
 		$data['contractmilestonesdetails'] = $this->Setup_Model->loadSingleContractMilestones($contractID);
 		$data['contractregionsdetails'] = $this->Setup_Model->loadSingleContractRegions($contractID);
-		$data['contractinstallationsdetails'] = $this->Setup_Model->loadSingleContractInstallations($contractID);	
+		$data['contractinstallationsdetails'] = $this->Setup_Model->loadSingleContractInstallations($contractID);
 		$data['contractbanksdetails'] = $this->Setup_Model->loadSingleContractBanks($contractID);	 	   
 		$data['worktypes'] = $this->Setup_Model->loadworktypes();	
 		$data['materialdetails'] = $this->Setup_Model->loadMaterials($contractID);

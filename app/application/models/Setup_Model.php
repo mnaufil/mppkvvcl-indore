@@ -463,7 +463,7 @@ class Setup_Model extends CI_Model
 		return $result;*/
 
 		$this->db->select('contract_location.*,mst_region.region_name, mst_circle.circle_name, mst_division.division_name');
-		$this->db->where("contract_location.contract_id", $contractID);			
+		$this->db->where(array('contract_location.contract_id' => $contractID, 'contract_location.is_active' => 1, 'contract_location.deletedby' => NULL));
 		$this->db->from('contract_location');
 		$this->db->join('mst_region', 'mst_region.region_id  = contract_location.region_id', 'inner');
 		$this->db->join('mst_circle', 'mst_circle.circle_id  = contract_location.circle_id', 'inner');

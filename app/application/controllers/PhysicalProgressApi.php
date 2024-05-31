@@ -1011,7 +1011,7 @@ class PhysicalProgressApi extends REST_Controller
             $limit = $this->post('limit');
             $offset = 0;
 
-            $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by, $reported_date, $feeder_id, $status, $user_id, $offset, $limit);
+            $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by, $reported_date, NULL, $feeder_id, NULL, $status, $user_id, $offset, $limit);
             
             $errors = null;
             $message = (empty($search_result)) ? 'No results found for the specified filters' : 'Search Sheet Result';

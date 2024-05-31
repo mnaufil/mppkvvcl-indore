@@ -336,6 +336,7 @@ class PhysicalProgress_Model extends CI_Model
 	// public function searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by, $reported_date, $feeder_id, $charging_status, $status, $user_id = NULL, $offset = NULL, $limit = NULL)
 	public function searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by, $start_date, $end_date, $feeder_id, $charging_status, $status, $user_id = NULL, $offset = NULL, $limit = NULL)
 	{
+
 		$user_id = ($user_id != NULL) ? $user_id : $this->getLoggedInUserID();
 		$limit_query = '';
 
@@ -362,9 +363,12 @@ class PhysicalProgress_Model extends CI_Model
 		$division_query = (!empty($division)) ? "and (ifnull(`contract_location`.`division_id`,0)<>0 and `contract_location`.`division_id` = ".$division.")" : '';
 
 		$reported_by_query = (!empty($reported_by)) ? "and (ifnull(`physical_progress`.`reported_by`,0)<>0 and `physical_progress`.`reported_by` like '%".$reported_by."%')" : '';
-
-		// $reported_date_query = (!empty($reported_date)) ? "and (ifnull(`physical_progress`.`reported_date`,'')<>'' and `physical_progress`.`reported_date` like '%".$reported_date."%')" : '';
-		$reported_date_query = (!empty($start_date) && !empty($end_date)) ? "and (ifnull(`physical_progress`.`reported_date`,'')<>'' and `physical_progress`.`reported_date` between '".$start_date."' and '".$end_date."')" : '';
+		
+		if ($user_id == NULL) {
+			$reported_date_query = (!empty($start_date) && !empty($end_date)) ? "and (ifnull(`physical_progress`.`reported_date`,'')<>'' and `physical_progress`.`reported_date` between '".$start_date."' and '".$end_date."')" : '';	
+		} else {
+			$reported_date_query = (!empty($start_date)) ? "and (ifnull(`physical_progress`.`reported_date`,'')<>'' and `physical_progress`.`reported_date` like '%".$start_date."%')" : '';	
+		}		
 
 		$feeder_id_query = (!empty($feeder_id)) ? "and (ifnull(`contract_location`.`feeder_id`,0)<>0 and `contract_location`.`feeder_id` like '%".$feeder_id."%')" : '';
 
@@ -376,7 +380,7 @@ class PhysicalProgress_Model extends CI_Model
 
 		$query = $this->db->query($sql_stmt);
 
-		// echo $this->db->last_query(); die();
+		echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();

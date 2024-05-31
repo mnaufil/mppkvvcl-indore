@@ -481,8 +481,7 @@ class SetupInner_Model extends CI_Model
                     );
                     $this->db->where("contract_location_id", $region['deleteId']);
                     $this->db->update("contract_location", $regionArray);
-                    $last_id_for_log = $region['deleteId']; 
-
+                    $last_id_for_log = $region['deleteId'];
 
                     //for inserting in physical progress 
                     $physicalProgressArray = array(
@@ -496,7 +495,6 @@ class SetupInner_Model extends CI_Model
                     
                     $this->db->where("contract_location_id", $region['deleteId']);
                     $this->db->update("physical_progress", $physicalProgressArray);
-
 
                     $regionArrayLog = array(
                         "contract_location_id" => $last_id_for_log,

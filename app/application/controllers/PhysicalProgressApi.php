@@ -123,18 +123,29 @@ class PhysicalProgressApi extends REST_Controller
 
                     if ($pp_activity_count != $mst_activity_count) {
                         $mst_activity_data = $this->pp_model->getActivitiesList($sheet_result['typeofwork_id'], $sheet_result['contract_location_id']);
+                        // echo 'activities_list: <pre>'; print_r($sheet_result['activities_list']); echo '</pre>'; die();
 
-                        $pp_activity_ids = array_column($sheet_result['activities_list'], 'activity_id');
+                        $pp_activity_ids = array_column($sheet_result['activities_list'], 'typeofwork_activity_id');
+                        // echo 'pp_activity_ids: <pre>'; print_r($pp_activity_ids); echo '</pre>'; die();
 
                         foreach ($mst_activity_data as $key => $mst_activity) {
                             if (!in_array($mst_activity['typeofwork_activity_id'], $pp_activity_ids)) {
+                                // $mst_activity['erected_qty'] = '0.000';
+                                $mst_activity['status_id'] = 1;
+                                $mst_activity['erected_qty'] = $mst_activity['observation_ratio'] = $mst_activity['remark'] = "";
+
+                                $mst_activity['files'] = [];
+                                // echo 'mst_activity: <pre>'; print_r($mst_activity); echo '</pre>'; 
                                 array_push($sheet_result['activities_list'], $mst_activity);
                             }
                         }
+
+                        // die();
                     }
                 }
 
                 $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);
+                // echo 'activities_list: <pre>'; print_r($activities_list); echo '</pre>'; die();
                 $sheet_result['activities_list'] = $activities_list;
             }
 

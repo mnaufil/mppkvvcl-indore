@@ -160,5 +160,24 @@ WHERE   mst_role_module_access.role_id = $roleId AND mst_role_module_access.is_a
     	}
     }
 
+    public function getMobileAPKDetails()
+    {
+    	$this->db->select('display_name, fieldvalue');
+    	$query = $this->db->get_where('sysconfig', array('module' => 'Mobile APK'));
+    	// echo $this->db->last_query(); die();
 
+    	if (!$query) {
+    		$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+    	} else {
+    		$query_result = [];
+
+    		if ($query->num_rows() > 0) {
+    			$query_result = $query->result_array();
+    		}
+
+    		return $query_result;
+    	}
+    }
 }

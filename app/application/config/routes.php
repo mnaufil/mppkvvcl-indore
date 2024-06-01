@@ -343,6 +343,7 @@ $route['checkdatelessthan/(:any)/(:num)/(:any)'] = 'Setup/checkdatelessthan/$1/$
 
 /******** Api Routes Start ***************/
 $route['api/check-login'] = 'Api/checklogin';
+$route['api/get-mobile-apk-details'] = 'Api/getMobileAPKDetails';
 
 /*Physical Verification API*/
 $route['api/physical-progress'] = 'PhysicalProgressApi/index';

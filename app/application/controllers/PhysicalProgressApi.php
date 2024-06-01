@@ -115,6 +115,25 @@ class PhysicalProgressApi extends REST_Controller
             $sheet_result['work_completion'] = ($work_completion == 0 || $work_completion == 100 || $work_completion == '') ? $work_completion : round($work_completion);
             
             if (!empty($sheet_result['activities_list'])) {
+                if ($mode == 'edit-new') {
+                    // Checking if count of activities from pp_activity table matches with count of activities from mst_typeofwork_activity table
+                    $mst_activity_count = $this->pp_model->getTotalActivityCountFromMaster($sheet_result['typeofwork_id']);
+
+                    $pp_activity_count = count($sheet_result['activities_list']);
+
+                    if ($pp_activity_count != $mst_activity_count) {
+                        $mst_activity_data = $this->pp_model->getActivitiesList($sheet_result['typeofwork_id'], $sheet_result['contract_location_id']);
+
+                        $pp_activity_ids = array_column($sheet_result['activities_list'], 'activity_id');
+
+                        foreach ($mst_activity_data as $key => $mst_activity) {
+                            if (!in_array($mst_activity['typeofwork_activity_id'], $pp_activity_ids)) {
+                                array_push($sheet_result['activities_list'], $mst_activity);
+                            }
+                        }
+                    }
+                }
+
                 $activities_list = $this->sortByActivities($sheet_result['activities_list'], $sheet_result['activities_group_name']);
                 $sheet_result['activities_list'] = $activities_list;
             }

@@ -368,7 +368,7 @@ class PhysicalProgress_Model extends CI_Model
 			$reported_date_query = (!empty($start_date) && !empty($end_date)) ? "and (ifnull(`physical_progress`.`reported_date`,'')<>'' and `physical_progress`.`reported_date` between '".$start_date."' and '".$end_date."')" : '';	
 		} else {
 			$reported_date_query = (!empty($start_date)) ? "and (ifnull(`physical_progress`.`reported_date`,'')<>'' and `physical_progress`.`reported_date` like '%".$start_date."%')" : '';	
-		}		
+		}
 
 		$feeder_id_query = (!empty($feeder_id)) ? "and (ifnull(`contract_location`.`feeder_id`,0)<>0 and `contract_location`.`feeder_id` like '%".$feeder_id."%')" : '';
 

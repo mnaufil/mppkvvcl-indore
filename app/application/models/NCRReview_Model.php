@@ -730,7 +730,7 @@ class NCRReview_Model extends CI_Model
 
 	public function getUserRegionList()
 	{
-		$user_regions = $_SESSION['myRegions'];
+		$user_regions = isset($_SESSION['myRegions']) ? $_SESSION['myRegions'] : '';
 
 		$this->db->select('region_id, region_name');
 

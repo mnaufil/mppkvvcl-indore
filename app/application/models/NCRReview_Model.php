@@ -733,7 +733,11 @@ class NCRReview_Model extends CI_Model
 		$user_regions = $_SESSION['myRegions'];
 
 		$this->db->select('region_id, region_name');
-		$this->db->where_in('region_id', $user_regions);
+
+		if (!empty($user_regions)) {
+			$this->db->where_in('region_id', $user_regions);	
+		}
+
 		$query = $this->db->get_where('mst_region', array('is_active' => 1));
 		// echo $this->db->last_query(); die();
 
@@ -791,21 +795,21 @@ class NCRReview_Model extends CI_Model
 		$userdata = $_SESSION['loggedData'];
 		$logged_user_role = $this->getUserRole($userdata->role_id);
 
-		if ($logged_user_role != 'Admin') {
+		if ($logged_user_role == 'Admin' || $logged_user_role == 'TKC') {
+			$this->db->select('mst_region.region_id, mst_circle.circle_id, mst_circle.circle_name');
+			$this->db->from('mst_region');
+			$this->db->join('mst_circle', 'mst_region.region_id = mst_circle.region_id', 'INNER');
+			$this->db->where(array('mst_region.is_active' => 1, 'mst_circle.is_active' => 1));
+
+			$query = $this->db->get();
+			// echo $this->db->last_query(); die();
+		} else {
 			$user_id = $userdata->user_id;
 
 			$this->db->select('mst_user_data_access.region_id, mst_user_data_access.circle_id, mst_circle.circle_name');
 			$this->db->from('mst_user_data_access');
 			$this->db->join('mst_circle', 'mst_user_data_access.circle_id = mst_circle.circle_id', 'INNER');
 			$this->db->where(array('mst_user_data_access.user_id' => $user_id));
-
-			$query = $this->db->get();
-			// echo $this->db->last_query(); die();
-		} else {
-			$this->db->select('mst_region.region_id, mst_circle.circle_id, mst_circle.circle_name');
-			$this->db->from('mst_region');
-			$this->db->join('mst_circle', 'mst_region.region_id = mst_circle.region_id', 'INNER');
-			$this->db->where(array('mst_region.is_active' => 1, 'mst_circle.is_active' => 1));
 
 			$query = $this->db->get();
 			// echo $this->db->last_query(); die();
@@ -831,21 +835,21 @@ class NCRReview_Model extends CI_Model
 		$userdata = $_SESSION['loggedData'];
 		$logged_user_role = $this->getUserRole($userdata->role_id);
 
-		if ($logged_user_role != 'Admin') {
+		if ($logged_user_role == 'Admin' || $logged_user_role == 'TKC') {
+			$this->db->select('mst_circle.circle_id, mst_division.division_id, mst_division.division_name');
+			$this->db->from('mst_circle');
+			$this->db->join('mst_division', 'mst_circle.circle_id = mst_division.circle_id', 'INNER');
+			$this->db->where(array('mst_circle.is_active' => 1, 'mst_division.is_active' => 1));
+
+			$query = $this->db->get();
+			// echo $this->db->last_query(); die();
+		} else {
 			$user_id = $userdata->user_id;
 
 			$this->db->select('mst_user_data_access.circle_id, mst_user_data_access.division_id, mst_division.division_name');
 			$this->db->from('mst_user_data_access');
 			$this->db->join('mst_division', 'mst_user_data_access.division_id = mst_division.division_id', 'INNER');
 			$this->db->where(array('mst_user_data_access.user_id' => $user_id));
-
-			$query = $this->db->get();
-			// echo $this->db->last_query(); die();
-		} else {
-			$this->db->select('mst_circle.circle_id, mst_division.division_id, mst_division.division_name');
-			$this->db->from('mst_circle');
-			$this->db->join('mst_division', 'mst_circle.circle_id = mst_division.circle_id', 'INNER');
-			$this->db->where(array('mst_circle.is_active' => 1, 'mst_division.is_active' => 1));
 
 			$query = $this->db->get();
 			// echo $this->db->last_query(); die();

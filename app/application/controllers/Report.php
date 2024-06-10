@@ -835,7 +835,8 @@ class Report extends CI_Controller
 
 	public function generateMaterialStatusSummary()
 	{
-		$data['packages'] = $this->Report_Model->loadPackages();
+		// $data['packages'] = $this->Report_Model->loadPackages();
+		$data['packages'] = $this->Report_Model->loadPackagesForMaterialReports();
 		//$data['circles'] = $this->Report_Model->loadCircles();
 
 		$data['packageNo'] = $this->input->post('packageNo'); 

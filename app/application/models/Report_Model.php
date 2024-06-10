@@ -63,6 +63,19 @@ class Report_Model extends CI_Model
 		}
 	}
 
+	public function loadPackagesForMaterialReports()
+	{
+		$contract_status_list = $this->getContractStatusList();
+		// $query = $this->db->query("SELECT package_group_no FROM contract where status_id = ".$contract_status_list['Open']." ORDER BY CAST(package_no AS UNSIGNED), package_no");
+		$query = $this->db->query("SELECT DISTINCT package_group_no FROM contract where status_id = ".$contract_status_list['Open']." ORDER BY package_group_no");
+		// echo $this->db->last_query(); die();
+		if($query)
+		{
+			$result = $query->result();
+			return $result;
+		}
+	}
+
 	public function getContractStatusList()
 	{
 		$this->db->select('mst_status.name, mst_status.status_id');
@@ -550,6 +563,8 @@ class Report_Model extends CI_Model
 	function generatePhysicalReport()
 	{
 		$package = $this->input->post('packageNo');
+		$package = implode(',', $package);
+
 		$sessionId = $_SESSION['userId'];
 		$feederId = $this->input->post('feederId');
 		if($feederId=="")
@@ -678,6 +693,8 @@ class Report_Model extends CI_Model
 	function generatePhysicalReportFeederWise()
 	{
 		$package = $this->input->post('packageNo');
+		$package = implode(',', $package);
+
 		$sessionId = $_SESSION['userId'];
 		$feederId = $this->input->post('feederId');
 
@@ -718,7 +735,7 @@ class Report_Model extends CI_Model
 		// echo "CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)"; die;
 		$query = $this->db->query("CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
-		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_feederWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)";
+		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";
 		
 		if($query)
 		{
@@ -859,6 +876,8 @@ class Report_Model extends CI_Model
 	function generateNonConformaceReport()
 	{
 		$package = $this->input->post('packageNo');
+		$package = implode(',', $package);
+
 		$region = $this->input->post('region');
 		$circle = $this->input->post('circle');
 		$ncrDate = $this->input->post('ncrDate');
@@ -909,6 +928,14 @@ class Report_Model extends CI_Model
 		if($packageNo == "")
 		{
 			$packageNo = "NULL";
+		} else {
+			$packageNo = implode(',', $packageNo);
+		}
+
+		if ($circle == "") {
+			$circle = "NULL";
+		} else {
+			$circle = implode(',', $circle);
 		}
 
 		/*if($contractor == "")
@@ -920,10 +947,11 @@ class Report_Model extends CI_Model
 		
 		//echo "CALL sp_rpt_material_status_report($sessionId,$packageNo, $contractor)"; die;
 		// $_SESSION['spQuery'] = "CALL sp_rpt_material_status_report($sessionId, '$packageNo', $contractor)";
-		$_SESSION['spQuery'] = "CALL sp_rpt_material_status_report($sessionId, '$packageNo', $circle)";
+		$_SESSION['spQuery'] = "CALL mutiple_lot_sp_rpt_material_status_report($sessionId, '$packageNo', '$circle')";
 
 		// $query1 = $this->db->query("CALL sp_rpt_material_status_report($sessionId, '$packageNo', $contractor)");
-		$query1 = $this->db->query("CALL sp_rpt_material_status_report($sessionId, '$packageNo', $circle)");
+		// $query1 = $this->db->query("CALL sp_rpt_material_status_report($sessionId, '$packageNo', '$circle')");
+		$query1 = $this->db->query("CALL mutiple_lot_sp_rpt_material_status_report($sessionId, '$packageNo', '$circle')");
 		// echo $this->db->last_query(); die();
 
 		if($query1)
@@ -945,6 +973,8 @@ class Report_Model extends CI_Model
 		if($packageNo == "")
 		{
 			$packageNo = "NULL";
+		} else {
+			$packageNo = implode(',', $packageNo);
 		}
 
 		if($date == "")
@@ -974,18 +1004,21 @@ class Report_Model extends CI_Model
 
 	function generateCashFlowReport()
 	{
-		$packageNo = $this->input->post('packageNo');			
+		$packageNo = $this->input->post('packageNo');
 		
 		if($packageNo == "")
 		{
 			$packageNo = "NULL";
+		} else {
+			$packageNo = implode(',', $packageNo);
 		}
 			
 		$sessionId = $_SESSION['userId'];
 		
 		//echo "CALL sp_rpt_material_status_report($sessionId,$packageNo, $contractor)"; die;
-		$_SESSION['spQuery'] = "CALL sp_rpt_cash_flow($sessionId, $packageNo)";
-		$query1 = $this->db->query("CALL sp_rpt_cash_flow($sessionId, $packageNo)");		
+		$_SESSION['spQuery'] = "CALL sp_rpt_cash_flow($sessionId, '$packageNo')";
+		$query1 = $this->db->query("CALL sp_rpt_cash_flow($sessionId, '$packageNo')");
+		// echo $this->db->last_query(); die();
 		
 		if($query1)
 		{
@@ -1028,8 +1061,11 @@ class Report_Model extends CI_Model
 	{
 		$user_id = $this->getLoggedInUserID();
 
-		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_sampling(".$user_id.", ".$package_no.", ".$status.", ".$circle.", '".$from_date."', '".$to_date."')";
-		$query = $this->db->query("CALL sp_rpt_material_in_sampling(".$user_id.", ".$package_no.", ".$status.", ".$circle.", '".$from_date."', '".$to_date."')");
+		$package_no = implode(',', $package_no);
+		$circle = implode(',', $circle);
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_sampling(".$user_id.", '".$package_no."', ".$status.", '".$circle."', '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_in_sampling(".$user_id.", '".$package_no."', ".$status.", '".$circle."', '".$from_date."', '".$to_date."')");
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -1054,8 +1090,11 @@ class Report_Model extends CI_Model
 	{
 		$user_id = $this->getLoggedInUserID();
 
-		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_micc(".$user_id.", ".$package_no.", ".$di_no.", ".$status.", ".$circle.", '".$from_date."', '".$to_date."')";
-		$query = $this->db->query("CALL sp_rpt_material_in_micc(".$user_id.", ".$package_no.", ".$di_no.", ".$status.", ".$circle.", '".$from_date."', '".$to_date."')");
+		$package_no = implode(',', $package_no);
+		$circle = implode(',', $circle);
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_micc(".$user_id.", '".$package_no."', ".$di_no.", ".$status.", '".$circle."', '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_in_micc(".$user_id.", '".$package_no."', ".$di_no.", ".$status.", '".$circle."', '".$from_date."', '".$to_date."')");
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -1080,8 +1119,11 @@ class Report_Model extends CI_Model
 	{
 		$user_id = $this->getLoggedInUserID();
 
-		$_SESSION['spQuery'] = "CALL sp_rpt_material_in(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";
-		$query = $this->db->query("CALL sp_rpt_material_in(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		$package_no = implode(',', $package_no);
+		$circle = implode(',', $circle);
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_in(".$user_id.", '".$package_no."', '".$circle."', '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_in(".$user_id.", '".$package_no."', '".$circle."', '".$from_date."', '".$to_date."')");
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -1106,8 +1148,11 @@ class Report_Model extends CI_Model
 	{
 		$user_id = $this->getLoggedInUserID();
 
-		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_return(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";
-		$query = $this->db->query("CALL sp_rpt_material_in_return(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		$package_no = implode(',', $package_no);
+		$circle = implode(',', $circle);
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_return(".$user_id.", '".$package_no."', '".$circle."', '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_in_return(".$user_id.", '".$package_no."', '".$circle."', '".$from_date."', '".$to_date."')");
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -1132,8 +1177,11 @@ class Report_Model extends CI_Model
 	{
 		$user_id = $this->getLoggedInUserID();
 
-		$_SESSION['spQuery'] = "CALL sp_rpt_material_out(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";
-		$query = $this->db->query("CALL sp_rpt_material_out(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		$package_no = implode(',', $package_no);
+		$circle = implode(',', $circle);
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_out(".$user_id.", '".$package_no."', '".$circle."', '".$from_date."', '".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_material_out(".$user_id.", '".$package_no."', '".$circle."', '".$from_date."', '".$to_date."')");
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -1158,8 +1206,11 @@ class Report_Model extends CI_Model
 	{
 		$user_id = $this->getLoggedInUserID();
 
-		$_SESSION['spQuery'] = "CALL sp_rpt_material_stock(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')";		
-		$query = $this->db->query("CALL sp_rpt_material_stock(".$user_id.", ".$package_no.", ".$circle.", '".$from_date."', '".$to_date."')");
+		$package_no = implode(',', $package_no);
+		$circle = implode(',', $circle);
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_stock(".$user_id.", '".$package_no."', '".$circle."', '".$from_date."', '".$to_date."')";		
+		$query = $this->db->query("CALL sp_rpt_material_stock(".$user_id.", '".$package_no."', '".$circle."', '".$from_date."', '".$to_date."')");
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -1184,8 +1235,10 @@ class Report_Model extends CI_Model
 	{
 		$user_id = $this->getLoggedInUserID();
 
-		$_SESSION['spQuery'] = "CALL sp_rpt_material_balance_quantity(".$user_id.", ".$package_no.")";
-		$query = $this->db->query("CALL sp_rpt_material_balance_quantity(".$user_id.", ".$package_no.")");
+		$package_no = implode(',', $package_no);
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_material_balance_quantity(".$user_id.", '".$package_no."')";
+		$query = $this->db->query("CALL sp_rpt_material_balance_quantity(".$user_id.", '".$package_no."')");
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -1209,6 +1262,7 @@ class Report_Model extends CI_Model
 	public function generateTKCPhysicalReport()
 	{
 		$package = $this->input->post('packageNo');
+		$package = implode(',', $package);
 		$sessionId = $_SESSION['userId'];
 
 		$feederId = $this->input->post('feederId');
@@ -1240,9 +1294,9 @@ class Report_Model extends CI_Model
 			$spDivision = $allDivision;
 		}
 
-		$query = $this->db->query("CALL sp_rpt_tkc_physical_progress_consolidatedActivityWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)");
+		$query = $this->db->query("CALL sp_rpt_tkc_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
-		$_SESSION['spQuery'] = "CALL sp_rpt_tkc_physical_progress_consolidatedActivityWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)";		
+		$_SESSION['spQuery'] = "CALL sp_rpt_tkc_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";		
 		
 		if($query)
 		{
@@ -1323,6 +1377,7 @@ class Report_Model extends CI_Model
 	public function generateTKCPhysicalReportFeederWise()
 	{
 		$package = $this->input->post('packageNo');
+		$package = implode(',', $package);
 		$sessionId = $_SESSION['userId'];
 		$feederId = $this->input->post('feederId');
 
@@ -1355,7 +1410,7 @@ class Report_Model extends CI_Model
 
 		$query = $this->db->query("CALL sp_rpt_tkc_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
-		$_SESSION['spQuery'] = "CALL sp_rpt_tkc_physical_progress_feederWise($sessionId,$package,$spRegion,$spCircle,$spDivision,$feederId)";
+		$_SESSION['spQuery'] = "CALL sp_rpt_tkc_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";
 		
 		if($query)
 		{
@@ -1724,7 +1779,8 @@ class Report_Model extends CI_Model
 		$this->db->select('contract_location.region_id, contract_location.circle_id, contract_location.division_id');
 		$this->db->from('contract_location');
 		$this->db->join('contract', 'contract_location.contract_id = contract.contract_id', 'INNER');
-		$this->db->like('contract.package_no', $package_no);
+		// $this->db->like('contract.package_no', $package_no);
+		$this->db->where_in('contract.package_no', $package_no);
 		$this->db->where(array('status_id ' => $contract_status_list['Open']));
 
 		$query = $this->db->get();

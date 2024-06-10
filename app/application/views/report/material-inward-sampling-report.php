@@ -89,21 +89,33 @@
 	          										<!-- Lot No -->
 	          										<div class="col-xl-4 mb-3">
 	          											<label for="packageNo" class="form-label">Lot No.<span class="text-red">*</span></label>
-	          											<select class="form-control select2" id="packageNo" name="packageNo">
+	          											<!-- <select class="form-control select2" id="packageNo" name="packageNo">
 	          												<option value="select" selected disabled>Select Lot No.</option>
+	          												<?php //foreach ($package_nos as $key => $value) { ?>
+	          												<?php //$package_select = ($package_no == $value->package_group_no) ? 'selected' : ''; ?>
+	          												<option value="<?php //echo $value->package_group_no; ?>" <?php //echo $package_select; ?>><?php //echo $value->package_group_no; ?></option>
+	          												<?php //} ?>
+	          											</select> -->
+	          											<select class="filter-multi" id="packageNo" name="packageNo[]" multiple="multiple">
 	          												<?php foreach ($package_nos as $key => $value) { ?>
-	          												<?php $package_select = ($package_no == $value) ? 'selected' : ''; ?>
-	          												<option value="<?php echo $value; ?>" <?php echo $package_select; ?>><?php echo $value; ?></option>
+	          												<?php $package_select = (in_array($value->package_group_no, $package_no)) ? 'selected' : ''; ?>	
+	          												<option value="<?php echo $value->package_group_no; ?>" <?php echo $package_select; ?>><?php echo $value->package_group_no; ?></option>
 	          												<?php } ?>
 	          											</select>
 	          										</div>
           											<!-- Circle -->
 	          										<div class="col-xl-4 mb-3">
 	          											<label class="form-label" for="circle">Circle<span class="text-red">*</span></label>
-	          											<select class="form-control select2" id="circle" name="circle">
+	          											<!-- <select class="form-control select2" id="circle" name="circle">
 	          												<option value="select" selected disabled>Select Circle</option>
+	          												<?php //foreach ($circles as $key => $value) { ?>
+	          												<?php //$circle_select = ($circle == $value['circle_id']) ? 'selected' : ''; ?>
+	          												<option value="<?php //echo $value['circle_id']; ?>" <?php //echo $circle_select; ?>><?php //echo $value['circle_name']; ?></option>	
+	          												<?php //} ?>
+	          											</select> -->
+	          											<select class="filter-multi" id="circle" name="circle[]" multiple="multiple">
 	          												<?php foreach ($circles as $key => $value) { ?>
-	          												<?php $circle_select = ($circle == $value['circle_id']) ? 'selected' : ''; ?>
+	          												<?php $circle_select = (in_array($value['circle_id'], $circle)) ? 'selected' : ''; ?>
 	          												<option value="<?php echo $value['circle_id']; ?>" <?php echo $circle_select; ?>><?php echo $value['circle_name']; ?></option>	
 	          												<?php } ?>
 	          											</select>
@@ -328,6 +340,10 @@
 	   	<script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
 	   	<script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
 
+	   	<!-- MULTIPLE SELECT JS -->
+      	<script src="<?php echo base_url('assets/plugins/multipleselect/multiple-select.js'); ?>"></script>
+	  	<script src="<?php echo base_url('assets/plugins/multipleselect/multi-select.js'); ?>"></script> 
+
    		<!-- DATERANGE PICKER JS -->
 	   	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 	   	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -345,9 +361,10 @@
         	});
 
         	$('#generateMaterialInwardSampling').submit(function(event) {
-        		let package_no = $('select[name="packageNo"]').val();
+        		let package_no = $('select[name="packageNo[]"]').val();
+        		// console.log(package_no); return false;
 
-        		let circle = $('select[name="circle"]').val();
+        		let circle = $('select[name="circle[]"]').val();
 
         		let status = $('select[name="status"]').val();
 

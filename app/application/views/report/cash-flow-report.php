@@ -85,10 +85,15 @@
 			                							<label for="packageNo" class="form-label">Lot No.
 				                                          	<!-- <span class="text-red">*</span> -->
 				                                       	</label>
-				                                       	<select class="form-control select2" id="packageNo" name="packageNo">
+				                                       	<!-- <select class="form-control select2" id="packageNo" name="packageNo">
 				                                          	<option value="select" selected disabled>Select Lot No.</option>
-				                                          	<?php foreach($packages as $package) { ?>
-				                                          	<option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
+				                                          	<?php //foreach($packages as $package) { ?>
+				                                          	<option value="<?php //echo $package->package_no;?>" <?php //if($packageNo==$package->package_no) { ?> selected <?php //} ?>><?php //echo $package->package_no;?></option>
+															<?php //} ?>
+				                                        </select> -->
+				                                        <select class="filter-multi" id="packageNo" name="packageNo[]" multiple="multiple">
+				                                        	<?php foreach($packages as $package) { ?>
+				                                          	<option value="<?php echo $package->package_no;?>" <?php if(in_array($package->package_no, $packageNo)) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
 															<?php } ?>
 				                                        </select>
 			                						</div>
@@ -295,6 +300,10 @@
 	   <!-- SWEET-ALERT JS -->
 	   <script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
 	   <script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
+
+	   <!-- MULTIPLE SELECT JS -->
+      <script src="<?php echo base_url('assets/plugins/multipleselect/multiple-select.js'); ?>"></script>
+      <script src="<?php echo base_url('assets/plugins/multipleselect/multi-select.js'); ?>"></script> 
 
 	   <script type="text/javascript">
 	   	function showReport() {

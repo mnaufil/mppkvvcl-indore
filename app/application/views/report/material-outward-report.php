@@ -89,34 +89,46 @@
 	          										<!-- Lot No -->
 	          										<div class="col-xl-4 mb-3">
 	          											<label for="packageNo" class="form-label">Lot No.<span class="text-red">*</span></label>
-	          											<select class="form-control select2" id="packageNo" name="packageNo">
+	          											<!-- <select class="form-control select2" id="packageNo" name="packageNo">
 	          												<option value="select" selected disabled>Select Lot No.</option>
+	          												<?php //foreach ($package_nos as $key => $value) { ?>
+	          												<?php //$package_select = ($package_no == $value) ? 'selected' : ''; ?>
+	          												<option value="<?php //echo $value; ?>" <?php //echo $package_select; ?>><?php //echo $value; ?></option>
+	          												<?php //} ?>
+	          											</select> -->
+	          											<select class="filter-multi" id="packageNo" name="packageNo[]" multiple="multiple">
 	          												<?php foreach ($package_nos as $key => $value) { ?>
-	          												<?php $package_select = ($package_no == $value) ? 'selected' : ''; ?>
-	          												<option value="<?php echo $value; ?>" <?php echo $package_select; ?>><?php echo $value; ?></option>
+	          												<?php $package_select = (in_array($value->package_group_no, $package_no)) ? 'selected' : ''; ?>
+	          												<option value="<?php echo $value->package_group_no; ?>" <?php echo $package_select; ?>><?php echo $value->package_group_no; ?></option>
 	          												<?php } ?>
 	          											</select>
 	          										</div>
 	          										<!-- Circle -->
 	          										<div class="col-xl-4 mb-3">
 	          											<label class="form-label" for="circle">Circle<span class="text-red">*</span></label>
-	          											<select class="form-control select2" id="circle" name="circle">
+	          											<!-- <select class="form-control select2" id="circle" name="circle">
 	          												<option value="select" selected disabled>Select Circle</option>
+	          												<?php //foreach ($circles as $key => $value) { ?>
+	          												<?php //$circle_select = ($circle == $value['circle_id']) ? 'selected' : ''; ?>
+	          												<option value="<?php //echo $value['circle_id']; ?>" <?php //echo $circle_select; ?>><?php //echo $value['circle_name']; ?></option>	
+	          												<?php //} ?>
+	          											</select> -->
+	          											<select class="filter-multi" id="circle" name="circle[]" multiple="multiple">
 	          												<?php foreach ($circles as $key => $value) { ?>
-	          												<?php $circle_select = ($circle == $value['circle_id']) ? 'selected' : ''; ?>
+	          												<?php $circle_select = (in_array($value['circle_id'], $circle)) ? 'selected' : ''; ?>
 	          												<option value="<?php echo $value['circle_id']; ?>" <?php echo $circle_select; ?>><?php echo $value['circle_name']; ?></option>	
 	          												<?php } ?>
 	          											</select>
 	          										</div>
-	          										<!-- Material Issue Daterange -->
+	          										<!-- Material Received Daterange -->
 	          										<div class="col-xl-4 mb-3">
-	          											<label class="form-label" for="matrerialIssueDate">Material Received Date<span class="text-red">*</span></label>
+	          											<label class="form-label" for="materialReceivedDate">Material Received Date<span class="text-red">*</span></label>
 	          											<div class="input-group">
 	          												<div class="input-group-text" id="material-issue-date">
 	          													<i class="fa fa-calendar tx-16 lh-0 op-6"></i>
 	          												</div>
-	          												<?php $date_value = (isset($material_issue_date)) ? $material_issue_date : ''; ?>
-	          												<input class="form-control" type="text" id="matrerialIssueDate" name="matrerialIssueDate" value="<?php echo $date_value; ?>">
+	          												<?php $date_value = (isset($material_received_date)) ? $material_received_date : ''; ?>
+	          												<input class="form-control" type="text" id="materialReceivedDate" name="materialReceivedDate" value="<?php echo $date_value; ?>">
 	          											</div>
 	          										</div>
 	          									</div>
@@ -287,28 +299,32 @@
 	   	<script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
 	   	<script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
 
+	   	<!-- MULTIPLE SELECT JS -->
+      	<script src="<?php echo base_url('assets/plugins/multipleselect/multiple-select.js'); ?>"></script>
+	  	<script src="<?php echo base_url('assets/plugins/multipleselect/multi-select.js'); ?>"></script> 
+
    		<!-- DATERANGE PICKER JS -->
 	   	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 	   	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 	   	<script type="text/javascript">
-	   		$('input[name="matrerialIssueDate"]').daterangepicker({
+	   		$('input[name="materialReceivedDate"]').daterangepicker({
 	   			autoUpdateInput: false,
 	            locale: {
 	                format: 'DD-MM-YYYY'
 	            }
 	   		});
 
-	   		$('input[name="matrerialIssueDate"]').on('apply.daterangepicker', function(ev, picker) {
+	   		$('input[name="materialReceivedDate"]').on('apply.daterangepicker', function(ev, picker) {
             	$(this).val(picker.startDate.format('DD-MM-YYYY') +' - '+ picker.endDate.format('DD-MM-YYYY'));
         	});
 
         	$('#generateMaterialOutwardReport').submit(function(event) {
-        		let package_no = $('select[name="packageNo"]').val();
+        		let package_no = $('select[name="packageNo[]"]').val();
 
-        		let circle = $('select[name="circle"]').val();
+        		let circle = $('select[name="circle[]"]').val();
 
-        		let material_issue_date = $('input[name="matrerialIssueDate"]').val();
+        		let material_issue_date = $('input[name="materialReceivedDate"]').val();
 
         		if (package_no == null && circle == null && material_issue_date == '') {
         			$('.toast-body').text('Select filters to generate the report');

@@ -1091,6 +1091,7 @@ class Report_Model extends CI_Model
 
 		$package_no = implode(',', $package_no);
 		$circle = implode(',', $circle);
+		$status = ($status == 4) ? 'NULL' : $status;
 
 		$_SESSION['spQuery'] = "CALL sp_rpt_material_in_micc(".$user_id.", '".$package_no."', ".$di_no.", ".$status.", '".$circle."', '".$from_date."', '".$to_date."')";
 		$query = $this->db->query("CALL sp_rpt_material_in_micc(".$user_id.", '".$package_no."', ".$di_no.", ".$status.", '".$circle."', '".$from_date."', '".$to_date."')");

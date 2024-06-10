@@ -950,8 +950,7 @@ class Report_Model extends CI_Model
 		$_SESSION['spQuery'] = "CALL mutiple_lot_sp_rpt_material_status_report($sessionId, '$packageNo', '$circle')";
 
 		// $query1 = $this->db->query("CALL sp_rpt_material_status_report($sessionId, '$packageNo', $contractor)");
-		// $query1 = $this->db->query("CALL sp_rpt_material_status_report($sessionId, '$packageNo', '$circle')");
-		$query1 = $this->db->query("CALL mutiple_lot_sp_rpt_material_status_report($sessionId, '$packageNo', '$circle')");
+		$query1 = $this->db->query("CALL sp_rpt_material_status_report($sessionId, '$packageNo', '$circle')");
 		// echo $this->db->last_query(); die();
 
 		if($query1)

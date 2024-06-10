@@ -423,7 +423,7 @@ class Report_Model extends CI_Model
 			$spCircle = "'".$allCircle."'";
 		}
 
-		if($status == "All" || $status == "")
+		if($status == "all" || $status == "")
 		{
 			$spStatus = 'NULL';
 		}
@@ -444,6 +444,7 @@ class Report_Model extends CI_Model
 		
 		
 	    $query = $this->db->query("CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle,$spStatus, $spReportType)");
+	    // echo $this->db->last_query(); die();
 		
 		$_SESSION['spQuery'] = "CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle,$spStatus, $spReportType)";
 		

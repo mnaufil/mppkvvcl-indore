@@ -90,14 +90,14 @@
 			                							<label for="packageNo" class="form-label">Lot No.<span class="text-red">*</span></label>
 				                                       	<!-- <select class="form-control select2" id="packageNo" name="packageNo" >
 				                                       		<option value="select" selected disabled>Select Lot</option>
-				                                          	<?php foreach($packages as $package) { ?>
-				                                          	<option value="<?php echo $package->package_group_no;?>" <?php if($packageNo==$package->package_group_no) { ?> selected <?php } ?>><?php echo $package->package_group_no;?></option>
-															<?php } ?>
+				                                          	<?php //foreach($packages as $package) { ?>
+				                                          	<option value="<?php //echo $package->package_group_no;?>" <?php //if($packageNo==$package->package_group_no) { ?> selected <?php //} ?>><?php //echo $package->package_group_no;?></option>
+															<?php //} ?>
 				                                        </select> -->
 				                                        <select class="filter-multi" id="packageNo" name="packageNo[]" multiple="multiple">
 				                                        	<?php foreach ($packages as $package) { ?>
-				                                        	<?php $selected = ($packageNo == $package->package_group_no) ? 'selected' : ''; ?>	
-				                                        	<option value="<?php echo $package->package_group_no;?>"><?php echo $package->package_group_no;?></option>
+				                                        	<?php $package_selected = in_array($package->package_group_no, $packageNo) ? 'selected' : ''; ?>
+				                                        	<option value="<?php echo $package->package_group_no;?>" <?php echo $package_selected; ?>><?php echo $package->package_group_no;?></option>
 				                                        	<?php } ?>
 				                                        </select>
 			                						</div>

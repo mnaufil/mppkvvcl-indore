@@ -184,7 +184,8 @@
 	          													<tbody>
 	          														<?php foreach ($report_data as $key => $value) { ?>
 	          														<tr>
-	          															<td><?php echo $value['contract_id']; ?></td>
+	          															<!-- <td><?php //echo $value['contract_id']; ?></td> -->
+	          															<td><?php echo $value['package_group_no']; ?></td>
 	          															<td><?php echo $value['material_name']; ?></td>
 	          															<td><?php echo $value['unit']; ?></td>
 	          															<td><?php echo $value['received_quantity']; ?></td>

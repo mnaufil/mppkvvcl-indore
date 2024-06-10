@@ -778,9 +778,9 @@ class Report extends CI_Controller
 		$data['packages'] = $this->Report_Model->loadPackagesForMaterialReports();
 		$data['circles'] = $this->Report_Model->loadCircles();
 
-		$data['packageNo'] = ""; 
+		$data['packageNo'] = []; 
 		$data['contractor'] = "";
-		$data['circle'] = "";
+		$data['circle'] = [];
 
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('report/material-status-report', $data);

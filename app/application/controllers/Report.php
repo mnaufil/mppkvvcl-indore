@@ -1007,7 +1007,6 @@ class Report extends CI_Controller
 	{
 		// $package_nos = $this->Report_Model->getPackageNos();
 		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
-		// echo 'package_nos: <pre>'; print_r($package_nos); echo '</pre>'; die();
 		$circles = $this->Report_Model->getCircles();
 		$status_list = $this->Report_Model->getMaterialStatusList();
 		$status_list = $this->modifyMaterialStatusList($status_list);

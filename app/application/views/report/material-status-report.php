@@ -85,13 +85,14 @@
 			                							<label for="packageNo" class="form-label">Lot No.<span class="text-red">*</span></label>
 			                							<!-- <select class="form-control select2" id="packageNo" name="packageNo">
 			                								<option value="select" selected disabled>Select Lot</option>
-													      	<?php foreach($packages as $package) { ?>
-													        <option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
-															<?php } ?>
+													      	<?php //foreach($packages as $package) { ?>
+													        <option value="<?php //echo $package->package_no;?>" <?php //if($packageNo==$package->package_no) { ?> selected <?php //} ?>><?php //echo $package->package_no;?></option>
+															<?php //} ?>
 													    </select> -->
 													    <select class="filter-multi" id="packageNo" name="packageNo[]" multiple="multiple">
 													    	<?php foreach ($packages as $package) { ?>
-													    	<option value="<?php echo $package->package_group_no;?>"><?php echo $package->package_group_no;?></option>
+													    	<?php $package_select = (in_array($package->package_group_no, $packageNo)) ? 'selected' : ''; ?>
+													    	<option value="<?php echo $package->package_group_no;?>" <?php echo $package_select; ?>><?php echo $package->package_group_no;?></option>
 													    	<?php } ?>
 													    </select>
 			                						</div>
@@ -105,14 +106,15 @@
 			                							<label for="circle" class="form-label">Circle<span class="text-red">*</span></label>
 			                							<!-- <select class="form-control select2" id="circle" name="circle">
 			                								<option value="select" selected disabled>Select Circle</option>
-			                								<?php foreach ($circles as $key => $value) { ?>
-			                								<?php $selected = ($value->circle_id == $circle) ? 'selected' : ''; ?>
-			                								<option value="<?php echo $value->circle_id; ?>" <?php echo $selected; ?>><?php echo $value->circle_name; ?></option>
-			                								<?php } ?>
+			                								<?php //foreach ($circles as $key => $value) { ?>
+			                								<?php //$selected = ($value->circle_id == $circle) ? 'selected' : ''; ?>
+			                								<option value="<?php //echo $value->circle_id; ?>" <?php //echo $selected; ?>><?php //echo $value->circle_name; ?></option>
+			                								<?php //} ?>
 			                							</select> -->
 			                							<select class="filter-multi" id="circle" name="circle[]" multiple="multiple">
 			                								<?php foreach ($circles as $key => $value) { ?>
-													    	<option value="<?php echo $value->circle_id;?>"><?php echo $value->circle_name;?></option>
+			                								<?php $circle_select = (in_array($value->circle_id, $circle)) ? 'selected' : ''; ?>
+													    	<option value="<?php echo $value->circle_id;?>" <?php echo $circle_select; ?>><?php echo $value->circle_name;?></option>
 													    	<?php } ?>
 			                							</select>
 			                						</div>

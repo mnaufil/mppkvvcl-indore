@@ -667,7 +667,7 @@ class Report extends CI_Controller
 		$circle_data = $this->Report_Model->getCircleData($user_circles);
 		$data['circle_data'] = $this->groupCircleData($circle_data);
 
-	  $data['postpackage'] = "";
+	  $data['postpackage'] = [];
 		$data['postregion'] = "";
 		$data['postcircle'] = "";
 		$data['poststatus'] = "";
@@ -774,7 +774,8 @@ class Report extends CI_Controller
 
 	public function materialStatusReport()
 	{
-		$data['packages'] = $this->Report_Model->loadPackages();
+		// $data['packages'] = $this->Report_Model->loadPackages();
+		$data['packages'] = $this->Report_Model->loadPackagesForMaterialReports();
 		$data['circles'] = $this->Report_Model->loadCircles();
 
 		$data['packageNo'] = ""; 
@@ -787,7 +788,9 @@ class Report extends CI_Controller
 
 	public function generateMaterialStatusReport()
 	{
-		$data['packages'] = $this->Report_Model->loadPackages();
+		// echo '<pre>'; print_r($_POST); echo '</pre>'; die();
+		// $data['packages'] = $this->Report_Model->loadPackages();
+		$data['packages'] = $this->Report_Model->loadPackagesForMaterialReports();
 		$data['circles'] = $this->Report_Model->loadCircles();
 
 		$data['packageNo'] = $this->input->post('packageNo'); 
@@ -820,7 +823,8 @@ class Report extends CI_Controller
 
 	public function materialStatusSummary()
 	{
-		$data['packages'] = $this->Report_Model->loadPackages();
+		// $data['packages'] = $this->Report_Model->loadPackages();
+		$data['packages'] = $this->Report_Model->loadPackagesForMaterialReports();
 		//$data['circles'] = $this->Report_Model->loadCircles();	
 
 		$data['packageNo'] = ""; 
@@ -866,7 +870,7 @@ class Report extends CI_Controller
 	{
 		$data['packages'] = $this->Report_Model->loadPackages();
 
-		$data['packageNo'] = "";
+		$data['packageNo'] = [];
 
 		$this->load->view('report/cash-flow-report', $data);
 	}
@@ -934,13 +938,16 @@ class Report extends CI_Controller
 
 	public function materialInwardSamplingReport()
 	{
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 		$status_list = $this->Report_Model->getMaterialStatusList();
 		$status_list = $this->modifyMaterialStatusList($status_list);
 
 		$data['package_nos'] = $package_nos;
+		$data['package_no'] = [];
 		$data['circles'] = $circles;
+		$data['circle'] = [];
 		$data['status_list'] = $status_list;
 		$data['title'] = 'Material Inward Sampling Report';
 
@@ -959,7 +966,8 @@ class Report extends CI_Controller
 		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
 		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
 
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 		$status_list = $this->Report_Model->getMaterialStatusList();
 		$status_list = $this->modifyMaterialStatusList($status_list);
@@ -996,13 +1004,17 @@ class Report extends CI_Controller
 
 	public function materialInwardMICCDetailsReport()
 	{
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
+		// echo 'package_nos: <pre>'; print_r($package_nos); echo '</pre>'; die();
 		$circles = $this->Report_Model->getCircles();
 		$status_list = $this->Report_Model->getMaterialStatusList();
 		$status_list = $this->modifyMaterialStatusList($status_list);
 
 		$data['package_nos'] = $package_nos;
+		$data['package_no'] = [];
 		$data['circles'] = $circles;
+		$data['circle'] = [];
 		$data['status_list'] = $status_list;
 		$data['title'] = 'Material Inward MICC Details Report';
 
@@ -1022,7 +1034,8 @@ class Report extends CI_Controller
 		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
 		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
 
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 		$status_list = $this->Report_Model->getMaterialStatusList();
 		$status_list = $this->modifyMaterialStatusList($status_list);
@@ -1059,11 +1072,14 @@ class Report extends CI_Controller
 
 	public function materialInwardReport()
 	{
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();		
 
 		$data['package_nos'] = $package_nos;
+		$data['package_no'] = [];
 		$data['circles'] = $circles;
+		$data['circle'] = [];
 		$data['title'] = 'Material Inward Report';
 
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
@@ -1080,7 +1096,8 @@ class Report extends CI_Controller
 		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
 		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
 
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 
 		if ($this->checkLocationAccess(NULL, $package_no)) {
@@ -1114,14 +1131,17 @@ class Report extends CI_Controller
 
 	public function materialInwardReturnReport()
 	{
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 		
 		$data['package_nos'] = $package_nos;
+		$data['package_no'] = [];
 		$data['circles'] = $circles;
+		$data['circle'] = [];
 		$data['title'] = 'Material Inward Return Report';
 
-		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die()
+		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('report/material-inward-return-report', $data);
 	}
 
@@ -1135,7 +1155,8 @@ class Report extends CI_Controller
 		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
 		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
 
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 
 		if ($this->checkLocationAccess(NULL, $package_no)) {
@@ -1169,11 +1190,14 @@ class Report extends CI_Controller
 
 	public function materialOutwardReport()
 	{
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 
 		$data['package_nos'] = $package_nos;
+		$data['package_no'] = [];
 		$data['circles'] = $circles;
+		$data['circle'] = [];
 		$data['title'] = 'Material Outward Report';
 
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();
@@ -1185,12 +1209,12 @@ class Report extends CI_Controller
 		$data['package_no'] = $package_no = $this->input->post('packageNo');
 		$data['circle'] = $circle = $this->input->post('circle');
 
-		$data['material_issue_date'] = $material_issue_date = $this->input->post('matrerialIssueDate');
+		$data['material_received_date'] = $material_issue_date = $this->input->post('materialReceivedDate');
 		$dates_arr = explode(' - ', $material_issue_date);
 		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
 		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
 
-		$package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 
 		if ($this->checkLocationAccess(NULL, $package_no)) {
@@ -1224,11 +1248,13 @@ class Report extends CI_Controller
 
 	public function materialStockReport()
 	{
-		$package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 
 		$data['package_nos'] = $package_nos;
+		$data['package_no'] = [];
 		$data['circles'] = $circles;
+		$data['circle'] = [];
 		$data['title'] = 'Material Stock Report';
 
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
@@ -1245,7 +1271,8 @@ class Report extends CI_Controller
 		$from_date = date('Y-m-d', strtotime($dates_arr[0]));
 		$to_date = date('Y-m-d', strtotime($dates_arr[1]));
 
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 		$circles = $this->Report_Model->getCircles();
 
 		if ($this->checkLocationAccess(NULL, $package_no)) {
@@ -1279,9 +1306,11 @@ class Report extends CI_Controller
 
 	public function materialBalanceQuantityReport()
 	{
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 
 		$data['package_nos'] = $package_nos;
+		$data['package_no'] = [];
 		$data['title'] = 'Material Balance Quantity Report';
 
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
@@ -1292,7 +1321,8 @@ class Report extends CI_Controller
 	{
 		$data['package_no'] = $package_no = $this->input->post('packageNo');
 
-		$package_nos = $this->Report_Model->getPackageNos();
+		// $package_nos = $this->Report_Model->getPackageNos();
+		$package_nos = $this->Report_Model->loadPackagesForMaterialReports();
 
 		if ($this->checkLocationAccess(NULL, $package_no)) {
 			$report_data = $this->Report_Model->generateMaterialBalanceQuantityReport($package_no);
@@ -1330,7 +1360,7 @@ class Report extends CI_Controller
 	  $user_divisions = $this->Report_Model->loadDivisions();
 
 		$data['reportType'] = "";
-	  $data['postpackage'] = "";
+	  $data['postpackage'] = [];
 	  $data['postregion'] = "";
 		$data['postcircle'] = "";
 		$data['poststatus'] = "";

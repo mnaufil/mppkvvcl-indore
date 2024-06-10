@@ -83,11 +83,16 @@
 			                						<!-- Package No -->
 			                						<div class="col-xl-4 mb-3">
 			                							<label for="packageNo" class="form-label">Lot No.<span class="text-red">*</span></label>
-			                							<select class="form-control select2" id="packageNo" name="packageNo">
+			                							<!-- <select class="form-control select2" id="packageNo" name="packageNo">
 			                								<option value="select" selected disabled>Select Lot</option>
 													      	<?php foreach($packages as $package) { ?>
 													        <option value="<?php echo $package->package_no;?>" <?php if($packageNo==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
 															<?php } ?>
+													    </select> -->
+													    <select class="filter-multi" id="packageNo" name="packageNo[]" multiple="multiple">
+													    	<?php foreach ($packages as $package) { ?>
+													    	<option value="<?php echo $package->package_group_no;?>"><?php echo $package->package_group_no;?></option>
+													    	<?php } ?>
 													    </select>
 			                						</div>
 			                						<!-- Contract No -->
@@ -98,12 +103,17 @@
 			                						<!-- Circle -->
 			                						<div class="col-xl-4 mb-3">
 			                							<label for="circle" class="form-label">Circle<span class="text-red">*</span></label>
-			                							<select class="form-control select2" id="circle" name="circle">
+			                							<!-- <select class="form-control select2" id="circle" name="circle">
 			                								<option value="select" selected disabled>Select Circle</option>
 			                								<?php foreach ($circles as $key => $value) { ?>
 			                								<?php $selected = ($value->circle_id == $circle) ? 'selected' : ''; ?>
 			                								<option value="<?php echo $value->circle_id; ?>" <?php echo $selected; ?>><?php echo $value->circle_name; ?></option>
 			                								<?php } ?>
+			                							</select> -->
+			                							<select class="filter-multi" id="circle" name="circle[]" multiple="multiple">
+			                								<?php foreach ($circles as $key => $value) { ?>
+													    	<option value="<?php echo $value->circle_id;?>"><?php echo $value->circle_name;?></option>
+													    	<?php } ?>
 			                							</select>
 			                						</div>
 			                					</div>
@@ -149,6 +159,7 @@
 			                									<th>Circle</th>
 			                									<th>Material</th>
 			                									<th>Unit</th>
+			                									<th>Unit Price</th>
 			                									<th>Offer Quantity</th>
 			                									<th>Accepted Quantity</th>
 			                									<th>Accepted Date</th>
@@ -164,6 +175,7 @@
 			                									<td><?php echo $report->circle;?></td>
 			                									<td><?php echo $report->material;?></td>
 			                									<td><?php echo $report->unit;?></td>
+			                									<td><?php echo $report->unit_price; ?></td>
 			                									<td><?php echo $report->received_quantity;?></td>
 			                									<td><?php echo $report->accepted_quantity;?></td>
 			                									<td><?php echo $report->accepted_date;?></td>
@@ -292,6 +304,10 @@
 	   	<!-- SWEET-ALERT JS -->
 	   	<script src="<?php echo base_url('assets/plugins/sweet-alert/sweetalert.min.js'); ?>"></script>
 	   	<script src="<?php echo base_url('assets/js/sweet-alert.js'); ?>"></script>
+
+	   	<!-- MULTIPLE SELECT JS -->
+      	<script src="<?php echo base_url('assets/plugins/multipleselect/multiple-select.js'); ?>"></script>
+	  	<script src="<?php echo base_url('assets/plugins/multipleselect/multi-select.js'); ?>"></script> 
 
 	   	<script type="text/javascript">
 	   	function showReport() {

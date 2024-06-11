@@ -563,7 +563,7 @@ class Report_Model extends CI_Model
 	function generatePhysicalReport()
 	{
 		$package = $this->input->post('packageNo');
-		// $package = implode(',', $package);
+		$package = implode(',', $package);
 
 		$sessionId = $_SESSION['userId'];
 		$feederId = $this->input->post('feederId');
@@ -600,6 +600,7 @@ class Report_Model extends CI_Model
 		 //$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress($sessionId,$package,$feederId)";
 
 		$query = $this->db->query("CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
+		// $query = $this->db->query("CALL bkp_sk110624_sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
 		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";	
 		
@@ -691,7 +692,7 @@ class Report_Model extends CI_Model
 	function generatePhysicalReportFeederWise()
 	{
 		$package = $this->input->post('packageNo');
-		// $package = implode(',', $package);
+		$package = implode(',', $package);
 
 		$sessionId = $_SESSION['userId'];
 		$feederId = $this->input->post('feederId');
@@ -731,7 +732,9 @@ class Report_Model extends CI_Model
 		// echo "CALL sp_rpt_physical_progress_feederWise($sessionId,$package,'$spRegion','$spCircle','$spDivision',null)"; die;
 
 		// echo "CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)"; die;
+		// $query = $this->db->query("CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		$query = $this->db->query("CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
+		// $query = $this->db->query("CALL bkp_sk110624_sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
 		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";
 		

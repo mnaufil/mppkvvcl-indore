@@ -35,7 +35,7 @@ class Report extends CI_Controller
 	  $user_divisions = $this->Report_Model->loadDivisions();
 
 		$data['reportType'] = "";
-	  $data['postpackage'] = "";
+	  $data['postpackage'] = array();
 	  $data['postregion'] = "";
 		$data['postcircle'] = "";
 		$data['poststatus'] = "";

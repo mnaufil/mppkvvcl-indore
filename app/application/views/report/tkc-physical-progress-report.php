@@ -79,6 +79,7 @@
                      		<div class="card">
                      			<div class="card-body">
                      				
+                                 <!-- Report Description -->
                      				<div class="form-row mt-2 mb-2">
                      					<div class="col-xl-12">
                      						<label class="form-label">Report Description:</label>
@@ -94,11 +95,16 @@
                                           <label for="packageNo" class="form-label">Lot No.
                                              <span class="text-red">*</span>
                                           </label>
-                                          <select  class="form-control select2-show-search form-select select2-hidden-accessible" id="packageNo" name="packageNo" required>
+                                          <!-- <select class="form-control select2-show-search form-select select2-hidden-accessible" id="packageNo" name="packageNo" required>
                                              <option value="select" selected disabled>Select Lot</option>
                                              <?php foreach($packages as $package) { ?>
                                                    <option value="<?php echo $package->package_no;?>" <?php if($postpackage==$package->package_no) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
                                                 <?php } ?>
+                                           </select> -->
+                                           <select class="filter-multi" id="packageNo" name="packageNo[]" multiple="multiple">
+                                             <?php foreach($packages as $package) { ?>
+                                             <option value="<?php echo $package->package_no;?>" <?php if(in_array($package->package_no, $postpackage)) { ?> selected <?php } ?>><?php echo $package->package_no;?></option>
+                                             <?php } ?>
                                            </select>
                                        </div>
                                        <!-- Region -->

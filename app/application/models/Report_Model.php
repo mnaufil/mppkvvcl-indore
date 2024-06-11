@@ -442,10 +442,11 @@ class Report_Model extends CI_Model
 		
 		//echo "CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle,$spStatus, $spReportType)"; die;		
 		
-	    $query = $this->db->query("CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle,$spStatus, $spReportType)");
+	    $query = $this->db->query("CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)");
+	    // $query = $this->db->query("CALL bkp_original_sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle,$spStatus, $spReportType)");
 	    // echo $this->db->last_query(); die();
 		
-		$_SESSION['spQuery'] = "CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle,$spStatus, $spReportType)";
+		$_SESSION['spQuery'] = "CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)";
 		
 		$result =  $query->result();
 

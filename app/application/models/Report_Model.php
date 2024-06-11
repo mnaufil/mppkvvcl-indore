@@ -440,8 +440,7 @@ class Report_Model extends CI_Model
 			}
 		}
 		
-		//echo "CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle,$spStatus, $spReportType)"; die;
-		
+		//echo "CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle,$spStatus, $spReportType)"; die;		
 		
 	    $query = $this->db->query("CALL sp_rpt_visit_report($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle,$spStatus, $spReportType)");
 	    // echo $this->db->last_query(); die();
@@ -564,7 +563,7 @@ class Report_Model extends CI_Model
 	function generatePhysicalReport()
 	{
 		$package = $this->input->post('packageNo');
-		$package = implode(',', $package);
+		// $package = implode(',', $package);
 
 		$sessionId = $_SESSION['userId'];
 		$feederId = $this->input->post('feederId');
@@ -602,9 +601,7 @@ class Report_Model extends CI_Model
 
 		$query = $this->db->query("CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
-		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";
-
-		
+		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";	
 		
 		if($query)
 		{
@@ -694,7 +691,7 @@ class Report_Model extends CI_Model
 	function generatePhysicalReportFeederWise()
 	{
 		$package = $this->input->post('packageNo');
-		$package = implode(',', $package);
+		// $package = implode(',', $package);
 
 		$sessionId = $_SESSION['userId'];
 		$feederId = $this->input->post('feederId');

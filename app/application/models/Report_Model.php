@@ -371,7 +371,7 @@ class Report_Model extends CI_Model
 		}
 		else 
 		{
-			$status = "All";
+			$status = "all";
 		}		
 		
 		$reportType = 	$this->input->post('reportType');

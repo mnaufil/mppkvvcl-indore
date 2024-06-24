@@ -547,7 +547,7 @@ class Report_Model extends CI_Model
 		
 	    $query = $this->db->query("CALL sp_rpt_ncr_data($sessionId,'$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)");
 		
-		$_SESSION['spQuery'] = "CALL sp_rpt_ncr_data($sessionId,'$physicalProgressFromDate', '$physicalProgressToDate', '$spEmployee', '$spPackage', '$spRegion', '$spCircle', '$spStatus', '$spReportType')";
+		$_SESSION['spQuery'] = "CALL sp_rpt_ncr_data($sessionId,'$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)";
 		// echo $this->db->last_query(); die();
 		
 		if($query)

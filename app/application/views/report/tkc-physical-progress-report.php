@@ -354,6 +354,7 @@
                                                       <th></th>
                                                       <th></th>
                                                       <th></th>
+                                                      <th></th>
                                                       <?php foreach ($subSubHeadingArray as $val) { ?>  
                                                       <th><?php echo str_replace("_", " ", $val);?></th>
                                                       <?php } ?>
@@ -369,7 +370,7 @@
                                                       <td><?php echo $reportData[$key]['district']; ?></td>
                                                       <td><?php echo $key; ?></td>
                                                       <td><?php echo $reportData[$key]['status']; ?></td>
-                                                      <?php $value = array_slice($value, 6); ?>
+                                                      <?php $value = array_slice($value, 7); ?>
                                                       <?php foreach ($value as $val) { ?>
                                                       <td style="text-align:center;"><?php echo $val; ?></td>
                                                       <?php } ?>

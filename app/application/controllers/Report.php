@@ -1457,7 +1457,7 @@ class Report extends CI_Controller
 
 					foreach($data['onlyKeys'] as $mainHeading)
 					{
-						if ($mainHeading == 'feeder_id' || $mainHeading == 'region_name' || $mainHeading == 'circle_name' || $mainHeading == 'division_name' || $mainHeading == 'vidhansabha' || $mainHeading == 'district' || $mainHeading == 'loksabha') {
+						if ($mainHeading == 'feeder_id' || $mainHeading == 'region_name' || $mainHeading == 'circle_name' || $mainHeading == 'division_name' || $mainHeading == 'vidhansabha' || $mainHeading == 'district' || $mainHeading == 'loksabha' || $mainHeading == 'status') {
 							continue;
 						}
 
@@ -1512,6 +1512,8 @@ class Report extends CI_Controller
 								$modified_report_data[$value['feeder_id']]['loksabha'] = $val;
 							} elseif (str_contains($k, 'district')) {
 								$modified_report_data[$value['feeder_id']]['district'] = $val;
+							} elseif (str_contains($k, 'status')) {
+								$modified_report_data[$value['feeder_id']]['status'] = $val;
 							}
 						}
 					}

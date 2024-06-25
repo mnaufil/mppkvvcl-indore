@@ -328,6 +328,7 @@
                                                       <th></th>
                                                       <th></th>
                                                       <th></th>
+                                                      <th></th>
                                                       <th colspan="<?php echo $value; ?>"><?php echo $key;?></th>
                                                       <?php  } ?>
                                                    </tr> 
@@ -340,6 +341,7 @@
                                                       <th>Loksabha</th>
                                                       <th>District</th>
                                                       <th>Feeder ID</th>
+                                                      <th>Status</th>
                                                       <?php foreach ($subHeadingArray as $key) { ?>
                                                       <th style="text-align:left"><?php echo str_replace("_", " ", $key);?></th>
                                                       <?php  } ?>
@@ -366,6 +368,7 @@
                                                       <td><?php echo $reportData[$key]['loksabha']; ?></td>
                                                       <td><?php echo $reportData[$key]['district']; ?></td>
                                                       <td><?php echo $key; ?></td>
+                                                      <td><?php echo $reportData[$key]['status']; ?></td>
                                                       <?php $value = array_slice($value, 6); ?>
                                                       <?php foreach ($value as $val) { ?>
                                                       <td style="text-align:center;"><?php echo $val; ?></td>

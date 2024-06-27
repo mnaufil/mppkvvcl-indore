@@ -1873,6 +1873,28 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
+	public function updateFeederNameAndSiteLocation($contract_location_id, $feeder_name, $site_location, $user_id)
+	{
+		$data = array(
+			'feeder_name' => $feeder_name,
+			'location_name' => $site_location,
+			'modifiedby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('contract_location', $data, array('contract_location_id' => $contract_location_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {
+				return $this->db->affected_rows();
+			}
+		}
+	}
+
 	public function getRegion($region_id)
 	{
 		$query = $this->db->get_where('mst_region', array('region_id' => $region_id));

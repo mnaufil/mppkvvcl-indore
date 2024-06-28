@@ -214,7 +214,7 @@ class PhysicalProgressApi extends REST_Controller
             $sheet_remark = $this->post('sheet_remark');
             $charging_status = $this->post('charging_status');
             $feeder_name = $this->post('feeder_name');
-            $site_location = $this->post('site_location');
+            $location_name = $this->post('location_name');
             $activities = $this->post('activities');
             $sheet_completion_file = $this->post('sheet_completion_file');
             // $status_id = $this->post('status_id');
@@ -273,7 +273,7 @@ class PhysicalProgressApi extends REST_Controller
                 $this->pp_model->updateChargingStatus($prev_sheet_data['contract_location_id'], $charging_status, $user_id);
 
                 // Updating Feeder Name and Site Location in contract_location table
-                $this->pp_model->updateFeederNameAndSiteLocation($prev_sheet_data['contract_location_id'], $feeder_name, $site_location, $user_id);
+                $this->pp_model->updateFeederNameAndSiteLocation($prev_sheet_data['contract_location_id'], $feeder_name, $location_name, $user_id);
 
                 $alert_message = '';
                 //If all the activities are marked as complete, uploading the sheet completion photo

@@ -1873,11 +1873,11 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
-	public function updateFeederNameAndSiteLocation($contract_location_id, $feeder_name, $site_location, $user_id)
+	public function updateFeederNameAndSiteLocation($contract_location_id, $feeder_name, $location_name, $user_id)
 	{
 		$data = array(
 			'feeder_name' => $feeder_name,
-			'location_name' => $site_location,
+			'location_name' => $location_name,
 			'modifiedby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),
 			'modifieddate' => date('Y-m-d H:i:s')
 		);

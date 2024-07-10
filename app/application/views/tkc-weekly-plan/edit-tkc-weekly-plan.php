@@ -569,6 +569,8 @@
 
                         return false;
                     }
+
+                    saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
                 } else if (selected_submit_btn == 'draft') {
                     let no_values_count = 0;
 

@@ -15,29 +15,38 @@
 			/*.blank_row {
 				line-height: 100px !important;
 			}*/
+			.center{
+				line-height: 5px;
+				padding: 15px 0;
+			}
 		</style>
 	</head>
 
 	<body>
 		<!-- <p>Testing mPDF</p> -->
+		<h2>Non Conformance Report By PMA (SGS)</h2>
 		<table style="width:100%">
 			<tbody>				
 				<?php 	$i = 0;
 						foreach ($report_data as $key => $value) {
 							if ($i == 0) {
 				?>
+				<!-- DISCOM -->
 				<tr>
 					<td><b>DISCOM</b></td>
 					<td>MPPKVVCL</td>
 				</tr>
+				<!-- TKC -->
 				<tr>
 					<td><b>TKC</b></td>
 					<td><?php echo $value['contractor_name'];?></td>
 				</tr>
+				<!-- Package No -->
 				<tr>
 					<td><b>Package No</b></td>
 					<td><?php echo $value['package_no']; ?></td>
 				</tr>
+				<!-- Standards -->
 				<tr>
 					<td><b>Standards</b></td>
 					<td><?php echo $value['standards']; ?></td>
@@ -46,54 +55,67 @@
 					<td colspan="2" style="line-height:50px;">&nbsp;</td>
 				</tr>
 				<?php		} ?>
+				<!-- Region -->
 				<tr>
 					<td><b>Region Name</b></td>
 					<td><?php echo $value['region_name']; ?></td>
 				</tr>
+				<!-- Circle -->
 				<tr>
 					<td><b>Circle Name</b></td>
 					<td><?php echo $value['circle_name']; ?></td>
 				</tr>
+				<!-- Division -->
 				<tr>
 					<td><b>Division Name</b></td>
 					<td><?php echo $value['division_name']; ?></td>
 				</tr>
+				<!-- Feeder ID -->
 				<tr>
 					<td><b>Feeder ID</b></td>
 					<td><?php echo $value['feeder_id']; ?></td>
 				</tr>
+				<!-- Feeder Name -->
 				<tr>
 					<td><b>Feeder Name</b></td>
 					<td><?php echo $value['feeder_name']; ?></td>
 				</tr>
+				<!-- Substation -->
 				<tr>
 					<td><b>Substation</b></td>
 					<td><?php echo $value['substation']; ?></td>
 				</tr>
+				<!-- NCR ID -->
 				<tr>
 					<td><b>NCR ID</b></td>
 					<td><?php echo $value['ncr_id'] ?></td>
 				</tr>
+				<!-- NCR Date -->
 				<tr>
 					<td><b>NCR Date</b></td>
 					<td><?php echo date('d-m-Y', strtotime($value['ncr_date'])); ?></td>
 				</tr>
+				<!-- Raised By -->
 				<tr>
 					<td><b>Raised By</b></td>
 					<td><?php echo $value['Inspected_by']; ?></td>
 				</tr>
+				<!-- Activity -->
 				<tr>
 					<td><b>Activity</b></td>
 					<td><?php echo $value['activity']; ?></td>
 				</tr>
+				<!-- Observation Type -->
 				<tr>
 					<td><b>Observation Type</b></td>
 					<td><?php echo $value['observation_type']; ?></td>
 				</tr>
+				<!-- Observation -->
 				<tr>
 					<td><b>Observation</b></td>
 					<td><?php echo $value['observation']; ?></td>
 				</tr>
+				<!-- Observation Photos -->
 				<tr>
 					<td><b>Observation Photos</b></td>
 					<td>
@@ -105,10 +127,16 @@
 						<?php 	} ?>
 					</td>
 				</tr>
+				<!-- Compliance Report -->
+				<tr>
+					<td colspan="2" class="center"><b>Compliance Report</b></td>
+				</tr>
+				<!-- Compliance Verification Date -->
 				<tr>
 					<td><b>Completion Date</b></td>
 					<td><?php echo (!empty($value['completion_date']) ? date('d-m-Y', strtotime($value['completion_date'])) : ''); ?></td>
 				</tr>
+				<!-- Compliance Photos -->
 				<tr>
 					<td><b>Completed Photos</b></td>
 					<td>
@@ -122,16 +150,16 @@
 						?>
 					</td>
 				</tr>
-				<tr class="blank_row">
+				<!-- <tr class="blank_row">
 					<td colspan="2" style="line-height:30px;">&nbsp;</td>
-				</tr>
+				</tr> -->
 				<?php $i++; ?>
 				<?php	} ?>				
 			</tbody>
 		</table>
 
-
-		<!-- BOOTSTRAP JS -->
-		<!-- <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script> -->
+		<footer>
+			<p style="text-align: center;"><strong>Note:</strong> This is computer generated report and no signature is required</p>
+		</footer>
 	</body>
 </html>

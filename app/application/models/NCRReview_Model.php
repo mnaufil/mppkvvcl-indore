@@ -25,6 +25,8 @@ class NCRReview_Model extends CI_Model
 			$this->db->join('mst_user', 'ppao.createdby = mst_user.user_id');
 			
 			$this->db->where_in('ppao.contract_location_id', $contract_location_ids);
+			// $this->db->where_in('ppao.status_id', $ncr_status);
+			$this->db->where(array('ppao.is_active' => 1, 'ppao.deletedby' => NULL));
 		} else {
 			$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.last_email_details, ppao.status_id, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name, contract.contractor_email, contract.package_no, mst_status.name AS observation_status, mst_user.username AS raised_by');
 			$this->db->from('physical_progress_activity_observation AS ppao');
@@ -38,10 +40,10 @@ class NCRReview_Model extends CI_Model
 			$this->db->join('mst_user', 'ppao.createdby = mst_user.user_id');
 			
 			$this->db->where(array('muda.user_id' => $user_id));
-		}
 
-		$this->db->where_in('ppao.status_id', $ncr_status);
-		$this->db->where(array('ppao.last_email_details' => NULL, 'ppao.is_active' => 1, 'ppao.deletedby' => NULL));
+			$this->db->where_in('ppao.status_id', $ncr_status);
+			$this->db->where(array('ppao.last_email_details' => NULL, 'ppao.is_active' => 1, 'ppao.deletedby' => NULL));
+		}		
 
 		$this->db->order_by('ppao.ncr_date', 'DESC');		
 

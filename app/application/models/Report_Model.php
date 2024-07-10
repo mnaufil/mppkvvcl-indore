@@ -1861,6 +1861,24 @@ class Report_Model extends CI_Model
 			return $query_result;
 		}
 	}
+
+	public function executeQuery($session_query)
+    {
+        $query = $this->db->query($session_query);
+
+        if (!$query) {
+            $error = $this->db->error();
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {
+            $query_result = [];
+            if ($query->num_rows() > 0) {
+                $query_result = $query->result_array();
+            }
+
+            return $query_result;
+        }
+    }
 }
 
 ?>

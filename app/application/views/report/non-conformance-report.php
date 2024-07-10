@@ -182,7 +182,8 @@
 				                    	<div class="dts-buttons btn-group flex-wrap" style="float:right;">
 				                      	<a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" type="button"><span>Export</span></a>
 				                        &nbsp;
-				                        <a target="_blank" href="<?php echo base_url('convert-pdf');?>" class="btn btn-success" type="button"><span>View in Pdf</span></a>
+				                        <!-- <a target="_blank" href="<?php echo base_url('convert-pdf');?>" class="btn btn-success" type="button"><span>View in Pdf</span></a> -->
+				                        <a target="_blank" href="<?php echo base_url('non-conformance-report-pdf');?>" class="btn btn-success" type="button"><span>View in Pdf</span></a>
 			                        </div>
 			                      </div>
 	                				</div>	

@@ -181,6 +181,7 @@ $route['mobilisation-summary-report'] = 'Report/mobilisationSummaryReport';
 $route['generate-mobilisation-summary-report'] = 'Report/generateMobilisationSummaryReport';
 $route['non-conformance-report'] = 'Report/nonConformanceReport';
 $route['generate-non-conformance-report'] = 'Report/generateNonConformaceReport';
+$route['non-conformance-report-pdf'] = 'Report/nonConformanceReportPDF';
 $route['material-status-report'] = 'Report/materialStatusReport';
 $route['generate-material-status-report'] = 'Report/generateMaterialStatusReport';
 $route['material-status-summary'] = 'Report/materialStatusSummary';
@@ -380,6 +381,10 @@ $route['api/search-tkc-sheets'] = 'TKCPhysicalVerificationApi/search_tkc_sheets'
 $route['api/authentication-token'] = 'PSDashboardApi/authenticateUser';
 $route['api/get-physical-verification-data'] = 'PSDashboardApi/getFeedersData';
 $route['api/update-feeders-data'] = 'PSDashboardApi/updateFeederData';
+
+
+/*PS Dashboard Feeder Data Update API*/
+$route['api/feeder-update'] = 'PSDashboardFeederDataUpdateApi/index';
 
 
 /******** Api Routes End ***************/

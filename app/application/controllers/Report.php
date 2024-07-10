@@ -11,6 +11,8 @@ class Report extends CI_Controller
 		//$this->load->library('form_validation');
 		$this->load->model('Report_Model');
 		$this->load->model('Setup_Model');
+		$this->load->library("Pdf");
+		$this->load->library('image_lib');
 		if(!$this->session->isUserLoggedIn)
     { 
       redirect('login'); 
@@ -1684,6 +1686,133 @@ class Report extends CI_Controller
 	{
 		//$this->Report_Model->convertpdf();
 		$this->Report_Model->generatePdf();
+	}
+
+	public function nonConformanceReportPDF()
+	{
+		$spQuery = $_SESSION['spQuery'];
+		$result = $this->Report_Model->executeQuery($spQuery);
+
+		if (!empty($result)) {
+			$temp_feeder_data = [];
+			foreach ($result as $key => $value) {
+				$temp_feeder_data[$value['feeder_id']][] = $value;
+			}
+
+			$feeder_data = [];
+			foreach ($temp_feeder_data as $key => $value) {
+				$feeder_data[$key][0]['scheme_name'] = $value[0]['scheme_name'];
+				$feeder_data[$key][0]['discom'] = $value[0]['discom'];
+				$feeder_data[$key][0]['contractor_name'] = $value[0]['contractor_name'];
+				$feeder_data[$key][0]['package_no'] = $value[0]['package_no'];
+				$feeder_data[$key][0]['region_name'] = $value[0]['region_name'];
+				$feeder_data[$key][0]['circle_name'] = $value[0]['circle_name'];
+				$feeder_data[$key][0]['division_name'] = $value[0]['division_name'];
+				$feeder_data[$key][0]['feeder_id'] = $value[0]['feeder_id'];
+				$feeder_data[$key][0]['feeder_name'] = $value[0]['feeder_name'];
+				$feeder_data[$key][0]['substation'] = $value[0]['substation'];
+				$feeder_data[$key][0]['standards'] = $value[0]['standards'];
+
+				$ncr_data = [];
+				foreach ($value as $k => $v) {
+					$ncr_data[$k]['ncr_id'] = $v['ncr_id'];
+					$ncr_data[$k]['ncr_date'] = $v['ncr_date'];
+					$ncr_data[$k]['Inspected_by'] = $v['Inspected_by'];
+					$ncr_data[$k]['activity'] = $v['activity'];
+					// $ncr_data[$k]['observation_id'] = $v['observation_id'];
+					$ncr_data[$k]['observation_type'] = $v['observation_type'];
+					// $ncr_data[$k]['other_observation_name'] = $v['other_observation_name'];
+					$ncr_data[$k]['observation'] = $v['observation'];
+					// $ncr_data[$k]['remark'] = $v['remark'];
+
+					$temp_obs_photos = explode(',', $v['observation_photos']);
+
+					$obs_photos = $obs_completion_photos = [];
+					foreach ($temp_obs_photos as $temp_obs_photo) {
+						$target_path = 'assets/uploads/observation_files/thumb/';
+						$resized_image = $this->resizeImage($temp_obs_photo, 1000, 1000, $target_path);
+
+						// $encoded_img = $this->encode_img_base64($temp_obs_photo);
+						$encoded_img = $this->encode_img_base64($resized_image);
+						array_push($obs_photos, $encoded_img);
+					}
+
+					$ncr_data[$k]['observation_photos'] = $obs_photos;
+
+					$obs_completion_photos = [];
+					if (!empty($v['completion_photos'])) {
+						$temp_obs_completion_photos = explode(',', $v['completion_photos']);
+
+						foreach ($temp_obs_completion_photos as $temp_obs_completion_photo) {
+							$target_path = 'assets/uploads/observation_completion_files/thumb/';
+							$resized_image = $this->resizeImage($temp_obs_completion_photo, 1000, 1000, $target_path);
+
+							$encoded_img = $this->encode_img_base64($resized_image);
+							array_push($obs_completion_photos, $encoded_img);
+						}
+					}
+					$ncr_data[$k]['completion_photos'] = $obs_completion_photos;
+
+					$ncr_data[$k]['completion_date'] = $v['completion_date'];
+					$ncr_data[$k]['status'] = $v['status'];
+				}
+
+				$feeder_data[$key][0]['ncr_data'] = $ncr_data;
+			}
+
+			$data['report_data'] = $feeder_data;
+			$html = $this->load->view('report/pdf-non-conformance-report', $data, true);
+
+			$pdf_name = 'Non Conformance Report - '.date('d-m-Y');
+
+			$this->pdf->createPDFReport($html, $pdf_name, FALSE);
+		}
+	}
+
+	public function resizeImage($image, $width, $height, $target_path)
+	{
+		$image_detail_arr = explode('/', $image);
+		$image_name = end($image_detail_arr);
+
+		$image_name_arr = explode('.', $image_name);
+		$ext = end($image_name_arr);
+
+		$image_name = $image_name_arr[0].'_thumb.'.$ext;
+
+		$config['image_library'] = 'gd2';
+		$config['source_image'] = $image;
+		$config['new_image'] = $target_path;
+		$config['create_thumb'] = TRUE;
+		$config['maintain_ratio'] = TRUE;
+		$config['quality'] = 90;
+		$config['width'] = $width;
+		$config['height'] = $height;
+
+		$this->image_lib->clear();
+    $this->image_lib->initialize($config);
+    $this->image_lib->resize();
+
+    return $target_path.$image_name;
+	}
+
+	public function encode_img_base64($img_path)
+	{
+		$type = pathinfo($img_path, PATHINFO_EXTENSION);
+
+		//Temporary Code
+    $arrContextOptions = array(
+        "ssl" => array(
+            'cafile' => '/path/to/bundle/cacert.pem',
+            "verify_peer" => false,
+            "verify_peer_name" => false
+        ),
+    );
+
+    $img_path = base_url($img_path);
+    // $img_path = 'https://mpwzrdss.co.in/'.$img_path;
+
+		$data = file_get_contents($img_path, false, stream_context_create($arrContextOptions));
+		return 'data:image/'.$type.';base64,'.base64_encode($data);
 	}
 
 	public function showfeeders($feederId)

@@ -213,7 +213,7 @@
 					            									foreach ($ncr_data['observation_tkc_files'] as $key => $value) { ?>
 					            							<div class="file-image-1" data-ppao-file-id="<?php echo $value['physical_progress_activity_observation_tkc_file_id'];?>">
 					            								<a href="javascript:void(0)" onclick="showImageModal(this)">
-					            									<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="">
+					            									<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="" width="100" height="100">
 					            								</a>
 					            								<?php if ($ncr_data['completion_date'] == NULL) { ?>
 					            								<ul class="icons">
@@ -246,7 +246,7 @@
               														foreach ($ncr_data['observation_completion_files'] as $key => $value) { ?>
               												<div class="file-image-1" data-ppao-file_id="<?php echo $value['physical_progress_activity_completion_file_id']; ?>">
                   												<a href="javascript:void(0)" onclick="showImageModal(this)">
-										                        	<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="">
+										                        	<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="" width="100" height="100">
 										                        </a>
 										                        <ul class="icons">
 										                        	<li>
@@ -682,7 +682,7 @@
 						let html_img = '';
 	          			html_img += '<div class="file-image-1">';
 		      			html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-		      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="">';
+		      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="" width="100" height="100">';
 		      			html_img += '</a>';
 		      			html_img += '<ul class="icons">';
 		      			html_img += '<li>';
@@ -699,8 +699,7 @@
 		  		}
 		  	});
 
-		  	$('#updateNCRDetails').submit(function(event) {		  		
-
+		  	$('#updateNCRDetails').submit(function(event) {	
 		  		let completion_date = $('input[name="completionDate"]').val();
 
 		  		let completion_files_count = $('#completion_photo')[0].files.length;
@@ -713,7 +712,9 @@
 
      				event.preventDefault();
      				return false;
-		  		} else if (observation_status == 'Reviewed') {
+		  		} 
+
+		  		if (observation_status == 'Reviewed') {
 		  			let previous_uploaded_photos = $('#preview-img-complete').find('.file-image-1').length;
 		  			if (previous_uploaded_photos == 0 && completion_date != '') {
 			  			$('.toast-body').text('Upload completion photo');
@@ -722,59 +723,59 @@
 	     				event.preventDefault();
 	     				return false;
 			  		}	
-		  		} else {
-		  			event.preventDefault();
+		  		} 
 
-		  			let feeder_id_arr = [];
-			  		let feeder_id = $('input[name="feederID"]').val();
-			  		feeder_id_arr.push(feeder_id);
+		  		event.preventDefault();
 
-			  		let ncr_id_arr = [];
-			  		let ncr_id = $('input[name="ncrID"]').val();
-			  		ncr_id_arr.push(ncr_id);
+	  			let feeder_id_arr = [];
+		  		let feeder_id = $('input[name="feederID"]').val();
+		  		feeder_id_arr.push(feeder_id);
 
-			  		$.ajax({
-	    				type: 'POST',
-	    				url: '<?php echo base_url('get-email-recipients-new') ?>',
-	    				dataType: 'json',
-	    				data: {feeder_id : feeder_id_arr, ncr_id: ncr_id_arr},
-	    				success: function(response) {
-	    					console.log(response);
-	    					// return false;
+		  		let ncr_id_arr = [];
+		  		let ncr_id = $('input[name="ncrID"]').val();
+		  		ncr_id_arr.push(ncr_id);
 
-	    					let to_html = '<label class="form-label" for="">To Recipients</label>';
-	    					let cc_html = '<label class="form-label" for="">CC Recipients</label>';
+		  		$.ajax({
+    				type: 'POST',
+    				url: '<?php echo base_url('get-email-recipients-new') ?>',
+    				dataType: 'json',
+    				data: {feeder_id : feeder_id_arr, ncr_id: ncr_id_arr},
+    				success: function(response) {
+    					console.log(response);
+    					// return false;
 
-	    					if (!$.isEmptyObject(response.to)) {
-	    						$.each(response.to, function(index, value) {
-	    							to_html += '<div class="form-check">';
-	    							to_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="to_emails_'+index+'" name="to_emails_'+index+'" checked>';
-	    							to_html += '<label class="form-check-label" for="to_emails_'+index+'"> '+value+' </label>';
-	    							to_html += '</div>';
-	    						});
+    					let to_html = '<label class="form-label" for="">To Recipients</label>';
+    					let cc_html = '<label class="form-label" for="">CC Recipients</label>';
 
-	    						$('#to_recipients').empty().append(to_html);
-	    					}
+    					if (!$.isEmptyObject(response.to)) {
+    						$.each(response.to, function(index, value) {
+    							to_html += '<div class="form-check">';
+    							to_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="to_emails_'+index+'" name="to_emails_'+index+'" checked>';
+    							to_html += '<label class="form-check-label" for="to_emails_'+index+'"> '+value+' </label>';
+    							to_html += '</div>';
+    						});
 
-	    					if (!$.isEmptyObject(response.cc)) {
-	    						$.each(response.cc, function(index, value) {
-	    							cc_html += '<div class="form-check">';
-	    							cc_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="cc_emails_'+index+'" name="cc_emails_'+index+'" checked>';
-	    							cc_html += '<label class="form-check-label" for="cc_emails_'+index+'"> '+value+' </label>';
-	    							cc_html += '</div>';
-	    						});
+    						$('#to_recipients').empty().append(to_html);
+    					}
 
-	    						$('#cc_recipients').empty().append(cc_html);
-	    					}
+    					if (!$.isEmptyObject(response.cc)) {
+    						$.each(response.cc, function(index, value) {
+    							cc_html += '<div class="form-check">';
+    							cc_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="cc_emails_'+index+'" name="cc_emails_'+index+'" checked>';
+    							cc_html += '<label class="form-check-label" for="cc_emails_'+index+'"> '+value+' </label>';
+    							cc_html += '</div>';
+    						});
 
-	    					$('#email_recipient_list_modal').modal('show');
-	    					return false;
-	    				},
-	    				error: function(xhr, status, error) {
-	    					console.log(xhr.responseText);	
-	    				}
-	    			});
-		  		}
+    						$('#cc_recipients').empty().append(cc_html);
+    					}
+
+    					$('#email_recipient_list_modal').modal('show');
+    					return false;
+    				},
+    				error: function(xhr, status, error) {
+    					console.log(xhr.responseText);	
+    				}
+    			});
 		  	});
 
 		  	function updateAndSendEmail() {

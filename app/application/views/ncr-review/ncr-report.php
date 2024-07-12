@@ -145,6 +145,7 @@
 									for ($j = 0; $j < count($obs_completion_photos); $j++) {
 						?>
 						<img src="<?php echo $obs_completion_photos[$j] ?>" width="100" height="100">
+						<br/><br/>
 						<?php 		} 
 								}
 						?>

@@ -2160,7 +2160,7 @@
 						let html_img = '';
           	html_img += '<div class="file-image-1">';
       			html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="">';
+      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="" width="100" height="100">';
       			html_img += '</a>';
       			html_img += '<ul class="icons">';
       			html_img += '<li>';
@@ -2272,7 +2272,7 @@
             let html_img = '';
           	html_img += '<div class="file-image-1">';
       			html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="">';
+      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="" width="100" height="100">';
       			html_img += '</a>';
       			html_img += '<ul class="icons">';
       			html_img += '<li>';
@@ -2329,7 +2329,7 @@
   					let html_img = '';
   					html_img += '<div class="file-image-1">';
       			html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="">';
+      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="" width="100" height="100">';
       			html_img += '</a>';
       			html_img += '<ul class="icons">';
       			html_img += '<li>';
@@ -3029,7 +3029,7 @@
 
 		      				html_img += '<div class="file-image-1" data-ppao-file_id="'+ value.physical_progress_activity_observation_file_id +'">';
 		      				html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-		      				html_img += '<img src="'+file_path+'" class="br-5" alt="">';
+		      				html_img += '<img src="'+file_path+'" class="br-5" alt="" width="100" height="100">';
 		      				html_img += '</a>';
 		      				html_img += '<ul class="icons">';
 		      				html_img += '<li>';
@@ -3056,7 +3056,7 @@
 
 		      				html_img += '<div class="file-image-1" data-ppao-file_id="'+ value.physical_progress_activity_observation_file_id +'">';
 		      				html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-		      				html_img += '<img src="'+file_path+'" class="br-5" alt="">';
+		      				html_img += '<img src="'+file_path+'" class="br-5" alt="" width="100" height="100">';
 		      				html_img += '</a>';
 		      				html_img += '</div>';
 		      			});
@@ -3075,7 +3075,7 @@
 
 		      				html_img += '<div class="file-image-1" data-ppao-file_id="'+ value.physical_progress_activity_completion_file_id +'">';
 		      				html_img += '<a href="javascript:void(0)"  onclick="showImageModal(this)">';
-		      				html_img += '<img src="'+file_path+'" class="br-5" alt="">';
+		      				html_img += '<img src="'+file_path+'" class="br-5" alt="" width="100" height="100">';
 		      				html_img += '</a>';
 		      				html_img += '<ul class="icons">';
 		      				html_img += '<li>';

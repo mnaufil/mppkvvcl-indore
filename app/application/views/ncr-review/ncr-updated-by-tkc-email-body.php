@@ -13,7 +13,7 @@
 	</style>
 </head>
 <body>
-	<!-- <?php //echo 'ncr_data: <pre>'; print_r($ncr_data); echo '</pre>'; ?> -->
+	<?php //echo 'ncr_data: <pre>'; print_r($ncr_data); echo '</pre>'; die();?>
 	<p>NCR ID: <?php echo $ncr_data['ncr_id']; ?> has been updated by TKC. Following are the details:</p>
 	<table>
 		<tr>
@@ -31,17 +31,53 @@
 		<tr>
 			<th>Observation Photos: </th>
 			<td>
-				<?php foreach ($ncr_data['observation_files'] as $key => $value) { ?>
-				<img src="<?php echo base_url($value['file_path']); ?>" width= "200">
-				<?php } ?>
+				<!-- <?php //foreach ($ncr_data['observation_files'] as $key => $value) { ?>
+				<img src="<?php //echo base_url($value['file_path']); ?>" width= "200">
+				<?php //} ?> -->
+				<!-- <?php 	//$obs_files = explode(', ', $ncr_data['observation_files']); 
+						//$obs_files = $ncr_data['observation_files'];
+						//for ($i = 0; $i < count($obs_files); $i++) {
+				?>
+				<img src="<?php //echo $obs_files[$i]; ?>" width="100" height="100">
+				<br/><br/>
+				<?php 	//}
+				?> -->
+
+				<?php  	$obs_files = $ncr_data['observation_files'];
+						foreach ($obs_files as $key => $value) {
+							//foreach ($value as $k => $v) {
+				?>
+				<img src="cid:<?php echo $key; ?>" width="100" height="100">
+				<br/><br/>
+				<?php		//}
+						}
+				?>
 			</td>
 		</tr>
 		<tr>
 			<th>Observation Photos uploaded by TKC: </th>
 			<td>
-				<?php foreach ($ncr_data['observation_tkc_files'] as $key => $value) { ?>
-				<img src="<?php echo base_url($value['file_path']) ?>" width="200">
-				<?php } ?>
+				<!-- <?php //foreach ($ncr_data['observation_tkc_files'] as $key => $value) { ?>
+				<img src="<?php //echo base_url($value['file_path']) ?>" width="200">
+				<?php //} ?> -->
+				<!-- <?php 	//$obs_files_by_tkc = explode(', ', $ncr_data['observation_tkc_files']); 
+						//$obs_files_by_tkc = $ncr_data['observation_tkc_files'];
+						//for ($i = 0; $i < count($obs_files_by_tkc); $i++) {
+				?>
+				<img src="<?php //echo $obs_files_by_tkc[$i]; ?>" width="100" height="100">
+				<br/><br/>
+				<?php 	//}
+				?> -->
+
+				<?php  	$obs_files_by_tkc = $ncr_data['observation_tkc_files'];
+						foreach ($obs_files_by_tkc as $key => $value) {
+							//foreach ($value as $k => $v) {
+				?>
+				<img src="cid:<?php echo $key; ?>" width="100" height="100">
+				<br/><br/>
+				<?php		//}
+						}
+				?>
 			</td>
 		</tr>
 		<tr>
@@ -51,12 +87,31 @@
 		<tr>
 			<th>Completion Photos</th>
 			<td>
-				<?php if (!empty($ncr_data['observation_completion_files'])) {
-						foreach ($ncr_data['observation_completion_files'] as $key => $value) {
+				<!-- <?php //if (!empty($ncr_data['observation_completion_files'])) {
+						//foreach ($ncr_data['observation_completion_files'] as $key => $value) {
 				?>
-				<img src="<?php echo base_url($value['file_path']) ?>" width="200">
-				<?php  	} 
-					  }
+				<img src="<?php //echo base_url($value['file_path']) ?>" width="200">
+				<?php  	//} 
+					  //}
+				?> -->
+				<!-- <?php 	//if (!empty($ncr_data['observation_completion_files'])) {
+							//$obs_completion_files = explode(', ', $ncr_data['observation_completion_files']);
+							//for ($i = 0; $i < count($obs_completion_files); $i++) { 
+				?>
+				<img src="<?php //echo $obs_completion_files[$i] ?>" width="100" height="100">
+				<br/><br/>
+				<?php		//}
+						//} 
+				?> -->
+
+				<?php  	$obs_completion_files = $ncr_data['observation_completion_files'];
+						foreach ($obs_completion_files as $key => $value) {
+							//foreach ($value as $k => $v) {
+				?>
+				<img src="cid:<?php echo $key; ?>" width="100" height="100">
+				<br/><br/>
+				<?php		//}
+						}
 				?>
 			</td>
 		</tr>

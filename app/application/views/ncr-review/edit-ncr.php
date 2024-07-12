@@ -213,7 +213,7 @@
 					            									foreach ($ncr_data['observation_tkc_files'] as $key => $value) { ?>
 					            							<div class="file-image-1" data-ppao-file-id="<?php echo $value['physical_progress_activity_observation_tkc_file_id'];?>">
 					            								<a href="javascript:void(0)" onclick="showImageModal(this)">
-					            									<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="">
+					            									<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="" width="100" height="100">
 					            								</a>
 					            								<?php if ($ncr_data['completion_date'] == NULL) { ?>
 					            								<ul class="icons">

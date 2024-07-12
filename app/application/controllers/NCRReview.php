@@ -395,7 +395,7 @@ class NCRReview extends CI_Controller
 					if (in_array($ext, $allowTypes)) {
 						// Upload file to server
 						if (move_uploaded_file($observation_tkc_files['tmp_name'][$key], $targetFilePath)) {
-							$obs_file_result = $this->ncr_model->saveObservationFileByTKC($pp_activity_obs_id, $targetFilePath);
+							// $obs_file_result = $this->ncr_model->saveObservationFileByTKC($pp_activity_obs_id, $targetFilePath); //Uncomment Later
 						} else {
 							$error_msg = 'Failed to upload observation photo';
 			        		array_push($errors, $error_msg);
@@ -462,7 +462,58 @@ class NCRReview extends CI_Controller
 
 	public function sendNCRSubmittedByTKCEmail($contract_location_id, $ncr_id, $pp_activity_obs_id)
 	{
-		$data['ncr_data'] = $this->ncr_model->getNCRDetails($pp_activity_obs_id);
+		$ncr_data = $this->ncr_model->getNCRDetails($pp_activity_obs_id);
+
+		$embedded_img_arr = [];
+		if (!empty($ncr_data['observation_files'])) {
+			$temp_observation_files = [];
+			foreach ($ncr_data['observation_files'] as $key => $value) {
+				$target_path = 'assets/uploads/observation_files/thumb/';
+				$resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+				/*$encoded_img = $this->encode_img_base64($resized_image);
+				array_push($temp_observation_files, $encoded_img);*/
+				$embedded_img_arr['obs_file_'.$key] = $resized_image;
+				$temp_observation_files['obs_file_'.$key] = $resized_image;
+			}
+
+			// $ncr_data['observation_files'] = implode(', ', $temp_observation_files);
+			$ncr_data['observation_files'] = $temp_observation_files;
+		}
+
+		if (!empty($ncr_data['observation_tkc_files'])) {
+			$temp_observation_by_tkc_files = [];
+			foreach ($ncr_data['observation_tkc_files'] as $key => $value) {
+				$target_path = 'assets/uploads/observation_files_by_tkc/thumb/';
+				$resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+				/*$encoded_img = $this->encode_img_base64($resized_image);
+				array_push($temp_observation_by_tkc_files, $encoded_img);*/
+				$embedded_img_arr['obs_file_by_tkc_'.$key] = $resized_image;
+				$temp_observation_by_tkc_files['obs_file_by_tkc_'.$key] = $resized_image;
+			}
+
+			// $ncr_data['observation_tkc_files'] = implode(', ', $temp_observation_by_tkc_files);
+			$ncr_data['observation_tkc_files'] = $temp_observation_by_tkc_files;
+		}
+
+		if (!empty($ncr_data['observation_completion_files'])) {
+			$temp_observation_completion_files = [];
+			foreach ($ncr_data['observation_completion_files'] as $key => $value) {
+				$target_path = 'assets/uploads/observation_completion_files/thumb/';
+				$resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+				/*$encoded_img = $this->encode_img_base64($resized_image);
+				array_push($temp_observation_completion_files, $encoded_img);*/
+				$embedded_img_arr['obs_completion_file'.$key] = $resized_image;
+				$temp_observation_by_tkc_files['obs_completion_file'.$key] = $resized_image;
+			}
+
+			// $ncr_data['observation_completion_files'] = implode(', ', $temp_observation_completion_files);
+			$ncr_data['observation_tkc_files'] = $temp_observation_by_tkc_files;
+		}
+
+		$data['ncr_data'] = $ncr_data;		
 
 		$contract_location_data = $this->ncr_model->getContractLocationData($contract_location_id);
 
@@ -473,25 +524,57 @@ class NCRReview extends CI_Controller
 		$email_errors = [];
 		$data['title'] = 'NCR Review';
 
+		$other_email_ids_data = $this->ncr_model->getCCBCCEmailIDs();
+		foreach ($other_email_ids_data as $key => $value) {
+			$other_email_ids[$value['display_name']] = $value['fieldvalue'];
+		}
+
+		$bcc_str = $other_email_ids['BCC EMAIL ID'];
+		$bcc_arr = explode(',', $bcc_str); 
+
+		$message = $this->load->view('ncr-review/ncr-updated-by-tkc-email-body', $data, true);
+
 		foreach ($users as $key => $value) {
 			$from = $this->config->item('smtp_user');
 			$to = $value;
 			
 			$subject = 'NCR Details Updated By TKC';
 
-			$message = $this->load->view('ncr-review/ncr-updated-by-tkc-email-body', $data, true);
+			// PHP Mailer Code Begins
+			$mail = new PHPMailer(true);
 
-			$this->email->clear(TRUE);
-			$this->email->set_newline("\r\n");
-			$this->email->set_header('Content-Type', 'text/html');
-			$this->email->from($from);
-			$this->email->to($to);
-			$this->email->subject($subject);
-			$this->email->message($message);
+			try {
+				$mail->SMTPDebug = SMTP::DEBUG_OFF;
+				$mail->isSMTP();
+				$mail->Host = 'smtp.gmail.com';
+				$mail->SMTPAuth = true;
+				$mail->Username = 'mppkvvcl.sgs@gmail.com';
+				$mail->Password = 'tarhuogjifshezmd';
+				$mail->SMTPSecure = 'tls';
+				$mail->Port = 587;
+				$mail->setFrom($from);
 
-			if (!$this->email->send()) {
-				$error = $this->email->print_debugger();
-				array_push($email_errors, $error);
+				$mail->addAddress($to);
+
+				foreach ($bcc_arr as $bcc_value) {
+					$mail->AddBCC($bcc_value);
+				}
+
+				$mail->isHTML(true);
+				$mail->Subject = $subject;
+
+				foreach ($embedded_img_arr as $emb_key => $emb_value) {
+					$mail->addEmbeddedImage("$emb_value","$emb_key");
+				}
+
+				$mail->Body = $message;
+
+				if (!$mail->send()) {
+					array_push($email_errors, $mail->ErrorInfo);
+					// $error = $mail->ErrorInfo;
+				}
+			} catch (Exception $e) {
+				$error = $mail->ErrorInfo;
 			}
 
 			return $email_errors;

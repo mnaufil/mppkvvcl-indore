@@ -1015,6 +1015,7 @@ class PhysicalProgress_Model extends CI_Model
 			'ncr_date' => $ncr_date,
 			'remark' => $remark,
 			'completion_date' => $completion_date,
+			'last_email_details' => NULL,
 			'status_id' => $obs_status_id,
 			'is_active' => 1,
 			'modifiedby' => ($user_id != NULL) ? $user_id : $this->getLoggedInUserID(),

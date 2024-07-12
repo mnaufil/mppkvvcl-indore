@@ -682,7 +682,7 @@
 						let html_img = '';
 	          			html_img += '<div class="file-image-1">';
 		      			html_img += '<a href="javascript:void(0)" onclick="showImageModal(this)">';
-		      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="">';
+		      			html_img += '<img src="'+ URL.createObjectURL(event.target.files[i]) +'" class="br-5" alt="" width="100" height="100">';
 		      			html_img += '</a>';
 		      			html_img += '<ul class="icons">';
 		      			html_img += '<li>';

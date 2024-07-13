@@ -67,6 +67,21 @@
 		        			<!-- Page-Header -->
 				            <div class="page-header">
 				            	<h1 class="page-title">NCR Review</h1>
+				            	<!-- FLash Alert -->
+				            	<!-- <?php //if ($this->session->flashdata('error') && !empty($this->session->flashdata('error'))) { ?>
+				            		<div class="alert alert-danger alert-dismissible fade show" role="alert" style="width: 45%;"> 
+                                        <span class="alert-inner--icon">
+                                            <i class="fe fe-slash"></i>
+                                        </span> 
+                                        <span class="alert-inner--text"><strong>Error!</strong>
+                                        	<?php //echo $this->session->flashdata('error'); ?>
+                                        </span> 
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"> 
+                                            <span aria-hidden="true">×</span> 
+                                        </button> 
+                                    </div>	
+				            	<?php //} ?> -->
+				            	<!-- FLash Alert Ends -->
 				            </div>
 				            <!-- Page-Header Ends -->
 
@@ -338,11 +353,13 @@
 	                                                            		</a>
 		                                                            	&nbsp;&nbsp;	
 				            											<?php } ?>
+				            											<?php if ($user_role != 'TKC') { ?>
 				            											<?php if (!empty($user_access) && (isset($user_access['delete']))) { ?>
 				            											<button  type="button" class="btn btn-sm deleteNCR" name="" data-ncr-id="<?php echo $value['ncr_id']; ?>">
 		                                                               		<span class="fe fe-trash-2 fa-lg action-btn-table"> </span>
 	                                                            		</button>	
-				            											<?php } ?> 
+				            											<?php } ?>	
+				            											<?php } ?>						 
 				            											<a href="<?php echo base_url('download-ncr/'.$value['ncr_id']); ?>" id="btn-download" class="btn btn-sm">
 								                                        	<span class="fe fe-download fa-lg action-btn-table"></span>
 								                                        </a>                	

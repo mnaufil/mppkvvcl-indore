@@ -395,7 +395,7 @@ class NCRReview extends CI_Controller
 					if (in_array($ext, $allowTypes)) {
 						// Upload file to server
 						if (move_uploaded_file($observation_tkc_files['tmp_name'][$key], $targetFilePath)) {
-							$obs_file_result = $this->ncr_model->saveObservationFileByTKC($pp_activity_obs_id, $targetFilePath);
+							$obs_file_result = $this->ncr_model->saveObservationFileByTKC($pp_activity_obs_id, $targetFilePath); //Uncomment Later
 						} else {
 							$error_msg = 'Failed to upload observation photo';
 			        		array_push($errors, $error_msg);
@@ -421,6 +421,9 @@ class NCRReview extends CI_Controller
 
 				if (empty($email_result)) {
 					$this->ncr_model->updateNCRStatus($pp_activity_obs_id, $changed_obs_status_ID);
+
+					/*$flash_msg = 'NCR ID:'.$ncr_id.' updated and email sent to FE/FS and DTL';
+					$this->session->set_flashdata('error',$flash_msg);*/
 					redirect('ncr-review');	
 				} else {
 					$error_msg = 'Failed to send email to FE/FS/DTL';
@@ -506,11 +509,11 @@ class NCRReview extends CI_Controller
 				/*$encoded_img = $this->encode_img_base64($resized_image);
 				array_push($temp_observation_completion_files, $encoded_img);*/
 				$embedded_img_arr['obs_completion_file'.$key] = $resized_image;
-				$temp_observation_by_tkc_files['obs_completion_file'.$key] = $resized_image;
+				$temp_observation_completion_files['obs_completion_file'.$key] = $resized_image;
 			}
 
 			// $ncr_data['observation_completion_files'] = implode(', ', $temp_observation_completion_files);
-			$ncr_data['observation_tkc_files'] = $temp_observation_by_tkc_files;
+			$ncr_data['observation_completion_files'] = $temp_observation_completion_files;
 		}
 
 		$data['ncr_data'] = $ncr_data;		
@@ -530,7 +533,10 @@ class NCRReview extends CI_Controller
 		}
 
 		$bcc_str = $other_email_ids['BCC EMAIL ID'];
-		$bcc_arr = explode(',', $bcc_str); 
+		$bcc_arr = explode(',', $bcc_str);
+
+		$cc_str = $other_email_ids['CC EMAIL ID'];
+		$cc_arr = explode(',', $cc_str); 
 
 		$message = $this->load->view('ncr-review/ncr-updated-by-tkc-email-body', $data, true);
 
@@ -538,7 +544,7 @@ class NCRReview extends CI_Controller
 			$from = $this->config->item('smtp_user');
 			$to = $value;
 			
-			$subject = 'NCR Details Updated By TKC';
+			$subject = 'NCR ID:'.$ncr_data['ncr_id'].' Details Updated By TKC';
 
 			// PHP Mailer Code Begins
 			$mail = new PHPMailer(true);
@@ -558,6 +564,10 @@ class NCRReview extends CI_Controller
 
 				foreach ($bcc_arr as $bcc_value) {
 					$mail->AddBCC($bcc_value);
+				}
+
+				foreach ($cc_arr as $cc_value) { //Uncomment Later
+					$mail->AddCC($cc_value);
 				}
 
 				$mail->isHTML(true);

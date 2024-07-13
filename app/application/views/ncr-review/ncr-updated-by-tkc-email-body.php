@@ -21,6 +21,10 @@
 			<td><?php echo $ncr_data['ncr_id']; ?></td>
 		</tr>
 		<tr>
+			<th>Feeder ID: </th>
+			<td><?php echo $ncr_data['feeder_id']; ?></td>
+		</tr>
+		<tr>
 			<th>Observation Type: </th>
 			<td><?php echo $ncr_data['observation_name']; ?></td>
 		</tr>

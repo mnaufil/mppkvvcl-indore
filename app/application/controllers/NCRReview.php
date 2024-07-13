@@ -395,7 +395,7 @@ class NCRReview extends CI_Controller
 					if (in_array($ext, $allowTypes)) {
 						// Upload file to server
 						if (move_uploaded_file($observation_tkc_files['tmp_name'][$key], $targetFilePath)) {
-							// $obs_file_result = $this->ncr_model->saveObservationFileByTKC($pp_activity_obs_id, $targetFilePath); //Uncomment Later
+							$obs_file_result = $this->ncr_model->saveObservationFileByTKC($pp_activity_obs_id, $targetFilePath);
 						} else {
 							$error_msg = 'Failed to upload observation photo';
 			        		array_push($errors, $error_msg);

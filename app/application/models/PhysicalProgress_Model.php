@@ -1747,7 +1747,7 @@ class PhysicalProgress_Model extends CI_Model
 
 	public function fetchLastObservation()
 	{
-		$query = $this->db->order_by('physical_progress_activity_observation_id','desc')->limit(1)->get('physical_progress_activity_observation');
+		$query = $this->db->order_by('ncr_id','desc')->limit(1)->get('physical_progress_activity_observation');
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {

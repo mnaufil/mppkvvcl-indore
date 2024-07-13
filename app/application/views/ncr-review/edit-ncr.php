@@ -152,7 +152,7 @@
 					            					<div class="col-xl-12">
                     									<label class="form-label" for="remark">Observation</label>
                     									<?php //$remark_readonly = ($ncr_data['completion_date'] != NULL) ? 'readonly' : '';
-                    									$remark_readonly = ($ncr_data['observation_status'] == 'Closed' || $ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby'])) ? 'readonly' : '';?>
+                    									$remark_readonly = ($logged_user_role == 'TKC' || $ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';?>
 			                    						<input type="text" class="form-control" id="remark" name="remark" value="<?php echo $ncr_data['remark']; ?>" <?php echo $remark_readonly; ?>>
                   									</div>
 					            				</div>
@@ -700,82 +700,98 @@
 		  	});
 
 		  	$('#updateNCRDetails').submit(function(event) {	
-		  		let completion_date = $('input[name="completionDate"]').val();
+		  		let logged_user_role = '<?php echo $logged_user_role ?>';
+		  		console.log('logged_user_role: ' + logged_user_role);
+		  		
 
-		  		let completion_files_count = $('#completion_photo')[0].files.length;
+		  		if (logged_user_role == 'TKC') {
+		  			let uploaded_obs_photos_by_tkc = $('#preview-img-obs-tkc').find('.file-image-1');
 
-		  		let observation_status = '<?php echo $ncr_data['observation_status'] ?>';
-
-		  		if (completion_files_count > 0 && completion_date == '') {
-		  			$('.toast-body').text('Enter completion date');
-     				$('.toast').toast('show');
-
-     				event.preventDefault();
-     				return false;
-		  		} 
-
-		  		if (observation_status == 'Reviewed') {
-		  			let previous_uploaded_photos = $('#preview-img-complete').find('.file-image-1').length;
-		  			if (previous_uploaded_photos == 0 && completion_date != '') {
-			  			$('.toast-body').text('Upload completion photo');
+		  			if ($(uploaded_obs_photos_by_tkc).length == 0) {
+		  				$('.toast-body').text('Upload Observation Photos By TKC');
 	     				$('.toast').toast('show');
 
 	     				event.preventDefault();
 	     				return false;
-			  		}	
-		  		} 
+		  			}
+		  		} else if (logged_user_role != 'TKC') {
+		  			let completion_date = $('input[name="completionDate"]').val();
 
-		  		event.preventDefault();
+			  		let completion_files_count = $('#completion_photo')[0].files.length;
 
-	  			let feeder_id_arr = [];
-		  		let feeder_id = $('input[name="feederID"]').val();
-		  		feeder_id_arr.push(feeder_id);
+			  		let observation_status = '<?php echo $ncr_data['observation_status'] ?>';
 
-		  		let ncr_id_arr = [];
-		  		let ncr_id = $('input[name="ncrID"]').val();
-		  		ncr_id_arr.push(ncr_id);
+			  		if (completion_files_count > 0 && completion_date == '') {
+			  			$('.toast-body').text('Enter completion date');
+	     				$('.toast').toast('show');
 
-		  		$.ajax({
-    				type: 'POST',
-    				url: '<?php echo base_url('get-email-recipients-new') ?>',
-    				dataType: 'json',
-    				data: {feeder_id : feeder_id_arr, ncr_id: ncr_id_arr},
-    				success: function(response) {
-    					console.log(response);
-    					// return false;
+	     				event.preventDefault();
+	     				return false;
+			  		} 
 
-    					let to_html = '<label class="form-label" for="">To Recipients</label>';
-    					let cc_html = '<label class="form-label" for="">CC Recipients</label>';
+			  		if (observation_status == 'Reviewed') {
+			  			let previous_uploaded_photos = $('#preview-img-complete').find('.file-image-1').length;
+			  			if (previous_uploaded_photos == 0 && completion_date != '') {
+				  			$('.toast-body').text('Upload completion photo');
+		     				$('.toast').toast('show');
 
-    					if (!$.isEmptyObject(response.to)) {
-    						$.each(response.to, function(index, value) {
-    							to_html += '<div class="form-check">';
-    							to_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="to_emails_'+index+'" name="to_emails_'+index+'" checked>';
-    							to_html += '<label class="form-check-label" for="to_emails_'+index+'"> '+value+' </label>';
-    							to_html += '</div>';
-    						});
+		     				event.preventDefault();
+		     				return false;
+				  		}	
+			  		} 
+			  		// alert('here'); return false;
+			  		event.preventDefault();
 
-    						$('#to_recipients').empty().append(to_html);
-    					}
+		  			let feeder_id_arr = [];
+			  		let feeder_id = $('input[name="feederID"]').val();
+			  		feeder_id_arr.push(feeder_id);
 
-    					if (!$.isEmptyObject(response.cc)) {
-    						$.each(response.cc, function(index, value) {
-    							cc_html += '<div class="form-check">';
-    							cc_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="cc_emails_'+index+'" name="cc_emails_'+index+'" checked>';
-    							cc_html += '<label class="form-check-label" for="cc_emails_'+index+'"> '+value+' </label>';
-    							cc_html += '</div>';
-    						});
+			  		let ncr_id_arr = [];
+			  		let ncr_id = $('input[name="ncrID"]').val();
+			  		ncr_id_arr.push(ncr_id);
 
-    						$('#cc_recipients').empty().append(cc_html);
-    					}
+			  		$.ajax({
+	    				type: 'POST',
+	    				url: '<?php echo base_url('get-email-recipients-new') ?>',
+	    				dataType: 'json',
+	    				data: {feeder_id : feeder_id_arr, ncr_id: ncr_id_arr},
+	    				success: function(response) {
+	    					console.log(response);
+	    					// return false;
 
-    					$('#email_recipient_list_modal').modal('show');
-    					return false;
-    				},
-    				error: function(xhr, status, error) {
-    					console.log(xhr.responseText);	
-    				}
-    			});
+	    					let to_html = '<label class="form-label" for="">To Recipients</label>';
+	    					let cc_html = '<label class="form-label" for="">CC Recipients</label>';
+
+	    					if (!$.isEmptyObject(response.to)) {
+	    						$.each(response.to, function(index, value) {
+	    							to_html += '<div class="form-check">';
+	    							to_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="to_emails_'+index+'" name="to_emails_'+index+'" checked>';
+	    							to_html += '<label class="form-check-label" for="to_emails_'+index+'"> '+value+' </label>';
+	    							to_html += '</div>';
+	    						});
+
+	    						$('#to_recipients').empty().append(to_html);
+	    					}
+
+	    					if (!$.isEmptyObject(response.cc)) {
+	    						$.each(response.cc, function(index, value) {
+	    							cc_html += '<div class="form-check">';
+	    							cc_html += '<input class="form-check-input" type="checkbox" value="'+value+'" id="cc_emails_'+index+'" name="cc_emails_'+index+'" checked>';
+	    							cc_html += '<label class="form-check-label" for="cc_emails_'+index+'"> '+value+' </label>';
+	    							cc_html += '</div>';
+	    						});
+
+	    						$('#cc_recipients').empty().append(cc_html);
+	    					}
+
+	    					$('#email_recipient_list_modal').modal('show');
+	    					return false;
+	    				},
+	    				error: function(xhr, status, error) {
+	    					console.log(xhr.responseText);	
+	    				}
+	    			});
+		  		}
 		  	});
 
 		  	function updateAndSendEmail() {

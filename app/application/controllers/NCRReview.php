@@ -42,10 +42,12 @@ class NCRReview extends CI_Controller
 		if ($user_role == 'TKC') {
 		 	$package_access_no = $_SESSION['loggedData']->package_access;
 
-		 	$contract_location_ids = $this->ncr_model->getContractLocationIDsByPackage($package_access_no);
+		 	// $contract_location_ids = $this->ncr_model->getContractLocationIDsByPackage($package_access_no);
+		 	$contract_ids = $this->ncr_model->getContractIDsByPackage($package_access_no);
 		}
 
-		$result = $this->ncr_model->getNCRs($ncr_status_ids['Pending'], $ncr_status_ids['Reviewed'], $contract_location_ids);
+		// $result = $this->ncr_model->getNCRs($ncr_status_ids['Pending'], $ncr_status_ids['Reviewed'], $contract_location_ids);
+		$result = $this->ncr_model->getNCRs($ncr_status_ids['Pending'], $ncr_status_ids['Reviewed'], $contract_ids);
 
 		// Formatting Dates
 		foreach ($result as $key => $value) {

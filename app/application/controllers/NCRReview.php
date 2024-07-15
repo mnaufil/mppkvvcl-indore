@@ -37,7 +37,8 @@ class NCRReview extends CI_Controller
 		$user_id = $_SESSION['loggedData']->user_id;
 		$user_role = $this->ncr_model->getUserRoleName($user_id);
 		
-		$contract_location_ids = [];
+		// $contract_location_ids = [];
+		$contract_ids = [];
 
 		if ($user_role == 'TKC') {
 		 	$package_access_no = $_SESSION['loggedData']->package_access;

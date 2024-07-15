@@ -787,8 +787,10 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 	public function getLotNoFromPackageGroupNo($package_group_no)
 	{
+		$contract_status_list = $this->getContractStatusList();
+
 		$this->db->select('package_no');
-		$query = $this->db->get_where('contract', array('package_group_no' => $package_group_no));
+		$query = $this->db->get_where('contract', array('package_group_no' => $package_group_no, 'status_id' => $contract_status_list['Open']));
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {

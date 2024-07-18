@@ -126,7 +126,11 @@ class TKCPhysicalVerification extends CI_Controller
 			$reported_date = date('Y-m-d', strtotime($this->input->post('reportedDate')));
 			$remark = $this->input->post('sheetRemark');
 
-			$status_id = 2;
+			// $status_id = 2;
+			$pp_status_ids = $this->tpv_model->getStatusList();
+			$pp_status_ids = $this->modify_pp_status_ids($pp_status_ids);
+			$status_id = $pp_status_ids['In Process'];
+
            	$is_draft = 0;
 
            	$uriSegments = explode("/", parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH));

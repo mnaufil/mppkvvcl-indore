@@ -202,7 +202,11 @@ class TKCPhysicalVerificationApi extends REST_Controller
 			//Fetching sheet details using prev_tkc_pp_id
 			$prev_sheet_data = $this->tpv_model->getPreviousSheetDataAPI($prev_tkc_pp_id);
 
-			$status_id = 2;
+			// $status_id = 2;
+			$pp_status_ids = $this->tpv_model->getStatusList();
+			$pp_status_ids = $this->modify_pp_status_ids($pp_status_ids);
+			$status_id = $pp_status_ids['In Process'];
+
             $is_draft = 0;
 
             //In case sheet is being saved, without saving any observations
@@ -246,6 +250,9 @@ class TKCPhysicalVerificationApi extends REST_Controller
                 	//Updating the status of physical progress sheet to Completed
                 	$pp_status_ids = $this->tpv_model->getStatusList();
                 	$pp_status_ids = $this->modify_pp_status_ids($pp_status_ids);
+
+                	$status_id = $pp_status_ids['Completed'];
+                	$this->tpv_model->updateSheetStatus($tkc_pp_id, $status_id);
 
                 	$alert_message = 'Physical Progress Sheet saved and marked as completed successfully';
                 }

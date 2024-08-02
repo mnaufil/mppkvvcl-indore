@@ -8,6 +8,8 @@ class TKCWeeklyPlan extends CI_Controller
 
 		$this->load->model('TKCWeeklyPlan_Model', 'twp_model');
 
+		$this->load->library("Pdf");
+
 		if(!$this->session->isUserLoggedIn)
         { 
         	redirect('login'); 
@@ -412,6 +414,19 @@ class TKCWeeklyPlan extends CI_Controller
 	    }
 
 	    return $user_access;
+	}
+
+	public function downloadTKCWeeklyPlan($tkc_plan_id)
+	{
+		$result = $this->twp_model->getTKCWeeklyPlanDetails($tkc_plan_id);
+		$file_name_substr = $result['package_group_no']." (".$result['date_range'].")";
+
+		$html = $this->load->view('tkc-weekly-plan/tkc-weekly-plan-pdf', $result, true);
+
+		$folder_path = 'assets/tkc-weekly-plan/';
+		$pdf_name = $folder_path.'TKC_Weekly_Plan Lot '.$file_name_substr.'.pdf';
+
+		$this->pdf->createPDFForTKCWeeklyPlanDownload($html, $pdf_name);
 	}
 }
 

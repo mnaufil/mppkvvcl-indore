@@ -549,7 +549,7 @@
                     $('.toast').toast('show');
 
                     return false;
-                } else if (form_change == false) {                    
+                } else if (form_change == false) {
                     $('.toast-body').text('No changes occurred. Kindly make a change to submit the form. ');
                     $('.toast').toast('show');
 

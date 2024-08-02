@@ -42,23 +42,67 @@ class TKCWeeklyPlan extends CI_Controller
 	public function addTKCWeeklyPlan()
 	{
 		$package_group_no = $_SESSION['loggedData']->package_access;
+		$data['package_group_no'] = $package_group_no = explode(',', $package_group_no);
 		$lot_nos = $this->twp_model->getLotNoFromPackageGroupNo($package_group_no);
-		$data['packages'] = $lot_no_arr = implode(',', $lot_nos);
+		$modified_lot_nos = $this->modifyLotNos($lot_nos);
+		// $data['packages'] = $lot_no_arr = implode(',', $lot_nos);
+		$data['packages'] = $modified_lot_nos;
 
-		$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($lot_no_arr);
-		$divisions = $this->twp_model->getCircleWiseDivision($circles);
+		$circles = $this->twp_model->getCirclesAssignedToTKC($package_group_no);
+		$modified_circles = $this->modifyCircles($circles);
+		$data['circles'] = $modified_circles;
 
-		$divisions_arr = [];
-		foreach ($divisions as $key => $value) {
-			$divisions_arr[$value['circle_name']][] = $value['division_name'];
+		$divisions = [];
+		foreach ($modified_circles as $key => $value) {
+			$divisions_result = $this->twp_model->getCircleWiseDivision($value);
+			$modified_divisions = $this->modifyDivisions($divisions_result);
+			$divisions = array_merge($divisions, $modified_divisions);
 		}
 
-		$data['divisions'] = $divisions_arr;
+		/*$divisions_arr = [];
+		foreach ($divisions as $key => $value) {
+			$divisions_arr[$value['circle_name']][] = $value['division_name'];
+		}*/
+
+		$data['divisions'] = $divisions;
 
 		$data['title'] = 'TKC Weekly Plan';
 
 		// echo '<pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('tkc-weekly-plan/add-tkc-weekly-plan-new', $data);
+	}
+
+	public function modifyLotNos($lot_nos)
+	{
+		$modified_lot_nos = [];
+
+		foreach ($lot_nos as $key => $value) {
+			$modified_lot_nos[$value['package_group_no']][] = $value['package_no'];
+		}
+
+		return $modified_lot_nos;
+	}
+
+	public function modifyCircles($circles)
+	{
+		$modified_circles = [];
+
+		foreach ($circles as $key => $value) {
+			$modified_circles[$value['package_group_no']][] = $value['circle_name'];
+		}
+
+		return $modified_circles;
+	}
+
+	public function modifyDivisions($divisions)
+	{
+		$modified_divisions = [];
+
+		foreach ($divisions as $key => $value) {
+			$modified_divisions[$value['circle_name']][] = $value['division_name'];
+		}
+
+		return $modified_divisions;
 	}
 
 	public function saveTKCWeeklyPlan()
@@ -69,6 +113,7 @@ class TKCWeeklyPlan extends CI_Controller
 
       	if (!empty($_POST)) {
       		$week_date_range = $this->input->post('weeklyPlanDateRange');
+      		$package_group_no = $this->input->post('packageGroupNo');
       		$contractor = $this->input->post('contractorTKC');
       		$weekly_plan_array = json_decode($this->input->post('weekly_plan_array'));
 
@@ -79,7 +124,7 @@ class TKCWeeklyPlan extends CI_Controller
       		$to_date = $week_date_arr[1];
 
       		// Saving data in tkc_plan
-      		$tkc_plan_id = $this->twp_model->saveTKCWeeklyPlan($from_date, $to_date, $is_draft);
+      		$tkc_plan_id = $this->twp_model->saveTKCWeeklyPlan($from_date, $to_date, $package_group_no, $is_draft);
       		if ($tkc_plan_id) {
       			foreach ($weekly_plan_array as $key => $value) {
       				$lot_no = $value->lot_no;
@@ -139,12 +184,17 @@ class TKCWeeklyPlan extends CI_Controller
 
 		$result['tkc_plan_id'] = $tkc_plan_id;
 
-		if ($user_role == 'TKC') {
-			$package_group_no = $_SESSION['loggedData']->package_access;
-			$lot_nos = $this->twp_model->getLotNoFromPackageGroupNo($package_group_no);
-			$data['packages'] = $lot_no_arr = implode(',', $lot_nos);
+		$package_group_no = $result['package_group_no'];
+		$data['package_group_no'] = $package_group_no = explode(',', $package_group_no);
 
-			$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($lot_no_arr);
+		if ($user_role == 'TKC') {
+			// $package_group_no = $_SESSION['loggedData']->package_access;			
+			$lot_nos = $this->twp_model->getLotNoFromPackageGroupNo($package_group_no);
+			$modified_lot_nos = $this->modifyLotNos($lot_nos);
+			// $data['packages'] = $lot_no_arr = implode(',', $lot_nos);
+			$data['packages'] = $modified_lot_nos;
+
+			/*$data['circles'] = $circles = $this->twp_model->getCirclesAssignedToTKC($lot_no_arr);
 
 			$divisions = $this->twp_model->getCircleWiseDivision($circles);
 
@@ -153,7 +203,20 @@ class TKCWeeklyPlan extends CI_Controller
 				$divisions_arr[$value['circle_name']][] = $value['division_name'];
 			}
 
-			$data['divisions'] = $divisions_arr;
+			$data['divisions'] = $divisions_arr;*/
+
+			$circles = $this->twp_model->getCirclesAssignedToTKC($package_group_no);
+			$modified_circles = $this->modifyCircles($circles);
+			$data['circles'] = $modified_circles;
+
+			$divisions = [];
+			foreach ($modified_circles as $key => $value) {
+				$divisions_result = $this->twp_model->getCircleWiseDivision($value);
+				$modified_divisions = $this->modifyDivisions($divisions_result);
+				$divisions = array_merge($divisions, $modified_divisions);
+			}
+
+			$data['divisions'] = $divisions;
 		}		
 
 		$data['result'] = $result;
@@ -282,9 +345,11 @@ class TKCWeeklyPlan extends CI_Controller
 			$from_date = date('Y-m-d', strtotime($this->input->post('from_date')));
 			$to_date = date('Y-m-d', strtotime($this->input->post('to_date')));
 
+			$package_group_no = $this->input->post('package_group_no');
+
 			$user_id = $_SESSION['loggedData']->user_id;
 
-			$result = $this->twp_model->getDateRangeExists($user_id, $from_date, $to_date);
+			$result = $this->twp_model->getDateRangeExists($user_id, $from_date, $to_date, $package_group_no);
 
 			if (!empty($result)) {
 				$response['date_range_result'] = $result;

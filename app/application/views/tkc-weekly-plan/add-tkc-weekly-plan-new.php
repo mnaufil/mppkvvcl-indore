@@ -96,6 +96,20 @@
                                                             <input type="text" class="form-control" id="weeklyPlanDateRange" name="weeklyPlanDateRange">
                                                         </div>
                                                     </div>
+                                                    <!-- Package Group No -->
+                                                    <div class="col-xl-4">
+                                                        <label class="form-label" for="packageGroupNo">Lot No.<span class="text-red">*</span></label>
+                                                        <select class="form-control select2" id="packageGroupNo" name="packageGroupNo">
+                                                            <option value="" selected disabled>Select Lot No</option>
+                                                            <?php foreach ($package_group_no as $value) { ?>
+                                                            <option value="<?php echo $value; ?>"><?php echo $value; ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
+                                                    <!-- Create Button -->
+                                                    <div class="col-xl-2">
+                                                        <button class="btn btn-warning mt-5" type="button" id="createBtn">Create Weekly Plan</button>
+                                                    </div>
                                                 </div>                                                
                                                 <div id="weeklyPlan" class="mt-3" hidden>
                                                     <!-- Row2 -->
@@ -267,12 +281,15 @@
         <script src="<?php echo base_url('assets/switcher/js/switcher.js'); ?>"></script>
 
         <script type="text/javascript">
-        	let packages = '<?php echo $packages ?>';
-        	packages_arr = packages.split(',');            
+        	let packages = '<?php echo json_encode($packages) ?>';
+            packages = JSON.parse(packages);
+            let packages_arr = '';
 
-        	let circles = <?php echo json_encode($circles) ?>;
+        	let circles_arr = <?php echo json_encode($circles) ?>;
+            let circles = '';
 
-        	let divisions = <?php echo json_encode($divisions) ?>;
+        	let divisions_arr = <?php echo json_encode($divisions) ?>;
+            let divisions = [];
         </script>
 
         <!-- EDIT-TABLE JS -->
@@ -315,33 +332,7 @@
 
                 if (days == -6 && day == 1) {
                     $(this).val(picker.startDate.format('DD-MM-YYYY') +' - '+ picker.endDate.format('DD-MM-YYYY'));
-                    $('#weeklyPlanHeading').find('h4 > span').text(picker.startDate.format('DD-MM-YYYY') +' To '+ picker.endDate.format('DD-MM-YYYY'));
-
-                    let fromDate = picker.startDate.format('DD-MM-YYYY');
-                    let toDate = picker.endDate.format('DD-MM-YYYY');
-
-                    // Check if weekly plan for selected date range already exists for logged in user
-                    $.ajax({
-                        type: 'POST',
-                        url: '<?php echo base_url('check-date-range-exists') ?>',
-                        dataType: 'json',
-                        data: {from_date: fromDate, to_date: toDate},
-                        success: function(response) {
-                            // console.log(response);
-
-                            if (!$.isEmptyObject(response.date_range_result)) {
-                                $('.toast-body').text('Weekly plan for selected date range already exists');
-                                $('.toast').toast('show');
-
-                                return false;
-                            } else {
-                                $('#weeklyPlan').attr('hidden', false);                                
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.log(xhr);
-                        }
-                    });
+                    $('#weeklyPlanHeading').find('h4 > span').text(picker.startDate.format('DD-MM-YYYY') +' To '+ picker.endDate.format('DD-MM-YYYY'));                    
                 } else {
                     $('.toast-body').text('Select a date range of 7 days starting from Monday');
                     $('.toast').toast('show');
@@ -351,6 +342,69 @@
 
                     return false;
                 }
+            });
+
+            $('#createBtn').click(function() {
+                let selected_date_range = $('input[name="weeklyPlanDateRange"]').val();
+                let selected_package_group_no = $('select[name="packageGroupNo"]').val();
+
+                let fromDate = toDate = '';
+                if (selected_date_range == '') {
+                    $('.toast-body').text('Select Date Range');
+                    $('.toast').toast('show');
+
+                    return false;
+                } else {
+                    let date_arr = selected_date_range.split(' - ');
+                    fromDate = date_arr[0];
+                    toDate = date_arr[1];
+                }
+
+                if (selected_package_group_no == null) {
+                    $('.toast-body').text('Select Lot No.');
+                    $('.toast').toast('show');
+
+                    return false;
+                }
+
+                // Check if weekly plan for selected date range already exists for logged in user
+                $.ajax({
+                    type: 'POST',
+                    url: '<?php echo base_url('check-date-range-exists') ?>',
+                    dataType: 'json',
+                    data: {from_date: fromDate, to_date: toDate, package_group_no:selected_package_group_no},
+                    success: function(response) {
+                        // console.log(response);
+
+                        if (!$.isEmptyObject(response.date_range_result)) {
+                            $('.toast-body').text('Weekly plan for selected date range and lot no already exists');
+                            $('.toast').toast('show');
+
+                            return false;
+                        } else {
+                            $.each(packages, function(index, value) {
+                                if (index == selected_package_group_no) {
+                                    packages_arr = value;
+                                }
+                            });
+
+                            $.each(circles_arr, function(index, value) {
+                                if (index == selected_package_group_no) {
+                                    circles = value;
+                                }
+                            });
+
+                            $.each(circles, function(index, value) {
+                                divisions[value] = divisions_arr[value];
+                            });
+
+                            $('#weeklyPlan').attr('hidden', false);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr);
+                    }
+                });
             });
 
             function initializeDatepicker() {
@@ -430,7 +484,7 @@
                 let feeder_td = $('#new-add-weekly-tkc-plan-details > tbody > tr[data-status="editing"]').find('.feeder');
 
                 let feeder_html = '';
-
+                feeder_html += '<div style="display: none;"></div>';
                 feeder_html += '<select name="feeder" id="feeder"" multiple="multiple" class="form-control form-select">';
                 feeder_html += '</select>';
 
@@ -447,7 +501,7 @@
                     select_options.push(options);
                 });
 
-                $('select[name="feeder"]').multipleSelect({
+                $(feeder_td).find('select[name="feeder"]').multipleSelect({
                     filter: true,
                     data: select_options
                 });
@@ -579,7 +633,7 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
 
                         $('.plan-loader').attr('hidden', true);
 

@@ -163,14 +163,12 @@ class BSTableTKCWeeklyPlan {
 
 		var i = 0;
         this._modifyEachColumn(this.options.editableColumns, $cols, function($td) { // modify each column
-            let div = '<div style="display: none;">' + content + '</div>'; // hide content (save for later use)
 			let input = '';
 
             var content = '';
 
 			if (i == 0) { //Sr.No
                 content = $td.text();
-
                 if (content != '') {
                     input = content;
                 }
@@ -238,7 +236,7 @@ class BSTableTKCWeeklyPlan {
                 }
                 
                 input += '</select>';
-            } else if (i == '6') { //Name of Site/Feeder
+            } else if (i == 6) { //Name of Site/Feeder
                 content = $.trim($td.text());
 
                 if (content != '') {
@@ -250,38 +248,37 @@ class BSTableTKCWeeklyPlan {
                     let selected_feeders = content.split(', ');
 
                     setTimeout(function() {
-                        $('select[name="feeder"]').multipleSelect('setSelects', selected_feeders);
+                        $td.find('select[name="feeder"]').prev().html(content);
+                        $td.find('select[name="feeder"]').multipleSelect('setSelects', selected_feeders);
                     }, 1000);
                 } else {
                     let selected_circle = $('select[name="circle"]').val();
                     let selected_division = $('select[name="division"]').val();
                     
-                    if (selected_circle != 'select' && selected_division != 'select') {
+                    if (selected_circle != null && selected_division != null) {
                         getFeedersList(selected_circle, selected_division);
-
-                        let selected_feeders = content.split(', ');
-
-                        setTimeout(function() {
-                            $('select[name="feeder"]').multipleSelect('setSelects', selected_feeders);
-                        }, 1000);
                     } else {
                         input = '<select name="feeder" id="feeder" class="form-control form-select" data-bs-placeholder="Select Feeder">';
                         input += '<option value="select" selected disabled>Select Feeder</option>';
                         input += '</select>';        
                     }
+
+                    content = '';
                 }
-            } else if (i == '7') { //Description of Work
+            } else if (i == 7) { //Description of Work
                 content = $.trim($td.text());
 
                 let work_description = (content != '') ? content : '';
                 input = '<textarea class="form-control" id="description_of_work" name="description_of_work" rows="2">'+work_description+'</textarea>';
-            } else if (i == '8') { //Remark
+            } else if (i == 8) { //Remark
                 content = $.trim($td.text());
 
                 let remark = (content != '') ? content : '';
 
                 input = '<input type="text" class="form-control" name="remark" id="remark" value="'+remark+'">';
             }
+
+            let div = '<div style="display: none;">' + content + '</div>'; // hide content (save for later use)
 
             $td.html(div + input); // set content
 			i++;
@@ -363,7 +360,10 @@ class BSTableTKCWeeklyPlan {
 
         // Finish editing the row & delete changes
         this._modifyEachColumn(this.options.editableColumns, $cols, function($td) { // modify each column
-            let cont = $td.find('div').html(); // read div content
+            let cont = '';
+
+            cont = $td.find('div').html(); // read div content
+            
             $td.html(cont); // set the content and remove the input fields
         });
         this._actionsModeNormal(button);

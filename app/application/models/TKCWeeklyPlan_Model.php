@@ -63,14 +63,14 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getCirclesAssignedToTKC($packages)
+	public function getCirclesAssignedToTKC($package_group_no)
 	{
-		$this->db->select('mst_circle.circle_name');
+		$this->db->select('mst_circle.circle_name, contract.package_group_no');
 		$this->db->distinct();
 		$this->db->from('contract');
 		$this->db->join('contract_location', 'contract.contract_id = contract_location.contract_id', 'INNER');
 		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
-		$this->db->where('contract.package_group_no', $packages);
+		$this->db->where_in('contract.package_group_no', $package_group_no);
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
@@ -83,11 +83,13 @@ class TKCWeeklyPlan_Model extends CI_Model
 			$query_result = [];
 			
 			if ($query->num_rows() > 0) {
-				$result = $query->result_array();
+				/*$result = $query->result_array();
 
 				foreach ($result as $key => $value) {
 					array_push($query_result, $value['circle_name']);
-				}
+				}*/
+
+				$query_result = $query->result_array();
 			}
 
 			return $query_result;
@@ -148,7 +150,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 	public function getCircleDivisionWiseFeederList($circle_id, $division_id)
 	{
 		$this->db->select('feeder_id');
-		$this->db->where(array('circle_id' => $circle_id, 'division_id' => $division_id));
+		$this->db->where(array('circle_id' => $circle_id, 'division_id' => $division_id, 'is_active' => 1));
 		$this->db->order_by('feeder_id', 'ASC');
 
 		$query = $this->db->get('contract_location');
@@ -169,11 +171,12 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function saveTKCWeeklyPlan($from_date, $to_date, $is_draft)
+	public function saveTKCWeeklyPlan($from_date, $to_date, $package_group_no, $is_draft)
 	{
 		$data = array(
 			'from_date' => date('Y-m-d', strtotime($from_date)),
 			'to_date' => date('Y-m-d', strtotime($to_date)),
+			'package_group_no' => $package_group_no,
 			'is_draft' => (int) $is_draft,
 			'is_active' => 1,
 			'createdby' => $this->getLoggedInUserID(),
@@ -364,9 +367,9 @@ class TKCWeeklyPlan_Model extends CI_Model
 		}
 	}
 
-	public function getDateRangeExists($user_id, $from_date, $to_date)
+	public function getDateRangeExists($user_id, $from_date, $to_date, $package_group_no)
 	{
-		$query = $this->db->get_where('tkc_plan', array('from_date' => $from_date, 'to_date' => $to_date, 'createdby' => $user_id, 'is_active' => 1));
+		$query = $this->db->get_where('tkc_plan', array('from_date' => $from_date, 'to_date' => $to_date, 'package_group_no' => $package_group_no, 'createdby' => $user_id, 'is_active' => 1));
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -436,7 +439,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 
 	public function getTKCWeeklyPlanDetails($tkc_plan_id)
 	{
-		$this->db->select('tkc_plan.tkc_plan_id, tkc_plan.from_date, tkc_plan.to_date, tkc_plan_detail.tkc_plan_detail_id, tkc_plan_detail.contract_id, tkc_plan_detail.plan_date, tkc_plan_detail.circle_id, tkc_plan_detail.division_id, tkc_plan_detail.description, tkc_plan_detail.remark, contract.package_no, mst_circle.circle_name, mst_division.division_name');
+		$this->db->select('tkc_plan.tkc_plan_id, tkc_plan.from_date, tkc_plan.to_date, tkc_plan.package_group_no, tkc_plan_detail.tkc_plan_detail_id, tkc_plan_detail.contract_id, tkc_plan_detail.plan_date, tkc_plan_detail.circle_id, tkc_plan_detail.division_id, tkc_plan_detail.description, tkc_plan_detail.remark, contract.package_no, mst_circle.circle_name, mst_division.division_name');
 		$this->db->from('tkc_plan');
 		$this->db->join('tkc_plan_detail', 'tkc_plan.tkc_plan_id = tkc_plan_detail.tkc_plan_id', 'LEFT');
 		$this->db->join('contract', 'tkc_plan_detail.contract_id = contract.contract_id', 'LEFT');
@@ -460,14 +463,13 @@ class TKCWeeklyPlan_Model extends CI_Model
 				$query_result = [];
 
 				$query_result['date_range'] = date('d-m-Y', strtotime($result[0]['from_date'])).' - '.date('d-m-Y', strtotime($result[0]['to_date']));
+				$query_result['package_group_no'] = $result[0]['package_group_no'];
 				
 				foreach ($result as $key => $value) {
-					// echo 'value: <pre>'; print_r($value); echo '</pre>'; die();
 					$result[$key]['from_date'] = date('d-m-Y', strtotime($value['from_date']));
 					$result[$key]['to_date'] = date('d-m-Y', strtotime($value['to_date']));
 					$result[$key]['plan_date'] = date('d-m-Y', strtotime($value['plan_date']));
 					$result[$key]['plan_day'] = date('l', strtotime($value['plan_date']));
-					// echo '<pre>'; print_r($result[$key]); echo '</pre>'; die();
 
 					$feeders_data = $this->getTKCWeeklyPlansFeederDetails($value['tkc_plan_detail_id']);
 					$result[$key]['feeders'] = implode(', ', $feeders_data);
@@ -588,7 +590,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 			$user_assigned_circles = $_SESSION['myCircles'];
 			$user_assigned_divisions = $_SESSION['myDivision'];
 
-			$this->db->select('DISTINCT(tkc_plan.tkc_plan_id), tkc_plan.from_date, tkc_plan.to_date, tkc_plan.is_draft, tkc_plan.createdby, mst_user.username');
+			$this->db->select('DISTINCT(tkc_plan.tkc_plan_id), tkc_plan.package_group_no, tkc_plan.from_date, tkc_plan.to_date, tkc_plan.is_draft, tkc_plan.createdby, mst_user.username');
 			$this->db->from('tkc_plan');
 			$this->db->join('tkc_plan_detail', 'tkc_plan_detail.tkc_plan_id = tkc_plan.tkc_plan_id', 'LEFT');
 			$this->db->join('mst_user', 'tkc_plan.createdby = mst_user.user_id', 'INNER');
@@ -613,16 +615,24 @@ class TKCWeeklyPlan_Model extends CI_Model
 				$result = $query->result_array();
 
 				foreach ($result as $key => $value) {
-					$lot_data = $this->getPackageGroupNoAndContractorForTKCWeeklyPlan($value['tkc_plan_id']);
-
-					$lot_no = [];
+					$lot_data = $this->getPackageGroupNoAndContractorForTKCWeeklyPlan($value['tkc_plan_id']);					
 					$contractor = [];
+
 					foreach ($lot_data as $lot_key => $lot_value) {
-						array_push($lot_no, $lot_value['package_group_no']);
 						array_push($contractor, $lot_value['contractor_name']);
 					}
 
-					$result[$key]['lot_no'] = implode(',', array_unique($lot_no));
+					if ($value['package_group_no'] == NULL) {
+						$lot_no = [];
+						foreach ($lot_data as $lot_key => $lot_value) {
+							array_push($lot_no, $lot_value['package_group_no']);
+						}
+
+						$result[$key]['lot_no'] = implode(',', array_unique($lot_no));
+					} else {
+						$result[$key]['lot_no'] = $value['package_group_no'];
+					}
+
 					$result[$key]['contractor_name'] = implode(',', array_unique($contractor));
 				}
 
@@ -789,8 +799,11 @@ class TKCWeeklyPlan_Model extends CI_Model
 	{
 		$contract_status_list = $this->getContractStatusList();
 
-		$this->db->select('package_no');
-		$query = $this->db->get_where('contract', array('package_group_no' => $package_group_no, 'status_id' => $contract_status_list['Open']));
+		$this->db->select('package_no, package_group_no');
+		$this->db->where_in('package_group_no', $package_group_no);
+		$this->db->where(array('status_id' => $contract_status_list['Open']));
+
+		$query = $this->db->get('contract');
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
@@ -801,14 +814,14 @@ class TKCWeeklyPlan_Model extends CI_Model
 			$query_result = [];
 
 			if ($query->num_rows() > 0) {
-				$result = $query->result_array();
+				$query_result = $query->result_array();
 
-				foreach ($result as $key => $value) {
+				/*foreach ($result as $key => $value) {
 					array_push($query_result, $value['package_no']);
-				}
-			} else {
+				}*/
+			}/* else {
 				$query_result = 0;
-			}
+			}*/
 
 			return $query_result;
 		}

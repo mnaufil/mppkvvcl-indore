@@ -96,10 +96,22 @@
                                                             <div class="input-group-text">
                                                                 <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                                                             </div>
-                                                            <?php $disabled = ($mode == 'view') ? 'disabled' : ''; ?>
-                                                            <input type="text" class="form-control" id="weeklyPlanDateRange" name="weeklyPlanDateRange" value="<?php echo $result['date_range']; ?>" <?php echo $disabled; ?>>
+                                                            <?php //$disabled = ($mode == 'view' || ) ? 'disabled' : ''; ?>
+                                                            <!-- <input type="text" class="form-control" id="weeklyPlanDateRange" name="weeklyPlanDateRange" value="<?php //echo $result['date_range']; ?>" <?php //echo $disabled; ?>> -->
+                                                            <input type="text" class="form-control" id="weeklyPlanDateRange" name="weeklyPlanDateRange" value="<?php echo $result['date_range']; ?>" disabled>
                                                         </div>
                 									</div>
+                                                    <!-- Package Group No -->
+                                                    <div class="col-xl-4">
+                                                        <label class="form-label" for="packageGroupNo">Lot No.<span class="text-red">*</span></label>
+                                                        <select class="form-control select2" id="packageGroupNo" name="packageGroupNo" disabled>
+                                                            <option value="" disabled>Select Lot No</option>
+                                                            <?php foreach ($package_group_no as $value) { ?>
+                                                            <?php $package_group_no_selected = ($value == $result['package_group_no']) ? 'selected' : ''; ?>
+                                                            <option value="<?php echo $value; ?>" <?php echo $package_group_no_selected; ?>><?php echo $value; ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </div>
                 								</div>
                 								<!-- <div id="weeklyPlan" class="mt-3" hidden> -->
                 								<div id="weeklyPlan" class="mt-3">
@@ -349,14 +361,14 @@
         <script src="<?php echo base_url('assets/switcher/js/switcher.js'); ?>"></script>
 
         <script type="text/javascript">
-        	let packages = '<?php echo $packages ?>';
-        	packages_arr = packages.split(',');
+        	let packages = '<?php echo json_encode($packages) ?>';
+            packages = JSON.parse(packages);
+            let packages_arr = packages[<?php echo $package_group_no[0] ?>];
 
-        	let circles = <?php echo json_encode($circles) ?>;
-            // console.log(circles);
+            let circles_arr = <?php echo json_encode($circles) ?>;
+            let circles = circles_arr[<?php echo $package_group_no[0] ?>];
 
-        	let divisions = <?php echo json_encode($divisions) ?>;
-        	// console.log(divisions);
+            let divisions = <?php echo json_encode($divisions) ?>;
         </script>
 
         <!-- EDIT-TABLE JS -->
@@ -478,7 +490,7 @@
                     dataType: 'json',
                     data: {circle_name: circle_name, division_name: division_name},
                     success: function(response) {
-                        // console.log(response); 
+                        // console.log(response);
                         let feeder_td = $('#new-add-weekly-tkc-plan-details > tbody > tr[data-status="editing"]').find('.feeder');
                         $(feeder_td).empty();
 
@@ -494,7 +506,7 @@
                 let feeder_td = $('#new-add-weekly-tkc-plan-details > tbody > tr[data-status="editing"]').find('.feeder');
 
                 let feeder_html = '';
-
+                feeder_html += '<div style="display: none;"></div>';
                 feeder_html += '<select name="feeder" id="feeder"" multiple="multiple" class="form-control form-select">';
                 feeder_html += '</select>';
 
@@ -511,7 +523,7 @@
                     select_options.push(options);
                 });
 
-                $('select[name="feeder"]').multipleSelect({
+                $(feeder_td).find('select[name="feeder"]').multipleSelect({
                     filter: true,
                     data: select_options
                 });
@@ -525,7 +537,8 @@
 
             $('#updateTKCWeeklyPlan button[type="submit"]').click(function(event) {
                 let selected_submit_btn = $(this).data('type');
-                let weekly_plan_form = $('#updateTKCWeeklyPlan')[0];
+                // let weekly_plan_form = $('#updateTKCWeeklyPlan')[0];
+                let weekly_plan_form;
 
                 let selected_date_range = $('input[name="weeklyPlanDateRange"]').val();
 
@@ -570,6 +583,10 @@
                         return false;
                     }
 
+                    $('#weeklyPlanDateRange').prop('disabled', false);
+                    $('#packageGroupNo').prop('disabled', false);
+                    weekly_plan_form = $('#updateTKCWeeklyPlan')[0];
+
                     saveWeeklyPlan(weekly_plan_form, selected_submit_btn);
                 } else if (selected_submit_btn == 'draft') {
                     let no_values_count = 0;
@@ -592,6 +609,10 @@
 
                         return false;
                     } else if (no_values_count == 0) {
+                        $('#weeklyPlanDateRange').prop('disabled', false);
+                        $('#packageGroupNo').prop('disabled', false);
+                        weekly_plan_form = $('#updateTKCWeeklyPlan')[0];
+
                         saveWeeklyPlan(weekly_plan_form, selected_submit_btn);    
                     }
                 }
@@ -659,7 +680,7 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
 
                         $('.plan-loader').attr('hidden', true);
 
@@ -680,7 +701,11 @@
                 $('#weekly-plan-alert').prop('hidden', true);
 
                 let table_rows = $('#new-add-weekly-tkc-plan-details tbody').find('tr');
+
+                $('#weeklyPlanDateRange').prop('disabled', false);
+                $('#packageGroupNo').prop('disabled', false);
                 let weekly_plan_form = $('#updateTKCWeeklyPlan')[0];
+
                 let selected_submit_btn = $(this).data('type');
                 let no_values_count = 0;
 

@@ -119,6 +119,12 @@
                                                                                     <span class="fe fe-trash-2 fa-lg action-btn-table"> </span>
                                                                                 </a>
                                                                             <?php } ?>
+                                                                            <!-- Download PDF -->
+                                                                            <?php if ($user_role != 'TKC' && isset($user_access['download'])) { ?>
+                                                                            <a href="<?php echo base_url('download-tkc-weekly-plan/'.$value['tkc_plan_id']); ?>" id="btn-download" class="btn btn-sm">
+                                                                                <span class="fe fe-download fa-lg action-btn-table"></span>
+                                                                            </a>
+                                                                            <?php } ?>
                                                                             </div>
                                                                         </td>
                                                                         <!-- Date Range -->

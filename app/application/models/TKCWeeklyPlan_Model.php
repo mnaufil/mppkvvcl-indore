@@ -582,7 +582,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$user_role = $this->getUserRoleName($user_id);
 
 		if ($user_role == 'TKC') {
-			$this->db->select('tkc_plan.tkc_plan_id, tkc_plan.from_date, tkc_plan.to_date, tkc_plan.is_draft, tkc_plan.createdby, mst_user.username');
+			$this->db->select('tkc_plan.tkc_plan_id, tkc_plan.package_group_no, tkc_plan.from_date, tkc_plan.to_date, tkc_plan.is_draft, tkc_plan.createdby, mst_user.username');
 			$this->db->from('tkc_plan');
 			$this->db->join('mst_user', 'tkc_plan.createdby = mst_user.user_id', 'INNER');
 			$this->db->where(array('tkc_plan.createdby' => $user_id, 'tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL, 'mst_user.is_active' => 1));

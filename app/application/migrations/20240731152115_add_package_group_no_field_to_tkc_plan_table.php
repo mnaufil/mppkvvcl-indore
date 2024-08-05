@@ -2,7 +2,7 @@
 /**
  * 
  */
-class Migration_Add_lotno_field_to_tkc_plan_table extends CI_Migration
+class Migration_Add_package_group_no_field_to_tkc_plan_table extends CI_Migration
 {
 	function __construct()
 	{
@@ -13,7 +13,7 @@ class Migration_Add_lotno_field_to_tkc_plan_table extends CI_Migration
 	public function up()
 	{
 		$fields = array(
-			'lot_no' => array(
+			'package_group_no' => array(
 				'type' => 'INT',
 				'constraint' => 11,
 				'null' => TRUE,
@@ -26,6 +26,6 @@ class Migration_Add_lotno_field_to_tkc_plan_table extends CI_Migration
 
 	public function down()
 	{
-		$this->dbforge->drop_column('tkc_plan', 'lot_no');
+		$this->dbforge->drop_column('tkc_plan', 'package_group_no');
 	}
 }

@@ -7,41 +7,41 @@
 
             <div class="d-flex order-lg-2 ms-auto header-right-icons">
                 <!-- SEARCH -->
-                <button class="navbar-toggler navresponsive-toggler d-lg-none ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent-4"
-                aria-controls="navbarSupportedContent-4" aria-expanded="false"
-                aria-label="Toggle navigation">
+                <button class="navbar-toggler navresponsive-toggler d-lg-none ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent-4" aria-controls="navbarSupportedContent-4" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon fe fe-more-vertical"></span>
                 </button>
 
                 <!-- nav-bar -->
                 <div class="navbar navbar-collapse responsive-navbar p-0" style="position: relative;">
-
                     <div class="collapse navbar-collapse" id="navbarSupportedContent-4">
-
-                        <?php //echo '<pre>'; print_r($this->session->totalData);?>
-                         <div class="d-flex order-lg-2">
-                        <?php  foreach ($this->session->totalData as $key) { 
-                            if($key->keyword=="Total")
-                            {
-                                $var = "green";
-                            }
-                            else
-                            {
-                                $var = "yellow";
-                            }
-                            ?>                          
-                        <div class="mt-2" style="margin-right: 10px;">  
-                        <?php 
-                         if($key->keyword=="Total") { 
-                        ?>  
-                        <h4 class="mb-0 text-<?php echo $var;?> fw-semibold"> <b> <?php echo $key->target;?></b></h4>
-                    <?php } else {  ?>
-                        <h4 class="mb-0 text-<?php echo $var;?> fw-semibold"> <b> <?php echo $key->actual;?></b></h4>
-                     <?php } ?>   
-                        <h7 class="fw-normal" style="font-size: 12px;"><?php echo $key->keyword;?></h7> 
-                      </div> 
-                         <?php   }  ?>
-                            
+                        <div class="d-flex order-lg-2">
+                            <?php   /*foreach ($this->session->totalData as $key) { 
+                                        if($key->keyword=="Total") {
+                                            $var = "green";
+                                        } else {
+                                            $var = "yellow";
+                                        }*/
+                            ?>
+                            <!-- <div class="mt-2" style="margin-right: 10px;">  
+                                <?php //if($key->keyword=="Total") { ?>  
+                                <h4 class="mb-0 text-<?php //echo $var;?> fw-semibold"> <b> <?php //echo $key->target;?></b></h4>
+                                <?php //} else {  ?>
+                                <h4 class="mb-0 text-<?php //echo $var;?> fw-semibold"> <b> <?php //echo $key->actual;?></b></h4>
+                                <?php //} ?>   
+                                <h7 class="fw-normal" style="font-size: 12px;"><?php //echo $key->keyword;?></h7> 
+                            </div>  -->
+                            <?php   //}  ?>
+                            <div class="tot-amount-hed" style="margin-right: 10px;">
+                                <?php $totalData = $this->session->totalData; ?>
+                                <div class="row contract-value">
+                                    <span style="text-align: right;">Total Contract Value  <br><h6 class="mb-0 text-green fw-semibold"><b><?php echo $totalData[0]['target'];?></b></h6></span>
+                                    <span style="text-align: right;">Total Financial Value of the Work<br><h6 class="mb-0 text-green fw-semibold"><b><?php echo $totalData[1]['Total_financial_physical_progress'];?></b>(<?php echo $totalData[1]['Total_financial_physical_progress_per'].'%'; ?>)</h6></span>
+                                </div>
+                                <div class="row financial-value">
+                                    <span style="text-align: right;">Financial Value - WIP <br><h6 class="mb-0 text-green fw-semibold"><b><?php echo $totalData[1]['wip_financial_physical_progress'];?></b>(<?php echo $totalData[1]['wip_financial_physical_progress_per'].'%'; ?>)</h6></span>
+                                    <span style="text-align: right;">Financial Value - Completed <br><h6 class="mb-0 text-green fw-semibold"><b><?php echo $totalData[1]['completed_financial_physical_progress'];?></b>(<?php echo $totalData[1]['completed_financial_physical_progress_per'].'%'; ?>)</h6></span>
+                                </div>
+                            </div>
                          </div> 
 
                         <div class="d-flex order-lg-2">

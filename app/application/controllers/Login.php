@@ -106,9 +106,11 @@ class Login extends CI_Controller
 					$this->session->set_userdata('rolesData',$rolesData);
 					$this->session->set_userdata('moduleAccess',$moduleAccess);		
 					$this->session->set_userdata('allModuleArray',$allModuleArray);	
-					$data['totalDisburse'] = $this->Login_Model->totalDisburse();
+					// $data['totalDisburse'] = $this->Login_Model->totalDisburse();
+					$totalDisburse = $this->Login_Model->totalDisburse();
 
-					$this->session->set_userdata('totalData', $data['totalDisburse']);
+					// $this->session->set_userdata('totalData', $data['totalDisburse']);
+					$this->session->set_userdata('totalData', $totalDisburse);
         			//$totalData = $this->session->totalData;
 					// echo '<pre>'; print_r($_SESSION); echo '</pre>'; die();
 

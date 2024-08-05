@@ -137,7 +137,8 @@
                                                                         </td>
                                                                         <!-- Contractor (TKC) -->
                                                                         <td style="text-align: center;">
-                                                                            <?php echo $value['contractor_name']; ?>
+                                                                            <?php //echo $value['contractor_name']; ?>
+                                                                            <?php echo $value['username']; ?>
                                                                         </td>
                                                                         <!-- Status -->
                                                                         <td style="text-align: center;">

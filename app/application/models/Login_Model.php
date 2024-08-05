@@ -64,7 +64,7 @@ class Login_Model extends CI_Model
 	
 	public function checkRoles($roleId)
 	{
-	/* 	$this->db->where('mrma.is_active', 1);
+	 	/*$this->db->where('mrma.is_active', 1);
 		$this->db->where('mrma.role_id', $roleId);
 		$this->db->group_by('mma.module_id');
 		$this->db->select('mm.module_id as menu_id, mm.name as menu_name, mm.parent_module_id, mma.access_key, mma.event, ');
@@ -72,50 +72,36 @@ class Login_Model extends CI_Model
 		$this->db->join('mst_module_access mma', 'mma.module_access_id = mrma.module_access_id');
 		$this->db->join('mst_module mm', 'mm.module_id = mma.module_id');
 		$query = $this->db->get(); */
-		$query = $this->db->query("SELECT  mst_role_module_access.role_id, mst_role_module_access.module_access_id,
-                mst_module_access.module_id, mst_module_access.access_key, mst_module_access.event,
-                mst_module.name, mst_module.parent_module_id,mst_module.seqno,b.name as parent_menu_name
-FROM    mst_role_module_access
-INNER JOIN      mst_module_access
-ON              mst_role_module_access.module_access_id = mst_module_access.module_access_id
-INNER JOIN      mst_module
-ON              mst_module_access.module_id = mst_module.module_id
-INNER JOIN mst_module b
-ON b.module_id=mst_module.parent_module_id
-WHERE   mst_role_module_access.role_id = $roleId AND mst_role_module_access.is_active = 1 AND mst_module_access.is_active = 1 ORDER BY mst_module.seqno ASC");
-		// echo $this->db->last_query(); die();
-		//echo '<pre>';
-		//print_r($query->result()); die("END");
-		return $query->result();		
-
-
+		$query = $this->db->query("SELECT mst_role_module_access.role_id, mst_role_module_access.module_access_id, mst_module_access.module_id, mst_module_access.access_key, mst_module_access.event, mst_module.name, mst_module.parent_module_id, mst_module.seqno, b.name as parent_menu_name FROM mst_role_module_access INNER JOIN mst_module_access ON mst_role_module_access.module_access_id = mst_module_access.module_access_id INNER JOIN mst_module ON mst_module_access.module_id = mst_module.module_id INNER JOIN mst_module b ON b.module_id = mst_module.parent_module_id WHERE mst_role_module_access.role_id = $roleId AND mst_role_module_access.is_active = 1 AND mst_module_access.is_active = 1 ORDER BY mst_module.seqno ASC");
+		return $query->result();
 	}
-
 
 	function allModule()
 	{
-			$query = $this->db->query("select name,  count(parent_module_id) as parent_module_id, seqno from mst_module where is_active =1 group by parent_module_id");
-			return $query->result();	
+		$query = $this->db->query("select name,  count(parent_module_id) as parent_module_id, seqno from mst_module where is_active =1 group by parent_module_id");
+		return $query->result();	
 	}
+
 	function allIcon()
 	{
-			$query = $this->db->query("select name, icon,  count(parent_module_id) as parent_module_id from mst_module where is_active =1 group by parent_module_id");
-			return $query->result();	
+		$query = $this->db->query("select name, icon,  count(parent_module_id) as parent_module_id from mst_module where is_active =1 group by parent_module_id");
+		return $query->result();	
 	}
 
-
-	 function totalDisburse()
+	function totalDisburse()
     {
         //$query = $this->db->query("CALL sp_get_dashboard_statistics($mileStoneId, 1)");
-        $query = $this->db->query("CALL sp_dashboard_insights(1)");
-        //print_r($query->result()); die;
-        if($query)
-        {
-             return $query->result();
-        }
-       
-    }
+        // $query = $this->db->query("CALL sp_dashboard_insights(1)"); //Original SP
+        // $query = $this->db->query("CALL bkp_020824_sp_dashboard_insights(1)");
+        $query = $this->getMultipleQueryResult("CALL sp_dashboard_insights(1)");
+        // echo 'query: <pre>'; print_r($query); echo '</pre>'; die();
 
+        /*if($query)
+        {
+            return $query->result();
+        }*/
+        return $query;
+    }
 
     function getRegionCircleDivisionWiseAccess($userId)
     {
@@ -133,8 +119,7 @@ WHERE   mst_role_module_access.role_id = $roleId AND mst_role_module_access.is_a
     	}
     	$this->session->set_userdata('myRegions',array_unique($region));
 		$this->session->set_userdata('myCircles',array_unique($circle));
-		$this->session->set_userdata('myDivision',array_unique($division));
-    	
+		$this->session->set_userdata('myDivision',array_unique($division));    	
     }
 
     public function getRoleNameByRoleID($role_id)
@@ -180,4 +165,36 @@ WHERE   mst_role_module_access.role_id = $roleId AND mst_role_module_access.is_a
     		return $query_result;
     	}
     }
+
+    public function getMultipleQueryResult($query)
+	{
+		if (empty($query)) {
+			return false;
+		}
+
+		$index = 0;
+		$query_result = [];
+		$query_result1 = [];
+
+		// execute multi result query
+		if (mysqli_multi_query($this->db->conn_id, $query)) {
+			do {				
+				if (false != $result = mysqli_store_result($this->db->conn_id)) {
+
+					// $rowID = 0;
+					while ($row = $result->fetch_assoc()) {
+						// $query_result1[$rowID] = $row;
+						$query_result1 = $row;
+						// $rowID++;
+					}
+
+					$query_result[$index] = $query_result1;
+				}
+
+				$index++;
+			} while (mysqli_next_result($this->db->conn_id));
+		}
+
+		return $query_result;
+	}
 }

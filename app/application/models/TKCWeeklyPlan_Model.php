@@ -596,7 +596,7 @@ class TKCWeeklyPlan_Model extends CI_Model
 			$this->db->join('mst_user', 'tkc_plan.createdby = mst_user.user_id', 'INNER');
 			$this->db->where_in('tkc_plan_detail.circle_id', $user_assigned_circles);
 			$this->db->where_in('tkc_plan_detail.division_id', $user_assigned_divisions);
-			$this->db->where(array('tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL));
+			$this->db->where(array('tkc_plan.is_draft' => 0, 'tkc_plan.is_active' => 1, 'tkc_plan.deletedby' => NULL));
 		}
 
 		$this->db->order_by('tkc_plan.from_date', 'DESC');

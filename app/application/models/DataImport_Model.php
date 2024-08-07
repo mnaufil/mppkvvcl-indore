@@ -129,6 +129,7 @@ class DataImport_Model extends CI_Model
 			'import_type' => $import_type,
 			'sub_type' => $import_sub_type,
 			'status' => 1,
+			'is_active' => 1,
 			'createdby' => $this->getLoggedInUserID(),
 			'createddate' => date('Y-m-d H:i:s')
 		);

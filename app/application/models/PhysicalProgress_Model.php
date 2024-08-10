@@ -732,6 +732,7 @@ class PhysicalProgress_Model extends CI_Model
 							$obs_data[$akey]['observation_id'] = $avalue['observation_id'];
 							$obs_data[$akey]['observation_name'] = $avalue['observation_name'];
 							$obs_data[$akey]['remark'] = $avalue['remark'];
+							$obs_data[$akey]['observation_remark'] = $avalue['observation_remark'];
 							$obs_data[$akey]['observation_status'] = $avalue['observation_status'];
 							$obs_data[$akey]['observation_photos'] = $avalue['observation_file_details'];
 							$obs_data[$akey]['observation_photos_by_tkc'] = $avalue['observation_file_by_tkc_details'];
@@ -908,7 +909,7 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
-	public function saveObservation($contract_location_id, $work_activity_id, $observation_id, $observation_name, $ncr_id, $ncr_date, $remark, $completion_date, $obs_status_id)
+	public function saveObservation($contract_location_id, $work_activity_id, $observation_id, $observation_name, $other_observation_name, $observation_remark, $ncr_id, $ncr_date, $remark, $completion_date, $obs_status_id, $raised_by, $designation, $distribution_centre)
 	{
 		$data = array(
 			// 'physical_progress_activity_id' => $pp_activity_id,
@@ -916,10 +917,15 @@ class PhysicalProgress_Model extends CI_Model
 			'activity_id' => $work_activity_id,
 			'observation_id' => $observation_id,
 			'observation_name' => $observation_name,
+			'other_observation_name' => $other_observation_name,
 			'ncr_id' => $ncr_id,
 			'ncr_date' => $ncr_date,
 			'remark' => $remark, 
+			'observation_remark' => $observation_remark,
 			'completion_date' => $completion_date,
+			'raised_by' => $raised_by,
+			'designation' => $designation,
+			'distribution_centre' => $distribution_centre,
 			'status_id' => $obs_status_id,
 			'is_active' => 1,
 			'createdby' => $this->getLoggedInUserID(),
@@ -1006,15 +1012,19 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
-	public function updateObservation($observation_id, $observation_name, $ncr_id, $ncr_date, $remark, $completion_date, $obs_status_id, $pp_activity_obs_id, $user_id = NULL)
+	public function updateObservation($observation_id, $observation_name, $other_observation_name, $ncr_id, $ncr_date, $remark, $observation_remark, $completion_date, $obs_status_id, $raised_by, $designation, $distribution_centre, $pp_activity_obs_id, $user_id = NULL)
 	{
 		$data = array(
 			'observation_id' => $observation_id,
 			'observation_name' => $observation_name,
+			'other_observation_name' => $other_observation_name,
 			'ncr_id' => $ncr_id,
 			'ncr_date' => $ncr_date,
 			'remark' => $remark,
 			'completion_date' => $completion_date,
+			'raised_by' => $raised_by,
+			'designation' => $designation,
+			'distribution_centre' => $distribution_centre,
 			'last_email_details' => NULL,
 			'status_id' => $obs_status_id,
 			'is_active' => 1,
@@ -1488,7 +1498,7 @@ class PhysicalProgress_Model extends CI_Model
 	{
 		//Getting activity detail and observations
 		/*$this->db->select('ppa.physical_progress_activity_id, ppa.physical_progress_id, ppa.sr_no, ppa.activity_id, ppa.unit_id, ppa.status_id, ppa.erected_qty, ppa.remarks, ppao.physical_progress_activity_observation_id, ppao.physical_progress_activity_id, ppao.observation_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date');*/
-		$this->db->select('ppa.physical_progress_activity_id, ppa.physical_progress_id, ppa.sr_no, ppa.activity_id, ppa.unit_id, ppa.status_id, ppa.erected_qty, ppa.remarks, ppao.physical_progress_activity_observation_id, ppao.observation_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.status_id AS observation_status_id, mst_status.name AS observation_status');
+		$this->db->select('ppa.physical_progress_activity_id, ppa.physical_progress_id, ppa.sr_no, ppa.activity_id, ppa.unit_id, ppa.status_id, ppa.erected_qty, ppa.remarks, ppao.physical_progress_activity_observation_id, ppao.observation_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.status_id AS observation_status_id, mst_status.name AS observation_status, ppao.createdby');
 		$this->db->from('physical_progress_activity  as ppa');
 		// $this->db->join('physical_progress_activity_observation as ppao', 'ppa.physical_progress_activity_id = ppao.physical_progress_activity_id', 'inner');
 		$this->db->join('physical_progress_activity_observation as ppao', 'ppa.activity_id = ppao.activity_id', 'INNER');
@@ -1567,7 +1577,7 @@ class PhysicalProgress_Model extends CI_Model
 	{
 		// $query = $this->db->get_where('physical_progress_activity_observation', array('physical_progress_activity_observation_id' => $obs_id, 'deletedby' => NULL));
 
-		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.status_id AS observation_status_id, mst_status.name AS observation_status');
+		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.status_id AS observation_status_id, mst_status.name AS observation_status, ppao.createdby');
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
 		$this->db->where(array('ppao.physical_progress_activity_observation_id' => $obs_id, 'deletedby' => NULL));
@@ -1590,15 +1600,21 @@ class PhysicalProgress_Model extends CI_Model
 				$obs_data['activity_id'] = $query_result['activity_id'];
 				$obs_data['observation_id'] = $query_result['observation_id'];
 				$obs_data['observation_name'] = $query_result['observation_name'];
+				$obs_data['other_observation_name'] = $query_result['other_observation_name'];
+				$obs_data['observation_remark'] = $query_result['observation_remark'];
 				$obs_data['ncr_id'] = $query_result['ncr_id'];
 				$obs_data['ncr_date'] = date('d-m-Y', strtotime($query_result['ncr_date']));
 				$obs_data['remark'] = $query_result['remark'];
-				$obs_data['completion_date'] = '';
+				$obs_data['completion_date'] = $query_result['completion_date'];
+				$obs_data['raised_by'] = $query_result['raised_by'];
+				$obs_data['designation'] = $query_result['designation'];
+				$obs_data['distribution_centre'] = $query_result['distribution_centre'];
 				$obs_data['observation_files'] = [];
 				$obs_data['observation_files_by_tkc'] = [];
 				$obs_data['completion_files'] = [];
 				$obs_data['observation_status_id'] = $query_result['observation_status_id'];
 				$obs_data['observation_status'] = $query_result['observation_status'];
+				$obs_data['createdby'] = $query_result['createdby'];
 
 				$obs_file_result = $this->getObservationFile($obs_id);				
 

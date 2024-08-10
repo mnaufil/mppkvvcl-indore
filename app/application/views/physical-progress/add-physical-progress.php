@@ -36,7 +36,6 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/temp.css'); ?>">
-
   </head>
 
 	<body class="app sidebar-mini ltr light-mode">
@@ -68,8 +67,8 @@
 
         			<!-- <div class="row">
         				<?php //if ($sheet_data['is_inrange'] == 0) { ?>
-                		<p class="fs-6 mb-0">This entry is made beyond permissible limit of 5KM from the site location</p>	
-                		<?php //} ?>
+                	<p class="fs-6 mb-0">This entry is made beyond permissible limit of 5KM from the site location</p>	
+                <?php //} ?>
         			</div> -->
                 			
             	<!-- Page-Header -->
@@ -495,43 +494,45 @@
 																								<!-- Activity Name -->
 																								<td><?php echo $v2['activity']; ?></td>
 																								<!-- Status -->
-																								<td>
+																								<td class="activity-status">
 																									<div class="custom-controls">
 																										<?php $radio_name = strtolower(str_replace(' ', '_', $k1)).'_'.$v2['typeofwork_activity_id']; ?>
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
+																											<?php $radio_disabled = ($userdata['role'] == 'Client') ? 'disabled' : ''; ?>
 																											<!-- Sheet Status: Open -->
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="yes">
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="yes" <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">Yes</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="wip">
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="wip" <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">WIP</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" checked>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" checked <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">No</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na">
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na" <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">NA</span>
 																											</label>
 																										<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
+																											<?php $radio_disabled = ($userdata['role'] == 'Client') ? 'disabled' : ''; ?>
 																											<!-- Sheet Status: In Process || Completed  || Reviewed -->
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?>>
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">Yes</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?>>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">WIP</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" <?php echo ($v2['status_id'] == 0) ? 'checked' : ''; ?>>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" <?php echo ($v2['status_id'] == 0) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">No</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na" <?php echo ($v2['status_id'] == 3) ? 'checked' : ''; ?>>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na" <?php echo ($v2['status_id'] == 3) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">NA</span>
 																											</label>
 																										<?php } ?>
@@ -540,11 +541,18 @@
 																								<!-- Observations -->
 																								<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																									<!-- Sheet Status: Open -->
-																									<td class="observation"></td>
+																									<td class="observation">
+																										<?php if ($userdata['role'] == 'Client') { ?>
+																										<span class="obs_ratio"></span>
+																										<button id="btn-obs-<?php echo $k2; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $k1; ?>" data-table-row="<?php echo $k2; ?>" data-activity-id="<?php echo $v2['typeofwork_activity_id']; ?>" data-activity-type="withoutBOQ" onclick="showObservationsList(this)">
+																											<span class="fe fe-more-vertical"> </span>
+																										</button>	
+																										<?php } ?>
+																									</td>
 																								<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																									<!-- Sheet Status: In Process || Completed || Reviewed -->
 																									<td class="observation">
-																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) {
+																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || $v2['status_id'] == 4 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) {
 																														$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																														$obs_list_count = count($v2['applied_observations']);
 																														$obs_complete_count = 0;
@@ -583,7 +591,7 @@
 																										<?php $obs_remarks = []; ?>
 																										<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																														if (empty($aovalue['completion_photos'])) {
-																															array_push($obs_remarks, $aovalue['remark']);
+																															array_push($obs_remarks, $aovalue['observation_remark']);
 																														}
 																													}
 																										?>
@@ -622,43 +630,45 @@
 																								<!-- Activity Name -->
 																								<td><?php echo $v2['activity']; ?></td>
 																								<!-- Status -->
-																								<td>
+																								<td class="activity-status">
 																									<div class="custom-controls">
 																										<?php $radio_name = strtolower(str_replace(' ', '_', $k1)).'_'.$v2['typeofwork_activity_id']; ?>
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
+																											<?php $radio_disabled = ($userdata['role'] == 'Client') ? 'disabled' : ''; ?>
 																											<!-- Sheet Status: Open -->
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="yes">
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="yes" <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">Yes</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="wip">
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="wip" <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">WIP</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" checked>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" checked <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">No</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na">
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na" <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">NA</span>
 																											</label>
 																										<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
+																											<?php $radio_disabled = ($userdata['role'] == 'Client') ? 'disabled' : ''; ?>
 																											<!-- Sheet Status: In Process || Completed || Reviewed -->
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?>>
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">Yes</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?>>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">WIP</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" <?php echo ($v2['status_id'] == 0) ? 'checked' : ''; ?>>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" <?php echo ($v2['status_id'] == 0) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">No</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na" <?php echo ($v2['status_id'] == 3) ? 'checked' : ''; ?>>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na" <?php echo ($v2['status_id'] == 3) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">NA</span>
 																											</label>
 																										<?php } ?>
@@ -671,7 +681,7 @@
 																								<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																									<!-- Sheet Status: In Process || Completed || Reviewed -->
 																									<td class="observation">
-																										<?php if ($v2['status_id'] == 1 && !empty($v2['observations_list'])) {
+																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || $v2['status_id'] == 4 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) {
 																														$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																														$obs_list_count = count($v2['applied_observations']);
 																														$obs_complete_count = 0;
@@ -804,12 +814,19 @@
 																									<!-- Observations -->
 																									<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																										<!-- Sheet Status: Open -->
-																										<td class="observation"></td>
+																										<td class="observation">
+																											<?php if ($userdata['role'] == 'Client') { ?>
+																												<span class="obs_ratio"></span>
+																												<button id="btn-obs-<?php echo $k2; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $k1; ?>" data-table-row="<?php echo  $k2; ?>" data-activity-id="<?php echo $v2['typeofwork_activity_id']; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
+																													<span class="fe fe-more-vertical"> </span>
+																												</button>
+																											<?php } ?>
+																										</td>
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) 
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) 
 																														{
 																																$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
@@ -854,7 +871,7 @@
 																												<?php $obs_remarks = []; ?>
 																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																																if (empty($aovalue['completion_photos'])) {
-																																	array_push($obs_remarks, $aovalue['remark']);
+																																	array_push($obs_remarks, $aovalue['observation_remark']);
 																																}
 																															}
 																												?>
@@ -951,12 +968,19 @@
 																									<!-- Observations -->
 																									<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																										<!-- Sheet Status: Open -->
-																										<td class="observation"></td>
+																										<td class="observation">
+																											<?php if ($userdata['role'] == 'Client') { ?>
+																												<span class="obs_ratio"></span>
+																												<button id="btn-obs-<?php echo $k2; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $k1; ?>" data-table-row="<?php echo  $k2; ?>" data-activity-id="<?php echo $v2['typeofwork_activity_id']; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
+																													<span class="fe fe-more-vertical"> </span>
+																												</button>
+																											<?php } ?>
+																										</td>
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
 																																$obs_complete_count = 0;
@@ -998,7 +1022,7 @@
 																												<?php $obs_remarks = []; ?>
 																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																																if (empty($aovalue['completion_photos'])) {
-																																	array_push($obs_remarks, $aovalue['remark']);
+																																	array_push($obs_remarks, $aovalue['observation_remark']);
 																																}
 																															}
 																												?>
@@ -1040,43 +1064,45 @@
 																								<!-- Activity Name -->
 																								<td><?php echo $v2['activity']; ?></td>
 																								<!-- Status -->
-																								<td>
+																								<td class="activity-status">
 																									<div class="custom-controls">
 																									<?php $radio_name = strtolower(str_replace(' ', '_', $k1)).'_'.$v2['typeofwork_activity_id']; ?>
 																									<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
+																										<?php $radio_disabled = ($userdata['role'] == 'Client') ? 'disabled' : ''; ?>
 																										<!-- Sheet Status: Open -->
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="yes">
+																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="yes" <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">Yes</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="wip">
+																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="wip" <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">WIP</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" checked>
+																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" checked <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">No</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na">
+																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na" <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">NA</span>
 																										</label>
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
+																										<?php $radio_disabled = ($userdata['role'] == 'Client') ? 'disabled' : ''; ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?>>
+																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">Yes</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?>>
+																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">WIP</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" <?php echo ($v2['status_id'] == 0) ? 'checked' : ''; ?>>
+																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="no" <?php echo ($v2['status_id'] == 0) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">No</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na" <?php echo ($v2['status_id'] == 3) ? 'checked' : ''; ?>>
+																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="na" <?php echo ($v2['status_id'] == 3) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">NA</span>
 																										</label>
 																									<?php } ?>
@@ -1085,11 +1111,18 @@
 																								<!-- Observations -->
 																								<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																									<!-- Sheet Status: Open -->
-																									<td class="observation"></td>
+																									<td class="observation">
+																										<?php if ($userdata['role'] == 'Client') { ?>
+																										<span class="obs_ratio"></span>
+																										<button id="btn-obs-<?php echo $k2; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $k1; ?>" data-table-row="<?php echo $k2; ?>" data-activity-id="<?php echo $v2['typeofwork_activity_id']; ?>" data-activity-type="withoutBOQ" onclick="showObservationsList(this)">
+																											<span class="fe fe-more-vertical"> </span>
+																										</button>	
+																										<?php } ?>
+																									</td>
 																								<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																									<!-- Sheet Status: In Process || Completed || Reviewed -->
 																									<td class="observation">
-																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) {
+																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || $v2['status_id'] == 4 || ($v2['status_id'] == 0 && !empty($v2['applied_observations'])) || $userdata['role'] == 'Client') && !empty($v2['observations_list'])) {
 																														$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																														$obs_list_count = count($v2['applied_observations']);
 																														$obs_complete_count = 0;
@@ -1223,12 +1256,19 @@
 																									<!-- Observations -->
 																									<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																										<!-- Sheet Status: Open -->
-																										<td class="observation"></td>
+																										<td class="observation">
+																											<?php if ($userdata['role'] == 'Client') { ?>
+																												<span class="obs_ratio"></span>
+																												<button id="btn-obs-<?php echo $k2; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $k1; ?>" data-table-row="<?php echo  $k2; ?>" data-activity-id="<?php echo $v2['typeofwork_activity_id']; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
+																													<span class="fe fe-more-vertical"> </span>
+																												</button>
+																											<?php } ?>
+																										</td>
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
 																																$obs_complete_count = 0;
@@ -1270,7 +1310,7 @@
 																												<?php $obs_remarks = []; ?>
 																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																																if (empty($aovalue['completion_photos'])) {
-																																	array_push($obs_remarks, $aovalue['remark']);
+																																	array_push($obs_remarks, $aovalue['observation_remark']);
 																																}
 																															}
 																												?>
@@ -1346,13 +1386,14 @@
 																									<!-- Erected Qty -->
 																									<td class="erected-qty">
 																										<?php $input_name = strtolower(str_replace(' ', '_', $k1)).'_'.$v2['typeofwork_activity_id']; ?>
+																										<?php $erected_qty_readonly = ($userdata['role'] != 'Client') ? '' : 'readonly'; ?>
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
-																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>">	
+																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" <?php echo $erected_qty_readonly; ?>>	
 																										<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																											<?php //$erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty'];
 																														$erected_qty = (isset($v2['erected_qty'])) ? (($v2['erected_qty'] == 0) ? '' : $v2['erected_qty']) : '';
 																												 ?>
-																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>">	
+																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>" <?php echo $erected_qty_readonly; ?>>	
 																										<?php } ?>
 																									</td>
 																									<!-- Progress in % -->
@@ -1371,12 +1412,19 @@
 																									<!-- Observations -->
 																									<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
 																										<!-- Sheet Status: Open -->
-																										<td class="observation"></td>
+																										<td class="observation">
+																											<?php if ($userdata['role'] == 'Client') { ?>
+																												<span class="obs_ratio"></span>
+																												<button id="btn-obs-<?php echo $k2; ?>" type="button" class="btn btn-sm btn-obs obs-list" style="margin-left: 10px;" data-tablename="<?php echo $k1; ?>" data-table-row="<?php echo  $k2; ?>" data-activity-id="<?php echo $v2['typeofwork_activity_id']; ?>" data-activity-type="withBOQ" onclick="showObservationsList(this)">
+																													<span class="fe fe-more-vertical"> </span>
+																												</button>
+																											<?php } ?>
+																										</td>
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2) && !empty($v2['observations_list'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
 																																$obs_complete_count = 0;
@@ -1418,7 +1466,7 @@
 																												<?php $obs_remarks = []; ?>	
 																												<?php foreach ($v2['applied_observations'] as $aokey => $aovalue) {
 																																if (empty($aovalue['completion_photos'])) {
-																																	array_push($obs_remarks, $aovalue['remark']);
+																																	array_push($obs_remarks, $aovalue['observation_remark']);
 																																}
 																															}
 																												?>
@@ -1467,7 +1515,7 @@
 	                    	<?php } ?>
 	                    	<!-- Row7 Mark Complete Button -->
 	                    	<?php if (!isset($sheet_type)) { ?>
-	                    		<?php if ($sheet_data['sheet_status'] == 'Open' || $sheet_data['sheet_status'] == 'In Process') { ?>
+	                    		<?php if (($sheet_data['sheet_status'] == 'Open' || $sheet_data['sheet_status'] == 'In Process') && $userdata['role'] != 'Client') { ?>
 	                    			<div class="form-row">
 			                    		<div class="col-xl-12">
 		                              <a href="javascript:void(0)" class="btn btn-success btn-add" id="markComplete">Mark as Complete</a>
@@ -1546,7 +1594,7 @@
               					<!-- Row11 Submit -->
               					<div class="form-row">
               						<div class="col-xl-6 mt-5 mb-3">
-              							<?php if (!isset($sheet_type)) { 
+              							<?php if (!isset($sheet_type)) {
               											if ($sheet_data['sheet_status'] != 'Completed' && !(isset($sheet_data['sheet_mode']))) { 
               												if ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) { 
               							?>
@@ -1558,7 +1606,7 @@
               												if ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) { 
               							?>
               							<button type="button" class="btn btn-success" id="markReviewedSheetComplete">Mark as Complete</button>	
-              							<?php 		} else if($sheet_data['sheet_status'] == 'In Process' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Field Supervisor')) { ?>
+              							<?php 		} else if($sheet_data['sheet_status'] == 'In Process' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Field Supervisor' || $userdata['role'] == 'Client')) { ?>
               							<button type="submit" class="btn btn-success">Update</button>
               							<?php 			} 
               												}
@@ -1672,6 +1720,23 @@
             <div class="modal-body">
               <!-- Hide this modal and show the first with the button below. -->
               <form id="observation_form">
+              	<div class="row">
+              		<!-- Raised By -->
+              		<div class="col-xl-4">
+              			<label class="form-label" for="raisedBy">Raised By</label>
+                    <input type="text" class="form-control" id="raisedBy" name="raisedBy" value="<?php echo $userdata['username']; ?>">
+              		</div>
+              		<!-- Designation -->
+              		<div class="col-xl-4">
+              			<label class="form-label" for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" name="designation" value="<?php echo $userdata['designation']; ?>">
+              		</div>
+              		<!-- Distribution Centre -->
+              		<div class="col-xl-4">
+              			<label class="form-label" for="distributionCentre">Distribution Centre</label>
+                    <input type="text" class="form-control" id="distributionCentre" name="distributionCentre" >
+              		</div>
+              	</div>
                 <div class="row">
                 	<!-- Observation Type -->
                   <div class="col-xl-4">
@@ -1679,11 +1744,6 @@
                     	<span class="text-red">*</span>
                     </label>
                     <select name="observation" id="observation" class="form-control form-select" data-bs-placeholder="Select Observation">
-                      <!-- <option value="select" disabled>Select Observation</option>
-                      <option value="observation1" selected>Observation 1</option>
-                      <option value="observation2">Observation 2</option>
-                      <option value="observation3">Observation 3</option>
-                      <option value="observation4">Observation 4</option> -->
                     </select>
                   </div>
                   <!-- NCR ID -->
@@ -1697,11 +1757,21 @@
                     <input type="text" class="form-control" id="ncrDate" name="ncrDate" readonly>
                   </div>
                 </div>
+                <div class="row" id="other-observation-div" hidden>
+                	<!-- Others Observation -->
+                	<div class="col-xl-12">
+                		<label class="form-label" for="other_observation">Other Observation
+                			<span class="text-red">*</span>
+                		</label>
+                    <input type="text" class="form-control" id="other_observation" name="other_observation">
+                	</div>
+                </div>
                 <div class="row">
                 	<!-- Observation -->
                   <div class="col-xl-12">
                     <label class="form-label" for="remark">Observation</label>
-                    <input type="text" class="form-control" id="remark" name="remark">
+                    <!-- <input type="text" class="form-control" id="remark" name="remark"> -->
+                    <input type="text" class="form-control" id="observation_remark" name="observation_remark">
                   </div>
                 </div>
                 <div class="row">
@@ -1740,16 +1810,23 @@
                 		</div>
                 	</div>
                 </div>
+                <div class="row">
+                	<!-- Compliance Remark -->
+                	<div class="col-xl-12">
+                		<label class="form-label" for="remark">Compliance Remark</label>
+                    <input type="text" class="form-control" id="remark" name="remark">
+                	</div>
+                </div>
                 <div class="row mt-2">
-                	<!-- Completion Photos -->
+                	<!-- Compliance Photos -->
                   <div class="col-xl-8">
-                    <label class="form-label" for="completion_photo">Completion Photos</label>
+                    <label class="form-label" for="completion_photo">Compliance Photos</label>
                     <input class="form-control" type="file" id="completion_photo" name="completion_photo[]" multiple="">
                   	<div class="text-wrap mt-2" id="preview-img-complete"></div>
                   </div>
-                  <!-- Completion Date -->
+                  <!-- Compliance Verification Date -->
                   <div class="col-xl-4">
-                    <label for="completionDate" class="form-label">Completion Date</label>
+                    <label for="completionDate" class="form-label">Compliance Verification Date</label>
                       <div class="input-group">
                           <div class="input-group-text dates">
                               <i class="fa fa-calendar tx-16 lh-0 op-6"></i>
@@ -2066,7 +2143,19 @@
 	      	}
 
 	      	if (form_change == true) {
-	      		$(this).find('button[type="submit"]').attr('disabled', true);
+	      		let user_role = '<?php echo $userdata['role'] ?>';
+
+	      		if (user_role == 'Client') {
+		      		let radio_inputs = $(this).find('input[type="radio"]');
+
+		      		$(radio_inputs).each(function(index, value) {
+		      			if ($(value).is(':disabled')) {
+		      				$(value).prop('disabled', false);
+		      			}
+		      		});
+		      	}
+
+		      	$(this).find('button[type="submit"]').attr('disabled', true);	
 	      	}      	
       });
 
@@ -2488,6 +2577,10 @@
 						let activity_id = $(tr).attr('data-activity-id');
 						let contract_location_id = $('input[name="contract_location_id"]').val();
 
+						//Removing data from progress in % cell
+						let progress_td = $(tr).find('td').eq(5);
+						$(progress_td).empty();
+
 						//Ajax call to check if any observation has been applied
 						$.ajax({
 							type: 'POST',
@@ -2527,12 +2620,40 @@
 						});						
 					}	
 				}
-      }		
+      }
 
 			//Displaying observation list of selected activity
       function showObservationsList(btn) {
       	form_change = true;
       	console.log('inside showObservationsList function');
+
+      	let user_role = '<?php echo $userdata['role'] ?>';
+
+      	if (user_role != 'Client') {
+      		let tr = $(btn).closest('tr');
+
+					if ($(tr).find('.erected-qty > input').length == 1) {
+						let erected_qty = $(tr).find('.erected-qty > input').val();
+
+	      		if (erected_qty == '') {
+	      			$('#add-new-observation').addClass('disabled');
+	      		} else {
+	      			if ($('#add-new-observation').hasClass('disabled')) {
+	      				$('#add-new-observation').removeClass('disabled');
+	      			}
+	      		}
+					} else if ($(tr).find('.activity-status').length == 1) {
+						let radio_val = $(tr).find('.activity-status input[type="radio"]:checked').val();
+						
+						if (radio_val == 'no') {
+							$('#add-new-observation').addClass('disabled');
+						} else {
+							if ($('#add-new-observation').hasClass('disabled')) {
+	      				$('#add-new-observation').removeClass('disabled');
+	      			}
+						}
+					}      		
+      	}      	
 
       	//Getting tab name (table) and activity id
       	let table = $(btn).attr('data-tablename');
@@ -2588,6 +2709,8 @@
 								let ncr_date_arr = value.ncr_date.split('-');
 								let ncr_date = ncr_date_arr[2] + '-' + ncr_date_arr[1] + '-' + ncr_date_arr[0];
 
+								let ncr_created_by_id = value.createdby;
+
 								let obs_file_count = ($.isArray(value.observation_file_details)) ? value.observation_file_details.length : 0;
 								let obs_file_txt = (obs_file_count > 0) ? obs_file_count+' files uploaded' : '';
 
@@ -2602,7 +2725,8 @@
 									completion_date = completion_date_arr[2] + '-' + completion_date_arr[1] + '-' + completion_date_arr[0];
 								}
 
-								let user = '<?php echo $userdata['role'] ?>';								
+								let user = '<?php echo $userdata['role'] ?>';
+								let user_id = '<?php echo $userdata['user_id'] ?>';
 								
 								html += '<tr data-row-id="'+index+'">';
 								if ((obs_completion_file_count > 0 && completion_date != '') || (sheet_type == 'old')) {
@@ -2613,15 +2737,20 @@
 							    html += '</button>';
 							    html += '</div>';
 							    html += '</td>';
-								// } else if ((obs_completion_file_count == 0 && completion_date == '') || (user == 'Admin')) {
 								} else if ((obs_completion_file_count == 0 && completion_date == '')) {
+									let action_mode = ((ncr_created_by_id == user_id) || (user == 'Admin')) ? 'edit' : 'view';
+									let delete_obs_allow = ((ncr_created_by_id == user_id) || (user == 'Admin')) ? 'onclick="deleteObservation(this)"' : '';
 									html += '<td>';
 							    html += '<div class="btn-list">';
-							    html += '<button id="bEdit" type="button" class="btn btn-sm" data-action="edit" onclick="showObservationsDetails(this)" data-table-row="'+table_row+'" data-tablename="'+table+'" data-bs-dismiss="modal" data-activity-observation-id="'+value.physical_progress_activity_observation_id+'">';
-							    html += '<span class="fe fe-edit fa-lg action-btn-table"> </span>';
+							    html += '<button id="bEdit" type="button" class="btn btn-sm" data-action="'+action_mode+'" onclick="showObservationsDetails(this)" data-table-row="'+table_row+'" data-tablename="'+table+'" data-bs-dismiss="modal" data-activity-observation-id="'+value.physical_progress_activity_observation_id+'">';
+							    let action_icon = (action_mode == 'edit') ? 'fe fe-edit' : 'fa fa-eye';
+							    html += '<span class="'+action_icon+' fa-lg action-btn-table"> </span>';							    
 							    html += '</button>';
-							    html += '<button id="bDel" type="button" class="btn  btn-sm" onclick="deleteObservation(this)" data-action="edit" data-table-row="'+table_row+'" data-tablename="'+table+'" data-activity-observation-id="'+value.physical_progress_activity_observation_id+'">';
-							    html += '<span class="fe fe-trash-2 fa-lg action-btn-table"> </span>';
+							    html += '<button id="bDel" type="button" class="btn  btn-sm" '+delete_obs_allow+' data-action="'+action_mode+'" data-table-row="'+table_row+'" data-tablename="'+table+'" data-activity-observation-id="'+value.physical_progress_activity_observation_id+'">';
+							    if (action_mode == 'edit') {
+							    	html += '<span class="fe fe-trash-2 fa-lg action-btn-table"> </span>';	
+							    }
+							    
 							    html += '</button>';
 							    html += '</div>';
 							    html += '</td>';
@@ -2630,7 +2759,7 @@
 								html += '<td>'+value.ncr_id+'</td>';
 								html += '<td>'+value.ncr_date+'</td>';
 								html += '<td>'+value.observation_name+'</td>';
-								html += '<td>'+value.remark+'</td>';
+								html += '<td>'+value.observation_remark+'</td>';
 								html += '<td>'+obs_file_txt+'</td>';
 								html += '<td>'+obs_completion_file_txt+'</td>';
 								html += '<td>'+completion_date+'</td>';
@@ -2698,7 +2827,7 @@
 	      				}
 
 	      				if (value.completion_date == null) {
-	      					remarks.push(value.remark);	
+	      					remarks.push(value.observation_remark);	
 	      					$.each(value.observation_file_details, function(fileindex, filevalue) {
 	      						// console.log(filevalue);
 	      						obs_files.push(filevalue.file_path);
@@ -2746,9 +2875,6 @@
 				    			$(row).find('input[type="hidden"]').eq(0).val('observation pending');
 				    			console.log('observations incomplete');
 				    		}
-
-
-
 	      			} else if (activity_type == 'withoutBOQ') {
 	      				//Outputing the observation ratio
 				    		let obs_td = $(row).find('td').eq(3);
@@ -2801,12 +2927,6 @@
       				}
       			}
 
-      			
-
-      			
-      			
-		    		
-
 		    		//Closing modal
 		    		$('#obs_list_modal').modal('hide');
       		},
@@ -2838,6 +2958,8 @@
 
       	//Getting selected activity's observations
       	let activity_obs = activity.observations_list;
+      	console.log('activity_obs: ');
+      	console.log(activity_obs);
 
       	let html = '';
       	html += '<option value="select" selected disabled>Select Observation</option>';
@@ -2862,10 +2984,26 @@
       		});
 
       		// Removing readonly or disabled properties from following inputs
+      		if ($('input[name="raisedBy"]').is('[readonly]')) {
+      			$('input[name="raisedBy"]').attr('readonly', false);
+      		}
+
+      		if ($('input[name="designation"]').is('[readonly]')) {
+      			$('input[name="designation"]').attr('readonly', false);
+      		}
+
+      		if ($('input[name="distributionCentre"]').is('[readonly]')) {
+      			$('input[name="distributionCentre"]').attr('readonly', false);
+      		}
+
       		$('#observation').prop('disabled', false);
 
       		if ($('input[name="remark"]').is('[readonly]')) {
       			$('input[name="remark"]').attr('readonly', false);
+      		}
+
+      		if ($('input[name="observation_remark"]').is('[readonly]')) {
+      			$('input[name="observation_remark"]').attr('readonly', false);
       		}
 
       		if ($('#obs_photo').is(':disabled')) {
@@ -2890,6 +3028,7 @@
       			$('.obs_status').find('h6').text('');	
       		}      		
 
+      		html += '<option value="0">Others</option>';
       		$.each(activity_obs, function(index, value) {
 						html += '<option value="'+ value.obs_id +'">'+ value.name +'</option>';
 					});	
@@ -2922,7 +3061,6 @@
 
 					$('#preview-img-obs').empty();
 					$('#preview-img-complete').empty();
-
       	} else if (action == 'edit' || action == 'view') {
       		let pp_activity_obs_id = $(btn).attr('data-activity-observation-id');
       		let tr = $(btn).closest('tr');
@@ -2931,12 +3069,16 @@
       		let sheet_date = '';
 
       		if (action == 'view') {
+      			$('#raisedBy').prop('readonly', true);
+      			$('#designation').prop('readonly', true);
+      			$('#distributionCentre').prop('readonly', true);
       			$('select[name="observation"]').prop('disabled', true);
       			$('input[name="remark"]').prop('readonly', true);
       			$('#obs_photo').prop('disabled', true);
       			$('#obs_photo').prop('disabled', true);
       			$('#completion_photo').prop('disabled', true);
       			$('#completionDate').prop('disabled', true);
+      			$('#observation_remark').prop('readonly', true);
 
       			$('#saveObs').hide();
 
@@ -2958,6 +3100,7 @@
       				/*console.log('Get observation response:');
       				console.log(response);*/  
       				let obs_data = response.obs_data;
+      				console.log(obs_data);
 
       				//Setting Observation Status
       				$('.obs_status').find('h6').text(obs_data.observation_status);
@@ -2967,18 +3110,42 @@
       				$('#preview-img-obs-by-tkc').empty();
 							$('#preview-img-complete').empty();
 
-      				$.each(activity_obs, function(index, value) {
-		      			let selected = (obs_data.observation_name == value.name) ? 'selected' : '';
-								html += '<option value="'+ value.obs_id +'" '+selected+'>'+ value.name +'</option>';
-							});
+      				if (obs_data.observation_id == 0) {
+      					html += '<option value=0 selected>Others</option>';
+      				} else {
+      					$.each(activity_obs, function(index, value) {
+		      				let selected = (obs_data.observation_name == value.name) ? 'selected' : '';
+									html += '<option value="'+ value.obs_id +'" '+selected+'>'+ value.name +'</option>';
+								});	
+      				}      				
 
 							$('#observation').find('option').remove().end().append(html);	
 							$('#observation').prop('disabled', true);	
 							$('#ncrID').val(obs_data.ncr_id);
 		      		$('#ncrDate').val(obs_data.ncr_date);
-		      		$('#remark').val(obs_data.remark);
+		      		$('#observation_remark').val(obs_data.observation_remark);
 
-		      		if (obs_data.observation_status == 'Pending' || obs_data.observation_status == 'Forwarded') {
+		      		if (obs_data.observation_id == 0) {
+		      			$('#other_observation').val(obs_data.other_observation_name);
+		      			if (action == 'view') {
+		      				$('#other_observation').prop('readonly', true);	
+		      			}
+		      			
+		      			$('#other-observation-div').prop('hidden', false);
+		      		} else {
+		      			if ($('#other-observation-div').is(':visible')) {
+		      				$('#other-observation-div').prop('hidden', true);
+		      			}
+		      		}
+
+		      		$('#remark').val(obs_data.remark);
+		      		$('#raisedBy').val(obs_data.raised_by);
+		      		$('#designation').val(obs_data.designation);
+		      		$('#distributionCentre').val(obs_data.distribution_centre);
+
+		      		let user_id = '<?php echo $userdata['user_id'] ?>';
+
+		      		if ((obs_data.observation_status == 'Pending' || obs_data.observation_status == 'Forwarded') && (user_id == obs_data.createdby)) {
 		      			if ($('#completion_photo').is(':disabled')) {
 			      			$('#completion_photo').prop('disabled', false);
 			      		}
@@ -3033,9 +3200,11 @@
 		      				html_img += '</a>';
 		      				html_img += '<ul class="icons">';
 		      				html_img += '<li>';
-		      				html_img += '<a href="javascript:void(0)" data-photo-for="observation" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="'+obs_file_id+'" data-photo-action="edit">';
-		      				html_img += '<i class="fe fe-trash"></i>';
-		      				html_img += '</a>';
+		      				if (action == 'edit') {
+			      				html_img += '<a href="javascript:void(0)" data-photo-for="observation" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="'+obs_file_id+'" data-photo-action="edit">';
+			      				html_img += '<i class="fe fe-trash"></i>';
+			      				html_img += '</a>';	
+		      				}		      				
 		      				html_img += '</li>';
 		      				html_img += '</ul>';
 		      				// html_img += '<span class="file-name-1">Image01.jpg</span>';
@@ -3079,9 +3248,11 @@
 		      				html_img += '</a>';
 		      				html_img += '<ul class="icons">';
 		      				html_img += '<li>';
-		      				html_img += '<a href="javascript:void(0)" data-photo-for="observation_completion" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="'+obs_file_id+'" data-photo-action="edit">';
-		      				html_img += '<i class="fe fe-trash"></i>';
-		      				html_img += '</a>';
+		      				if (action == 'edit') {
+		      					html_img += '<a href="javascript:void(0)" data-photo-for="observation_completion" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="'+obs_file_id+'" data-photo-action="edit">';
+			      				html_img += '<i class="fe fe-trash"></i>';
+			      				html_img += '</a>';	
+		      				}		      				
 		      				html_img += '</li>';
 		      				html_img += '</ul>';
 		      				// html_img += '<span class="file-name-1">Image01.jpg</span>';
@@ -3121,6 +3292,10 @@
       	let ppao_file_id_not_deleted = [];
 
       	//Getting observation form modal data
+      	let raised_by = $('#raisedBy').val();
+      	let designation = $('#designation').val();
+      	let distribution_centre = $('#distributionCentre').val();
+
       	let observation_id = $('#observation').find(":selected").val();
 
       	//Checking if observation is selected
@@ -3135,6 +3310,12 @@
       	let ncr_id = $('#ncrID').val();
       	let ncr_date = $('#ncrDate').val();
       	let remark = $('#remark').val();
+      	let observation_remark = $('#observation_remark').val();
+
+      	let other_observation = ''
+      	if (!$('#other-observation-div').is(':hidden')) {
+      		other_observation = $('input[name="other_observation"]').val();
+      	}
 
       	//Checking if observation photo is uploaded
       	let check_obs_files = $('#preview-img-obs').find('div[class^="file-image"]');
@@ -3166,6 +3347,7 @@
       		//Get form data
       		let form = $('#observation_form')[0];
       		let formData = new FormData(form);
+      		// console.log(formData); return false;
 
       		//Getting physical_progress id
       		var physical_progress_id = $('input[name="physical_progress_id"]').val();
@@ -3177,8 +3359,8 @@
 
       		//Getting seq no, typeofwork_activity_id and unit_id
       		let seq_no = $(row).attr('data-seqno');
-      		let unit_id = $(row).attr('data-unit-id');     		
-
+      		let unit_id = $(row).attr('data-unit-id');
+      		
       		formData.append('observation_name', observation);
       		formData.append('physical_progress_id', physical_progress_id);
       		formData.append('prev_physical_progress_id', prev_physical_progress_id);
@@ -3221,6 +3403,7 @@
 	    			success: function(response) {
 	    				console.log('Save Observation Response');
 				      console.log(response); 
+				      // return false;
 	    				physical_progress_id = response.physical_progress_id;
 	    				observation_id = response.observation_id;
 				      $('input[name="physical_progress_id"]').val(physical_progress_id);
@@ -3248,7 +3431,7 @@
 				      	html += '<td>'+ ncr_id +'</td>';
 				      	html += '<td>'+ ncr_date +'</td>';
 				      	html += '<td>'+ observation +'</td>';
-				      	html += '<td>'+ remark +'</td>';
+				      	html += '<td>'+ observation_remark +'</td>';
 				      	html += '<td>'+ obs_file_txt +'</td>';
 				      	html += '<td>'+ obs_completion_file_txt +'</td>';
 				      	html += '<td>'+ completion_date +'</td>';
@@ -3264,7 +3447,7 @@
 			      		$(row).find('td:eq(1)').text(ncr_id);
 			      		$(row).find('td:eq(2)').text(ncr_date);
 			      		$(row).find('td:eq(3)').text(observation);
-			      		$(row).find('td:eq(4)').text(remark);
+			      		$(row).find('td:eq(4)').text(observation_remark);
 			      		$(row).find('td:eq(5)').text(obs_file_txt);
 			      		$(row).find('td:eq(6)').text(obs_completion_file_txt);
 			      		$(row).find('td:eq(7)').text(completion_date);
@@ -3419,21 +3602,35 @@
       	var obs_td;
       	if (type == 'withBOQ') {
 					obs_td = $(tr).find('td').eq(6);
-					obs_td.empty();
+					// obs_td.empty();
       	} else if (type == 'withoutBOQ') {
       		obs_td = $(tr).find('td').eq(3);
+      	}      	
+
+      	if ($(obs_td).find('button').length == 0) {
+      		let html = '';
+	      	html += '<span class="obs_ratio">';
+	      	// html += obs_ratio;
+	      	html += '</span>';
+	      	html += '<button id="btn-obs-'+ row_id +'" type="button" class="btn btn-sm btn-obs obs-list"  style="margin-left: 10px;" data-tablename="'+table+'" data-table-row="'+row_id+'" data-activity-id="'+activity_id+'" onclick="showObservationsList(this)" data-activity-type="'+type+'">';
+	      	html += '<span class="fe fe-more-vertical"> </span>';
+	      	html += '</button>';
+
+	      	obs_td.append(html);
       	}
-
-      	let html = '';
-      	html += '<span class="obs_ratio">';
-      	// html += obs_ratio;
-      	html += '</span>';
-      	html += '<button id="btn-obs-'+ row_id +'" type="button" class="btn btn-sm btn-obs obs-list"  style="margin-left: 10px;" data-tablename="'+table+'" data-table-row="'+row_id+'" data-activity-id="'+activity_id+'" onclick="showObservationsList(this)" data-activity-type="'+type+'">';
-      	html += '<span class="fe fe-more-vertical"> </span>';
-      	html += '</button>';
-
-      	obs_td.append(html);
 	    }
+
+	    $('select[name="observation"]').change(function(event) {
+	    	let selected_observation_type = $('select[name="observation"] option:selected').text();
+
+	    	if (selected_observation_type == 'Others') {
+	    		$('#other-observation-div').prop('hidden', false);
+	    	} else {
+	    		if (!$('#other-observation-div').is(':hidden')) {
+	    			$('#other-observation-div').prop('hidden', true);
+	    		}
+	    	}
+	    });
 
 	    function showImageModal(anchor) {
         let image = $(anchor).find('img');

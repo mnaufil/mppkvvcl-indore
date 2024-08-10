@@ -116,6 +116,24 @@
 				            					<!-- <input type="hidden" name="typeOfWorkActivityID" value="<?php echo $ncr_data['activity_id']; ?>"> -->
 				            					<!-- Row1 -->
 				            					<div class="row">
+				            						<!-- Raised By -->
+				            						<div class="col-xl-4">
+				            							<label class="form-label" for="raisedBy">Raised By</label>
+                    									<input type="text" class="form-control" id="raisedBy" name="raisedBy" value="<?php echo $ncr_data['raised_by']; ?>" readonly>
+				            						</div>
+				            						<!-- Designation -->
+								              		<div class="col-xl-4">
+								              			<label class="form-label" for="designation">Designation</label>
+								                    <input type="text" class="form-control" id="designation" name="designation" value="<?php echo $ncr_data['designation']; ?>" readonly>
+								              		</div>
+								              		<!-- Distribution Centre -->
+								              		<div class="col-xl-4">
+								              			<label class="form-label" for="distributionCentre">Distribution Centre</label>
+								                    <input type="text" class="form-control" id="distributionCentre" name="distributionCentre" value="<?php echo $ncr_data['distribution_centre']; ?>" readonly>
+								              		</div>
+				            					</div>
+				            					<!-- Row2 -->
+				            					<div class="row">
 					            					<!-- Observation Type -->
 					            					<div class="col-xl-4">
 					            						<label class="form-label" for="observationType">Observation Type
@@ -125,6 +143,7 @@
                     									<?php $select_disabled = (($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby'])) || $ncr_data['completion_date'] != NULL || $logged_user_role == 'TKC') ? 'disabled' : '';?>
                     									<select name="observationType" id="observationType" class="form-control form-select" data-bs-placeholder="Select Observation" <?php echo $select_disabled; ?>>
 									                      	<option value="select" disabled>Select Observation</option>
+
 								                      		<?php foreach ($activity_observations as $key => $value) { ?>
 								                      		<?php $selected = ($ncr_data['observation_name'] == $value['name']) ? 'selected' : ''; ?>
 								                      		<option value="<?php echo $value['typeofwork_activity_options_id']; ?>" <?php echo $selected; ?>><?php echo $value['name']; ?></option>
@@ -146,17 +165,29 @@
                     									<input type="text" class="form-control" id="ncrDate" name="ncrDate" value="<?php echo $ncr_data['ncr_date']; ?>"  readonly>
                   									</div>
 					            				</div>
-					            				<!-- Row2 -->
+					            				<!-- Row3 -->
+					            				<?php if ($ncr_data['observation_id'] == 0) { ?>
+					            				<div class="row" id="other-observation-div">
+								                	<!-- Others Observation -->
+								                	<div class="col-xl-12">
+								                		<label class="form-label" for="other_observation">Other Observation
+								                			<span class="text-red">*</span>
+								                		</label>
+								                    <input type="text" class="form-control" id="other_observation" name="other_observation" value="<?php echo $ncr_data['other_observation_name']; ?>">
+								                	</div>
+								                </div>	
+					            				<?php } ?>
+					            				<!-- Row4 -->
 					            				<div class="row">
 					            					<!-- Observation -->
 					            					<div class="col-xl-12">
-                    									<label class="form-label" for="remark">Observation</label>
+                    									<label class="form-label" for="observation_remark">Observation</label>
                     									<?php //$remark_readonly = ($ncr_data['completion_date'] != NULL) ? 'readonly' : '';
-                    									$remark_readonly = ($logged_user_role == 'TKC' || $ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';?>
-			                    						<input type="text" class="form-control" id="remark" name="remark" value="<?php echo $ncr_data['remark']; ?>" <?php echo $remark_readonly; ?>>
+                    									$observation_remark_readonly = ($logged_user_role == 'TKC' || $ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';?>
+			                    						<input type="text" class="form-control" id="observation_remark" name="observation_remark" value="<?php echo $ncr_data['observation_remark']; ?>" <?php echo $observation_remark_readonly; ?>>
                   									</div>
 					            				</div>
-					            				<!-- Row3 -->
+					            				<!-- Row5 -->
 					            				<div class="row">
 					            					<!-- Observation Photos -->
 					            					<div class="col-xl-12">
@@ -194,7 +225,7 @@
                   										</div>
                   									</div>
 					            				</div>
-					            				<!-- Row4 -->
+					            				<!-- Row6 -->
 					            				<div class="row">
 					            					<!-- TKC Observation Photos -->
 					            					<div class="col-xl-12">
@@ -229,7 +260,7 @@
 					            						</div>
 					            					</div>
 					            				</div>
-					            				<!-- Row5 -->
+					            				<!-- Row7 -->
 					            				<?php if ($logged_user_role != 'TKC') { ?>
 					            				<div class="row">
 					            					<!-- Completion Photos -->
@@ -275,7 +306,7 @@
                   									</div>
 					            				</div>	
 					            				<?php } ?>
-					            				<!-- Row6 -->
+					            				<!-- Row8 -->
 					            				<div class="row">
 					            					<!-- Submit -->
 					            					<div class="col-xl-6 mt-5 mb-3">

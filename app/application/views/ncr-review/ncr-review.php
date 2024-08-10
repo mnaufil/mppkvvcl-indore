@@ -327,6 +327,8 @@
 				            										<?php } else { ?>
 				            										<th class="wd-10p border-bottom-0 sorting sorting_asc" tabindex="14" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Raised By: activate to sort column descending" style="width: 95.5156px;">Raised By</th>
 				            										<?php } ?>
+				            										<th class="wd-10p border-bottom-0 sorting sorting_asc" tabindex="15" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Designation: activate to sort column descending" style="width: 95.5156px;">Designation</th>
+				            										<th class="wd-10p border-bottom-0 sorting sorting_asc" tabindex="16" aria-controls="basic-datatable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Distribution Centre: activate to sort column descending" style="width: 95.5156px;">Distribution Centre</th>
 				            									</tr>
 				            								</thead>
 				            								<tbody>
@@ -362,7 +364,7 @@
 				            											<?php } ?>						 
 				            											<a href="<?php echo base_url('download-ncr/'.$value['ncr_id']); ?>" id="btn-download" class="btn btn-sm">
 								                                        	<span class="fe fe-download fa-lg action-btn-table"></span>
-								                                        </a>                	
+								                                        </a>
 				            										</td>
 				            										<?php } ?>
 				            										<!-- NCR ID -->
@@ -412,8 +414,12 @@
 				            										<?php if (isset($filter_data) && !empty($filter_data['status']['value']) && $filter_data['status']['value'] == 'Deleted') { ?>
 				            										<td><?php echo $value['deleted_by']; ?></td>
 				            										<?php } else { ?>
-				            										<td><?php echo $value['raised_by']; ?></td>
+				            										<td><?php echo (!empty($value['raised_by'])) ? $value['raised_by'] : $value['username']; ?></td>
 				            										<?php } ?>
+				            										<!-- Designation -->
+				            										<td><?php echo $value['designation']; ?></td>
+				            										<!-- Distribution Centre -->
+				            										<td><?php echo $value['distribution_centre']; ?></td>
 				            									</tr>
 				            									<?php } ?>
 				            								</tbody>

@@ -372,24 +372,8 @@ class PhysicalProgress extends CI_Controller
 
                $pp_sheet_activities = array();
                
-               $civil_work_activities = array();
-               $electrical_activities = array();
-               $substation_activities = array();
-               $feeder_33kv_activities = array();
-               $feeder_11kv_activities = array();
-               $feeder_separation_11kv_activities = array();
-               $interconnection_line_33kv_activites = array();
-               $additional_dtr_activities = array();
-               $bare_to_cable_activities = array();
-               $cable_augmentation_activities = array();
-               $bifurcation_11_kv_activities = array();
-               $interconnection_11_kv_activities = array();
-               $augmentation_33_kv_activities = array();
-               $augmentation_11_kv_activities = array();
-               $dl_to_ag_coated_conductor_activities = array();
-               $substation_rennovation_activities = array();
-               $mixed_dtr_activities = array();
-               
+               $civil_work_activities = $electrical_activities = $substation_activities = $feeder_33kv_activities = $feeder_11kv_activities = $feeder_separation_11kv_activities = $interconnection_line_33kv_activites = $additional_dtr_activities = $bare_to_cable_activities = $cable_augmentation_activities = $bifurcation_11_kv_activities = $interconnection_11_kv_activities = $augmentation_33_kv_activities = $augmentation_11_kv_activities = $dl_to_ag_coated_conductor_activities = $substation_rennovation_activities = $mixed_dtr_activities = array();
+
                foreach ($post_data as $key => $value) {
                     if (str_contains($key, 'civil_work')) { //withoutBOQ
                          $input_name = explode('_', $key);
@@ -984,8 +968,13 @@ class PhysicalProgress extends CI_Controller
                $erected_qty = (!empty($this->input->post('erected_qty')) ? $this->input->post('erected_qty') : NULL);
 
                //Observation Details from the modal
+               $raised_by = $this->input->post('raisedBy');
+               $designation = $this->input->post('designation');
+               $distribution_centre = $this->input->post('distributionCentre');
                $observation_id = $this->input->post('observation');
                $observation_name = $this->input->post('observation_name');
+               $other_observation_name = $this->input->post('other_observation');
+               $observation_remark = $this->input->post('observation_remark');
                $ncr_id = $this->input->post('ncrID');
                $ncr_date = date('Y-m-d', strtotime($this->input->post('ncrDate')));
                $remark = $this->input->post('remark');
@@ -1007,7 +996,9 @@ class PhysicalProgress extends CI_Controller
                     $activity_check = $this->pp_model->checkActivity($work_activity_id, $pp_id);
 
                     if (empty($activity_check)) {
-                         $status_id = (empty($completion_date)) ? 2 : 1;
+                         // $status_id = (empty($completion_date)) ? 2 : 1;
+                         $user_role = $this->pp_model->getUserRole($_SESSION['loggedData']->role_id);
+                         $status_id = ($user_role == 'Client') ? 0 : ((empty($completion_date)) ? 2 : 1);
 
                          //Inserting data in physical_progress_activity table and getting last inserted id
                          $pp_activity_id = $this->pp_model->saveActivity($pp_id, $sr_no, $work_activity_id, $unit_id, $status_id, $erected_qty);
@@ -1019,7 +1010,7 @@ class PhysicalProgress extends CI_Controller
                          $ncr_status_ids = $this->getNCRStatusIDs();
                          $obs_status_id = (empty($completion_date)) ? $ncr_status_ids['Pending'] : $ncr_status_ids['Reviewed'];
                          //Inserting data in physical_progress_activity_observation table and getting last inserted id
-                         $inserted_observation_id = $this->pp_model->saveObservation($contract_location_id, $work_activity_id, $observation_id, $observation_name, $ncr_id, $ncr_date, $remark, $completion_date, $obs_status_id);
+                         $inserted_observation_id = $this->pp_model->saveObservation($contract_location_id, $work_activity_id, $observation_id, $observation_name, $other_observation_name, $observation_remark, $ncr_id, $ncr_date, $remark, $completion_date, $obs_status_id, $raised_by, $designation, $distribution_centre);
                     } else {
                          http_response_code(400);
                          $response['message'] = 'Insert Activity failed';
@@ -1055,7 +1046,7 @@ class PhysicalProgress extends CI_Controller
                          $obs_status_id = (empty($completion_date)) ? $ncr_status_ids['Pending'] : $ncr_status_ids['Reviewed'];
 
                          //Updating data in physical_progress_activity_observation table and returning updated id
-                         $inserted_observation_id = $this->pp_model->updateObservation($observation_id, $observation_name, $ncr_id, $ncr_date, $remark, $completion_date, $obs_status_id, $pp_activity_obs_id);     
+                         $inserted_observation_id = $this->pp_model->updateObservation($observation_id, $observation_name, $other_observation_name, $ncr_id, $ncr_date, $remark, $observation_remark, $completion_date, $obs_status_id, $raised_by, $designation, $distribution_centre, $pp_activity_obs_id);     
                     }
                }
 
@@ -1727,9 +1718,13 @@ class PhysicalProgress extends CI_Controller
           $role_id = $_SESSION['loggedData']->role_id;
           
           $userrole = $this->pp_model->getUserRole($role_id);
+
+          $designation = $_SESSION['loggedData']->designation;
           
           $userdata['username'] = $username;
           $userdata['role'] = $userrole;
+          $userdata['designation'] = $designation;
+          $userdata['user_id'] = $_SESSION['loggedData']->user_id;
 
           return $userdata;
      }

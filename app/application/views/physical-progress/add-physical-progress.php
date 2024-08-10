@@ -1563,7 +1563,7 @@
               						<div class="col-xl-12 mb-3">
               							<label for="sheetRemark" class="form-label mt-0">Remark <span class="text-red" id="remarkSpan"></span></label>
               							<?php //$readonly = ((isset($sheet_type) && $sheet_type == 'old') || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') ? 'readonly' : ''; ?>
-              							<?php if ((isset($sheet_type) && $sheet_type == 'old') || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') {
+              							<?php if ((isset($sheet_type) && $sheet_type == 'old') || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed' || $userdata['role'] == 'Client') {
               											if ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) {
               												$readonly = '';
               											}	else {

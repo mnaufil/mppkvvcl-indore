@@ -1715,15 +1715,18 @@ class Report extends CI_Controller
 
 				$ncr_data = [];
 				foreach ($value as $k => $v) {
+					// echo 'value: <pre>'; print_r($value); echo '</pre>'; die();
 					$ncr_data[$k]['ncr_id'] = $v['ncr_id'];
 					$ncr_data[$k]['ncr_date'] = $v['ncr_date'];
-					$ncr_data[$k]['Inspected_by'] = $v['Inspected_by'];
+					$ncr_data[$k]['raised_by'] = (!empty($v['raised_by'])) ? $v['raised_by'] : $v['Inspected_by'];
+					$ncr_data[$k]['designation'] = $v['designation'];
+					$ncr_data[$k]['distribution_centre'] = $v['distribution_centre'];
 					$ncr_data[$k]['activity'] = $v['activity'];
 					// $ncr_data[$k]['observation_id'] = $v['observation_id'];
 					$ncr_data[$k]['observation_type'] = $v['observation_type'];
-					// $ncr_data[$k]['other_observation_name'] = $v['other_observation_name'];
-					$ncr_data[$k]['observation'] = $v['observation'];
-					// $ncr_data[$k]['remark'] = $v['remark'];
+					$ncr_data[$k]['other_observation_type'] = $v['other_observation_name'];
+					$ncr_data[$k]['observation_remark'] = $v['observation_remark'];
+					$ncr_data[$k]['remark'] = $v['observation'];
 
 					$temp_obs_photos = explode(',', $v['observation_photos']);
 

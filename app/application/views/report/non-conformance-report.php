@@ -75,6 +75,7 @@
 		              	<div class="card">
 		                	<div class="card-body">
 
+		                		<!-- Report Description -->
 		                		<div class="form-row mt-2 mb-2">
 		                			<div class="col-xl-4">
 		                				<label class="form-label">Report Description:</label>
@@ -182,7 +183,7 @@
 				                    	<div class="dts-buttons btn-group flex-wrap" style="float:right;">
 				                      	<a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" type="button"><span>Export</span></a>
 				                        &nbsp;
-				                        <!-- <a target="_blank" href="<?php echo base_url('convert-pdf');?>" class="btn btn-success" type="button"><span>View in Pdf</span></a> -->
+				                        <!-- <a target="_blank" href="<?php //echo base_url('convert-pdf');?>" class="btn btn-success" type="button"><span>View in Pdf</span></a> -->
 				                        <a target="_blank" href="<?php echo base_url('non-conformance-report-pdf');?>" class="btn btn-success" type="button"><span>View in Pdf</span></a>
 			                        </div>
 			                      </div>
@@ -257,7 +258,15 @@
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Raised By</b></td>
-	                                	<td><?php echo $report->Inspected_by; ?></td>
+	                                	<td><?php echo (!empty($report->raised_by)) ? $report->raised_by : $report->Inspected_by; ?></td>
+	                                </tr>
+	                                <tr>
+	                                	<td><b>Designation</b></td>
+	                                	<td><?php echo $report->designation; ?></td>
+	                                </tr>
+	                                <tr>
+	                                	<td><b>Distribution Centre</b></td>
+	                                	<td><?php echo $report->distribution_centre; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Activity</b></td>
@@ -267,9 +276,15 @@
 	                                	<td><b>Observation Type</b></td>
 	                                	<td><?php echo $report->observation_type; ?></td>
 	                                </tr>
+	                                <?php if ($report->observation_type == 'Others') { ?>
+	                                <tr>
+	                                	<td><b>Other Observation Type</b></td>
+	                                	<td><?php echo $report->other_observation_name; ?></td>
+	                                </tr>
+	                                <?php } ?>
 	                                <tr>
 	                                	<td><b>Observation</b></td>
-	                                	<td><?php echo $report->observation; ?></td>
+	                                	<td><?php echo $report->observation_remark; ?></td>
 	                                </tr>
 	                                <tr>
 	                                	<td><b>Observation Photos</b></td>
@@ -283,7 +298,11 @@
 	                                  </td>
 	                                </tr>
 	                                <tr>
-	                                	<td><b>Completed Photos</b></td>
+	                                	<td><b>Compliance Remark</b></td>
+	                                	<td><?php echo $report->observation; ?></td>
+	                                </tr>
+	                                <tr>
+	                                	<td><b>Compliance Photos</b></td>
 	                                  <td>
 	                                  	<?php $explode1 = explode(",",$report->completion_photos ?? '');
 	                                          $count1 = count($explode1);
@@ -294,7 +313,7 @@
 	                                	</td>
 	                                </tr>
 	                                <tr>
-	                                	<td><b>Completion Date</b></td>
+	                                	<td><b>Compliance Date</b></td>
 	                                  <td><?php echo (!empty($report->completion_date) ? date('d-m-Y', strtotime($report->completion_date)) : ''); ?></td>
 	                                </tr>      
 	                                <tr style="height:40px">

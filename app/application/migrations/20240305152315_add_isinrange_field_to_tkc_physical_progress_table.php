@@ -28,4 +28,3 @@ class Migration_Add_isinrange_field_to_tkc_physical_progress_table extends CI_Mi
 		$this->dbforge->drop_column('tkc_physical_progress', 'is_inrange');
 	}
 }
-?>

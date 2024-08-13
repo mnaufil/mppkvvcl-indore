@@ -167,13 +167,14 @@
 					            				</div>
 					            				<!-- Row3 -->
 					            				<?php if ($ncr_data['observation_id'] == 0) { ?>
+					            				<?php $readonly_other_observation = ($logged_user_role == 'TKC' || $ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : ''; ?>
 					            				<div class="row" id="other-observation-div">
 								                	<!-- Others Observation -->
 								                	<div class="col-xl-12">
 								                		<label class="form-label" for="other_observation">Other Observation
 								                			<span class="text-red">*</span>
 								                		</label>
-								                    <input type="text" class="form-control" id="other_observation" name="other_observation" value="<?php echo $ncr_data['other_observation_name']; ?>">
+								                    <input type="text" class="form-control" id="other_observation" name="other_observation" value="<?php echo $ncr_data['other_observation_name']; ?>" <?php echo $readonly_other_observation; ?>>
 								                	</div>
 								                </div>	
 					            				<?php } ?>
@@ -182,8 +183,7 @@
 					            					<!-- Observation -->
 					            					<div class="col-xl-12">
                     									<label class="form-label" for="observation_remark">Observation</label>
-                    									<?php //$remark_readonly = ($ncr_data['completion_date'] != NULL) ? 'readonly' : '';
-                    									$observation_remark_readonly = ($logged_user_role == 'TKC' || $ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';?>
+                    									<?php $observation_remark_readonly = ($logged_user_role == 'TKC' || $ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';?>
 			                    						<input type="text" class="form-control" id="observation_remark" name="observation_remark" value="<?php echo $ncr_data['observation_remark']; ?>" <?php echo $observation_remark_readonly; ?>>
                   									</div>
 					            				</div>
@@ -195,8 +195,7 @@
                     										<span class="text-red">*</span>
                     									</label>
                     									<?php if ($logged_user_role != 'TKC') { ?>
-                    									<?php //$obs_photos_disabled = ($ncr_data['completion_date'] != NULL) ? 'disabled' : '';
-                											  $obs_photos_disabled = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'disabled' : '';
+                    									<?php $obs_photos_disabled = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'disabled' : '';
                 										?>
                     									<input class="form-control" type="file" id="obs_photo" name="obs_photo[]" multiple="" <?php echo $obs_photos_disabled; ?>>
               											<input type="hidden" name="obs_deleted_file_id" value="">
@@ -266,8 +265,7 @@
 					            					<!-- Completion Photos -->
 					            					<div class="col-xl-8">
                     									<label class="form-label" for="completion_photo">Completion Photos</label>
-                    									<?php //$obs_completion_photos_disabled = ($ncr_data['observation_status'] == 'Closed') ? 'disabled' : '';
-                    										$obs_completion_photos_disabled = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'disabled' : '';
+                    									<?php $obs_completion_photos_disabled = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'disabled' : '';
                     									?>
                     									<input class="form-control" type="file" id="completion_photo" name="completion_photo[]" multiple="" <?php echo $obs_completion_photos_disabled; ?>>
                     									<input type="hidden" name="obs_completion_deleted_file_id" value="">
@@ -297,8 +295,7 @@
                           									<div class="input-group-text dates">
                               									<i class="fa fa-calendar tx-16 lh-0 op-6"></i>
                           									</div>
-                          									<?php //$readonly = (!empty($ncr_data['completion_date'])) ? 'readonly' : ''; 
-                          									$readonly = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';
+                          									<?php $readonly = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';
                           									$disabled = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'disabled' : '';
                           									?>
                           									<input type="text" class="form-control" id="completionDate" name="completionDate" value="<?php echo $ncr_data['completion_date']; ?>" <?php echo $readonly; ?>>

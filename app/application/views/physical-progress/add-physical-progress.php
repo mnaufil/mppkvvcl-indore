@@ -1580,7 +1580,7 @@
               					<div class="form-row">
               						<div class="col-xl-3 mb-3">
               							<label for="charging_status" class="form-label mt-0">Charging Status</label>
-              							<?php $charging_status_disabled = ($sheet_data['sheet_status'] == 'Completed') ? 'disabled' : (($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Field Supervisor')) ? 'disabled' : ''); ?>
+              							<?php $charging_status_disabled = ($sheet_data['sheet_status'] == 'Completed' || $userdata['role'] == 'Client') ? 'disabled' : (($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Field Supervisor')) ? 'disabled' : ''); ?>
               							<div class="form-check" style="float: left;margin-right: 10px;"> 
               								<input class="form-check-input" type="radio" name="charging_status" value="yes" <?php echo $charging_status_disabled; ?> <?php echo ($sheet_data['charging_status'] == 'yes') ? 'checked' : '';?>>
               								<label class="form-check-label" for="flexRadioDefault1"> Yes </label>
@@ -3145,7 +3145,7 @@
 
 		      		let user_id = '<?php echo $userdata['user_id'] ?>';
 
-		      		if ((obs_data.observation_status == 'Pending' || obs_data.observation_status == 'Forwarded') && (user_id == obs_data.createdby)) {
+		      		if ((obs_data.observation_status == 'Pending' || obs_data.observation_status == 'Forwarded') && (user_id == obs_data.createdby) && action == 'edit') {
 		      			if ($('#completion_photo').is(':disabled')) {
 			      			$('#completion_photo').prop('disabled', false);
 			      		}

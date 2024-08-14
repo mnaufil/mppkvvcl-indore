@@ -100,10 +100,20 @@
 				<th>NCR Date</th>
 				<td><?php echo $ncr_value['ncr_date']; ?></td>
 			</tr>
-			<!-- Inspected By -->
+			<!-- Raised By -->
 			<tr>
-				<th>Inspected By</th>
-				<td><?php echo $ncr_value['Inspected_by']; ?></td>
+				<th>Raised By</th>
+				<td><?php echo $ncr_value['raised_by']; ?></td>
+			</tr>
+			<!-- Designation -->
+			<tr>
+				<th>Designation</th>
+				<td><?php echo $ncr_value['designation']; ?></td>
+			</tr>
+			<!-- Distribution Centre -->
+			<tr>
+				<th>Distribution Centre</th>
+				<td><?php echo $ncr_value['distribution_centre']; ?></td>
 			</tr>
 			<!-- Activity -->
 			<tr>
@@ -115,10 +125,17 @@
 				<th>Observation Type</th>
 				<td><?php echo $ncr_value['observation_type']; ?></td>
 			</tr>
+			<!-- Other Observation Name -->
+			<?php if ($ncr_value['observation_type'] == 'Others') { ?>
+				<tr>
+					<th>Other Observation Type</th>
+					<td><?php echo $ncr_value['other_observation_type']; ?></td>
+				</tr>
+			<?php } ?>
 			<!-- Observation -->
 			<tr>
 				<th>Observation</th>
-				<td><?php echo $ncr_value['observation']; ?></td>
+				<td><?php echo $ncr_value['observation_remark']; ?></td>
 			</tr>
 			<!-- Observation Photos -->
 			<tr>
@@ -128,6 +145,11 @@
 					<img src="<?php echo $obs_value; ?>" alt="Observation Photo" width="100" height="100" style="margin-top: 30px;">	
 					<?php } ?>					
 				</td>
+			</tr>
+			<!-- Compliance Remark -->
+			<tr>
+				<th>Compliance Remark</th>
+				<td><?php echo $ncr_value['remark']; ?></td>
 			</tr>
 			<!-- Compliance Photos -->
 			<tr>

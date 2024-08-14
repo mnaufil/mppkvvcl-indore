@@ -151,7 +151,7 @@
 				            											<?php foreach ($valid_records as $key => $value) { ?>
 				            											<tr>
 				            												<?php foreach ($table_headers as $header) { ?>
-				            												<?php $record_key = strtolower(str_replace(' ', '_', $header)); ?>
+				            												<?php $record_key = ($import_details['import_type'] == 'Material') ? strtolower(str_replace(' ', '_', $header)) : strtoupper(str_replace(' ', '_', $header)); ?>
 				            												<td><?php echo $value[$record_key]; ?></td>
 				            												<?php } ?>
 				            											</tr>

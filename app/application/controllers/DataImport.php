@@ -171,7 +171,7 @@ class DataImport extends CI_Controller
 									default:
 										// code...
 										break;
-								}								
+								}
 
 								if ($import_type == 'material') {
 									$validate_data = $this->di_model->validateMaterialUploadedData($import_hdr_id);	
@@ -213,7 +213,7 @@ class DataImport extends CI_Controller
 				// No files
 				http_response_code(400);
           		$response['message'] = 'No file uploaded';
-			}			
+			}
 		} else {
 			//No input
 			http_response_code(400);

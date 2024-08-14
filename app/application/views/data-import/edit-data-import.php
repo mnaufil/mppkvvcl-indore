@@ -337,17 +337,17 @@
                  			valid_tbody_html += '<tr>';
 
                  			$.each(response.table_headers, function(ind,val) {
-                 				if (val.includes('(DD-MM-YYYY)')) {
+                 				if (val != null && val.includes('(DD-MM-YYYY)')) {
                  					val = val.replace('(DD-MM-YYYY)', '');
                  				}
 
-                 				if (val.includes('%')) {
+                 				if (val != null && val.includes('%')) {
                  					val = val.replace('%', '');
                  				}
 
-                 				if (import_type != 'Invoice') {
+                 				if (import_type != 'Invoice' && val != null) {
                  					val = val.trim().replace(/ /g,'_').toLowerCase();
-                 				} else if (import_type == 'Invoice') {
+                 				} else if (import_type == 'Invoice' && val != null) {
                  					val = val.trim().replace(/ /g,'_').toUpperCase();
                  				}
 

@@ -65,14 +65,16 @@ class PhysicalProgressApi extends REST_Controller
             $errors = null;
             $message = (empty($result)) ? 'No access to feeder locations' : null;
             $status_code = 200;
+
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
         } else {
             $errors = 'Empty GET Request';
             $message = 'GET Request has no arguments';
             $status_code = 400;
             $data = [];
-        }		
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
 	}
 
     public function get_ppsheet_details_post()
@@ -190,14 +192,16 @@ class PhysicalProgressApi extends REST_Controller
             $errors = null;
             $message = null;
             $status_code = 200;
+
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function save_ppsheet_details_post()
@@ -296,6 +300,8 @@ class PhysicalProgressApi extends REST_Controller
                                 $message = 'Base64 value is not a valid image';
                                 $status_code = 400;
                                 $data = [];
+
+                                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                             }
 
                             $ext = substr($size['mime'], 6); //Extracting the image extension
@@ -306,6 +312,8 @@ class PhysicalProgressApi extends REST_Controller
                                 $message = 'Unsupported Image Type. Only '.implode(',', $allowTypes).' files are allowed to upload.';
                                 $status_code = 400;
                                 $data = [];
+
+                                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                             }
 
                             $file_name = $pp_id.'_completion_file_'.$key.'.'.$ext;
@@ -320,6 +328,8 @@ class PhysicalProgressApi extends REST_Controller
                                 $message = 'Could not upload Sheet Completion File';
                                 $status_code = 400;
                                 $data = array('physical_progress_id' => $pp_id);
+
+                                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST;
                             }
                         }
 
@@ -339,15 +349,17 @@ class PhysicalProgressApi extends REST_Controller
                 $message = (empty($alert_message)) ? 'Physical Progress Sheet saved successfully' : $alert_message;
                 $status_code = 200;
                 $data = array('physical_progress_id' => $pp_id);
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
             }
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function updateBOQQty($activity_id, $boq_val, $contract_location_id, $unit_id, $user_id)
@@ -374,15 +386,17 @@ class PhysicalProgressApi extends REST_Controller
 
             $errors = null;
             $message = null;
-            $status_code = 200;            
+            $status_code = 200;
+
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function save_observations_post()
@@ -400,22 +414,18 @@ class PhysicalProgressApi extends REST_Controller
             $status_id = $this->post('status_id');
             $erected_qty = NULL;
 
+            $raised_by = $this->post('raised_by');
+            $designation = $this->post('designation');
+            $distribution_centre = $this->post('distribution_centre');
+
             $observation_id = $this->post('observation_id');
             $observation_name = $this->post('observation_name');
-            $ncr_id = $this->post('ncr_id');
-
-            //Check if NCR ID already exists
-            $ncr_id_check_result = $this->pp_model->checkNCRIDExists($ncr_id);
-
-            if (!empty($ncr_id_check_result)) {
-                $last_obs_data = $this->pp_model->fetchLastObservation();
-                $last_ncr_id = $last_obs_data['ncr_id'];
-
-                $ncr_id = ++$last_ncr_id;
-            }
+            $other_observation_name = $this->post('other_observation_name');
+            $ncr_id = $this->post('ncr_id');            
 
             $ncr_date = date('Y-m-d', strtotime($this->post('ncr_date')));
             $observation_remark = $this->post('observation_remark');
+            $completion_remark = $this->post('completion_remark');
             $completion_date = empty($this->post('completion_date')) ? NULL : date('Y-m-d', strtotime($this->post('completion_date')));
             $observation_files = $this->post('observation_files');
             $completion_files = $this->post('completion_files');
@@ -452,7 +462,7 @@ class PhysicalProgressApi extends REST_Controller
                     $obs_status_id = ($completion_date == NULL) ? $ncr_status_ids['Pending'] : $ncr_status_ids['Reviewed'];
 
                     //Saving Observation and obtaining its ID
-                    $pp_activity_obs_id = $this->pp_model->saveObservationAPI($contract_location_id, $activity_id, $observation_id, $observation_name, $ncr_id, $ncr_date, $observation_remark, $completion_date, $obs_status_id, $user_id);
+                    $pp_activity_obs_id = $this->pp_model->saveObservationAPI($contract_location_id, $activity_id, $observation_id, $observation_name, $other_observation_name, $ncr_id, $ncr_date, $raised_by, $designation, $distribution_centre, $observation_remark, $completion_remark, $completion_date, $obs_status_id, $user_id);
 
                     if ($pp_activity_obs_id) {
                         if (!empty($observation_files)) {
@@ -473,6 +483,8 @@ class PhysicalProgressApi extends REST_Controller
                                     $message = 'Base64 value is not a valid image';
                                     $status_code = 400;
                                     $data = [];
+
+                                    $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                                 }
 
                                 $ext = substr($size['mime'], 6); //Extracting the image extension
@@ -483,6 +495,8 @@ class PhysicalProgressApi extends REST_Controller
                                     $message = 'Unsupported Image Type. Only '.implode(',', $allowTypes).' files are allowed to upload.';
                                     $status_code = 400;
                                     $data = [];
+
+                                    $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                                 }
 
                                 $file_name = $key.'_'.$pp_id.'_observation_'.$observation_id.'_'.$ncr_id.'.'.$ext;
@@ -497,11 +511,15 @@ class PhysicalProgressApi extends REST_Controller
                                     $message = 'Observation Saved successfully';
                                     $status_code = 200;
                                     $data = array('physical_progress_id' => $pp_id, 'pp_activity_id' => $pp_act_id, 'pp_activity_obs_id' => $pp_activity_obs_id);
+
+                                    $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
                                 } else {
                                     $errors = 'Observation File Error';
                                     $message = 'Could not upload Observation File';
                                     $status_code = 400;
                                     $data = array('physical_progress_id' => $pp_id, 'pp_activity_id' => $pp_act_id, 'pp_activity_obs_id' => $pp_activity_obs_id);
+
+                                    $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                                 }
                             }    
                         }
@@ -525,6 +543,8 @@ class PhysicalProgressApi extends REST_Controller
                                     $message = 'Base64 value is not a valid image';
                                     $status_code = 400;
                                     $data = [];
+
+                                    $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                                 }
 
                                 $ext = substr($size['mime'], 6); //Extracting the image extension
@@ -535,6 +555,8 @@ class PhysicalProgressApi extends REST_Controller
                                     $message = 'Unsupported Image Type. Only '.implode(',', $allowTypes).' files are allowed to upload.';
                                     $status_code = 400;
                                     $data = [];
+
+                                    $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                                 }
 
                                 $file_name = $key.'_'.$pp_id.'_completion_'.$observation_id.'_'.$ncr_id.'.'.$ext;
@@ -549,6 +571,8 @@ class PhysicalProgressApi extends REST_Controller
                                     $message = 'Could not upload Observation Completion File';
                                     $status_code = 400;
                                     $data = array('physical_progress_id' => $pp_id, 'pp_activity_id' => $pp_act_id, 'pp_activity_obs_id' => $pp_activity_obs_id);
+
+                                    $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                                 }
                             }
                         }
@@ -558,6 +582,8 @@ class PhysicalProgressApi extends REST_Controller
                         $message = 'Failed to save observation details';
                         $status_code = 400;
                         $data = array('physical_progress_id' => $pp_id, 'pp_activity_id' => $pp_act_id);
+
+                        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                     }
                 }
             } else {
@@ -565,15 +591,17 @@ class PhysicalProgressApi extends REST_Controller
                 $message = 'No Observation Photos found';
                 $status_code = 400;
                 $data = [];
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
             }
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function update_observations_post()
@@ -616,6 +644,8 @@ class PhysicalProgressApi extends REST_Controller
                                 $message = 'Base64 value is not a valid image';
                                 $status_code = 400;
                                 $data = [];
+
+                                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                             }
 
                             $ext = substr($size['mime'], 6); //Extracting the image extension
@@ -626,6 +656,8 @@ class PhysicalProgressApi extends REST_Controller
                                 $message = 'Unsupported Image Type. Only '.implode(',', $allowTypes).' files are allowed to upload.';
                                 $status_code = 400;
                                 $data = [];
+
+                                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                             }
 
                             $file_name = $key.'_observation_'.$observation_id.'_'.$ncr_id.'.'.$ext;
@@ -640,6 +672,8 @@ class PhysicalProgressApi extends REST_Controller
                                 $message = 'Could not upload Observation File';
                                 $status_code = 400;
                                 $data = array('pp_activity_obs_id' => $pp_activity_obs_id);
+
+                                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                             }
                         }
                     } else {
@@ -647,6 +681,8 @@ class PhysicalProgressApi extends REST_Controller
                         $message = 'No Observation Photos found';
                         $status_code = 400;
                         $data = [];
+
+                        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                     }
                 }
             }            
@@ -678,6 +714,8 @@ class PhysicalProgressApi extends REST_Controller
                         $message = 'Base64 value is not a valid image';
                         $status_code = 400;
                         $data = [];
+
+                        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                     }
 
                     $ext = substr($size['mime'], 6); //Extracting the image extension
@@ -688,6 +726,8 @@ class PhysicalProgressApi extends REST_Controller
                         $message = 'Unsupported Image Type. Only '.implode(',', $allowTypes).' files are allowed to upload.';
                         $status_code = 400;
                         $data = [];
+
+                        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                     }
 
                     $file_name = $key.'_observation_completion_'.$observation_id.'_'.$ncr_id.'.'.$ext;
@@ -702,6 +742,8 @@ class PhysicalProgressApi extends REST_Controller
                         $message = 'Could not upload Observation Completion File';
                         $status_code = 400;
                         $data = array('pp_activity_obs_id' => $pp_activity_obs_id);
+
+                        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                     }
                 }
             }
@@ -716,20 +758,24 @@ class PhysicalProgressApi extends REST_Controller
                 $message = 'Observation Updated successfully';
                 $status_code = 200;
                 $data = array('pp_activity_obs_id' => $pp_activity_obs_id);
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
             } else {
                 $errors = 'Error Updating Observation';
                 $message = 'Could not update observation';
                 $status_code = 400;
-                $data = array('pp_activity_obs_id' => $pp_activity_obs_id);   
+                $data = array('pp_activity_obs_id' => $pp_activity_obs_id); 
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);  
             }
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);        
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function edit_applied_observation_post()
@@ -827,20 +873,24 @@ class PhysicalProgressApi extends REST_Controller
                 $message = 'Applied Observation Data';
                 $status_code = 200;
                 $data = $applied_obs_data;
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
             } else {
                 $errors = null;
                 $message = 'No Applied Observation found';
                 $status_code = 200;
                 $data = [];
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
             }
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);        
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function delete_applied_observation_post()
@@ -863,20 +913,24 @@ class PhysicalProgressApi extends REST_Controller
                 $message = 'Observation deleted successfully';
                 $status_code = 200;
                 $data = [];
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
             } else {
                 $errors = 'Observation Delete Error';
                 $message = 'Observation deletion failed';
                 $status_code = 400;
-                $data = [];    
+                $data = [];
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
             }
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function get_applied_observations_list_post()
@@ -885,6 +939,7 @@ class PhysicalProgressApi extends REST_Controller
             $contract_location_id = $this->post('contract_location_id');
             $activity_id = $this->post('activity_id');
             $reported_date = date('Y-m-d', strtotime($this->post('reported_date')));
+            $user_id = $this->post('user_id');
 
             //Check for observations
             $observations_data = $this->pp_model->getAllAppliedObservations($contract_location_id, $activity_id, $reported_date);
@@ -893,6 +948,9 @@ class PhysicalProgressApi extends REST_Controller
                 foreach ($observations_data as $key => $value) {
                     //Getting Activity Name
                     $observations_data[$key]['activity'] = $this->pp_model->getActivityData($activity_id, 'activity');
+
+                    // Checking mode of observation whether edit/view
+                    $observations_data[$key]['observation_mode'] = ($user_id != $value['createdby']) ? 'view' : ((empty($value['completion_date']) && empty($value['completed_photo'])) ? 'edit' : 'view');
 
                     //Fetching observation files    
                     $observations_files_data = $this->pp_model->getObservationFile($value['physical_progress_activity_observation_id']);
@@ -907,7 +965,7 @@ class PhysicalProgressApi extends REST_Controller
                     $observations_data[$key]['completed_photo'] = ($completion_files_count == 0) ? '' : $completion_files_count.' files uploaded';
 
                     $obs_message = 'Applied Observations Data';
-                }                
+                }
             } else {
                 $observations_data = [];
 
@@ -918,14 +976,16 @@ class PhysicalProgressApi extends REST_Controller
             $message = $obs_message;
             $status_code = 200;
             $data = $observations_data;
+
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function get_applied_observations_details_post()
@@ -934,6 +994,7 @@ class PhysicalProgressApi extends REST_Controller
             $contract_location_id = $this->post('contract_location_id');
             $activity_id = $this->post('activity_id');
             $reported_date = date('Y-m-d', strtotime($this->post('reported_date')));
+            $user_id = $this->post('user_id');
 
             $applied_obs_result = $this->pp_model->getAllAppliedObservations($contract_location_id, $activity_id, $reported_date);
 
@@ -985,14 +1046,16 @@ class PhysicalProgressApi extends REST_Controller
             $data['observation_ratio'] = $complete_obs_count .' / '. count($applied_obs_result);
             $data['remark'] = implode(';', $pending_obs_remarks);
             $data['files'] = $observation_files;
+
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function get_previous_sheet_dates_post()
@@ -1010,14 +1073,15 @@ class PhysicalProgressApi extends REST_Controller
 
             $data['previous_dates'] = $previous_sheet_data; 
 
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }        
     }
 
     public function search_sheets_post()
@@ -1046,14 +1110,16 @@ class PhysicalProgressApi extends REST_Controller
             $status_code = 200;
 
             $data['search_result'] = $search_result; 
+
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function change_password_post()
@@ -1071,20 +1137,24 @@ class PhysicalProgressApi extends REST_Controller
                 $message = 'Password updated successfully';
                 $status_code = 200;
                 $data = []; 
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
             } else {
                 $errors = 'Error Password Updation';
                 $message = 'Password update fail';
                 $status_code = 400;
                 $data = [];
+
+                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
             }
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function filter_data_post()
@@ -1112,15 +1182,17 @@ class PhysicalProgressApi extends REST_Controller
 
             $errors = null;
             $message = null;
-            $status_code = 200;            
+            $status_code = 200;
+
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);           
         } else {
             $errors = 'Empty POST Request';
             $message = 'POST Request has no arguments';
             $status_code = 400;
             $data = [];
-        }        
 
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function modifyRegionCircleData($region_circle_data)

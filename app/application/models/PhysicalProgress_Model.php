@@ -580,6 +580,9 @@ class PhysicalProgress_Model extends CI_Model
 						$group_by_obs['activity'] = $query_result[$i]['activity'];
 						$group_by_obs['observations_list'] = array();
 
+						$others_arr = array('obs_id' => 0, 'name' => 'Others');
+						array_push($group_by_obs['observations_list'], $others_arr);
+
 						for ($j = $i; $j < $query_result_count; $j++) {
 							if ($query_result[$i]['typeofwork_activity_options_id'] != '') {
 								if ($query_result[$i]['typeofwork_activity_id'] == $tmp_query_result[$j]['typeofwork_activity_id']) {
@@ -595,10 +598,8 @@ class PhysicalProgress_Model extends CI_Model
 						}
 
 						$i = $k;
-
 						array_push($final_arr, $group_by_obs);
 						$i++;
-
 					} while($i < $query_result_count);
 					
 					$sorted_final_arr = [];
@@ -614,7 +615,6 @@ class PhysicalProgress_Model extends CI_Model
 
 						//If applied observation found, fetching observation and completion photos
 						if (!empty($applied_obs_data)) {
-
 							$completed_obs_count = 0;
 							$applied_obs_remark = [];
 							$applied_obs_files = [];
@@ -622,12 +622,12 @@ class PhysicalProgress_Model extends CI_Model
 
 							//Temporary Code
 							$arrContextOptions = array(
-			                    "ssl" => array(
-			                        'cafile' => '/path/to/bundle/cacert.pem',
-			                        "verify_peer" => false,
-			                        "verify_peer_name" => false
-			                    ),
-			                );
+                "ssl" => array(
+		              'cafile' => '/path/to/bundle/cacert.pem',
+		              "verify_peer" => false,
+		              "verify_peer_name" => false
+	              ),
+              );
 
  							foreach ($applied_obs_data as $obs_key => $obs_value) {
 								if ($obs_value['completion_date'] != '' && $obs_value['completion_date'] <= $reported_date) {
@@ -642,12 +642,12 @@ class PhysicalProgress_Model extends CI_Model
 										$ext = pathinfo($fvalue['file_path'], PATHINFO_EXTENSION);
 
 										// Get the image and convert into string
-				                        $file_path = base_url($fvalue['file_path']);
-				                        // $image = file_get_contents($file_path);
-				                        $image = file_get_contents($file_path, false, stream_context_create($arrContextOptions));
+				            $file_path = base_url($fvalue['file_path']);
+				            // $image = file_get_contents($file_path);
+				            $image = file_get_contents($file_path, false, stream_context_create($arrContextOptions));
 
-				                        // Encode the image string data into base64
-                        				$image_base64 = 'data:image/'.$ext.';base64,'.base64_encode($image);
+				            // Encode the image string data into base64
+                    $image_base64 = 'data:image/'.$ext.';base64,'.base64_encode($image);
 
 										array_push($pending_obs_files, $image_base64);
 										array_push($applied_obs_files, $pending_obs_files);
@@ -944,17 +944,29 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
-	public function saveObservationAPI($contract_location_id, $work_activity_id, $observation_id, $observation_name, $ncr_id, $ncr_date, $remark, $completion_date, $obs_status_id, $user_id)
+	public function saveObservationAPI($contract_location_id, $work_activity_id, $observation_id, $observation_name, $other_observation_name, $ncr_id, $ncr_date, $raised_by, $designation, $distribution_centre, $observation_remark, $completion_remark, $completion_date, $obs_status_id, $user_id)
 	{
+		//Check if NCR ID already exists
+    $ncr_id_check_result = $this->checkNCRIDExists($ncr_id);
+
+    if (!empty($ncr_id_check_result)) {
+      $last_obs_data = $this->fetchLastObservation();
+      $last_ncr_id = $last_obs_data['ncr_id'];
+
+      $ncr_id = ++$last_ncr_id;
+    }
+
 		$data = array(
 			// 'physical_progress_activity_id' => $pp_activity_id,
 			'contract_location_id' => $contract_location_id,
 			'activity_id' => $work_activity_id,
 			'observation_id' => $observation_id,
 			'observation_name' => $observation_name,
+			'other_observation_name' => $other_observation_name,
 			'ncr_id' => $ncr_id,
 			'ncr_date' => $ncr_date,
-			'remark' => $remark, 
+			'remark' => $completion_remark,
+			'observation_remark' => $observation_remark, 
 			'completion_date' => $completion_date,
 			'status_id' => $obs_status_id,
 			'is_active' => 1,
@@ -1015,11 +1027,11 @@ class PhysicalProgress_Model extends CI_Model
 	public function updateObservation($observation_id, $observation_name, $other_observation_name, $ncr_id, $ncr_date, $remark, $observation_remark, $completion_date, $obs_status_id, $raised_by, $designation, $distribution_centre, $pp_activity_obs_id, $user_id = NULL)
 	{
 		$data = array(
-			'observation_id' => $observation_id,
-			'observation_name' => $observation_name,
+			// 'observation_id' => $observation_id,
+			// 'observation_name' => $observation_name,
 			'other_observation_name' => $other_observation_name,
-			'ncr_id' => $ncr_id,
-			'ncr_date' => $ncr_date,
+			// 'ncr_id' => $ncr_id,
+			// 'ncr_date' => $ncr_date,
 			'remark' => $remark,
 			'completion_date' => $completion_date,
 			'raised_by' => $raised_by,
@@ -1565,8 +1577,17 @@ class PhysicalProgress_Model extends CI_Model
 			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
 			die();
 		} else {
+			$query_result = [];
 			if ($query->num_rows() > 0) {
-				$query_result = $query->result_array();
+				$others_arr = array('obs_id' => 0, 'name' => 'Others');
+
+				array_push($query_result, $others_arr);
+
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value);	
+				}
 
 				return $query_result;
 			}
@@ -1666,7 +1687,7 @@ class PhysicalProgress_Model extends CI_Model
 	{
 		$where_array = array('contract_location_id' => $contract_location_id, 'activity_id' => $activity_id, 'deletedby' => NULL);
 
-		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.status_id, mst_status.name AS observation_status');
+		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.status_id, ppao.createdby, mst_status.name AS observation_status');
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
 		$this->db->where($where_array);

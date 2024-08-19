@@ -43,37 +43,41 @@ class Api extends REST_Controller
             $data['userdetails']->user_rolename = $user_rolename;    
 
             $errors = null;
+
+            $this->response(['errors' => $errors, 'message' => $data['message'], 'status_code' => $data['status'], 'data' => $data], REST_Controller::HTTP_OK);
         } else {
             $errors = 'Login Failed';
-        }
 
-        $this->response([
-            'errors'       => $errors,
-            'message'      => $data['message'],
-            'status_code'  => $data['status'],
-            'data'         => $data
-        ], REST_Controller::HTTP_OK);
+            $this->response(['errors' => $errors, 'message' => $data['message'], 'status_code' => $data['status'], 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 
     public function getMobileAPKDetails_get()
     {
         $result = $this->Login_Model->getMobileAPKDetails();
 
-        $data = [];
-        foreach ($result as $key => $value) {
-            if ($value['display_name'] == 'apk_url_link') {
-                $data[$value['display_name']] = base_url($value['fieldvalue']);
-            } else {
-                $data[$value['display_name']] = $value['fieldvalue'];
+        if (!empty($result)) {
+            $data = [];
+            foreach ($result as $key => $value) {
+                if ($value['display_name'] == 'apk_url_link') {
+                    $data[$value['display_name']] = base_url($value['fieldvalue']);
+                } else {
+                    $data[$value['display_name']] = $value['fieldvalue'];
+                }
             }
+
+            $errors = null;
+            $message = null;
+            $status_code = 200;
+
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
+        } else {
+            $errors = 'No Record Found';
+            $message = 'No APK Found';
+            $status_code = 400;
+            $data = [];
+
+            $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
         }
-
-        $errors = null;
-        $message = null;
-        $status_code = 200;
-
-        $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_OK);
     }
-
-
 }

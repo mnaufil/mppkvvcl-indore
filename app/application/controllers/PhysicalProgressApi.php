@@ -329,7 +329,7 @@ class PhysicalProgressApi extends REST_Controller
                                 $status_code = 400;
                                 $data = array('physical_progress_id' => $pp_id);
 
-                                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST;
+                                $this->response(['errors' => $errors, 'message' => $message, 'status_code' => $status_code, 'data' => $data], REST_Controller::HTTP_BAD_REQUEST);
                             }
                         }
 

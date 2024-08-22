@@ -786,11 +786,14 @@ class PhysicalProgressApi extends REST_Controller
             $sheet_date = ''; //will be used later to fetch submitted sheet applied observations
 
             //Fetching observation details
-            $applied_obs_data = $this->pp_model->getAppliedObservationData($pp_activity_obs_id, $sheet_date);
+            $applied_obs_data = $this->pp_model->getAppliedObservationData($pp_activity_obs_id, $sheet_date);            
 
             if ($applied_obs_data) {
                 //Getting Activity Name
                 $applied_obs_data['activity'] = $this->pp_model->getActivityData($applied_obs_data['activity_id'], 'activity');
+
+                $applied_obs_data['completion_remark'] = $applied_obs_data['remark'];
+                unset($applied_obs_data['remark']);
 
                 $observation_files = [];
 

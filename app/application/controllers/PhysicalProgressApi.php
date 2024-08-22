@@ -613,9 +613,14 @@ class PhysicalProgressApi extends REST_Controller
             $pp_activity_obs_id = $this->post('physical_progress_activity_observation_id');
             $observation_id = $this->post('observation_id');
             $observation_name = $this->post('observation_name');
+            $other_observation_name = ($observation_id == 0) ? $this->post('other_observation_name') : NULL;
             $ncr_id = $this->post('ncr_id');
             $ncr_date = date('Y-m-d', strtotime($this->post('ncr_date')));
+            $raised_by = $this->post('raised_by');
+            $designation = $this->post('designation');
+            $distribution_centre = $this->post('distribution_centre');
             $observation_remark = $this->post('observation_remark');
+            $completion_remark = $this->post('completion_remark');
             $completion_date = (empty($this->post('completion_date')) ? NULL : date('Y-m-d', strtotime($this->post('completion_date'))));
             $observation_files = $this->post('observation_files');
             $completion_files = $this->post('completion_files');
@@ -751,7 +756,7 @@ class PhysicalProgressApi extends REST_Controller
             $ncr_status_ids = $this->getNCRStatusIDs();
             $obs_status_id = ($completion_date == NULL) ? $ncr_status_ids['Pending'] : $ncr_status_ids['Reviewed'];
 
-            $obs_update_result = $this->pp_model->updateObservation($observation_id, $observation_name, $ncr_id, $ncr_date, $observation_remark, $completion_date, $obs_status_id, $pp_activity_obs_id, $user_id);
+            $obs_update_result = $this->pp_model->updateObservation($observation_id, $observation_name, $other_observation_name, $ncr_id, $ncr_date, $completion_remark, $observation_remark, $completion_date, $obs_status_id, $raised_by, $designation, $distribution_centre, $pp_activity_obs_id, $user_id);
 
             if ($obs_update_result) {
                 $errors = null;

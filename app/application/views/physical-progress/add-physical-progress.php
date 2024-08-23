@@ -2632,6 +2632,7 @@
       	if (user_role != 'Client') {
       		let tr = $(btn).closest('tr');
 
+      		// Disabling Add New Row button if erected_qty value is not entered/ if No radio button is selected
 					if ($(tr).find('.erected-qty > input').length == 1) {
 						let erected_qty = $(tr).find('.erected-qty > input').val();
 
@@ -2738,7 +2739,7 @@
 							    html += '</div>';
 							    html += '</td>';
 								} else if ((obs_completion_file_count == 0 && completion_date == '')) {
-									let action_mode = ((ncr_created_by_id == user_id) || (user == 'Admin')) ? 'edit' : 'view';
+									let action_mode = ((ncr_created_by_id == user_id) || (user == 'Admin') || (user == 'Field Engineer')) ? 'edit' : 'view';
 									let delete_obs_allow = ((ncr_created_by_id == user_id) || (user == 'Admin')) ? 'onclick="deleteObservation(this)"' : '';
 									html += '<td>';
 							    html += '<div class="btn-list">';
@@ -3124,6 +3125,21 @@
 							$('#ncrID').val(obs_data.ncr_id);
 		      		$('#ncrDate').val(obs_data.ncr_date);
 		      		$('#observation_remark').val(obs_data.observation_remark);
+
+		      		if (action == 'edit') {
+		      			$('#observation_remark').prop('readonly', false);
+		      			$('#raisedBy').prop('readonly', false);
+		      			$('#designation').prop('readonly', false);
+		      			$('#distributionCentre').prop('readonly', false);
+
+		      			$('#obs_photo').prop('disabled', false);
+		      			$('#remark').prop('readonly', false);
+
+		      			$('#completion_photo').prop('disabled', false);
+		      			$('#completionDate').prop('disabled', false);
+
+		      			$('#saveObs').show();
+		      		}
 
 		      		if (obs_data.observation_id == 0) {
 		      			$('#other_observation').val(obs_data.other_observation_name);

@@ -975,6 +975,9 @@ class PhysicalProgressApi extends REST_Controller
                     $observations_data[$key]['observation_photo'] = $observations_files_count.' files uploaded';
                     $observations_data[$key]['completed_photo'] = ($completion_files_count == 0) ? '' : $completion_files_count.' files uploaded';
 
+                    $created_by_details = $this->pp_model->getUserData($value['createdby']);
+                    $observations_data[$key]['created_by_role'] = $this->pp_model->getUserRole($created_by_details->role_id);
+
                     $obs_message = 'Applied Observations Data';
                 }
             } else {

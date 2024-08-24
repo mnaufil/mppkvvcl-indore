@@ -2959,8 +2959,6 @@
 
       	//Getting selected activity's observations
       	let activity_obs = activity.observations_list;
-      	console.log('activity_obs: ');
-      	console.log(activity_obs);
 
       	let html = '';
       	html += '<option value="select" selected disabled>Select Observation</option>';
@@ -3031,11 +3029,17 @@
 
       		html += '<option value="0">Others</option>';
       		$.each(activity_obs, function(index, value) {
+      			if (value.obs_id == 0) {
+      				return;
+      			}
+
 						html += '<option value="'+ value.obs_id +'">'+ value.name +'</option>';
-					});	
+					});
 
 					//Removing already attached options of the dropdown
 					$('#observation').find('option').remove().end().append(html);
+
+					$('#other-observation-div').prop('hidden', true);					
 
 					//Setting NCR date
 					let reported_date = $('input[name="reportedDate"]').val();
@@ -3145,6 +3149,8 @@
 		      			$('#other_observation').val(obs_data.other_observation_name);
 		      			if (action == 'view') {
 		      				$('#other_observation').prop('readonly', true);	
+		      			} else if (action == 'edit') {
+		      				$('#other_observation').prop('readonly', false);	
 		      			}
 		      			
 		      			$('#other-observation-div').prop('hidden', false);
@@ -3520,6 +3526,9 @@
     			success: function(response) {
     				console.log(response);
     				$(btn).closest('tr').remove();
+
+    				//Changing status of form to edited by setting below variable true
+						form_change = true;
     			},
 			    error: function(xhr, status, error){
 			    	// let errorText = JSON.parse(xhr.responseText);
@@ -3641,6 +3650,7 @@
 
 	    	if (selected_observation_type == 'Others') {
 	    		$('#other-observation-div').prop('hidden', false);
+	    		$('input[name="other_observation"]').prop('readonly', false);
 	    	} else {
 	    		if (!$('#other-observation-div').is(':hidden')) {
 	    			$('#other-observation-div').prop('hidden', true);

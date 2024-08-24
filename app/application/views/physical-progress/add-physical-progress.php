@@ -789,13 +789,14 @@
 																									<!-- Erected Qty -->
 																									<td class="erected-qty">
 																										<?php $input_name = strtolower(str_replace(' ', '_', $k1)).'_'.$v2['typeofwork_activity_id']; ?>
+																										<?php $erected_qty_readonly = ($userdata['role'] != 'Client') ? '' : 'readonly'; ?>
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
-																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>">	
+																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" <?php echo $erected_qty_readonly; ?>>	
 																										<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																											<?php //$erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty']; 
 																														$erected_qty = (isset($v2['erected_qty'])) ? (($v2['erected_qty'] == 0) ? '' : $v2['erected_qty']) : '';
 																											?>
-																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>">	
+																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>" <?php echo $erected_qty_readonly; ?>>	
 																										<?php } ?>																										
 																									</td>
 																									<!-- Progress in % -->
@@ -826,7 +827,7 @@
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) 
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00)) && !empty($v2['observations_list'])) 
 																														{
 																																$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
@@ -943,13 +944,14 @@
 																									<!-- Erected Qty -->
 																									<td class="erected-qty">
 																										<?php $input_name = strtolower(str_replace(' ', '_', $k1)).'_'.$v2['typeofwork_activity_id']; ?>
+																										<?php $erected_qty_readonly = ($userdata['role'] != 'Client') ? '' : 'readonly'; ?>
 																										<?php if ($sheet_data['sheet_status'] == 'Open') { ?>
-																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>">	
+																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" <?php echo $erected_qty_readonly; ?>>	
 																										<?php } else if ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																											<?php //$erected_qty = ($v2['erected_qty'] == 0) ? '': $v2['erected_qty']; 
 																														$erected_qty = (isset($v2['erected_qty'])) ? (($v2['erected_qty'] == 0) ? '' : $v2['erected_qty']) : '';
 																											?>
-																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>">	
+																											<input class="form-control form-control-sm mb-4" type="text" id="<?php echo $input_name; ?>" name="<?php echo $input_name; ?>" value="<?php echo $erected_qty; ?>" <?php echo $erected_qty_readonly; ?>>	
 																										<?php } ?>
 																									</td>
 																									<!-- Progress in % -->
@@ -980,7 +982,7 @@
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00)) && !empty($v2['observations_list'])) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
 																																$obs_complete_count = 0;
@@ -1268,7 +1270,7 @@
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00)) && !empty($v2['observations_list'])) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
 																																$obs_complete_count = 0;
@@ -1424,7 +1426,7 @@
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00)) && !empty($v2['observations_list'])) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
 																																$obs_complete_count = 0;

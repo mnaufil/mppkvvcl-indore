@@ -1035,6 +1035,7 @@ class PhysicalProgress_Model extends CI_Model
 			'other_observation_name' => $other_observation_name,
 			// 'ncr_id' => $ncr_id,
 			// 'ncr_date' => $ncr_date,
+			'observation_remark' => $observation_remark,
 			'remark' => $remark,
 			'completion_date' => $completion_date,
 			'raised_by' => $raised_by,

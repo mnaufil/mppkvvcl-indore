@@ -51,10 +51,10 @@ class NCRReview_Model extends CI_Model
 			$this->db->where(array('ppao.last_email_details' => NULL, 'ppao.is_active' => 1, 'ppao.deletedby' => NULL));
 		}		
 
-		$this->db->order_by('ppao.ncr_date', 'DESC');		
+		$this->db->order_by('ppao.ncr_date', 'DESC');
 
 		$query = $this->db->get();
-		// echo $this->db->last_query(); die();
+		echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();
@@ -71,23 +71,24 @@ class NCRReview_Model extends CI_Model
 		}
 	}
 
-	public function searchNCRs($contractor, $package_no, $feeder_id, $ncr_id, $region, $circle, $division, $status, $last_email_sent, $contract_location_ids)
+	public function searchNCRs($contractor, $package_no, $feeder_id, $ncr_id, $region, $circle, $division, $status, $last_email_sent, $contract_ids)
 	{
 		$status_value = (!empty($status)) ? $this->getSheetStatus($status[0]) : '';
 
 		$user_id = $this->getLoggedInUserID();
 
 		if ($status_value != 'Deleted') {
-			$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.last_email_details, ppao.status_id, ppao.createdby, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name, contract.contractor_email, contract.package_no, mst_status.name AS observation_status, mst_user.username AS raised_by');
+			$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.last_email_details, ppao.status_id, ppao.createdby, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name, contract.contractor_email, contract.package_no, mst_status.name AS observation_status, mst_user.username AS raised_by');
 		} elseif ($status_value == 'Deleted') {
-			$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.last_email_details, ppao.status_id, ppao.deletedby, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name, contract.contractor_email, contract.package_no, mst_status.name AS observation_status, mst_user.username AS deleted_by');
+			$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.last_email_details, ppao.status_id, ppao.deletedby, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name, contract.contractor_email, contract.package_no, mst_status.name AS observation_status, mst_user.username AS deleted_by');
 		}
 
 		// $this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.status_id, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name, contract.package_no, mst_status.name AS observation_status');
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('contract_location', 'ppao.contract_location_id = contract_location.contract_location_id', 'INNER');
 
-		if (empty($contract_location_ids)) {
+		// if (empty($contract_location_ids)) {
+		if (empty($contract_ids)) {
 			$this->db->join('mst_user_data_access AS muda', 'muda.region_id = contract_location.region_id AND muda.circle_id = contract_location.circle_id AND muda.division_id = contract_location.division_id', 'LEFT');	
 		}
 		
@@ -108,8 +109,11 @@ class NCRReview_Model extends CI_Model
 			$this->db->where(array('ppao.is_active' => 1, 'ppao.deletedby' => NULL));
 		}
 
-		if (!empty($contract_location_ids)) {
-			$this->db->where_in('ppao.contract_location_id', $contract_location_ids);
+		if (!empty($contract_ids)) {
+			// $this->db->where_in('ppao.contract_location_id', $contract_location_ids);
+			$contract_ids = implode(',', $contract_ids);
+			$where_clause = "SELECT contract_location_id FROM contract_location WHERE contract_id IN (".$contract_ids.") AND is_active = 1";
+			$this->db->where("ppao.contract_location_id IN ($where_clause)", NULL, FALSE);
 		} else {
 			$this->db->where(array('muda.user_id' => $user_id));
 		}
@@ -119,7 +123,8 @@ class NCRReview_Model extends CI_Model
 		}
 
 		if (!empty($package_no)) {
-			$this->db->like('contract.package_no', $package_no);
+			// $this->db->like();
+			$this->db->where('contract.package_group_no', $package_no);
 		}
 
 		if (!empty($feeder_id)) {
@@ -1047,18 +1052,21 @@ class NCRReview_Model extends CI_Model
 		}
 	}
 
-	public function getContractIDsByPackage($package_no)
+	public function getContractIDsByPackage($package_group_no)
 	{
 		$contract_status_list = $this->getContractStatusList();
 
+		$package_group_no = explode(',', $package_group_no);
+
 		$this->db->select('contract_id');
-		$query = $this->db->get_where('contract', array('package_group_no' => $package_no, 'status_id ' => $contract_status_list['Open']));
+		$this->db->where_in('package_group_no', $package_group_no);
+		$query = $this->db->get_where('contract', array('status_id ' => $contract_status_list['Open']));
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();    
-            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
-            die();  			
+      echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+      die();  			
 		} else {
 			$query_result = [];
 

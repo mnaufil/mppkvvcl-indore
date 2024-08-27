@@ -54,7 +54,7 @@ class NCRReview_Model extends CI_Model
 		$this->db->order_by('ppao.ncr_date', 'DESC');
 
 		$query = $this->db->get();
-		echo $this->db->last_query(); die();
+		// echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();

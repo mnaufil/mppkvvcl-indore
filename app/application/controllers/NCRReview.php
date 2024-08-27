@@ -146,15 +146,17 @@ class NCRReview extends CI_Controller
            	$user_id = $_SESSION['loggedData']->user_id;
 			$user_role = $this->ncr_model->getUserRoleName($user_id);
 
-           	$contract_location_ids = [];
+           	$contract_ids = [];
 
 			if ($user_role == 'TKC') {
 			 	$package_access_no = $_SESSION['loggedData']->package_access;
 
-			 	$contract_location_ids = $this->ncr_model->getContractLocationIDsByPackage($package_access_no);
+			 	// $contract_location_ids = $this->ncr_model->getContractLocationIDsByPackage($package_access_no);
+			 	$contract_ids = $this->ncr_model->getContractIDsByPackage($package_access_no);
 			}
 
-           	$search_result = $this->ncr_model->searchNCRs($contractor, $package_no, $feeder_id, $ncr_id, $region, $circle, $division, $status, $last_email_sent, $contract_location_ids);
+           	// $search_result = $this->ncr_model->searchNCRs($contractor, $package_no, $feeder_id, $ncr_id, $region, $circle, $division, $status, $last_email_sent, $contract_location_ids);
+           	$search_result = $this->ncr_model->searchNCRs($contractor, $package_no, $feeder_id, $ncr_id, $region, $circle, $division, $status, $last_email_sent, $contract_ids);
 
            	// Formatting Dates
            	foreach ($search_result as $key => $value) {

@@ -129,7 +129,7 @@
 								              		<!-- Distribution Centre -->
 								              		<div class="col-xl-4">
 								              			<label class="form-label" for="distributionCentre">Distribution Centre</label>
-								                    <input type="text" class="form-control" id="distributionCentre" name="distributionCentre" value="<?php echo $ncr_data['distribution_centre']; ?>" readonly>
+								                    	<input type="text" class="form-control" id="distributionCentre" name="distributionCentre" value="<?php echo $ncr_data['distribution_centre']; ?>" readonly>
 								              		</div>
 				            					</div>
 				            					<!-- Row2 -->

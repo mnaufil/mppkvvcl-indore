@@ -171,6 +171,7 @@ class PhysicalProgress_Model extends CI_Model
 				if ($mode == 'edit-new') {
 					if ($type == 'API') {
 						$activities_list = $this->getActivitiesListAPI($ppsheet_id, $query_result['typeofwork_id'], $contract_location_id, $reported_date);
+						// $activities_list = $this->getActivitiesListAPI_New($ppsheet_id, $query_result['typeofwork_id'], $contract_location_id, $reported_date);
 					} else {
 						$activities_list = $this->getActivitiesList($query_result['typeofwork_id'], $contract_location_id);	
 					}
@@ -178,18 +179,19 @@ class PhysicalProgress_Model extends CI_Model
 					$query_result['activities_list'] = $activities_list;
 
 					if (!empty($activities_list)) {
-						$group_name_arr = [];
+						/*$group_name_arr = [];
 						$group_model_arr = [];
 						foreach ($activities_list as $key => $value) {
 							array_push($group_name_arr, $value['activity_group_name']);
 							array_push($group_model_arr, $value['activity_group_model']);
 						}
 
-						// $query_result['activities_group_name'] = array_unique($group_name_arr);
+						$query_result['activities_group_name'] = array_unique($group_name_arr);
+						$query_result['activities_group_model'] = array_unique($group_model_arr);*/
+
 						$activity_groups = $this->getActivitiesGroupByWork($query_result['typeofwork_id'], $type);
 						$query_result['activities_group_name'] = $activity_groups;
 
-						// $query_result['activities_group_model'] = array_unique($group_model_arr);
 					}
 				} elseif ($mode == 'edit-prev' || $mode == 'view' || $mode == 'view-by-date' || $mode = 'edit-review') {
 					if ($mode == 'view' || $mode = 'view-by-date') {
@@ -543,7 +545,7 @@ class PhysicalProgress_Model extends CI_Model
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
 
-		if (! $query) {
+		if (!$query) {
 			$error = $this->db->error();
 			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
 			die();
@@ -644,7 +646,7 @@ class PhysicalProgress_Model extends CI_Model
 									array_push($applied_obs_remark, $obs_value['remark']);
 									$applied_obs_file_data = $this->getObservationFile($obs_value['physical_progress_activity_observation_id']);
 
-									$pending_obs_files = [];
+									// $pending_obs_files = [];
 									
 									foreach ($applied_obs_file_data as $fkey => $fvalue) {
 										$ext = pathinfo($fvalue['file_path'], PATHINFO_EXTENSION);
@@ -657,8 +659,9 @@ class PhysicalProgress_Model extends CI_Model
 				            // Encode the image string data into base64
                     $image_base64 = 'data:image/'.$ext.';base64,'.base64_encode($image);
 
-										array_push($pending_obs_files, $image_base64);
-										array_push($applied_obs_files, $pending_obs_files);
+										/*array_push($pending_obs_files, $image_base64);
+										array_push($applied_obs_files, $pending_obs_files);*/
+										array_push($applied_obs_files, $image_base64);
 									}
 								}
 
@@ -686,6 +689,120 @@ class PhysicalProgress_Model extends CI_Model
 				}
 			}
 		}
+	}
+
+	public function getActivitiesListAPI_New($ppsheet_id, $work_id, $contract_location_id, $reported_date, $activity_id = NULL) 
+	{
+		$status_field = ($reported_date != NULL) ? ', physical_progress_activity.status_id, physical_progress_activity.erected_qty' : '';
+
+		$options_field = ($activity_id != NULL) ? ', mst_typeofwork_activity_options.typeofwork_activity_options_id, mst_typeofwork_activity_options.name' : '';
+
+		$this->db->select('mst_typeofwork_activity.typeofwork_activity_id, mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq, mst_activity_group.name AS activity_group_name, mst_activity_group.model AS activity_group_model, mst_typeofwork_activity.unit_id, mst_unit.name AS unit_name, mst_typeofwork_activity.seqno, mst_typeofwork_activity.activity'.$options_field.$status_field);
+		$this->db->from('mst_typeofwork_activity');
+
+		if ($activity_id) {
+			$this->db->join('mst_typeofwork_activity_options', 'mst_typeofwork_activity.typeofwork_activity_id = mst_typeofwork_activity_options.typeofwork_activity_id', 'LEFT');	
+		}
+
+		$this->db->join('mst_activity_group', 'mst_typeofwork_activity.activity_group_id = mst_activity_group.activity_group_id', 'INNER');
+		$this->db->join('mst_unit', 'mst_typeofwork_activity.unit_id = mst_unit.unit_id', 'INNER');
+
+		if ($reported_date != NULL) {
+			$this->db->join('physical_progress_activity', 'mst_typeofwork_activity.typeofwork_activity_id = physical_progress_activity.activity_id');
+		}
+		
+		// $this->db->where('mst_typeofwork_activity.typeofwork_id', $work_id);
+		$this->db->where('mst_typeofwork_activity.typeofwork_id', $work_id);
+
+		if ($reported_date != NULL) {
+			$this->db->where('physical_progress_activity.physical_progress_id', $ppsheet_id);
+		}
+
+		if ($activity_id) {
+			$this->db->where('mst_typeofwork_activity_options.typeofwork_activity_id', $activity_id);
+		}
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();	
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+
+				if (is_null($activity_id)) {
+					foreach ($query_result as $key => $value) {
+
+						$query_result[$key]['boq'] = $this->getBOQ($value['typeofwork_activity_id'], $contract_location_id);
+						$query_result[$key]['observations_list'] = $this->getObservationData($value['typeofwork_activity_id']);
+
+						$applied_obs_data = $this->getAllAppliedObservations($contract_location_id, $value['typeofwork_activity_id'], $reported_date);
+
+						//If applied observation found, fetching observation and completion photos
+						if (!empty($applied_obs_data)) {
+							$completed_obs_count = 0;
+							$applied_obs_remark = [];
+							$applied_obs_files = [];
+							$ncr_submitted_by_tkc_count = 0;
+
+							//Temporary Code
+							$arrContextOptions = array(
+                "ssl" => array(
+		              'cafile' => '/path/to/bundle/cacert.pem',
+		              "verify_peer" => false,
+		              "verify_peer_name" => false
+	              ),
+              );
+
+              foreach ($applied_obs_data as $obs_key => $obs_value) {
+              	if ($obs_value['completion_date'] != '' && $obs_value['completion_date'] <= $reported_date) {
+              		$completed_obs_count++;
+              	} else {
+              		array_push($applied_obs_remark, $obs_value['remark']);
+              		$applied_obs_file_data = $this->getObservationFile($obs_value['physical_progress_activity_observation_id']);
+
+              		// $pending_obs_files = [];
+
+              		foreach ($applied_obs_file_data as $fkey => $fvalue) {
+              			$ext = pathinfo($fvalue['file_path'], PATHINFO_EXTENSION);
+
+										// Get the image and convert into string
+				            $file_path = base_url($fvalue['file_path']);
+				            // $image = file_get_contents($file_path);
+				            $image = file_get_contents($file_path, false, stream_context_create($arrContextOptions));
+
+				            // Encode the image string data into base64
+                    $image_base64 = 'data:image/'.$ext.';base64,'.base64_encode($image);
+                    array_push($applied_obs_files, $image_base64);
+              		}
+              	}
+
+              	if ($obs_value['observation_status'] == 'Submitted by TKC') {
+									$ncr_submitted_by_tkc_count++;
+								}
+              }
+
+              $query_result[$key]['observation_ratio'] = $completed_obs_count.' / '.count($applied_obs_data);
+							$query_result[$key]['remark'] = implode(',', $applied_obs_remark);
+							$query_result[$key]['ncr_submitted_by_tkc_count'] = $ncr_submitted_by_tkc_count;
+							$query_result[$key]['files'] = $applied_obs_files;
+						} else {
+							$query_result[$key]['observation_ratio'] = '';
+							$query_result[$key]['remark'] = '';
+							$query_result[$key]['files'] = [];
+						}
+					}
+				} 
+
+				return $query_result;
+			}
+		}
+
 	}	
 
 	public function getAppliedActivitiesList($ppsheet_id, $contract_location_id, $reported_date = NULL)

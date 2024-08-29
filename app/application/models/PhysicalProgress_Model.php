@@ -133,10 +133,15 @@ class PhysicalProgress_Model extends CI_Model
 
 	public function getSheetDetail($mode, $ppsheet_id, $contract_id, $contract_location_id, $reported_date = NULL, $type = NULL)
 	{
-		$this->db->select('physical_progress.*, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.package_no, contract.typeofwork_id,contract_location.region_id, contract_location.circle_id, contract_location.division_id,contract_location.location_name, contract_location.feeder_name, contract_location.feeder_id, contract_location.geo_code, contract_location.charging_status');
+		$this->db->select('physical_progress.*, contract.contractor_name, contract.tender_award_no, contract.tender_award_date, contract.package_no, contract.typeofwork_id,contract_location.region_id, contract_location.circle_id, contract_location.division_id,contract_location.location_name, contract_location.feeder_name, contract_location.feeder_id, contract_location.geo_code, contract_location.charging_status, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, mst_typeofwork.name AS typeofwork, mst_status.name AS sheet_status');
 		$this->db->from('physical_progress');
-		$this->db->join('contract', 'physical_progress.contract_id = contract.contract_id', 'inner');
-		$this->db->join('contract_location', 'physical_progress.contract_id = contract_location.contract_id AND physical_progress.contract_location_id = contract_location.contract_location_id', 'inner');
+		$this->db->join('contract', 'physical_progress.contract_id = contract.contract_id', 'INNER');
+		$this->db->join('contract_location', 'physical_progress.contract_id = contract_location.contract_id AND physical_progress.contract_location_id = contract_location.contract_location_id', 'INNER');
+		$this->db->join('mst_region', 'contract_location.region_id = mst_region.region_id', 'INNER');
+		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
+		$this->db->join('mst_division', 'contract_location.division_id = mst_division.division_id', 'INNER');
+		$this->db->join('mst_typeofwork', 'contract.typeofwork_id = mst_typeofwork.typeofwork_id', 'INNER');
+		$this->db->join('mst_status', 'physical_progress.status_id = mst_status.status_id', 'INNER');
 		$this->db->where('physical_progress.physical_progress_id', $ppsheet_id);
 
 		if ($type == NULL && $reported_date != NULL) {
@@ -154,7 +159,7 @@ class PhysicalProgress_Model extends CI_Model
 			if ($query->num_rows() > 0) {
 				$query_result = $query->row_array();
 
-				$query_result['region_name'] = $this->getRegion($query_result['region_id']);
+				/*$query_result['region_name'] = $this->getRegion($query_result['region_id']);
 
 				$query_result['circle_name'] = $this->getCircle($query_result['circle_id']);
 
@@ -162,8 +167,7 @@ class PhysicalProgress_Model extends CI_Model
 
 				$query_result['typeofwork'] = $this->getTypeOfWork($query_result['typeofwork_id']);
 
-				$query_result['sheet_status'] = $this->getSheetStatus($query_result['status_id']);
-
+				$query_result['sheet_status'] = $this->getSheetStatus($query_result['status_id']);*/
 				if ($mode == 'edit-new') {
 					if ($type == 'API') {
 						$activities_list = $this->getActivitiesListAPI($ppsheet_id, $query_result['typeofwork_id'], $contract_location_id, $reported_date);
@@ -515,10 +519,11 @@ class PhysicalProgress_Model extends CI_Model
 	public function getActivitiesListAPI($ppsheet_id, $work_id, $contract_location_id, $reported_date, $activity_id = NULL)
 	{
 		$status_field = ($reported_date != NULL) ? 'physical_progress_activity.status_id' : '';
-		$this->db->select('mst_typeofwork_activity.typeofwork_activity_id, mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq, mst_typeofwork_activity.unit_id, mst_typeofwork_activity.seqno, mst_typeofwork_activity.activity, mst_typeofwork_activity_options.typeofwork_activity_options_id, mst_typeofwork_activity_options.name,'.$status_field);
+		$this->db->select('mst_typeofwork_activity.typeofwork_activity_id, mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq, mst_activity_group.name AS activity_group_name, mst_activity_group.model AS activity_group_model, mst_typeofwork_activity.unit_id, mst_unit.name AS unit_name, mst_typeofwork_activity.seqno, mst_typeofwork_activity.activity, mst_typeofwork_activity_options.typeofwork_activity_options_id, mst_typeofwork_activity_options.name,'.$status_field);
 		$this->db->from('mst_typeofwork_activity');
-		$this->db->join('mst_typeofwork_activity_options', 'mst_typeofwork_activity.typeofwork_activity_id = mst_typeofwork_activity_options.typeofwork_activity_id', 'left');
+		$this->db->join('mst_typeofwork_activity_options', 'mst_typeofwork_activity.typeofwork_activity_id = mst_typeofwork_activity_options.typeofwork_activity_id', 'LEFT');
 		$this->db->join('mst_activity_group', 'mst_typeofwork_activity.activity_group_id = mst_activity_group.activity_group_id', 'INNER');
+		$this->db->join('mst_unit', 'mst_typeofwork_activity.unit_id = mst_unit.unit_id', 'INNER');
 
 		if ($reported_date != NULL) {
 			$this->db->join('physical_progress_activity', 'mst_typeofwork_activity.typeofwork_activity_id = physical_progress_activity.activity_id');
@@ -567,12 +572,15 @@ class PhysicalProgress_Model extends CI_Model
 							$group_by_obs['erected_qty'] = $this->getErectedQuantity($ppsheet_id, $query_result[$i]['typeofwork_activity_id']);
 						}
 
-						$activity_group_details = $this->getActivityName($query_result[$i]['activity_group_id']);
+						/*$activity_group_details = $this->getActivityName($query_result[$i]['activity_group_id']);
 						$group_by_obs['activity_group_name'] = $activity_group_details['name'];
-						$group_by_obs['activity_group_model'] = $activity_group_details['model'];
+						$group_by_obs['activity_group_model'] = $activity_group_details['model'];*/
+						$group_by_obs['activity_group_name'] = $query_result[$i]['activity_group_name'];
+						$group_by_obs['activity_group_model'] = $query_result[$i]['activity_group_model'];
 
 						$group_by_obs['unit_id'] = $query_result[$i]['unit_id'];
-						$group_by_obs['unit_name'] = $this->getActivityUnitName($query_result[$i]['unit_id']);
+						// $group_by_obs['unit_name'] = $this->getActivityUnitName($query_result[$i]['unit_id']);
+						$group_by_obs['unit_name'] = $query_result[$i]['unit_name'];
 
 						$group_by_obs['status_id'] = isset($query_result[$i]['status_id']) ? $query_result[$i]['status_id'] : '0';
 
@@ -603,7 +611,7 @@ class PhysicalProgress_Model extends CI_Model
 					} while($i < $query_result_count);
 					
 					$sorted_final_arr = [];
-					
+
 					//Sorting array on basis of observations key 
 					foreach ($final_arr as $key => $value) {
 						if (!empty($value['observations_list'])) {
@@ -1655,6 +1663,10 @@ class PhysicalProgress_Model extends CI_Model
 						foreach ($obs_by_tkc_file_result as $key => $value) {
 							array_push($obs_data['observation_files_by_tkc'], $value);
 						}
+
+						// Fetching raised flag messages
+						$flag_msg_result = $this->getFlagRaisedforObservationByTKC($obs_id, $obs_data['ncr_id']);
+						$obs_data['flag_msgs'] = $flag_msg_result;
 					}
 				}
 
@@ -1684,6 +1696,31 @@ class PhysicalProgress_Model extends CI_Model
 			}
 
 			return $obs_data;
+		}
+	}
+
+	public function getFlagRaisedforObservationByTKC($pp_activity_obs_id, $ncr_id)
+	{
+		$this->db->select('flag_message');
+		$query = $this->db->get_where('ncr_flag', array('physical_progress_activity_observation_id' => $pp_activity_obs_id, 'ncr_id' => $ncr_id));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['flag_message']);
+				}
+			}
+
+			return $query_result;
 		}
 	}
 
@@ -2656,23 +2693,333 @@ class PhysicalProgress_Model extends CI_Model
 		}
 	}
 
+	public function saveNCRFlag($pp_activity_obs_id, $ncr_id, $flag_msg)
+	{
+		$data = array(
+			'physical_progress_activity_observation_id' => $pp_activity_obs_id,
+			'ncr_id' => $ncr_id,
+			'flag_message' => $flag_msg,
+			'createdby' => $this->getLoggedInUserID(),
+			'createddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->insert('ncr_flag', $data);
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$insert_id = $this->db->insert_id();
+			return $insert_id;
+		}
+	}
+
+	public function getNCRDetails($pp_activity_obs_id)
+	{
+		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.status_id, contract_location.feeder_id, mst_status.name AS observation_status, ppao.is_active, ppao.deletedby');
+		$this->db->from('physical_progress_activity_observation AS ppao');
+		$this->db->join('contract_location', 'ppao.contract_location_id = contract_location.contract_location_id');
+		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
+		$this->db->where(array('physical_progress_activity_observation_id' => $pp_activity_obs_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();
+				$query_result['observation_files'] = [];
+				$query_result['observation_completion_files'] = [];
+
+				$observation_files = $this->getObservationFile($pp_activity_obs_id);
+				if (!empty($observation_files)) {
+					$query_result['observation_files'] = $observation_files;
+				}
+
+				$observation_tkc_files = $this->getObservationTKCFile($pp_activity_obs_id);
+				if (!empty($observation_tkc_files)) {
+					$query_result['observation_tkc_files'] = $observation_tkc_files;
+				}
+
+				if (!empty($query_result['completion_date'])) {
+					$completion_files = $this->getObservationCompletionFile($pp_activity_obs_id);
+					if (!empty($completion_files)) {
+						$query_result['observation_completion_files'] = $completion_files;
+					}
+				}
+			}
+			
+			return $query_result;
+		}
+	}
+
+	public function getObservationTKCFile($pp_activity_obs_id)
+	{
+		$this->db->select('physical_progress_activity_observation_tkc_file_id, file_path');
+		$this->db->where(array('physical_progress_activity_observation_id' => $pp_activity_obs_id, 'is_active' => 1, 'deletedby' => NULL));
+		$query = $this->db->get('physical_progress_activity_observation_tkc_file');
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getNCRFlagDetails($ncr_id)
+	{
+		$query = $this->db->get_where('ncr_flag', array('ncr_id' => $ncr_id));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['flag_message']);
+				}
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getNCRRaisedByTKCUserID($pp_activity_obs_id)
+	{
+		$this->db->distinct()->select('createdby');
+		$this->db->from('physical_progress_activity_observation_tkc_file');
+		$this->db->where(array('physical_progress_activity_observation_id' => $pp_activity_obs_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['createdby'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function changeNCRStatus($pp_activity_obs_id, $ncr_id, $ncr_status_id)
+	{
+		$data = array(
+			'status_id' => $ncr_status_id,
+			'modifiedby' => $this->getLoggedInUserID(),
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('physical_progress_activity_observation', $data, array('physical_progress_activity_observation_id' => $pp_activity_obs_id, 'ncr_id' => $ncr_id));
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			if ($this->db->affected_rows() > 0) {
+				return $this->db->affected_rows();
+			}
+		}
+	}
+
+	public function getNCRStatus($pp_activity_obs_id, $ncr_id)
+	{
+		$this->db->select('mst_status.name');
+		$this->db->from('mst_status');
+		$this->db->join('physical_progress_activity_observation', 'physical_progress_activity_observation.status_id = mst_status.status_id', 'INNER');
+		$this->db->where(array('physical_progress_activity_observation.physical_progress_activity_observation_id' => $pp_activity_obs_id, 'physical_progress_activity_observation.ncr_id' => $ncr_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['name'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getContractDetails($contract_location_id)
+	{
+		$this->db->select('contract.*');
+		$this->db->from('contract');
+		$this->db->join('contract_location', 'contract.contract_id = contract_location.contract_id', 'INNER');
+		$this->db->where(array('contract_location.contract_location_id' => $contract_location_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getUserEmail($user_id)
+	{
+		$this->db->select('email');
+		$query = $this->db->get_where('mst_user', array('user_id' => $user_id));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['email'];
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getUsersByRegionCircleDivision($contract_location_id)
+	{
+		$this->db->select('mst_user.username, mst_user.email, mst_user.user_id, mst_role.name');
+		$this->db->from('mst_user_data_access');
+		$this->db->join('mst_user', 'mst_user_data_access.user_id = mst_user.user_id', 'INNER');
+		$this->db->join('mst_role', 'mst_user.role_id = mst_role.role_id', 'INNER');
+		$this->db->join('contract_location', 'contract_location.region_id = mst_user_data_access.region_id AND contract_location.circle_id = mst_user_data_access.circle_id AND contract_location.division_id = mst_user_data_access.division_id', 'INNER');
+		$this->db->where(array('contract_location.contract_location_id' => $contract_location_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getUserRoleName($user_id)
+	{
+		$this->db->select('mst_role.name');
+		$this->db->from('mst_role');
+		$this->db->join('mst_user', 'mst_user.role_id = mst_role.role_id', 'INNER');
+		$this->db->where(array('mst_user.user_id' => $user_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->row_array();
+
+				$query_result = $result['name'];
+			}
+
+			return $query_result;
+		}
+	}
+
 	public function executeQuery($session_query)
-    {
-        $query = $this->db->query($session_query);
+  {
+    $query = $this->db->query($session_query);
 
-        if (!$query) {
-            $error = $this->db->error();
-            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
-            die();
-        } else {
-            $query_result = [];
-            if ($query->num_rows() > 0) {
-                $query_result = $query->result_array();
-            }
+    if (!$query) {
+      $error = $this->db->error();
+      echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+      die();
+    } else {
+      $query_result = [];
+      if ($query->num_rows() > 0) {
+          $query_result = $query->result_array();
+      }
 
-            return $query_result;
-        }
+      return $query_result;
     }
+  }
+
+  public function getCCBCCEmailIDs()
+	{
+		$this->db->select('display_name, fieldvalue');
+		$query = $this->db->get_where('sysconfig', array('module' => 'NCR Review'));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
 
 	//Function to sort array by key
 	public function sort_array_by_key($array, $sort_key)

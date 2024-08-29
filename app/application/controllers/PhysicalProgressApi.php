@@ -95,8 +95,9 @@ class PhysicalProgressApi extends REST_Controller
             $type = 'API';
 
             $pp_id = (empty($ppsheet_id)) ? $prev_ppsheet_id : $ppsheet_id;
-            
+
             $sheet_result = $this->pp_model->getSheetDetail($mode, $pp_id, $contract_id, $contract_location_id, $reported_date, $type);
+
             $sheet_result['reported_date'] = (!empty($sheet_result['reported_date'])) ? date('d-m-Y', strtotime($sheet_result['reported_date'])) : "";
             
             $sheet_result['reported_by'] = (!empty($ppsheet_id)) ? $sheet_result['reported_by'] : '';

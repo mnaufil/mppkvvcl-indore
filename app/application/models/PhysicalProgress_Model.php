@@ -520,8 +520,8 @@ class PhysicalProgress_Model extends CI_Model
 
 	public function getActivitiesListAPI($ppsheet_id, $work_id, $contract_location_id, $reported_date, $activity_id = NULL)
 	{
-		$status_field = ($reported_date != NULL) ? 'physical_progress_activity.status_id' : '';
-		$this->db->select('mst_typeofwork_activity.typeofwork_activity_id, mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq, mst_activity_group.name AS activity_group_name, mst_activity_group.model AS activity_group_model, mst_typeofwork_activity.unit_id, mst_unit.name AS unit_name, mst_typeofwork_activity.seqno, mst_typeofwork_activity.activity, mst_typeofwork_activity_options.typeofwork_activity_options_id, mst_typeofwork_activity_options.name,'.$status_field);
+		$status_field = ($reported_date != NULL) ? ', physical_progress_activity.status_id, physical_progress_activity.erected_qty' : '';
+		$this->db->select('mst_typeofwork_activity.typeofwork_activity_id, mst_typeofwork_activity.typeofwork_id, mst_typeofwork_activity.activity_group_id, mst_activity_group.is_boq, mst_activity_group.name AS activity_group_name, mst_activity_group.model AS activity_group_model, mst_typeofwork_activity.unit_id, mst_unit.name AS unit_name, mst_typeofwork_activity.seqno, mst_typeofwork_activity.activity, mst_typeofwork_activity_options.typeofwork_activity_options_id, mst_typeofwork_activity_options.name'.$status_field);
 		$this->db->from('mst_typeofwork_activity');
 		$this->db->join('mst_typeofwork_activity_options', 'mst_typeofwork_activity.typeofwork_activity_id = mst_typeofwork_activity_options.typeofwork_activity_id', 'LEFT');
 		$this->db->join('mst_activity_group', 'mst_typeofwork_activity.activity_group_id = mst_activity_group.activity_group_id', 'INNER');
@@ -571,7 +571,8 @@ class PhysicalProgress_Model extends CI_Model
 
 						if ($query_result[$i]['is_boq'] == 1) {
 							$group_by_obs['boq'] = $this->getBOQ($query_result[$i]['typeofwork_activity_id'], $contract_location_id);
-							$group_by_obs['erected_qty'] = $this->getErectedQuantity($ppsheet_id, $query_result[$i]['typeofwork_activity_id']);
+							// $group_by_obs['erected_qty'] = $this->getErectedQuantity($ppsheet_id, $query_result[$i]['typeofwork_activity_id']);
+							$group_by_obs['erected_qty'] = $query_result[$i]['erected_qty'];
 						}
 
 						/*$activity_group_details = $this->getActivityName($query_result[$i]['activity_group_id']);
@@ -596,8 +597,7 @@ class PhysicalProgress_Model extends CI_Model
 						for ($j = $i; $j < $query_result_count; $j++) {
 							if ($query_result[$i]['typeofwork_activity_options_id'] != '') {
 								if ($query_result[$i]['typeofwork_activity_id'] == $tmp_query_result[$j]['typeofwork_activity_id']) {
-									$obs_arr = array('obs_id' => $tmp_query_result[$j]['typeofwork_activity_options_id'], 'name' => $tmp_query_result[$j]['name']);
-									
+									$obs_arr = array('obs_id' => $tmp_query_result[$j]['typeofwork_activity_options_id'], 'name' => $tmp_query_result[$j]['name']);									
 									array_push($group_by_obs['observations_list'], $obs_arr);
 									$k = $j;
 								}
@@ -608,6 +608,62 @@ class PhysicalProgress_Model extends CI_Model
 						}
 
 						$i = $k;
+
+						$group_by_obs['observations_list'] = $this->sort_array_by_key($group_by_obs['observations_list'], 'obs_id');
+
+						$applied_obs_data = $this->getAllAppliedObservations($contract_location_id, $query_result[$i]['typeofwork_activity_id'], $reported_date);
+
+						if (!empty($applied_obs_data)) {
+							$completed_obs_count = 0;
+							$applied_obs_remark = [];
+							$applied_obs_files = [];
+							$ncr_submitted_by_tkc_count = 0;
+
+							//Temporary Code
+							$arrContextOptions = array(
+                "ssl" => array(
+		              'cafile' => '/path/to/bundle/cacert.pem',
+		              "verify_peer" => false,
+		              "verify_peer_name" => false
+	              ),
+              );
+
+              foreach ($applied_obs_data as $obs_key => $obs_value) {
+              	if ($obs_value['completion_date'] != '' && $obs_value['completion_date'] <= $reported_date) {
+              		$completed_obs_count++;
+              	} else {
+              		array_push($applied_obs_remark, $obs_value['remark']);
+									$applied_obs_file_data = $this->getObservationFile($obs_value['physical_progress_activity_observation_id']);
+
+									foreach ($applied_obs_file_data as $fkey => $fvalue) {
+										$ext = pathinfo($fvalue['file_path'], PATHINFO_EXTENSION);
+
+										// Get the image and convert into string
+				            $file_path = base_url($fvalue['file_path']);
+				            $image = file_get_contents($file_path, false, stream_context_create($arrContextOptions));
+
+				            // Encode the image string data into base64
+                    $image_base64 = 'data:image/'.$ext.';base64,'.base64_encode($image);
+
+										array_push($applied_obs_files, $image_base64);
+									}
+
+									if ($obs_value['observation_status'] == 'Submitted by TKC') {
+										$ncr_submitted_by_tkc_count++;
+									}
+
+									$group_by_obs['observation_ratio'] = $completed_obs_count.' / '.count($applied_obs_data);
+									$group_by_obs['remark'] = implode(',', $applied_obs_remark);
+									$group_by_obs['ncr_submitted_by_tkc_count'] = $ncr_submitted_by_tkc_count;
+									$group_by_obs['files'] = $applied_obs_files;
+              	}
+              }
+						} else {
+							$group_by_obs['observation_ratio'] = '';
+							$group_by_obs['remark'] = '';
+							$group_by_obs['files'] = [];
+						}
+
 						array_push($final_arr, $group_by_obs);
 						$i++;
 					} while($i < $query_result_count);
@@ -615,7 +671,7 @@ class PhysicalProgress_Model extends CI_Model
 					$sorted_final_arr = [];
 
 					//Sorting array on basis of observations key 
-					foreach ($final_arr as $key => $value) {
+					/*foreach ($final_arr as $key => $value) {
 						if (!empty($value['observations_list'])) {
 							$value['observations_list'] = $this->sort_array_by_key($value['observations_list'], 'obs_id');
 						}
@@ -659,8 +715,8 @@ class PhysicalProgress_Model extends CI_Model
 				            // Encode the image string data into base64
                     $image_base64 = 'data:image/'.$ext.';base64,'.base64_encode($image);
 
-										/*array_push($pending_obs_files, $image_base64);
-										array_push($applied_obs_files, $pending_obs_files);*/
+										// array_push($pending_obs_files, $image_base64);
+										// array_push($applied_obs_files, $pending_obs_files);
 										array_push($applied_obs_files, $image_base64);
 									}
 								}
@@ -681,9 +737,10 @@ class PhysicalProgress_Model extends CI_Model
 						}
 
 						array_push($sorted_final_arr, $value);
-					}
+					}*/
 
-					return $sorted_final_arr;
+					// return $sorted_final_arr;
+					return $final_arr;
 				} else {
 					return $query_result;
 				}

@@ -74,7 +74,10 @@ class TKCPhysicalVerificationApi extends REST_Controller
 			$sheet_status_id = $this->post('sheet_status_id');
             $day = $this->post('day');
 
-            $reported_date = ($sheet_status_id == 1) ? '' : $reported_date;
+            $tkc_pp_status_list = $this->tpv_model->getStatusList();
+            $tkc_pp_status_ids = $this->modify_pp_status_ids($tkc_pp_status_list);
+
+            $reported_date = ($sheet_status_id == $tkc_pp_status_ids['Open']) ? '' : $reported_date;
 
             $mode = 'edit-new';
             $type = 'API';

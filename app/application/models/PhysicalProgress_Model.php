@@ -636,6 +636,7 @@ class PhysicalProgress_Model extends CI_Model
 									$applied_obs_file_data = $this->getObservationFile($obs_value['physical_progress_activity_observation_id']);
 
 									foreach ($applied_obs_file_data as $fkey => $fvalue) {
+										$pending_obs_files = [];
 										$ext = pathinfo($fvalue['file_path'], PATHINFO_EXTENSION);
 
 										// Get the image and convert into string
@@ -644,8 +645,8 @@ class PhysicalProgress_Model extends CI_Model
 
 				            // Encode the image string data into base64
                     $image_base64 = 'data:image/'.$ext.';base64,'.base64_encode($image);
-
-										array_push($applied_obs_files, $image_base64);
+                    array_push($pending_obs_files, $image_base64);
+										array_push($applied_obs_files, $pending_obs_files);
 									}
 
 									if ($obs_value['observation_status'] == 'Submitted by TKC') {

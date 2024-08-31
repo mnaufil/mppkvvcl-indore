@@ -1910,7 +1910,7 @@ class PhysicalProgress_Model extends CI_Model
 	{
 		$where_array = array('contract_location_id' => $contract_location_id, 'activity_id' => $activity_id, 'deletedby' => NULL);
 
-		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.completion_date, ppao.status_id, ppao.createdby, mst_status.name AS observation_status');
+		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.status_id, ppao.createdby, mst_status.name AS observation_status');
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
 		$this->db->where($where_array);

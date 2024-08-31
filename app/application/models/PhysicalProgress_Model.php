@@ -610,7 +610,6 @@ class PhysicalProgress_Model extends CI_Model
 						$i = $k;
 
 						$group_by_obs['observations_list'] = $this->sort_array_by_key($group_by_obs['observations_list'], 'obs_id');
-
 						$applied_obs_data = $this->getAllAppliedObservations($contract_location_id, $query_result[$i]['typeofwork_activity_id'], $reported_date);
 
 						if (!empty($applied_obs_data)) {
@@ -632,7 +631,10 @@ class PhysicalProgress_Model extends CI_Model
               	if ($obs_value['completion_date'] != '' && $obs_value['completion_date'] <= $reported_date) {
               		$completed_obs_count++;
               	} else {
-              		array_push($applied_obs_remark, $obs_value['remark']);
+              		if (!empty($obs_value['observation_remark'])) {
+              			array_push($applied_obs_remark, $obs_value['observation_remark']);	
+              		}
+              		
 									$applied_obs_file_data = $this->getObservationFile($obs_value['physical_progress_activity_observation_id']);
 
 									foreach ($applied_obs_file_data as $fkey => $fvalue) {
@@ -653,11 +655,16 @@ class PhysicalProgress_Model extends CI_Model
 										$ncr_submitted_by_tkc_count++;
 									}
 
-									$group_by_obs['observation_ratio'] = $completed_obs_count.' / '.count($applied_obs_data);
+									/*$group_by_obs['observation_ratio'] = $completed_obs_count.' / '.count($applied_obs_data);
 									$group_by_obs['remark'] = implode(',', $applied_obs_remark);
 									$group_by_obs['ncr_submitted_by_tkc_count'] = $ncr_submitted_by_tkc_count;
-									$group_by_obs['files'] = $applied_obs_files;
+									$group_by_obs['files'] = $applied_obs_files;*/
               	}
+
+              	$group_by_obs['observation_ratio'] = $completed_obs_count.' / '.count($applied_obs_data);
+								$group_by_obs['remark'] = implode(',', $applied_obs_remark);
+								$group_by_obs['ncr_submitted_by_tkc_count'] = $ncr_submitted_by_tkc_count;
+								$group_by_obs['files'] = $applied_obs_files;
               }
 						} else {
 							$group_by_obs['observation_ratio'] = '';

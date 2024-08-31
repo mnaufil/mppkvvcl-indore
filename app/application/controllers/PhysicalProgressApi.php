@@ -1112,13 +1112,14 @@ class PhysicalProgressApi extends REST_Controller
             $circle = $this->post('circle');
             $division = $this->post('division');
             $reported_by = $this->post('reported_by');
+            $reported_by_id = (!empty($reported_by)) ? $this->pp_model->getReportedByID($reported_by, 'LIKE') : '';
             $reported_date = (!empty($this->post('reported_date'))) ? date('Y-m-d', strtotime($this->post('reported_date'))) : '';
             $feeder_id = $this->post('feeder_id');
             $status = $this->post('status');
             $limit = $this->post('limit');
             $offset = 0;
 
-            $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by, $reported_date, NULL, $feeder_id, NULL, $status, $user_id, $offset, $limit);
+            $search_result = $this->pp_model->searchSheets($contractor, $tender_award_no, $type_of_work, $site_location, $region, $circle, $division, $reported_by_id, $reported_date, NULL, $feeder_id, NULL, $status, $user_id, $offset, $limit);
             
             $errors = null;
             $message = (empty($search_result)) ? 'No results found for the specified filters' : 'Search Sheet Result';

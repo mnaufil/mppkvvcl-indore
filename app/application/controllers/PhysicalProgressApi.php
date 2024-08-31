@@ -1021,9 +1021,7 @@ class PhysicalProgressApi extends REST_Controller
                 if ($value['completion_date'] != '') {
                     $complete_obs_count++;                    
                 } else {
-                    array_push($pending_obs_remarks, $value['remark']);
-
-                    $pending_obs_files = [];
+                    array_push($pending_obs_remarks, $value['remark']);                    
 
                     //Fetching observation photos
                     $obs_file_result = $this->pp_model->getObservationFile($value['physical_progress_activity_observation_id']);
@@ -1039,6 +1037,7 @@ class PhysicalProgressApi extends REST_Controller
 
                     //Converting image to base64 encoded
                     foreach ($obs_file_result as $f_key => $f_value) {
+                        $pending_obs_files = [];
                         $ext = pathinfo($f_value['file_path'], PATHINFO_EXTENSION);
 
                         // Get the image and convert into string

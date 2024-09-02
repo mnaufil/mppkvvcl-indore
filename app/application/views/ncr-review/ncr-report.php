@@ -11,7 +11,7 @@
 			table, tbody, td {
 			  border:1px solid black;
 			  border-collapse: collapse;
-			},
+			}
 			/*.blank_row {
 				line-height: 100px !important;
 			}*/
@@ -98,7 +98,17 @@
 				<!-- Raised By -->
 				<tr>
 					<td><b>Raised By</b></td>
-					<td><?php echo $value['Inspected_by']; ?></td>
+					<td><?php echo (!empty($value['raised_by'])) ? $value['raised_by'] : $value['Inspected_by']; ?></td>
+				</tr>
+				<!-- Designation -->
+				<tr>
+					<td><b>Designation</b></td>
+					<td><?php echo $value['designation']; ?></td>
+				</tr>
+				<!-- Distribution Centre -->
+				<tr>
+					<td><b>Distribution Centre</b></td>
+					<td><?php echo $value['distribution_centre']; ?></td>
 				</tr>
 				<!-- Activity -->
 				<tr>
@@ -110,10 +120,17 @@
 					<td><b>Observation Type</b></td>
 					<td><?php echo $value['observation_type']; ?></td>
 				</tr>
-				<!-- Observation -->
+				<!-- Other Observation Type -->
+				<?php if ($value['observation_type'] == 'Others') { ?>
+				<tr>
+					<td><b>Other Observation Type</b></td>
+					<td><?php echo $value['other_observation_name']; ?></td>
+				</tr>
+				<?php } ?>
+				<!-- Observation Remark -->
 				<tr>
 					<td><b>Observation</b></td>
-					<td><?php echo $value['observation']; ?></td>
+					<td><?php echo $value['observation_remark']; ?></td>
 				</tr>
 				<!-- Observation Photos -->
 				<tr>
@@ -130,6 +147,11 @@
 				<!-- Compliance Report -->
 				<tr>
 					<td colspan="2" class="center"><b>Compliance Report</b></td>
+				</tr>
+				<!-- Compliance Remark -->
+				<tr>
+					<td><b>Compliance Remark</b></td>
+					<td><?php echo $value['observation']; ?></td>
 				</tr>
 				<!-- Compliance Verification Date -->
 				<tr>

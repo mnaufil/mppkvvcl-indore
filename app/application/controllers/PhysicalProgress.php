@@ -2,6 +2,10 @@
 
 require APPPATH.'libraries/PhpXlsxGenerator.php';
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
 class PhysicalProgress extends CI_Controller
 {
      function __construct()
@@ -14,6 +18,9 @@ class PhysicalProgress extends CI_Controller
           { 
                redirect('login'); 
           }
+
+          $this->load->library('image_lib');
+          $this->load->config('email');
      }
 
      public function index_old()
@@ -1043,7 +1050,18 @@ class PhysicalProgress extends CI_Controller
                          $pp_activity_obs_id = $this->input->post('pp_activity_obs_id');
 
                          $ncr_status_ids = $this->getNCRStatusIDs();
-                         $obs_status_id = (empty($completion_date)) ? $ncr_status_ids['Pending'] : $ncr_status_ids['Reviewed'];
+                         // $obs_status_id = (empty($completion_date)) ? $ncr_status_ids['Pending'] : $ncr_status_ids['Reviewed'];
+
+                         if (empty($completion_date)) {
+                              $ncr_status = $this->pp_model->getNCRStatus($pp_activity_obs_id, $ncr_id);
+                              if ($ncr_status == 'Forwarded') {
+                                   $obs_status_id = $ncr_status_ids['Forwarded'];
+                              } else {
+                                   $obs_status_id = $ncr_status_ids['Pending'];
+                              }
+                         } else {
+                              $obs_status_id = $ncr_status_ids['Reviewed'];
+                         }
 
                          //Updating data in physical_progress_activity_observation table and returning updated id
                          $inserted_observation_id = $this->pp_model->updateObservation($observation_id, $observation_name, $other_observation_name, $ncr_id, $ncr_date, $remark, $observation_remark, $completion_date, $obs_status_id, $raised_by, $designation, $distribution_centre, $pp_activity_obs_id);     
@@ -1766,6 +1784,202 @@ class PhysicalProgress extends CI_Controller
           }
 
           return $user_access;
+     }
+
+     public function sendFlagMailToTKC()
+     {
+          //Default Response
+          http_response_code(200);
+          $response['message'] = 'Successfully Raised Flag for TKC ';
+
+          if (!empty($_POST)) {
+               $pp_activity_obs_id = $this->input->post('pp_activity_obs_id');
+               $ncr_id = $this->input->post('ncr_id');
+               $flag_msg = $this->input->post('flag_msg');
+
+               $result = $this->pp_model->saveNCRFlag($pp_activity_obs_id, $ncr_id, $flag_msg); //Uncomment Later
+
+               if ($result) {
+                    $ncr_data = $this->pp_model->getNCRDetails($pp_activity_obs_id);                    
+
+                    $embedded_img_arr = [];
+                    if (!empty($ncr_data['observation_files'])) {
+                         $temp_observation_files = [];
+                         foreach ($ncr_data['observation_files'] as $key => $value) {
+                              $target_path = 'assets/uploads/observation_files/thumb/';
+                              $resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+                              $embedded_img_arr['obs_file_'.$key] = $resized_image;
+                              $temp_observation_files['obs_file_'.$key] = $resized_image;
+                         }
+
+                         $ncr_data['observation_files'] = $temp_observation_files;
+                    }
+
+                    if (!empty($ncr_data['observation_tkc_files'])) {
+                         $temp_observation_by_tkc_files = [];
+                         foreach ($ncr_data['observation_tkc_files'] as $key => $value) {
+                              $target_path = 'assets/uploads/observation_files_by_tkc/thumb/';
+                              $resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+                              $embedded_img_arr['obs_file_by_tkc_'.$key] = $resized_image;
+                              $temp_observation_by_tkc_files['obs_file_by_tkc_'.$key] = $resized_image;
+                         }
+
+                         $ncr_data['observation_tkc_files'] = $temp_observation_by_tkc_files;
+                    }
+
+                    if (!empty($ncr_data['observation_completion_files'])) {
+                         $temp_observation_completion_files = [];
+                         foreach ($ncr_data['observation_completion_files'] as $key => $value) {
+                              $target_path = 'assets/uploads/observation_completion_files/thumb/';
+                              $resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+                              $embedded_img_arr['obs_completion_file'.$key] = $resized_image;
+                              $temp_observation_completion_files['obs_completion_file'.$key] = $resized_image;
+                         }
+
+                         $ncr_data['observation_completion_files'] = $temp_observation_completion_files;
+                    }
+
+                    $ncr_data['ncr_flag_details'] = $flag_msg;
+
+                    $data['ncr_data'] = $ncr_data;
+                    
+                    $tkc_user_id = $this->pp_model->getNCRRaisedByTKCUserID($pp_activity_obs_id);
+                    $tkc_email = $this->pp_model->getUserEmail($tkc_user_id);
+
+                    $users_result = $this->pp_model->getUsersByRegionCircleDivision($ncr_data['contract_location_id']);
+                    $users = $this->filterUsers($users_result);
+
+                    $other_email_ids_data = $this->pp_model->getCCBCCEmailIDs();
+                    foreach ($other_email_ids_data as $key => $value) {
+                         $other_email_ids[$value['display_name']] = $value['fieldvalue'];
+                    }
+
+                    $bcc_str = $other_email_ids['BCC EMAIL ID'];
+                    $bcc_arr = explode(',', $bcc_str);
+
+                    $cc_str = $other_email_ids['CC EMAIL ID'];
+                    $cc_arr = explode(',', $cc_str);
+
+                    $email_errors = [];
+
+                    $message = $this->load->view('physical-progress/flag-email-body', $data, true);
+
+                    $from = $this->config->item('smtp_user');
+                    $to = $tkc_email; //Uncomment Later
+                    // $to = 'parab.manasi14@gmail.com';
+
+                    $subject = 'NCR ID:'.$ncr_data['ncr_id'].' Flag Raised for Observation By TKC';
+
+                    // PHP Mailer Code Begins
+                    $mail = new PHPMailer(true);
+
+                    $mail->SMTPDebug = SMTP::DEBUG_OFF;
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'mppkvvcl.sgs@gmail.com';
+                    $mail->Password = 'tarhuogjifshezmd';
+                    $mail->SMTPSecure = 'tls';
+                    $mail->Port = 587;
+                    $mail->setFrom($from);
+
+                    $mail->addAddress($to);
+
+                    foreach ($bcc_arr as $bcc_value) { //Uncomment Later
+                         $mail->AddBCC($bcc_value);
+                    }
+
+                    foreach ($cc_arr as $cc_value) { //Uncomment Later
+                         $mail->AddCC($cc_value);
+                    }
+
+                    /*$mail->AddCC('mansi.p@benchmarksolution.com');
+                    $mail->AddBCC('mansi.p@benchmarksolution.com');*/
+
+                    foreach ($users as $user) { //Uncomment Later
+                         $mail->AddCC($user);
+                    }
+
+                    $mail->isHTML(true);
+                    $mail->Subject = $subject;
+
+                    foreach ($embedded_img_arr as $emb_key => $emb_value) {
+                         $mail->addEmbeddedImage("$emb_value","$emb_key");
+                    }
+
+                    $mail->Body = $message;
+
+                    if (!$mail->send()) {
+                         array_push($email_errors, $mail->ErrorInfo);
+                         // $error = $mail->ErrorInfo;
+                    }
+
+                    if (!empty($email_errors)) {
+                         http_response_code(400);
+                         $response['message'] = 'Failed to send email to TKC';
+                    } else {
+                         // Fetching all raised flag messages
+                         $ncr_flag_details = $this->pp_model->getNCRFlagDetails($ncr_data['ncr_id']);
+                         $response['ncr_flag_details'] = $ncr_flag_details;
+
+                         // Changing Status of NCR
+                         $ncr_status_ids = $this->getNCRStatusIDs();
+                         $this->pp_model->changeNCRStatus($pp_activity_obs_id, $ncr_id, $ncr_status_ids['Forwarded']);
+                    }
+               } else {
+                    http_response_code(400);
+                    $response['message'] = 'Failed to save NCR flag raised for TKC';     
+               }
+          } else {
+               http_response_code(400);
+               $response['message'] = 'No Inputs Found';
+          }
+
+          echo json_encode($response);
+     }
+
+     public function filterUsers($users_result)
+     {
+          $fe_fs_dtl_arr = [];
+
+          foreach ($users_result as $key => $value) {
+               $user_role = $this->pp_model->getUserRoleName($value['user_id']);
+
+               if ($user_role == 'Field Engineer' || $user_role == 'Field Supervisor' || $user_role == 'Deputy Team Lead') {
+                    array_push($fe_fs_dtl_arr, $value['email']);
+               }
+          }
+
+          return $fe_fs_dtl_arr;
+     }
+
+     public function resizeImage($image, $width, $height, $target_path)
+     {
+          $image_detail_arr = explode('/', $image);
+          $image_name = end($image_detail_arr);
+
+          $image_name_arr = explode('.', $image_name);
+          $ext = end($image_name_arr);
+
+          $image_name = $image_name_arr[0].'_thumb.'.$ext;
+
+          $config['image_library'] = 'gd2';
+          $config['source_image'] = $image;
+          $config['new_image'] = $target_path;
+          $config['create_thumb'] = TRUE;
+          $config['maintain_ratio'] = TRUE;
+          $config['quality'] = 90;
+          $config['width'] = $width;
+          $config['height'] = $height;
+
+          $this->image_lib->clear();
+         $this->image_lib->initialize($config);
+         $this->image_lib->resize();
+
+         return $target_path.$image_name;
      }
 }
 

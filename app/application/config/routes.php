@@ -118,6 +118,7 @@ $route['search-contractor-pp'] = 'PhysicalProgress/searchContractor';
 $route['clear-physical-progress'] = 'PhysicalProgress/clearPhysicalProgress';
 $route['mark-pp-reviewed-sheet-complete'] = 'PhysicalProgress/markReviewedSheetComplete';
 $route['export-physical-verification-list'] = 'PhysicalProgress/exportPhysicalVerificationList';
+$route['send-flag-mail'] = 'PhysicalProgress/sendFlagMailToTKC';
 
 /*NCR Review Module*/
 $route['ncr-review'] = 'NCRReview/index';
@@ -210,6 +211,8 @@ $route['material_di_issued_but_material_not_received_report'] = 'Report/material
 $route['generate-material-di-issued-but-material-not-received-report'] = 'Report/generateMaterialDIIssuedButMaterialNotReceivedReport';
 $route['material_received_but_mrad_not_done_report'] = 'Report/materialReceivedButMRADNotDoneReport';
 $route['generate-material-received-but-mrad-not-done-report'] = 'Report/generateMaterialReceivedButMRADNotDoneReport';
+$route['compliance_by_tkc_report'] = 'Report/complianceByTKCReport';
+$route['generate-compliance-by-tkc-report'] = 'Report/generateComplianceByTKCReport';
 $route['convert-pdf'] = 'Report/convertPdf';
 $route['show-feeders/(:num)'] = 'Report/showfeeders/$1';
 
@@ -299,6 +302,12 @@ $route['save-tkc-physical-entry'] = 'TKCPhysicalVerification/saveSheet';
 $route['search-tkc-physical-entry-sheet'] = 'TKCPhysicalVerification/searchSheet';
 $route['get-tkc-sheet/(:any)/(:num)/(:num)/(:num)'] = 'TKCPhysicalVerification/getSheetDataByDate/$1/$2/$3/$4';
 $route['search-contractor-tkcpp'] = 'TKCPhysicalVerification/searchContractor';
+
+/*Compliance By TKC*/
+$route['compliance-by-tkc'] = 'ComplianceByTKC/index';
+$route['search-compliance-by-tkc'] = 'ComplianceByTKC/searchComplianceByTKC';
+$route['view-compliance-by-tkc/(:num)'] = 'ComplianceByTKC/viewComplianceByTKC/$1';
+$route['download-compliance-by-tkc/(:num)'] = 'ComplianceByTKC/downloadComplianceByTKC/$1';
 
 /*Security / Roles Module*/
 $route['roles'] = 'Security/roles';

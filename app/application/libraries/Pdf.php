@@ -111,6 +111,24 @@ class Pdf
         else
             $dompdf->stream($filename, array('Attachment' => 0));
     }
+
+    public function createPDFForComplianceByTKC($html, $filename='', $download=TRUE, $paper='A4', $orientation='portrait')
+    {
+        $dompdf = new Dompdf();
+
+        $dompdf->load_html($html);
+
+        $dompdf->set_paper($paper, $orientation);
+        $dompdf->render();
+
+        if($download)
+            $dompdf->stream($filename, array('Attachment' => 1));
+
+        else
+            $dompdf->stream($filename, array('Attachment' => 0));
+    }
+
+
 }
 
 ?>

@@ -122,7 +122,7 @@ float: right;
     margin-top: 9px;
 }
 .side-header {
-    height: 57px !important;
+    height: 77px !important;
 }
 .header {
     padding-block-start: 3px !important;
@@ -263,13 +263,47 @@ float: right;
 .ms-drop ul{
     max-height: 115px !important;
 }
+/*.app-sidebar__toggle {
+    color: rgb(179 103 0) !important;
+}
+.side-menu__icon {
+   color: rgb(179 103 0) !important;
+}
+.side-menu__item.active .side-menu__icon {
+   color: rgb(179 103 0) !important;
+}
 
 
+.side-menu__item.active {    
+    color: rgb(179 103 0) !important;
+}*/
 
+/*.slide-item.active, .slide-item:hover, .slide-item:focus {
+    color: rgb(179 103 0) !important;
+}
 
+#back-to-top {
+    background: rgb(179 103 0) !important;
+    border: 2px solid rgb(179 103 0) !important;
+}
+.page-item.active .page-link {
+    color: #fff;
+    background: rgb(179 103 0) !important;
+    border-color: 2px solid rgb(179 103 0) !important;
+}
+.page-item.active .page-link {
+    border-color: 2px solid rgb(179 103 0) !important;
+}*/
 
+/*.side-menu__item.active .side-menu__icon {
+    color: rgb(179 103 0) !important;
+}*/
 
-
+.physical-progress-dashboard thead th {
+    position: sticky; 
+    top: 0px;
+    background-color: #fff;
+}
 
 
 
@@ -322,7 +356,7 @@ float: right;
     text-align: center !important;
 }
 .btn-tit:hover{
-    opacity: 0 !important;
+/*    opacity: 0 !important;*/
 }
 .btn-tit{
     float: left;
@@ -340,5 +374,16 @@ float: right;
     overflow: auto;
 }
 
+.modal-scroll {
+    height: calc(100vh - 185px);
+    overflow: auto;
+}
 
+.flag-background {
+    background: rgba(81, 81, 81, 0.42);
+/*    padding-right: 17px;*/
+}
+.contract-value{
+    float: left;
+}
 

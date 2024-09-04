@@ -1719,7 +1719,7 @@
                 </div>
               </div>
             </div>
-            <div class="modal-body">
+            <div class="modal-body modal-scroll">
               <!-- Hide this modal and show the first with the button below. -->
               <form id="observation_form">
               	<div class="row">
@@ -1811,6 +1811,20 @@
                 			<div class="text-wrap mt-2" id="preview-img-obs-by-tkc"></div>
                 		</div>
                 	</div>
+                	<div class="row">
+                		<div class="col-xl-2">
+                			<button type="button" class="btn btn-primary btn-sm btn-wave waves-effect waves-light mt-2" id="raiseFlag">Raise Flag</button>
+                		</div>
+                	</div>
+                	<div class="row" id="flag-div" hidden>
+                		<div class="col-xl-12">
+                			<label class="form-label">Raised Flags for TKC </label>
+                			<ol class="list-group list-group-numbered"> 
+                				<li class="list-group-item"></li> 
+                				<li class="list-group-item"></li> 
+                			</ol>
+                		</div>
+                	</div>
                 </div>
                 <div class="row">
                 	<!-- Compliance Remark -->
@@ -1867,6 +1881,50 @@
         </div>
       </div>
       <!-- Image Modal Ends -->
+
+      <!-- Flag Modal -->
+      <div class="modal fade show" id="flagModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="flagModalLabel" aria-modal="true" role="dialog">
+      	<div class="modal-dialog"> 
+      		<div class="modal-content"> 
+      			<div class="modal-header" style="position: relative;"> 
+      				<h6 class="modal-title" id="flagModalLabel" style="width: 100%;">Raise Flag For TKC </h6>       				
+      				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+      				<!-- Toaster Alert -->
+              <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-animation="true" id="flag-alert">
+                <div class="d-flex toster-out">
+                	<div class="toast-body"> Hello, world! This is a toast message. </div>
+                	<button aria-label="Close" class="btn-close text-white ms-auto  pe-2" data-bs-dismiss="toast" style="margin: -6px;">
+                   	<span aria-hidden="true">×</span>
+                  </button>
+                </div>
+              </div>
+              <!-- Toaster Alert Ends -->
+      			</div> 
+      			<div class="modal-body">
+      				<!-- Loading Spinner -->
+        			<div class="row email-loader m-0 mt-2" hidden>
+        				<div class="d-flex align-items-center rounded-2 pt-1 pb-1" style="background: #efefef">
+						  		<strong class="email-loader-message">Loading...</strong>
+						  		<div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+								</div>
+        			</div>
+        			<!-- Loading Spinner Ends -->
+
+      				<div class="col-xl-12"> 
+      					<label for="text-area" class="form-label">Message</label> 
+      					<textarea class="form-control" id="flagMessage" name="flagMessage" rows="1"></textarea> 
+      				</div>
+      			</div> 
+      			<div class="modal-footer"> 
+      				<!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>  -->
+      				<button type="button" class="btn btn-success" onclick="sendEmailToTKC(this)" id="flagSubmit">Send Mail to TKC</button> 
+      			</div> 
+      		</div> 
+      	</div> 
+      </div>
+      <!-- Flag Modal Ends -->
 
     	<!-- Footer -->
       <?php $this->load->view('include/footer');?>
@@ -2800,8 +2858,6 @@
       	let completed_obs_count = 0;
 
       	let pp_id = $('input[name="physical_progress_id"]').val();
-      	/*console.log(activity_id);
-      	console.log(pp_id);*/
 
       	//Getting Contract Location ID
     		let contract_location_id = '<?php echo $sheet_data['contract_location_id'] ?>';
@@ -2821,10 +2877,11 @@
 
       			if (!$.isEmptyObject(activity_details)) {
       				console.log('not empty');
+      				// console.log(activity_details); 
       				let remarks = [];
 	      			let obs_files = [];
+	      			// let submitted_by_tkc_count = 0;
 	      			$.each(activity_details, function(index, value) {
-	      				// console.log(value); return false;
 	      				if (value.completion_date != null) {
 	      					completed_obs_count++;
 	      				}
@@ -2836,15 +2893,16 @@
 	      						obs_files.push(filevalue.file_path);
 	      					});
 	      				}
-	      			});	
 
-	      			console.log($(row));
-	      			// return false;
+	      				/*if (value.observation_status_id = 20) {
+	      					submitted_by_tkc_count++;
+	      				}*/
+	      			});
 
 	      			// Calculating the observation ratio
 	      			let new_obs_ratio = completed_obs_count + ' / ' + activity_details.length; //observations open ratio
 			    		// let new_obs_ratio = (total_obs_count - completed_obs_count) + ' / ' + total_obs_count; //observations remaining ratio
-	      			console.log('new_obs_ratio:'+new_obs_ratio);
+	      			console.log('new_obs_ratio:'+new_obs_ratio); 
 
 	      			// let row = $('table[data-tablename="'+table+'"]').find('tr[data-table-row="'+table_row+'"]');
 	      			console.log('activity_type:'+activity_type);
@@ -2852,6 +2910,18 @@
 	      				//Outputing the observation ratio
 	      				let obs_td = $(row).find('td').eq(6);
 				    		obs_td.find('span[class="obs_ratio"]').text(new_obs_ratio);
+
+				    		/*if (submitted_by_tkc_count == 0) {
+				    			console.log('here');
+				    			obs_td.find('.badge');
+				    			console.log(obs_td.find('.badge'));
+				    		} else if (submitted_by_tkc_count > 0) {
+				    			console.log('there');
+				    			obs_td.find('.badge');
+				    			console.log(obs_td.find('.badge'));
+				    		}
+
+				    		return false;*/
 
 				    		//Outputing the remarks
 				    		let remark_td = $(row).find('td').eq(7);
@@ -3104,10 +3174,10 @@
       			data: {pp_activity_obs_id: pp_activity_obs_id, sheet_date: sheet_date},
       			dataType: 'json',
       			success: function(response){
-      				/*console.log('Get observation response:');
-      				console.log(response);*/  
+      				console.log('Get observation response:');
+      				console.log(response);
       				let obs_data = response.obs_data;
-      				console.log(obs_data);
+      				console.log(obs_data);  
 
       				//Setting Observation Status
       				$('.obs_status').find('h6').text(obs_data.observation_status);
@@ -3255,6 +3325,18 @@
 		      			});
 
 		      			$('#preview-img-obs-by-tkc').append(html_img);
+
+		      			// Displaying Flag Messages if any
+		      			if (!$.isEmptyObject(obs_data.flag_msgs)) {
+		      				let flag_html = '';
+
+		      				$.each(obs_data.flag_msgs, function(index, value) {
+	      						flag_html += '<li class="list-group-item">'+ value +'</li>';
+	      					});
+
+	      					$('#obs-detail-modal').find('#flag-div').prop('hidden', false);
+	      					$('#obs-detail-modal').find('#flag-div .list-group').empty().append(flag_html);
+		      			}
 		      		}
 
 		      		if (obs_data.completion_files.length > 0) {
@@ -3671,6 +3753,77 @@
         // $('#caption').text(image_name);
 
         $('#img-modal').modal('show');
+      }
+
+      $('#raiseFlag').on('click', function(event) {
+      	let pp_activity_obs_id = $('#obs-detail-modal').find('#saveObs').data('activity-observation-id');
+
+      	let ncr_id = $('#obs-detail-modal').find('input[name="ncrID"]').val();
+
+      	$('#flagSubmit').attr('data-pp-activity-obs-id', pp_activity_obs_id);
+      	$('#flagSubmit').attr('data-ncr-id', ncr_id);
+
+      	// return false;
+      	$('#flagModal').addClass('flag-background');
+      	$('#flagModal').modal('show');
+
+      	event.preventDefault();
+      });
+
+      function sendEmailToTKC(btn) {
+      	let pp_activity_obs_id = $(btn).data('pp-activity-obs-id');
+      	let ncr_id = $(btn).data('ncr-id');
+      	let flag_msg = $('#flagMessage').val();
+
+      	if (flag_msg == '') {
+      		$('#flag-alert').find('.toast-body').text('Enter Message');
+      		$('#flag-alert').toast('show');
+      		return false;
+      	} else {
+      		// Displaying Loader
+      		$('.email-loader-message').html('Please wait while the system is sending mail to the TKC');
+      		$('.email-loader').removeAttr('hidden');
+
+      		$('#flagSubmit').prop('disabled', true);
+
+      		$.ajax({
+	      		type: 'POST',
+	      		url: '<?php echo base_url('send-flag-mail') ?>',
+	      		dataType: 'json',
+	      		data: {pp_activity_obs_id:pp_activity_obs_id, ncr_id:ncr_id, flag_msg:flag_msg},
+	      		success:function(response) {
+	      			console.log(response); 
+
+	      			// Removing Loader
+		      		$('.email-loader-message').html('Loading...');
+		      		$('.email-loader').prop('hidden', true);
+
+		      		$('#flagSubmit').prop('disabled', false);
+
+		      		$('#flag-alert').find('.toast-body').text(response.message);
+      				$('#flag-alert').toast('show');
+
+      				if (!$.isEmptyObject(response.ncr_flag_details)) {
+      					let flag_html = '';
+
+      					$.each(response.ncr_flag_details, function(index, value) {
+      						flag_html += '<li class="list-group-item">'+ value +'</li>';
+      					});
+
+      					$('#obs-detail-modal').find('#flag-div').prop('hidden', false);
+      					$('#obs-detail-modal').find('#flag-div .list-group').empty().append(flag_html);
+      				}
+
+      				setTimeout(function() {
+      					$('#flagMessage').val('');
+      					$('#flagModal').modal('hide');
+      				}, 2000);
+	      		},
+	      		error: function(xhr, status, error) {
+	      			console.log(xhr.responseText);
+	      		}
+	      	});	
+      	}
       }
 
       function getModifiedDate(date) {

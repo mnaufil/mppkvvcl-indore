@@ -61,7 +61,7 @@
                             <div class="d-flex country">
                                 <a class="nav-link icon text-center">
                                     <i class="fe fe-user"></i>
-                                    <span class="fs-16 ms-2 d-none d-xl-block">Welcome <?php echo $this->session->username;?> (<?php echo $this->session->userdata['loggedData']->designation;?>)</span>
+                                    <span class="fs-16 ms-2 d-none d-xl-block"><?php echo $this->session->username;?> (<?php echo $this->session->userdata['loggedData']->designation;?>)</span>
                                 </a> 
                                 <a class="nav-link icon text-center" href="<?php echo base_url();?>logout">
                                     <i class="fe fe-log-out"></i>

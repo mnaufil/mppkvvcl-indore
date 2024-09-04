@@ -7713,7 +7713,7 @@ ul.labels-info li a i {
 
 .modal-open .modal {
     overflow-x: hidden;
-    overflow-y: auto;
+/*    overflow-y: auto;*/
     padding-inline-end: 0px !important;
 }
 

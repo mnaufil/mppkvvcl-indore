@@ -61,7 +61,7 @@ class ComplianceByTKC_Model extends CI_Model
 		$user_id = $this->getLoggedInUserID();
 
 		$this->db->distinct();
-		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.last_email_details, ppao.status_id, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name,contract.contractor_email, contract.package_no, mst_status.name AS observation_status, mst_user.username, ppao_tkc_file.createddate');
+		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.last_email_details, ppao.status_id, contract_location.contract_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, contract.contractor_name,contract.contractor_email, contract.package_no, mst_status.name AS observation_status, mst_user.username, convert(ppao_tkc_file.createddate,date)createddate');
 
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('physical_progress_activity_observation_tkc_file AS ppao_tkc_file', 'ppao_tkc_file.physical_progress_activity_observation_id = ppao.physical_progress_activity_observation_id', 'RIGHT');
@@ -107,7 +107,7 @@ class ComplianceByTKC_Model extends CI_Model
 		$this->db->order_by('ppao.ncr_date', 'DESC');
 
 		$query = $this->db->get();
-		echo $this->db->last_query(); die();
+		// echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();

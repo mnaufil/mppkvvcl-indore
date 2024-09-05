@@ -1654,6 +1654,69 @@ class Report extends CI_Controller
 		$this->load->view('report/material_received_but_mrad_not_done_report', $data);
 	}
 
+	public function complianceByTKCReport()
+	{
+		$package_group_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		$data['package_group_nos'] = $package_group_nos;
+		$data['circles'] = $circles;
+		$data['contractor'] = '';
+		$data['selected_package_group_no'] = '';
+		$data['complianceByTKCDate'] = '';
+		$data['title'] = 'Compliance By TKC';
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/compliance_by_tkc_report', $data);
+	}
+
+	public function generateComplianceByTKCReport()
+	{
+		$data['contractor'] = $contractor = $this->input->post('contractor');
+		$data['complianceByTKCDate'] = $date_range = $this->input->post('complianceByTKCDate');
+		$data['selected_package_group_no'] = $package_group_no = isset($_POST['package_group_no']) ? $this->input->post('package_group_no') : '';
+		$data['selected_circle'] = $circle = isset($_POST['circle']) ? $this->input->post('circle') : '';
+
+		if (!empty($date_range)) {
+			$dates_arr = explode(' - ', $date_range);
+			$from_date = date('Y-m-d', strtotime($dates_arr[0]));
+			$to_date = date('Y-m-d', strtotime($dates_arr[1]));
+		} else {
+			$from_date = 'NULL';
+			$to_date = date('Y-m-d');
+		}
+
+		$package_group_nos = $this->Report_Model->getPackageNos();
+		$circles = $this->Report_Model->getCircles();
+
+		$report_data = $this->Report_Model->generateComplianceByTKCReport($contractor, $from_date, $to_date, $package_group_no, $circle);
+
+		if (!empty($report_data)) {
+			$modified_report_data = [];
+			foreach ($report_data as $key => $value) {
+				$modified_report_data[$value['feeder_id']][] = $value;
+			}
+		}		
+
+		$user_role_id = $_SESSION['loggedData']->role_id;
+		$report_name = 'Compliance By TKC';
+		$report_access = $this->Report_Model->getReportAccessData($report_name, $user_role_id);
+
+		$data['download_access'] = false;
+		foreach ($report_access as $key => $value) {
+			if (str_contains($value['access_key'], 'download')) {
+				$data['download_access'] = true;
+			}
+		}
+
+		$data['report_data'] = !empty($report_data) ? $modified_report_data : 'No Records Found';
+		$data['package_group_nos'] = $package_group_nos;
+		$data['circles'] = $circles;
+
+		// echo '<pre>'; print_r($data); echo '</pre>'; die();
+		$this->load->view('report/compliance_by_tkc_report', $data);
+	}
+
 	public function modifyMaterialStatusList($status_list)
 	{
 		$modified_status_list = [];
@@ -1768,6 +1831,25 @@ class Report extends CI_Controller
 
 			$pdf_name = 'Non Conformance Report - '.date('d-m-Y');
 
+			$this->pdf->createPDFReport($html, $pdf_name, FALSE);
+		}
+	}
+
+	public function complianceByTKCReportPDF()
+	{
+		$spQuery = $_SESSION['spQuery'];
+		$result = $this->Report_Model->executeQuery($spQuery);
+
+		if (!empty($result)) {
+			$modified_report_data = [];
+			foreach ($result as $key => $value) {
+				$modified_report_data[$value['feeder_id']][] = $value;
+			}
+
+			$data['report_data'] = $modified_report_data;
+			$html = $this->load->view('report/pdf-compliance-by-tkc-report', $data, true);
+
+			$pdf_name = 'Compliance By TKC Report - '.date('d-m-Y');
 			$this->pdf->createPDFReport($html, $pdf_name, FALSE);
 		}
 	}

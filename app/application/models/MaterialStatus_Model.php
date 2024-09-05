@@ -763,14 +763,18 @@ class MaterialStatus_Model extends CI_Model
 
 	public function getContractorData($contractor)
 	{
+		$contract_status_list = $this->getContractStatusList();
+
 		$this->db->select('contract_id, contractor_name, tender_award_no, tender_award_date, typeofwork_id');
 
 		if (!empty($contractor)) {
 			$this->db->like('contractor_name', $contractor);	
 		}
+
+		$this->db->where(array('status_id' => $contract_status_list['Open']));
 		
 		$query = $this->db->get('contract');
-		// echo $this->db->last_query();
+		// echo $this->db->last_query(); die();
 
 		if (!$query) {
 			$error = $this->db->error();
@@ -808,6 +812,39 @@ class MaterialStatus_Model extends CI_Model
 
 			if ($query->num_rows() > 0) {
 				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getContractStatusList()
+	{
+		$this->db->select('mst_status.status_id, mst_status.name');
+		$this->db->from('mst_status');
+		$this->db->join('mst_module', 'mst_status.module_id = mst_module.module_id', 'INNER');
+		$this->db->where(array('mst_module.name' => 'Contract Management'));
+		$this->db->order_by('mst_status.seqno', 'ASC');
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();    
+      echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+      die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();				
+
+				foreach ($result as $key => $value) {
+					$query_result[$value['name']] = $value['status_id'];
+				}
+
+				mysqli_next_result($this->db->conn_id);
+        $query->free_result();
 			}
 
 			return $query_result;

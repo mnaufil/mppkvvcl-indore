@@ -213,6 +213,7 @@ $route['material_received_but_mrad_not_done_report'] = 'Report/materialReceivedB
 $route['generate-material-received-but-mrad-not-done-report'] = 'Report/generateMaterialReceivedButMRADNotDoneReport';
 $route['compliance_by_tkc_report'] = 'Report/complianceByTKCReport';
 $route['generate-compliance-by-tkc-report'] = 'Report/generateComplianceByTKCReport';
+$route['compliance-by-tkc-report-pdf'] = 'Report/complianceByTKCReportPDF';
 $route['convert-pdf'] = 'Report/convertPdf';
 $route['show-feeders/(:num)'] = 'Report/showfeeders/$1';
 

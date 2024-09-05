@@ -160,7 +160,7 @@ class Report_Model extends CI_Model
 
 		$contract_status_list = $this->getContractStatusList();
 
-		if ($user_role == 'Admin') {
+		// if ($user_role == 'Admin') {
 			$this->db->distinct();
 			$this->db->select('package_group_no');			
 			$this->db->where(array('status_id ' => $contract_status_list['Open']));
@@ -168,7 +168,7 @@ class Report_Model extends CI_Model
 
 			$query = $this->db->get('contract');
 			// echo $this->db->last_query(); die();
-		}
+		// }
 
 		if (!$query) {
 			$error = $this->db->error();	
@@ -194,10 +194,10 @@ class Report_Model extends CI_Model
 		$user_id = $this->getLoggedInUserID();
 		$user_role = $this->getUserRoleName($user_id);
 
-		if ($user_role == 'Admin') {
+		// if ($user_role == 'Admin') {
 			$this->db->select('circle_id, circle_name');
 			$query = $this->db->get_where('mst_circle', array('is_active' => 1, 'deletedby' => NULL));
-		}
+		// }
 
 		if (!$query) {
 			$error = $this->db->error();	
@@ -1470,6 +1470,49 @@ class Report_Model extends CI_Model
 			$query->free_result();
 
 			return $query_result;	
+		}
+	}
+
+	public function generateComplianceByTKCReport($contractor, $from_date, $to_date, $package_group_no, $circle)
+	{
+		$user_id = $this->getLoggedInUserID();
+
+		if (!empty($contractor)) {
+			$contractor = "'".$contractor."'";
+		} else {
+			$contractor = 'NULL';
+		}
+
+		if (!empty($package_group_no)) {
+			$package_group_no = implode(',', $package_group_no);
+			$package_group_no = "'".$package_group_no."'";
+
+		} else {
+			$package_group_no = 'NULL';
+		}
+
+		if (empty($circle)) {
+			$circle = 'NULL';
+		}
+
+		$_SESSION['spQuery'] = "CALL sp_rpt_compliance_by_tkc_report(".$user_id.",".$contractor.",".$circle.",".$package_group_no.",'".$from_date."','".$to_date."')";
+		$query = $this->db->query("CALL sp_rpt_compliance_by_tkc_report(".$user_id.",".$contractor.",".$circle.",".$package_group_no.",'".$from_date."','".$to_date."')");
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			mysqli_next_result($this->db->conn_id);
+			$query->free_result();
+
+			return $query_result;
 		}
 	}
 

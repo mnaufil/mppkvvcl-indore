@@ -2,7 +2,6 @@
 <html lang="en" dir="ltr">
 
     <head>
-
         <!-- META DATA -->
         <meta charset="UTF-8">
         <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
@@ -37,11 +36,9 @@
 
         <!-- TABLER ICONS CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-
     </head>
 
     <body class="app sidebar-mini ltr light-mode">
-
         <!-- GLOBAL-LOADER -->
         <div id="global-loader">
             <img src="<?php echo base_url('assets/images/loader.svg'); ?>" class="loader-img" alt="Loader">
@@ -84,9 +81,9 @@
                                                     <div class="row"> 
                                                         <ul class="list-group">
                                                             <?php if (in_array('Physical Progress', $report_list)) { ?>
-                                                            <li class="list-group-item">
-                                                                <a href="<?php echo base_url('view-report'); ?>"><i class="ti ti-player-record-filled"></i> Physical Progress</a>
-                                                            </li>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('view-report'); ?>"><i class="ti ti-player-record-filled"></i> Physical Progress</a>
+                                                                </li>
                                                             <?php } ?>
                                                             <?php if (in_array('Non Conformance Report', $report_list)) { ?>
                                                                 <li class="list-group-item">
@@ -186,6 +183,11 @@
                                                             <?php if (in_array('Material Received but MRAD not done', $report_list)) { ?>
                                                                 <li class="list-group-item">
                                                                     <a href="<?php echo base_url('material_received_but_mrad_not_done_report');?>"><i class="ti ti-player-record-filled"></i> Material Received but MRAD not done</a>
+                                                                </li>
+                                                            <?php } ?>
+                                                            <?php if (in_array('Compliance By TKC', $report_list)) { ?>
+                                                                <li class="list-group-item">
+                                                                    <a href="<?php echo base_url('compliance_by_tkc_report');?>"><i class="ti ti-player-record-filled"></i> Compliance By TKC</a>
                                                                 </li>
                                                             <?php } ?>
                                                         </ul> 

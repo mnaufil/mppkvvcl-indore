@@ -24,8 +24,8 @@ class Dashboard_Model extends CI_Model
     {
         //$query = $this->db->query("CALL sp_get_dashboard_statistics($mileStoneId, 1)");
         // $query = $this->db->query("CALL sp_get_dashboard_statistics(1, null)"); //Original Code
-        $query = $this->db->query("CALL sp_get_dashboard_statisticsCombineLot(1, null)"); //Original Combined Lot SP Call
-        // $query = $this->db->query("CALL bkp_activity_price_sp_get_dashboard_statisticsCombineLot(1, null)");
+        // $query = $this->db->query("CALL sp_get_dashboard_statisticsCombineLot(1, null)"); //Original Combined Lot SP Call
+        $query = $this->db->query("CALL bkp_activity_price_sp_get_dashboard_statisticsCombineLot(1, null)");
         if($query)
         {
             return $query->result();

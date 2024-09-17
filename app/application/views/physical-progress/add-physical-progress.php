@@ -385,7 +385,7 @@
 	                        									} else {
 	                        										$tab_id = strtolower(str_replace(' ', '-', $k1));
 	                        									}
-	                        						?>                        							
+	                        						?>
 	                        						<div class="tab-pane <?php echo $active; ?>" id="<?php echo $tab_id; ?>" role="tabpanel">
 	                        							<div class="table-responsive">
 	                        								<?php $table_id = strtolower(str_replace(' ', '-', $k1)).'-edit'; ?>
@@ -470,7 +470,7 @@
 																								<th>Observation Type</th>
 																								<th>Observation</th>
 																								<th>File Upload</th>
-																								<?php } elseif ($k1 == '33kv Interconnection Line' || $k1 == '11 kv Bifurcation' || $k1 == '11 kv Interconnection' || $k1 == '33 kv Augmentation' || $k1 == '11 kv Augmentation' || $k1 == 'Additional DTR' || $k1 == 'Bare to Cable' || $k1 == 'Cable Augmentation' || $k1 == 'DL to AG/Coated conductor' || $k1 == 'Substation Rennovation' || $k1 == 'Mix DTR') { ?>
+																								<?php } elseif ($k1 == '33kv Interconnection Line' || $k1 == '11 kv Bifurcation' || $k1 == '11 kv Interconnection' || $k1 == '33 kv Augmentation' || $k1 == '11 kv Augmentation' || $k1 == 'Additional DTR' || $k1 == 'Bare to Cable' || $k1 == 'Cable Augmentation' || $k1 == 'DL to AG/Coated conductor' || $k1 == 'Substation Rennovation' || $k1 == 'Mix DTR' || $k1 == 'Under Ground Cable') { ?>
 																								<th style="width: 10px;">Sr.No</th>
 																								<th style="width: 200px;">Activity</th>
 																								<!-- <th style="width: 150px;">Status</th> -->
@@ -1345,14 +1345,14 @@
 																								</tr>
 																								<!-- tr close -->
 																							<?php } ?>
-																						<?php } elseif ($k1 == '33kv Interconnection Line' || $k1 == '11 kv Bifurcation' || $k1 == '11 kv Interconnection' || $k1 == '33 kv Augmentation' || $k1 == '11 kv Augmentation' || $k1 == 'Additional DTR' || $k1 == 'Bare to Cable' || $k1 == 'Cable Augmentation' || $k1 == 'DL to AG/Coated conductor' || $k1 == 'Substation Rennovation' || $k1 = 'Mix DTR') { ?>
+																						<?php } elseif ($k1 == '33kv Interconnection Line' || $k1 == '11 kv Bifurcation' || $k1 == '11 kv Interconnection' || $k1 == '33 kv Augmentation' || $k1 == '11 kv Augmentation' || $k1 == 'Additional DTR' || $k1 == 'Bare to Cable' || $k1 == 'Cable Augmentation' || $k1 == 'DL to AG/Coated conductor' || $k1 == 'Substation Rennovation' || $k1 == 'Mix DTR' || $k1 == 'Under Ground Cable') { ?>
 																							<?php foreach ($v1 as $k2 => $v2) { ?>
 																								<!-- tr open -->
 																								<tr data-table-row="<?php echo $k2; ?>" data-seqno="<?php echo $v2['seqno'];?>" data-activity-id="<?php echo $v2['typeofwork_activity_id'];?>" data-unit-id="<?php echo $v2['unit_id'];?>">
 																									<!-- Calculating Observation Flag -->
 																									<?php if (str_contains($k1, '/')) {
 																													$k1 = str_replace('/', ' ', $k1);
-																												} 
+																												}
 																									?>
 																									<?php $hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_observation_'.$v2['typeofwork_activity_id']; ?>
 																									<?php $observation_flag = 'no observation'; ?>
@@ -2053,7 +2053,7 @@
        	});
 
 	      // Displaying progress(%),observation dropdown, remark input and file upload on entering value in erected qty field (with BOQ groups)
-	      $('input[name^="33kv_feeder_"], input[name^="dl_to_ag_coated_conductor_"], input[name^="11kv_feeder_"], input[name^="11kv_feeder_separation_"], input[name^="33kv_interconnection_line_"], input[name^="additional_dtr_"], input[name^="bare_to_cable_"], input[name^="cable_augmentation_"], input[name^="11_kv_bifurcation_"], input[name^="11_kv_interconnection_"], input[name^="33_kv_augmentation_"], input[name^="11_kv_augmentation_"], input[name^="substation_rennovation_"], input[name="mix_dtr_"]').on('input', function() {
+	      $('input[name^="33kv_feeder_"], input[name^="dl_to_ag_coated_conductor_"], input[name^="11kv_feeder_"], input[name^="11kv_feeder_separation_"], input[name^="33kv_interconnection_line_"], input[name^="additional_dtr_"], input[name^="bare_to_cable_"], input[name^="cable_augmentation_"], input[name^="11_kv_bifurcation_"], input[name^="11_kv_interconnection_"], input[name^="33_kv_augmentation_"], input[name^="11_kv_augmentation_"], input[name^="substation_rennovation_"], input[name^="mix_dtr_"], input[name^="under_ground_cable_"]').on('input', function() {
 	      	//Changing status of form to edited by setting below variable true
 					form_change = true;
 

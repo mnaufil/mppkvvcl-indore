@@ -760,6 +760,8 @@ class PhysicalProgress extends CI_Controller
                               continue; 
                          }
 
+                         $erected_val = $value;
+
                          $input_name = explode('_', $key);
                          $under_ground_cable_activities[$key]['physical_progress_id'] = $pp_id;
                          $under_ground_cable_activities[$key]['activity_id'] = end($input_name);

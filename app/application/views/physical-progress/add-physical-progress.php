@@ -2531,7 +2531,7 @@
     			let activity_obs = activity.observations_list;
     			console.log(activity_obs);
 
-    			if (activity_obs.length > 0) {
+    			if (activity_obs != null && activity_obs.length > 0) {
 		    		apply_observations(tr, table_row, table_name, work_activity_id,'withoutBOQ'); 
 		    	}
 
@@ -2630,7 +2630,7 @@
 						//Getting selected activity's observations
 						let activity_obs = activity.observations_list;
 
-						if (activity_obs.length > 0) {
+						if (activity_obs != null && activity_obs.length > 0) {
 			    		apply_observations(tr, table_row, table_name, activity_id, 'withBOQ'); 
 			    	}
 					} else {

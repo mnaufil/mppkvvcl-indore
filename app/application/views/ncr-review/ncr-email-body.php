@@ -38,7 +38,11 @@
 
             <p>Dear Sir,</p>
             <p>Please find the enclosed herewith Non Conformance Report(NCR).</p>
+            <?php if ($ncr_status == 'Closed') { ?>
+            <p>NCR ID: <?php echo $ncr_id ?> has been closed.</p>
+            <?php } else { ?>
             <p>Kindly rectify and submit the Compliance Report within seven working days.</p>
+            <?php } ?>
             <p>
               Thanks &amp; regards,<br />
               <strong>SGS India Pvt. Ltd.</strong><br />

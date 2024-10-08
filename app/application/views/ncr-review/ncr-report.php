@@ -144,6 +144,21 @@
 						<?php 	} ?>
 					</td>
 				</tr>
+				<!-- Observation By TKC Photos -->
+				<tr>
+					<td><b>Compliance By TKC</b></td>
+					<td>
+						<?php 	$obs_tkc_photos = (!empty($value['observation_tkc_photos'])) ? explode(', ', $value['observation_tkc_photos']) : [];
+								if (!empty($obs_tkc_photos)) {
+									for ($j = 0; $j < count($obs_tkc_photos); $j++) {
+						?>
+						<img src="<?php echo $obs_tkc_photos[$j]; ?>" width="100" height="100" >
+						<br/><br/>			
+						<?php 		}
+								}
+						?>
+					</td>
+				</tr>
 				<!-- Compliance Report -->
 				<tr>
 					<td colspan="2" class="center"><b>Compliance Report</b></td>

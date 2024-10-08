@@ -170,7 +170,7 @@
 		            <?php if (isset($feeder_access) && $feeder_access) { ?>
 			            <!-- Report Row -->
 			            <?php if (is_array($reportData)) { ?>
-			            <div class="row" id="report-table" >
+			            <div class="row" id="report-table">
 			            	<div class="col-lg-12">
 			              	<div class="card">
 			                	<?php if(isset($_POST['packageNo'])) { ?>
@@ -199,46 +199,57 @@
 			                          					foreach ($value as $report) {
 			                          	?> 
 			                            <?php if($i==0) { ?>
+	                                <!-- DISCOM -->
+                                	<tr>
+                                		<td><b>DISCOM</b></td>
+                                		<td>MPPKVVCL</td>
+                                	</tr>
+                                	<!-- TKC -->
 	                                <tr>
-	                                	<tr>
-	                                		<td><b>DISCOM</b></td>
-	                                		<td>MPPKVVCL</td>
-	                                	</tr>
 	                                  <td><b>TKC</b></td>
 	                                  <td><?php echo $report->contractor_name;?></td>
 	                              	</tr>
+	                              	<!-- Package No -->
 	                              	<tr>
 	                              		<td><b>Package No</b></td>
 	                              		<td><?php echo $report->package_no; ?></td>
 	                              	</tr>
+	                              	<!-- Contractor Name -->
 	                                <tr>
 	                                	<td><b>Contractor Name</b></td>
 	                                	<td><?php echo $report->contractor_name; ?></td>
 	                               	</tr>
+	                               	<!-- Region -->
 	                                <tr>
-	                                	<td><b>Region Name</b></td>
+	                                	<td><b>Region</b></td>
 	                                	<td><?php echo $report->region_name; ?></td>
 	                                </tr>
+	                                <!-- Circle -->
 	                                <tr>
-	                                	<td><b>Circle Name</b></td>
+	                                	<td><b>Circle</b></td>
 	                                	<td><?php echo $report->circle_name; ?></td>
 	                                </tr>
+	                                <!-- Division -->
 	                                <tr>
-	                                	<td><b>Division Name</b></td>
+	                                	<td><b>Division</b></td>
 	                                	<td><?php echo $report->division_name; ?></td>
 	                                </tr>
+	                                <!-- Feeder ID -->
 	                                <tr>
 	                                	<td><b>Feeder ID</b></td>
 	                                	<td><?php echo $report->feeder_id; ?></td>
 	                                </tr>
+	                                <!-- Feeder Name -->
 	                                <tr>
 	                                	<td><b>Feeder Name</b></td>
 	                                	<td><?php echo $report->feeder_name; ?></td>
 	                                </tr>
+	                                <!-- Substation -->
 	                                <tr>
 	                                	<td><b>Substation</b></td>
 	                                	<td><?php echo $report->substation; ?></td>
 	                                </tr>
+	                                <!-- Standards -->
 	                                <tr>
 	                                	<td><b>Standards</b></td>
 	                                	<td><?php echo $report->standards; ?></td>
@@ -248,44 +259,54 @@
 	                                	<td></td>
 	                                </tr>         
 	                                <?php } ?>
+	                                <!-- NCR ID -->
 	                                <tr>
 	                                	<td><b>NCR ID</b></td>
 	                                	<td><?php echo $report->ncr_id.' ('.$report->status.')'; ?></td>
 	                               	</tr>
+	                               	<!-- NCR Date -->
 	                                <tr>
 	                                	<td><b>NCR Date</b></td>
 	                                	<td><?php echo $report->ncr_date; ?></td>
 	                                </tr>
+	                                <!-- Raised By -->
 	                                <tr>
 	                                	<td><b>Raised By</b></td>
 	                                	<td><?php echo (!empty($report->raised_by)) ? $report->raised_by : $report->Inspected_by; ?></td>
 	                                </tr>
+	                                <!-- Designation -->
 	                                <tr>
 	                                	<td><b>Designation</b></td>
 	                                	<td><?php echo $report->designation; ?></td>
 	                                </tr>
+	                                <!-- Distribution Centre -->
 	                                <tr>
 	                                	<td><b>Distribution Centre</b></td>
 	                                	<td><?php echo $report->distribution_centre; ?></td>
 	                                </tr>
+	                                <!-- Activity -->
 	                                <tr>
 	                                	<td><b>Activity</b></td>
 	                                	<td><?php echo $report->activity; ?></td>
 	                               	</tr>
+	                               	<!-- Observation Type -->
 	                                <tr>
 	                                	<td><b>Observation Type</b></td>
 	                                	<td><?php echo $report->observation_type; ?></td>
 	                                </tr>
+	                                <!-- Other Observation Type -->
 	                                <?php if ($report->observation_type == 'Others') { ?>
 	                                <tr>
 	                                	<td><b>Other Observation Type</b></td>
 	                                	<td><?php echo $report->other_observation_name; ?></td>
 	                                </tr>
 	                                <?php } ?>
+	                                <!-- Observation -->
 	                                <tr>
 	                                	<td><b>Observation</b></td>
 	                                	<td><?php echo $report->observation_remark; ?></td>
 	                                </tr>
+	                                <!-- Observation Photos -->
 	                                <tr>
 	                                	<td><b>Observation Photos</b></td>
 	                                	<td>
@@ -297,10 +318,27 @@
 	                                    <?php } ?>
 	                                  </td>
 	                                </tr>
+	                                <!-- Observation Photos By TKC -->
+	                                <tr>
+	                                	<td><b>Compliance By TKC</b></td>
+	                                	<td>
+	                                		<?php $explode = (!empty($report->observation_tkc_photos)) ? explode(',', $report->observation_tkc_photos) : [];
+	                                					if (!empty($explode)) {
+	                                						$count = count($explode);
+	                                						for ($i=0; $i < $count; $i++) { 
+	                                		?>
+	                                		<img src="<?php echo $explode[$i]; ?>" width="100px" height="100px"/>
+	                                		<?php		}
+	                                					}
+	                                		?>
+	                                	</td>
+	                                </tr>
+	                                <!-- Compliance Remark -->
 	                                <tr>
 	                                	<td><b>Compliance Remark</b></td>
 	                                	<td><?php echo $report->observation; ?></td>
 	                                </tr>
+	                                <!-- Compliance Photos -->
 	                                <tr>
 	                                	<td><b>Compliance Photos</b></td>
 	                                  <td>
@@ -312,6 +350,7 @@
 	                                  	<?php } ?>
 	                                	</td>
 	                                </tr>
+	                                <!-- Compliance Date -->
 	                                <tr>
 	                                	<td><b>Compliance Date</b></td>
 	                                  <td><?php echo (!empty($report->completion_date) ? date('d-m-Y', strtotime($report->completion_date)) : ''); ?></td>

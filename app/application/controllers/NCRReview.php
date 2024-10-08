@@ -804,6 +804,20 @@ class NCRReview extends CI_Controller
 					$report_data[$r_key]['observation_photos'] = implode(', ', $temp_observation_photos);
 				}
 
+				if (!empty($r_value['observation_tkc_photos'])) {
+					$observation_tkc_photos = explode(',', $r_value['observation_tkc_photos']);
+
+					$r_value['observation_tkc_photos'] = [];
+					$temp_observation_tkc_photos = [];
+
+					foreach ($observation_tkc_photos as $obs_key => $obs_value) {
+						$encoded_img = $this->encode_img_base64($obs_value);
+						array_push($temp_observation_tkc_photos, $encoded_img);
+					}
+
+					$report_data[$r_key]['observation_tkc_photos'] = implode(', ', $temp_observation_tkc_photos);
+				}
+
 				if (!empty($r_value['completion_photos'])) {
 					$observation_completion_photos = explode(',', $r_value['completion_photos']);
 
@@ -829,6 +843,7 @@ class NCRReview extends CI_Controller
 			$data['date'] = date('d/m/Y');
 			$data['feeder_id'] = $checked_feeder_ids[0];
 			$data['ncr_id'] = $checked_ncr_ids[0];
+			$data['ncr_status'] = $report_data[0]['ncr_status'];
 
 			$from = $this->config->item('smtp_user');
 
@@ -1245,6 +1260,20 @@ class NCRReview extends CI_Controller
 				}
 
 				$report_data[$r_key]['observation_photos'] = implode(', ', $temp_observation_photos);
+			}
+
+			if (!empty($r_value['observation_tkc_photos'])) {
+				$observation_tkc_photos = explode(',', $r_value['observation_tkc_photos']);
+
+				$r_value['observation_tkc_photos'] = [];
+				$temp_observation_tkc_photos = [];
+
+				foreach ($observation_tkc_photos as $obs_key => $obs_value) {
+					$encoded_img = $this->encode_img_base64($obs_value);
+					array_push($temp_observation_tkc_photos, $encoded_img);
+				}
+
+				$report_data[$r_key]['observation_tkc_photos'] = implode(', ', $temp_observation_tkc_photos);
 			}
 
 			if (!empty($r_value['completion_photos'])) {

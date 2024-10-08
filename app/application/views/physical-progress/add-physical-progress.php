@@ -1806,7 +1806,7 @@
                 <div class="row" id="observation_photos_by_tkc" hidden>
                 	<!-- Observation Photos By TKC -->
                 	<div class="col-xl-12">
-                		<label class="form-label" for="obs_photo_by_tkv" id="obs_photo_by_tkc_label">Observation Photos By TKC</label>
+                		<label class="form-label" for="obs_photo_by_tkv" id="obs_photo_by_tkc_label">Compliance By TKC</label>
                 		<div class="col-xl-12">
                 			<div class="text-wrap mt-2" id="preview-img-obs-by-tkc"></div>
                 		</div>

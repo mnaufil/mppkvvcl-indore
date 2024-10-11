@@ -239,6 +239,7 @@ class NCRReview extends CI_Controller
 		$ncr_id = $this->input->post('ncrID');
 		$ncr_date = $this->input->post('ncrDate');
 		$observation_remark = $this->input->post('remark');
+		$remark_by_tkc = $this->input->post('remark_by_tkc');
 		$completion_date = (!empty($this->input->post('completionDate'))) ? date('Y-m-d', strtotime($this->input->post('completionDate'))) : NULL;
 		$changed_obs_status = $this->input->post('changed_observation_status');
 		$obs_deleted_file_id = (!empty($this->input->post('obs_deleted_file_id'))) ? explode(',', $this->input->post('obs_deleted_file_id')) : '';
@@ -411,7 +412,10 @@ class NCRReview extends CI_Controller
 					}
 				}
 			}
-		}		
+
+			// Updating remark by tkc
+			$this->ncr_model->updateNCRRemarkByTKC($pp_activity_obs_id, $remark_by_tkc);
+		}
 
 		if (!empty($errors)) {
 			/*$this->session->set_flashdata('error',$errors);

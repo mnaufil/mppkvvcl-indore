@@ -95,6 +95,11 @@
 					<td><b>NCR Date</b></td>
 					<td><?php echo date('d-m-Y', strtotime($value['ncr_date'])); ?></td>
 				</tr>
+				<!-- NCR Status -->
+				<tr>
+					<td><b>NCR Status</b></td>
+					<td><?php echo $value['ncr_status']; ?></td>
+				</tr>
 				<!-- Raised By -->
 				<tr>
 					<td><b>Raised By</b></td>
@@ -134,7 +139,7 @@
 				</tr>
 				<!-- Observation Photos -->
 				<tr>
-					<td><b>Observation Photos</b></td>
+					<td><b>Observation Photos by PMA</b></td>
 					<td>
 						<?php 	$obs_photos = explode(', ', $value['observation_photos']);
 								for ($j = 0; $j < count($obs_photos); $j++) { 
@@ -146,7 +151,7 @@
 				</tr>
 				<!-- Observation By TKC Photos -->
 				<tr>
-					<td><b>Compliance By TKC</b></td>
+					<td><b>Compliance Photos By TKC</b></td>
 					<td>
 						<?php 	$obs_tkc_photos = (!empty($value['observation_tkc_photos'])) ? explode(', ', $value['observation_tkc_photos']) : [];
 								if (!empty($obs_tkc_photos)) {
@@ -159,23 +164,18 @@
 						?>
 					</td>
 				</tr>
+				<!-- Compliance Remark By TKC -->
+				<tr>
+					<td><b>Compliance Remark By TKC</b></td>
+					<td><?php echo $value['remark_by_tkc']; ?></td>
+				</tr>
 				<!-- Compliance Report -->
 				<tr>
-					<td colspan="2" class="center"><b>Compliance Report</b></td>
-				</tr>
-				<!-- Compliance Remark -->
-				<tr>
-					<td><b>Compliance Remark</b></td>
-					<td><?php echo $value['observation']; ?></td>
-				</tr>
-				<!-- Compliance Verification Date -->
-				<tr>
-					<td><b>Completion Date</b></td>
-					<td><?php echo (!empty($value['completion_date']) ? date('d-m-Y', strtotime($value['completion_date'])) : ''); ?></td>
+					<td colspan="2" class="center" style="line-height:30px;text-align: center;vertical-align: middle;"><b>Compliance Report By PMA</b></td>
 				</tr>
 				<!-- Compliance Photos -->
 				<tr>
-					<td><b>Completed Photos</b></td>
+					<td><b>Compliance Verification Photos By PMA</b></td>
 					<td>
 						<?php 	$obs_completion_photos = (!empty($value['completion_photos'])) ? explode(', ', $value['completion_photos']) : [];
 								if (!empty($obs_completion_photos)) {
@@ -187,6 +187,16 @@
 								}
 						?>
 					</td>
+				</tr>
+				<!-- Compliance Verification Date -->
+				<tr>
+					<td><b>Compliance Verification Date</b></td>
+					<td><?php echo (!empty($value['completion_date']) ? date('d-m-Y', strtotime($value['completion_date'])) : ''); ?></td>
+				</tr>
+				<!-- Compliance Remark -->
+				<tr>
+					<td><b>Compliance Verification Remark</b></td>
+					<td><?php echo $value['observation']; ?></td>
 				</tr>
 				<!-- <tr class="blank_row">
 					<td colspan="2" style="line-height:30px;">&nbsp;</td>

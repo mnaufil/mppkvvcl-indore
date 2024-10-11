@@ -1792,7 +1792,7 @@ class PhysicalProgress_Model extends CI_Model
 	{
 		// $query = $this->db->get_where('physical_progress_activity_observation', array('physical_progress_activity_observation_id' => $obs_id, 'deletedby' => NULL));
 
-		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.status_id AS observation_status_id, mst_status.name AS observation_status, ppao.createdby');
+		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.remark_by_tkc, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.status_id AS observation_status_id, mst_status.name AS observation_status, ppao.createdby');
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
 		$this->db->where(array('ppao.physical_progress_activity_observation_id' => $obs_id, 'deletedby' => NULL));
@@ -1820,6 +1820,7 @@ class PhysicalProgress_Model extends CI_Model
 				$obs_data['ncr_id'] = $query_result['ncr_id'];
 				$obs_data['ncr_date'] = date('d-m-Y', strtotime($query_result['ncr_date']));
 				$obs_data['remark'] = $query_result['remark'];
+				$obs_data['remark_by_tkc'] = $query_result['remark_by_tkc'];
 				$obs_data['completion_date'] = $query_result['completion_date'];
 				$obs_data['raised_by'] = $query_result['raised_by'];
 				$obs_data['designation'] = $query_result['designation'];

@@ -308,7 +308,7 @@
 	                                </tr>
 	                                <!-- Observation Photos -->
 	                                <tr>
-	                                	<td><b>Observation Photos</b></td>
+	                                	<td><b>Observation Photos By PMA</b></td>
 	                                	<td>
 	                                    <?php $explode = explode(",",$report->observation_photos ?? '');
 	                                          $count = count($explode);
@@ -320,7 +320,7 @@
 	                                </tr>
 	                                <!-- Observation Photos By TKC -->
 	                                <tr>
-	                                	<td><b>Compliance By TKC</b></td>
+	                                	<td><b>Compliance Photos By TKC</b></td>
 	                                	<td>
 	                                		<?php $explode = (!empty($report->observation_tkc_photos)) ? explode(',', $report->observation_tkc_photos) : [];
 	                                					if (!empty($explode)) {
@@ -333,14 +333,14 @@
 	                                		?>
 	                                	</td>
 	                                </tr>
-	                                <!-- Compliance Remark -->
+	                                <!-- Compliance Remark By TKC -->
 	                                <tr>
-	                                	<td><b>Compliance Remark</b></td>
-	                                	<td><?php echo $report->observation; ?></td>
-	                                </tr>
+	                                	<td><b>Compliance Remark By TKC</b></td>
+	                                	<td><?php echo $report->remark_by_tkc; ?></td>
+	                                </tr>	                                
 	                                <!-- Compliance Photos -->
 	                                <tr>
-	                                	<td><b>Compliance Photos</b></td>
+	                                	<td><b>Compliance Verification Photos By PMA</b></td>
 	                                  <td>
 	                                  	<?php $explode1 = explode(",",$report->completion_photos ?? '');
 	                                          $count1 = count($explode1);
@@ -349,11 +349,16 @@
 	                                    <img src="<?php echo $explode1[$j]; ?>" width="150"/>
 	                                  	<?php } ?>
 	                                	</td>
-	                                </tr>
+	                                </tr>	                                
 	                                <!-- Compliance Date -->
 	                                <tr>
-	                                	<td><b>Compliance Date</b></td>
+	                                	<td><b>Compliance Verification Date</b></td>
 	                                  <td><?php echo (!empty($report->completion_date) ? date('d-m-Y', strtotime($report->completion_date)) : ''); ?></td>
+	                                </tr>
+	                                <!-- Compliance Remark -->
+	                                <tr>
+	                                	<td><b>Compliance Verification Remark</b></td>
+	                                	<td><?php echo $report->observation; ?></td>
 	                                </tr>      
 	                                <tr style="height:40px">
 	                                	<td border='0'></td>

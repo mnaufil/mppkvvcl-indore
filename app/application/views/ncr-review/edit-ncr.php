@@ -191,7 +191,7 @@
 					            				<div class="row">
 					            					<!-- Observation Photos -->
 					            					<div class="col-xl-12">
-                    									<label class="form-label" for="obs_photo">Observation Photos
+                    									<label class="form-label" for="obs_photo">Observation Photos By PMA
                     										<span class="text-red">*</span>
                     									</label>
                     									<?php if ($logged_user_role != 'TKC') { ?>
@@ -210,7 +210,7 @@
                   												<a href="javascript:void(0)" onclick="showImageModal(this)">
 										                        	<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="" width="100" height="100">
 										                        </a>
-										                        <?php if ($ncr_data['completion_date'] == NULL) { ?>
+										                        <?php if ($ncr_data['completion_date'] == NULL && $logged_user_role != 'TKC') { ?>
 										                        <ul class="icons">
 										                        	<li>
 										                        		<a href="javascript:void(0)" data-photo-for="observation" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="image-<?php echo $key; ?>" data-photo-action="edit"><i class="fe fe-trash"></i></a>
@@ -229,7 +229,7 @@
 					            					<!-- TKC Observation Photos -->
 					            					<div class="col-xl-12">
 					            						<?php if ($logged_user_role == 'TKC' || !empty($ncr_data['observation_tkc_files'])) { ?>
-					            						<label class="form-label" for="obs_photo_tkc">Compliance By TKC</label>
+					            						<label class="form-label" for="obs_photo_tkc">Compliance Photos By TKC</label>
 					            						<?php } ?>
                     									<?php if ($logged_user_role == 'TKC') { ?>
                     									<input class="form-control" type="file" id="obs_photo_tkc" name="obs_photo_tkc[]" multiple="">	
@@ -245,7 +245,7 @@
 					            								<a href="javascript:void(0)" onclick="showImageModal(this)">
 					            									<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="" width="100" height="100">
 					            								</a>
-					            								<?php if ($ncr_data['completion_date'] == NULL) { ?>
+					            								<?php if ($ncr_data['completion_date'] == NULL && $logged_user_role == 'TKC') { ?>
 					            								<ul class="icons">
 					            									<li>
 					            										<a href="javascript:void(0)" data-photo-for="observation_tkc" onclick="deleleObservationPhoto(this)" class="btn bg-danger" data-obs-file-id="image-<?php echo $key; ?>" data-photo-action="edit"><i class="fe fe-trash"></i></a>
@@ -258,13 +258,32 @@
 					            						?>
 					            						</div>
 					            					</div>
+					            					<!-- Remark By TKC -->
+					            					<div class="col-xl-12">
+					            						<?php if ($logged_user_role == 'TKC') { ?>
+					            						<label class="form-label" for="remark_by_tkc">Compliance Remark By TKC</label>
+					            						<input type="text" class="form-control" id="remark_by_tkc" name="remark_by_tkc" value="<?php echo $ncr_data['remark_by_tkc']; ?>">	
+					            						<?php } elseif (!empty($ncr_data['observation_tkc_files'])) { ?>
+					            						<label class="form-label" for="remark_by_tkc">Compliance Remark By TKC</label>
+                    									<?php $remark_by_tkc_readonly = ($logged_user_role != 'TKC' || $ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';?>
+			                    						<input type="text" class="form-control" id="remark_by_tkc" name="remark_by_tkc" value="<?php echo $ncr_data['remark_by_tkc']; ?>" <?php echo $remark_by_tkc_readonly; ?>>	
+					            						<?php } ?>
+					            					</div>
 					            				</div>
 					            				<!-- Row7 -->
 					            				<?php if ($logged_user_role != 'TKC') { ?>
 					            				<div class="row">
+					            					<!-- Completion Remark -->
+					            					<div class="col-xl-12">
+					            						<label class="form-label" for="remark">Compliance Remark</label>
+	                									<?php $remark_readonly = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'readonly' : '';?>
+			                    						<input type="text" class="form-control" id="remark" name="remark" value="<?php echo $ncr_data['remark']; ?>" <?php echo $remark_readonly; ?>>
+					            					</div>
+					            				</div>
+					            				<div class="row">
 					            					<!-- Completion Photos -->
 					            					<div class="col-xl-8">
-                    									<label class="form-label" for="completion_photo">Completion Photos</label>
+                    									<label class="form-label" for="completion_photo">Compliance Verification Photos By PMA</label>
                     									<?php $obs_completion_photos_disabled = ($ncr_data['observation_status'] == 'Closed' || ($ncr_data['is_active'] == 0 && !empty($ncr_data['deletedby']))) ? 'disabled' : '';
                     									?>
                     									<input class="form-control" type="file" id="completion_photo" name="completion_photo[]" multiple="" <?php echo $obs_completion_photos_disabled; ?>>
@@ -290,7 +309,7 @@
               										</div>
               										<!-- Completion Date -->
               										<div class="col-xl-4">
-                    									<label for="completionDate" class="form-label">Completion Date</label>
+                    									<label for="completionDate" class="form-label">Compliance Verification Date</label>
                       									<div class="input-group">
                           									<div class="input-group-text dates">
                               									<i class="fa fa-calendar tx-16 lh-0 op-6"></i>

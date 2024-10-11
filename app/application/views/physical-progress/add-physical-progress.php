@@ -1779,7 +1779,7 @@
                 <div class="row">
                 	<!-- Observation Photos -->
                   <div class="col-xl-12">
-                    <label class="form-label" for="obs_photo" id="obs_photo_label">Observation Photos
+                    <label class="form-label" for="obs_photo" id="obs_photo_label">Observation Photos By PMA
                     	<span class="text-red">*</span>
                     </label>
                     <input class="form-control" type="file" id="obs_photo" name="obs_photo[]" multiple="">
@@ -1806,16 +1806,23 @@
                 <div class="row" id="observation_photos_by_tkc" hidden>
                 	<!-- Observation Photos By TKC -->
                 	<div class="col-xl-12">
-                		<label class="form-label" for="obs_photo_by_tkv" id="obs_photo_by_tkc_label">Compliance By TKC</label>
+                		<label class="form-label" for="obs_photo_by_tkv" id="obs_photo_by_tkc_label">Compliance Photos By TKC</label>
                 		<div class="col-xl-12">
                 			<div class="text-wrap mt-2" id="preview-img-obs-by-tkc"></div>
                 		</div>
                 	</div>
+                	<!-- Remark By TKC -->
+                	<div class="col-xl-12">
+                		<label class="form-label" for="remark_by_tkc">Compliance Remark By TKC</label>
+                    <input type="text" class="form-control" id="remark_by_tkc" name="remark_by_tkc">
+                	</div>
+                	<!-- Flag Button -->
                 	<div class="row">
                 		<div class="col-xl-2">
                 			<button type="button" class="btn btn-primary btn-sm btn-wave waves-effect waves-light mt-2" id="raiseFlag">Raise Flag</button>
                 		</div>
                 	</div>
+                	<!-- Flag Messages -->
                 	<div class="row" id="flag-div" hidden>
                 		<div class="col-xl-12">
                 			<label class="form-label">Raised Flags for TKC </label>
@@ -1829,14 +1836,14 @@
                 <div class="row">
                 	<!-- Compliance Remark -->
                 	<div class="col-xl-12">
-                		<label class="form-label" for="remark">Compliance Remark</label>
+                		<label class="form-label" for="remark">Compliance Verification Remark</label>
                     <input type="text" class="form-control" id="remark" name="remark">
                 	</div>
                 </div>
                 <div class="row mt-2">
                 	<!-- Compliance Photos -->
                   <div class="col-xl-8">
-                    <label class="form-label" for="completion_photo">Compliance Photos</label>
+                    <label class="form-label" for="completion_photo">Compliance Verification Photos By PMA</label>
                     <input class="form-control" type="file" id="completion_photo" name="completion_photo[]" multiple="">
                   	<div class="text-wrap mt-2" id="preview-img-complete"></div>
                   </div>
@@ -3310,6 +3317,8 @@
 
 		      		if (obs_data.observation_files_by_tkc.length > 0) {
 		      			$('#observation_photos_by_tkc').prop('hidden', false);
+
+		      			$('#remark_by_tkc').val(obs_data.remark_by_tkc);
 
 		      			let html_img = '';
 		      			obs_photo_by_tkc_file_list = [];

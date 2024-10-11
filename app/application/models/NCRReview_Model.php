@@ -183,7 +183,7 @@ class NCRReview_Model extends CI_Model
 
 	public function getNCRDetails($pp_activity_obs_id)
 	{
-		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.status_id, contract_location.feeder_id, mst_status.name AS observation_status, ppao.is_active, ppao.deletedby');
+		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.remark_by_tkc, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.status_id, contract_location.feeder_id, mst_status.name AS observation_status, ppao.is_active, ppao.deletedby');
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('contract_location', 'ppao.contract_location_id = contract_location.contract_location_id');
 		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
@@ -622,6 +622,25 @@ class NCRReview_Model extends CI_Model
 	{
 		$data = array(
 			'status_id' => $changed_obs_status_ID,
+			'modifiedby' => $this->getLoggedInUserID(),
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('physical_progress_activity_observation', $data, array('physical_progress_activity_observation_id' => $pp_activity_obs_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
+		}
+	}
+
+	public function updateNCRRemarkByTKC($pp_activity_obs_id, $remark_by_tkc)
+	{
+		$data = array(
+			'remark_by_tkc' => $remark_by_tkc,
 			'modifiedby' => $this->getLoggedInUserID(),
 			'modifieddate' => date('Y-m-d H:i:s')
 		);

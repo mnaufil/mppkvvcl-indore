@@ -599,11 +599,14 @@ class Dashboard_Model extends CI_Model
         $stageDropdown = "";
         $userId = $_SESSION['userId'];
         // $stageQuery = $this->db->query("CALL sp_get_dashboard_statistics_popup_stage($userId, '$contractId')"); /*Original Code*/
-        $stageQuery = $this->db->query("CALL bkp_sksp_get_dashboard_statistics_popup_stage(".$userId.", ".$packageNo.")");
+        // $stageQuery = $this->db->query("CALL bkp_sksp_get_dashboard_statistics_popup_stage(".$userId.", ".$packageNo.")");
+        $stageQuery = $this->db->query("CALL sp_get_dashboard_statistics_popup_stage(".$userId.", ".$packageNo.")");
+        // echo 'stageQuery: <pre>'; print_r($stageQuery); echo '</pre>'; die();
+        // echo $this->db->last_query(); die();
         
         //$stageQuery = $this->db->query("CALL sp_get_dashboard_statistics_popup_stage('102')");
         if($stageQuery)
-        {   
+        {
             $stageResult =  $stageQuery->result();
             /* $stageDropdown .= '<select id="stageChange" onchange="changeStage(this.value)"><option value="All">All</option>';*/
             $stageDropdown .= '<select id="stageChange" onchange="changeStage(this.value, '.$packageNo.')">';

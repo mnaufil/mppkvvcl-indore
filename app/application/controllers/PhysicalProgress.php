@@ -268,7 +268,10 @@ class PhysicalProgress extends CI_Controller
 
                               foreach ($mst_activity_data as $key => $mst_activity) {
                                    if (!in_array($mst_activity['typeofwork_activity_id'], $pp_activity_ids)) {
-                                       array_push($sheet_result['activities_list'], $mst_activity);
+                                        $mst_activity['status_id'] = 0;
+                                        $mst_activity['applied_observations'] = [];
+
+                                        array_push($sheet_result['activities_list'], $mst_activity);
                                    }
                               }
                          }

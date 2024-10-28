@@ -698,6 +698,14 @@
 		  	$('#obs_photo_tkc').on('change', function(event) {
 		  		obs_tkc_photo_file_list = [];
 
+		  		let observation_status = '<?php echo $ncr_data['observation_status'] ?>';
+
+		  		if (observation_status == 'Forwarded') {
+		  			if ($('#preview-img-obs-tkc').find('.file-image-1').length > 0) {
+		  				$('#preview-img-obs-tkc').empty();
+		  			}
+		  		}
+
 		  		// Get the selected image files
 		  		let files = $(this)[0].files;
 
@@ -761,6 +769,11 @@
 	     				event.preventDefault();
 	     				return false;
 		  			}
+
+		  			$('.email-loader').removeAttr('hidden');
+					$('.email-loader').find('.email-loader-message').html('Please wait while the system is sending email to the DTL and FE/FS.');
+
+					$('button[type="submit"]').prop('disabled', true);
 		  		} else if (logged_user_role != 'TKC') {
 		  			let completion_date = $('input[name="completionDate"]').val();
 

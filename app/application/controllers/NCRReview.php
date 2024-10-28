@@ -431,8 +431,8 @@ class NCRReview extends CI_Controller
 				if (empty($email_result)) {
 					$this->ncr_model->updateNCRStatus($pp_activity_obs_id, $changed_obs_status_ID);
 
-					/*$flash_msg = 'NCR ID:'.$ncr_id.' updated and email sent to FE/FS and DTL';
-					$this->session->set_flashdata('error',$flash_msg);*/
+					$this->session->set_flashdata('error', 'NCR updated successfully');
+					
 					redirect('ncr-review');	
 				} else {
 					$error_msg = 'Failed to send email to FE/FS/DTL';

@@ -589,6 +589,15 @@
 	    <script type="text/javascript">
 	    	let form_change = false;
 
+	    	$(document).ready(function() {
+	    		let session_msg = '<?php echo (isset($_SESSION['error'])) ? $_SESSION['error'] : '' ?>';
+
+	    		if (session_msg != '') {
+	    			$('.toast-body').text(session_msg);
+		        	$('.toast').toast('show');
+	    		}
+	    	});
+
 	    	//Displays contractor search list view
     		function showtkclist(tkcValue) {
 		      	$.ajax({

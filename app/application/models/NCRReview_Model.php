@@ -202,6 +202,7 @@ class NCRReview_Model extends CI_Model
 			if ($query->num_rows() > 0) {
 				$query_result = $query->row_array();
 				$query_result['observation_files'] = [];
+				$query_result['observation_tkc_files'] = [];
 				$query_result['observation_completion_files'] = [];
 
 				$observation_files = $this->getObservationFile($pp_activity_obs_id);

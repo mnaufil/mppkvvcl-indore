@@ -520,11 +520,12 @@
 																											<?php $radio_disabled = ($userdata['role'] == 'Client') ? 'disabled' : ''; ?>
 																											<!-- Sheet Status: In Process || Completed  || Reviewed -->
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
+																												<!-- <input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>> -->
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="yes" <?php echo ($v2['status_id'] == 1) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">Yes</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">WIP</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
@@ -656,11 +657,12 @@
 																											<?php $radio_disabled = ($userdata['role'] == 'Client') ? 'disabled' : ''; ?>
 																											<!-- Sheet Status: In Process || Completed || Reviewed -->
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
+																												<!-- <input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>> -->
+																												<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="yes" <?php echo ($v2['status_id'] == 1) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">Yes</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
-																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
+																												<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																												<span class="custom-control-label">WIP</span>
 																											</label>
 																											<label class="custom-control custom-radio status-radio">
@@ -1092,11 +1094,12 @@
 																										<?php $radio_disabled = ($userdata['role'] == 'Client') ? 'disabled' : ''; ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
+																											<!-- <input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="<?php echo ($v2['status_id'] == 1) ? 'yes' : (($v2['status_id'] == 2) ? 'yes-partial' : 'yes'); ?>" <?php echo ($v2['status_id'] == 1 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>> -->
+																											<input type="radio" class="custom-control-input two-way" name="<?php echo $radio_name; ?>" value="yes" <?php echo ($v2['status_id'] == 1) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">Yes</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">
-																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
+																											<input type="radio" class="custom-control-input" name="<?php echo $radio_name; ?>" value="wip" <?php echo ($v2['status_id'] == 4 || $v2['status_id'] == 2) ? 'checked' : ''; ?> <?php echo $radio_disabled; ?>>
 																											<span class="custom-control-label">WIP</span>
 																										</label>
 																										<label class="custom-control custom-radio status-radio">

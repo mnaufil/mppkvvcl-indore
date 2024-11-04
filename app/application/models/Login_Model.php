@@ -86,7 +86,8 @@ class Login_Model extends CI_Model
 
 	function allIcon()
 	{
-		$query = $this->db->query("select name, icon,  count(parent_module_id) as parent_module_id from mst_module where is_active =1 group by parent_module_id");
+		// $query = $this->db->query("select name, icon,  count(parent_module_id) as parent_module_id from mst_module where is_active =1 group by parent_module_id");
+		$query = $this->db->query("select name, icon,  count(parent_module_id) as parent_module_id from mst_module where is_active =1 group by name, icon");
 		return $query->result();	
 	}
 

@@ -78,7 +78,9 @@ class Login_Model extends CI_Model
 
 	function allModule()
 	{
-		$query = $this->db->query("select name,  count(parent_module_id) as parent_module_id, seqno from mst_module where is_active =1 group by parent_module_id");
+		// $query = $this->db->query("select name,  count(parent_module_id) as parent_module_id, seqno from mst_module where is_active =1 group by parent_module_id");
+		$query = $this->db->query("select name,  count(parent_module_id) as parent_module_id, seqno from mst_module where is_active =1 group by name, seqno");
+		// echo $this->db->last_query(); die();
 		return $query->result();	
 	}
 

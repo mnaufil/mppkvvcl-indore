@@ -79,16 +79,86 @@ class Login_Model extends CI_Model
 	function allModule()
 	{
 		// $query = $this->db->query("select name,  count(parent_module_id) as parent_module_id, seqno from mst_module where is_active =1 group by parent_module_id");
-		$query = $this->db->query("select name,  count(parent_module_id) as parent_module_id, seqno from mst_module where is_active =1 group by name, seqno");
+		// $query = $this->db->query("select name,  count(parent_module_id) as parent_module_id, seqno from mst_module where is_active =1 group by name, seqno");
+
+		$this->db->select('A.name, A.parent_module_id, A.seqno, B.name as parent_name');
+		$this->db->from('mst_module A');
+		$this->db->join('mst_module B', 'A.parent_module_id = B.module_id', 'INNER');
+		$this->db->where(array('A.is_active' => 1));
+
+		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
-		return $query->result();	
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				$new_result = [];
+				foreach ($result as $key => $value) {
+					$new_result[$value['parent_name']][] = $value;
+				}
+
+				foreach ($new_result as $key => $value) {
+					$query_result_temp['name'] = $key;
+					$query_result_temp['parent_module_id'] = count($value);
+					$query_result_temp['seqno'] = $value[0]['seqno'];
+
+					array_push($query_result, $query_result_temp);
+				}
+			}
+		}
+		
+		// return $query->result();
+		return $query_result;	
 	}
 
 	function allIcon()
 	{
 		// $query = $this->db->query("select name, icon,  count(parent_module_id) as parent_module_id from mst_module where is_active =1 group by parent_module_id");
-		$query = $this->db->query("select name, icon,  count(parent_module_id) as parent_module_id from mst_module where is_active =1 group by name, icon");
-		return $query->result();	
+		// $query = $this->db->query("select name, icon,  count(parent_module_id) as parent_module_id from mst_module where is_active =1 group by name, icon");
+
+		$this->db->select('A.name, A.parent_module_id, A.icon, B.name as parent_name');
+		$this->db->from('mst_module A');
+		$this->db->join('mst_module B', 'A.parent_module_id = B.module_id', 'INNER');
+		$this->db->where(array('A.is_active' => 1));
+
+		$query = $this->db->get();
+
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				$new_result = [];
+				foreach ($result as $key => $value) {
+					$new_result[$value['parent_name']][] = $value;
+				}
+
+				foreach ($new_result as $key => $value) {
+					$query_result_temp['name'] = $key;
+					$query_result_temp['icon'] = $value[0]['icon'];
+					$query_result_temp['parent_module_id'] = count($value);
+
+					array_push($query_result, $query_result_temp);
+				}
+			}
+		}
+
+		// return $query->result();	
+		return $query_result;	
 	}
 
 	function totalDisburse()

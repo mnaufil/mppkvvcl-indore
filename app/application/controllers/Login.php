@@ -52,14 +52,14 @@ class Login extends CI_Controller
 				{
 					//array_push($allIconArray, $icon->icon);
 					
-					$allIconArray[$icon->name] = $icon->icon;
+					$allIconArray[$icon['name']] = $icon['icon'];
 				}
 				$allModuleArray = array();
 				foreach($allModule as $all)
 				{
-					if($all->parent_module_id==1)
+					if($all['parent_module_id']==1)
 					{
-						array_push($allModuleArray, $all->name);
+						array_push($allModuleArray, $all['name']);
 					}
 				}
 

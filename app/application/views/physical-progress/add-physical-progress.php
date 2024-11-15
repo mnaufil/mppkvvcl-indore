@@ -1548,7 +1548,7 @@
               										<?php $obs_file_id = 'image-'.$key; ?>
               										<div class="file-image-1" data-pp-file-id=<?php echo $value['physical_progress_file_id']; ?>>
               											<a href="javascript:void(0)" onclick="showImageModal(this)">
-              												<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="">
+              												<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="" width="100" height="100">
               											</a>
               											<ul class="icons">
               												<li>

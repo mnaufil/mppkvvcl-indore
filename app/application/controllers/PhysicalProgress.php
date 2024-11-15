@@ -1196,7 +1196,7 @@ class PhysicalProgress extends CI_Controller
                               }                             
                          }
 
-                         foreach ($obs_completion_file['name'] as $key => $value) {                              
+                         foreach ($obs_completion_file['name'] as $key => $value) {
                               $ext = pathinfo($value, PATHINFO_EXTENSION);
                               $last_file_no++;
 
@@ -1335,7 +1335,7 @@ class PhysicalProgress extends CI_Controller
                          // Deleting previously uploaded sheet completion file details from table
                          $file_result = $this->pp_model->deletePhysicalProgressCompletionFile_new($value);     
                     }                    
-               }               
+               }
 
                if (!empty($_FILES)) {
                     $sheet_completion_files = $_FILES['sheet_completion_files'];

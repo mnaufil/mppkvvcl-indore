@@ -600,10 +600,12 @@ class Report_Model extends CI_Model
 		 //$query = $this->db->query("CALL sp_rpt_physical_progress($sessionId,$package,$feederId)");		
 		 //$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress($sessionId,$package,$feederId)";
 
+		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";	
+		// echo 'spQuery: <pre>'; print_r($_SESSION['spQuery']); echo '</pre>'; die();
 		$query = $this->db->query("CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// $query = $this->db->query("CALL bkp_sk110624_sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
-		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_consolidatedActivityWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";	
+		
 		
 		if($query)
 		{
@@ -725,19 +727,15 @@ class Report_Model extends CI_Model
 			$spDivision = "'".$allDivision."'";
 		}
 		
-		//echo "CALL sp_rpt_physical_progress($sessionId,$package,$feederId)"; die;
-		
 		 //$query = $this->db->query("CALL sp_rpt_physical_progress($sessionId,$package,$feederId)");		
 		 //$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress($sessionId,$package,$feederId)";
-
-		// echo "CALL sp_rpt_physical_progress_feederWise($sessionId,$package,'$spRegion','$spCircle','$spDivision',null)"; die;
-
-		// echo "CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)"; die;
 		// $query = $this->db->query("CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
-		$query = $this->db->query("CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
+		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";
+		// echo 'spQuery: <pre>'; print_r($_SESSION['spQuery']); echo '</pre>'; die();
+		$query = $this->db->query("CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");		
 		// $query = $this->db->query("CALL bkp_sk110624_sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)");
 		// echo $this->db->last_query(); die();
-		$_SESSION['spQuery'] = "CALL sp_rpt_physical_progress_feederWise($sessionId,'$package',$spRegion,$spCircle,$spDivision,$feederId)";
+		
 		
 		if($query)
 		{

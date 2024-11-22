@@ -1881,8 +1881,8 @@
                 <span aria-hidden="true">×</span>
               </button>
             </div>
-            <div class="modal-body">
-              <img src="" alt="" id="obs_image" style="object-fit: fill; width: 100%; height: 100%;">
+            <div class="modal-body" style="height: calc(100vh - 105px);overflow: scroll;">
+              <img src="" alt="" id="obs_image" style="object-fit: fill; width: 100%;">
             </div>
             <!-- <div class="modal-footer">
               <div id="caption"></div>

@@ -151,7 +151,9 @@ class Report extends CI_Controller
 					foreach ($mainHeadingArray as $group_name) {
 						$header_count[$group_name] = 0;
 						foreach ($data['onlyKeys'] as $value) {
-							$match = '/^'.$group_name.'__/';
+							// $match = '/^'.$group_name.'__/';
+							$match = '#^'.$group_name.'__#'; //Changed delimiter because a group name contained '/' 
+							
 							if (preg_match($match, $value)) {
 								$header_count[$group_name]++;
 							}

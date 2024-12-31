@@ -941,6 +941,150 @@ class NCRReview extends CI_Controller
 		}
 	}
 
+	public function sendNCRComplianceRejectEmail()
+	{
+		if (!empty($_POST)) {
+			$ncr_id = $this->input->post('ncr_id');
+			$pp_activity_observation_id = $this->input->post('pp_activity_observation_id');
+			$reject_msg = $this->input->post('reject_msg');
+
+			$user_id = $this->ncr_model->getLoggedInUserID();
+
+			$result = $this->ncr_model->saveNCRComplianceRejectionFlag($ncr_id, $pp_activity_observation_id, $reject_msg, $user_id); //Uncomment Later 
+			// $result = 1; //Delete Later
+
+			if ($result) {
+				$ncr_data = $this->ncr_model->getNCRData($pp_activity_observation_id, $ncr_id);
+
+				$embedded_img_arr = [];
+
+				if (!empty($ncr_data['observation_files'])) {
+					$temp_observation_files = [];
+                    foreach ($ncr_data['observation_files'] as $key => $value) {
+                    	$target_path = 'assets/uploads/observation_files/thumb/';
+                        $resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+                        $embedded_img_arr['obs_file_'.$key] = $resized_image;
+                        $temp_observation_files['obs_file_'.$key] = $resized_image;
+                    }
+
+                    $ncr_data['observation_files'] = $temp_observation_files;
+				}
+
+				if (!empty($ncr_data['observation_tkc_files'])) {
+                    $temp_observation_by_tkc_files = [];
+                    foreach ($ncr_data['observation_tkc_files'] as $key => $value) {
+                    	$target_path = 'assets/uploads/observation_files_by_tkc/thumb/';
+                        $resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+                        $embedded_img_arr['obs_file_by_tkc_'.$key] = $resized_image;
+                        $temp_observation_by_tkc_files['obs_file_by_tkc_'.$key] = $resized_image;
+                    }
+
+                   	$ncr_data['observation_tkc_files'] = $temp_observation_by_tkc_files;
+                }
+
+                if (!empty($ncr_data['observation_completion_files'])) {
+                    $temp_observation_completion_files = [];
+                    foreach ($ncr_data['observation_completion_files'] as $key => $value) {
+                    	$target_path = 'assets/uploads/observation_completion_files/thumb/';
+                        $resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+                        $embedded_img_arr['obs_completion_file_'.$key] = $resized_image;
+                        $temp_observation_completion_files['obs_completion_file_'.$key] = $resized_image;
+                    }
+
+                    $ncr_data['observation_completion_files'] = $temp_observation_completion_files;
+                }
+
+                $ncr_data['reject_msg'] = $reject_msg;
+
+                $data['ncr_data'] = $ncr_data;
+
+                $fe_fs_data = $this->ncr_model->getFEFSForNCR($ncr_id);
+				$fe_fs_emails = array_column($fe_fs_data, 'email');
+
+				$other_email_ids_data = $this->ncr_model->getCCBCCEmailIDs();
+				foreach ($other_email_ids_data as $key => $value) {
+					$other_email_ids[$value['display_name']] = $value['fieldvalue'];
+				}
+
+				$bcc_str = $other_email_ids['BCC EMAIL ID'];
+				$bcc_arr = explode(',', $bcc_str);
+
+				$message = $this->load->view('ncr-review/reject-compliance-email-body', $data, true);
+
+				$subject = 'NCR ID:'.$ncr_id.' Compliance Rejected By DTL';
+
+				$from = $this->config->item('smtp_user');
+
+				// PHP Mailer Code Begins
+				$mail = new PHPMailer(true);
+
+				try {
+					$mail->SMTPDebug = SMTP::DEBUG_OFF;
+					$mail->isSMTP();
+					$mail->Host = 'smtp.gmail.com';
+					$mail->SMTPAuth = true;
+					$mail->Username = 'mppkvvcl.sgs@gmail.com';
+					$mail->Password = 'tarhuogjifshezmd';
+					// $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+					$mail->SMTPSecure = 'tls';
+					$mail->Port = 587;
+					$mail->setFrom($from);
+
+					foreach ($fe_fs_emails as $value) {
+						$mail->addAddress($value);
+					}
+
+					foreach ($bcc_arr as $key => $value) {
+						$mail->AddBCC($value);
+					}
+
+					$mail->isHTML(true);
+					$mail->Subject = $subject;
+
+					foreach ($embedded_img_arr as $emb_key => $emb_value) {
+                        $mail->addEmbeddedImage("$emb_value","$emb_key");
+                    }
+
+					$mail->Body = $message;
+
+					if (!$mail->send()) {
+						$error = $mail->ErrorInfo;
+
+						$response['message'] = 'Failed to send email <br/>Error Message: '.$error;
+					} else {
+						$ncr_status_ids = $this->getNCRStatusIDs();
+						$changed_obs_status_ID = $ncr_status_ids['Submitted by TKC'];
+
+						// Reverting NCR status back to Submitted By TKC 
+						$status_revert_result = $this->ncr_model->updateNCRStatus($pp_activity_observation_id, $changed_obs_status_ID);
+						if ($status_revert_result) {
+							$response['message'] = 'Email has been sent successfully for NCR ID: '.$ncr_id;	
+						} else {
+							$response['message'] = 'Failed to revert NCR status to Submitted By TKC';
+						}
+					}
+				} catch (Exception $e) {
+					$error = $mail->ErrorInfo;
+
+					// Setting NCR Status to as it was i.e Reviewed
+					$ncr_status_ids = $this->getNCRStatusIDs();
+					$changed_obs_status_ID = $ncr_status_ids['Reviewed'];
+
+					$status_revert_result = $this->ncr_model->updateNCRStatus($pp_activity_observation_id, $changed_obs_status_ID);
+
+					$response['message'] = 'Failed to send email <br/>Error Message: '.$error;
+				}
+			}
+		} else {
+			$response['message'] = 'Failed to send email';
+		}
+
+		echo json_encode($response);
+	}
+
 	public function resizeImage($image, $width, $height, $target_path)
 	{
 		$image_detail_arr = explode('/', $image);

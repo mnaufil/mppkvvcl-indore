@@ -131,6 +131,7 @@ $route['send-ncr-mail'] = 'NCRReview/sendNCREmail';
 $route['get-email-recipients-new'] = 'NCRReview/getNCREmailRecipientsNew';
 $route['send-ncr-mail-new'] = 'NCRReview/sendNCREmailNew';
 $route['download-ncr/(:num)'] = 'NCRReview/downloadNCR/$1';
+$route['send-ncr-compliance-reject-mail'] = 'NCRReview/sendNCRComplianceRejectEmail';
 
 /*Physical Progress Review Module*/
 $route['physical-verification-review'] = 'PhysicalProgressReview/index';

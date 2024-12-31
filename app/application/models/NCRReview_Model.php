@@ -1275,8 +1275,101 @@ class NCRReview_Model extends CI_Model
 			return $query_result;
 		}
 	}
+
+	public function saveNCRComplianceRejectionFlag($ncr_id, $pp_activity_observation_id, $reject_msg, $user_id)
+	{
+		$data = array(
+			'physical_progress_activity_observation_id' => $pp_activity_observation_id,
+			'ncr_id' => $ncr_id,
+			'flag_message' => $reject_msg,
+			'createdby' => $user_id,
+			'createddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->insert('compliance_reject_flag', $data);
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$insert_id = $this->db->insert_id();
+			return $insert_id;
+		}
+	}
+
+	public function getNCRData($pp_activity_observation_id, $ncr_id)
+	{
+		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.status_id, contract_location.feeder_id, mst_status.name AS observation_status, ppao.is_active, ppao.deletedby');
+		$this->db->from('physical_progress_activity_observation AS ppao');
+		$this->db->join('contract_location', 'ppao.contract_location_id = contract_location.contract_location_id');
+		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
+		$this->db->where(array('physical_progress_activity_observation_id' => $pp_activity_observation_id, 'ppao.ncr_id' => $ncr_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();
+				$query_result['observation_files'] = [];
+				$query_result['observation_completion_files'] = [];
+
+				$observation_files = $this->getObservationFile($pp_activity_observation_id);
+				if (!empty($observation_files)) {
+					$query_result['observation_files'] = $observation_files;
+				}
+
+				$observation_tkc_files = $this->getObservationTKCFile($pp_activity_observation_id);
+				if (!empty($observation_tkc_files)) {
+					$query_result['observation_tkc_files'] = $observation_tkc_files;
+				}
+
+				if (!empty($query_result['completion_date'])) {
+					$completion_files = $this->getObservationCompletionFile($pp_activity_observation_id);
+					if (!empty($completion_files)) {
+						$query_result['observation_completion_files'] = $completion_files;
+					}
+				}
+			}
+			
+			return $query_result;
+		}
+	}
+
+	public function getFEFSForNCR($ncr_id)
+	{
+		$this->db->select('physical_progress_activity_observation.ncr_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, mst_user.username, mst_user.email, mst_user.role_id, mst_role.name');
+		$this->db->from('physical_progress_activity_observation');
+		$this->db->join('contract_location', 'physical_progress_activity_observation.contract_location_id = contract_location.contract_location_id', 'INNER');
+		$this->db->join('mst_user_data_access', 'contract_location.region_id = mst_user_data_access.region_id AND contract_location.circle_id = mst_user_data_access.circle_id AND contract_location.division_id = mst_user_data_access.division_id', 'INNER');
+		$this->db->join('mst_user', 'mst_user_data_access.user_id = mst_user.user_id', 'INNER');
+		$this->db->join('mst_role', 'mst_user.role_id = mst_role.role_id', 'INNER');
+		$this->db->where(array('physical_progress_activity_observation.ncr_id' => $ncr_id, 'mst_user.is_active' => 1));
+		$this->db->group_start()->where('mst_role.name', 'Field Engineer')->or_where('mst_role.name', 'Field Supervisor')->group_end();
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}		
+	}
 }
-
-
-
 ?>

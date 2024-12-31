@@ -328,15 +328,18 @@
 					            					<div class="col-xl-6 mt-5 mb-3">
 					            						<?php if ($logged_user_role == 'TKC') { ?>
 					            						<button class="btn btn-success" type="submit">Submit</button>
-					            						<?php } else { ?>
-					            						<?php if ($ncr_data['observation_status'] == 'Pending' && ($ncr_data['is_active'] == 1 && empty($ncr_data['deletedby']))) { ?>
+					            						<?php } elseif ($logged_user_role == 'Admin' || $logged_user_role == 'Deputy Team Leader') {
+					            								if ($ncr_data['observation_status'] == 'Pending' && ($ncr_data['is_active'] == 1 && empty($ncr_data['deletedby']))) {
+					            						?>
 					            						<input type="hidden" name="changed_observation_status" value="Forwarded">
 					            						<button class="btn btn-success" type="submit">Mark as Forwarded and Send Mail to TKC</button>
-					            						<?php } elseif ($ncr_data['observation_status'] == 'Reviewed' && ($ncr_data['is_active'] == 1 && empty($ncr_data['deletedby']))) { ?>
+					            						<?php 	} elseif ($ncr_data['observation_status'] == 'Reviewed' && ($ncr_data['is_active'] == 1 && empty($ncr_data['deletedby']))) { ?>
+					            						<button class="btn btn-danger" type="button" id="btn-reject" onclick="rejectCompliance()">Reject Compliance</button>
 					            						<input type="hidden" name="changed_observation_status" value="Closed">
 					            						<button class="btn btn-success" type="submit">Mark as Closed and Send Mail to TKC</button>
-					            						<?php } ?>
-					            						<?php } ?>
+					            						<?php 	}
+					            							  } 
+					            						?>
 					            						
 					            						<a type="button" class="btn btn-primary" href="<?php echo base_url('ncr-review'); ?>">Back</a>	
 					            					</div>
@@ -405,6 +408,38 @@
 		        </div>
 		    </div>
 	    	<!-- Email Recipient Modal Ends -->
+
+	    	<!-- Reject Compliance Modal -->
+	    	<div class="modal fade" id="rejectComplianceModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="rejectComplianceModalLabel" style="display: none" aria-modal="true" role="dialog">
+	    		<div class="modal-dialog">
+	    			<div class="modal-content">
+	    				<div class="modal-header">
+	    					<h6 class="modal-title" id="rejectComplianceModalLabel">Reject Reason</h6>
+	    					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+			                	<span aria-hidden="true">×</span>
+			              	</button>
+
+			              	<!-- Toaster Alert -->
+              				<div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-animation="true" id="reject-alert">
+                				<div class="d-flex toster-out">
+                					<div class="toast-body"> Hello, world! This is a toast message. </div>
+                					<button aria-label="Close" class="btn-close text-white ms-auto  pe-2" data-bs-dismiss="toast" style="margin: -6px;">
+                   						<span aria-hidden="true">×</span>
+                  					</button>
+                				</div>
+              				</div>
+	    				</div>
+	    				<div class="modal-body">
+	    					<textarea class="form-control" id="rejectReasonMessage" name="rejectReasonMessage" rows="3" placeholder="Mention your reason for rejecting the Compliance"></textarea>
+	    				</div>
+	    				<div class="modal-footer">
+	    					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+	    					<button type="button" class="btn btn-primary" id="btn-send-reject-mail" onclick="sendRejectMail(this)">Send Mail</button>
+	    				</div>
+	    			</div>
+	    		</div>
+	    	</div>
+	    	<!-- Reject Compliance Modal Ends-->
 
 	    	<!-- Image Modal -->
       		<div class="modal fade" id="img-modal" tabindex="-1" aria-hidden="true" style="display: none; text-align: center;">
@@ -753,6 +788,57 @@
 		  			}
 		  		}
 		  	});
+
+		  	function rejectCompliance() {
+		  		// $('#rejectComplianceModal').attr('data-ncr-id', ncr_id);
+
+		  		$('#rejectReasonMessage').val('');
+		  		$('#rejectComplianceModal').modal('show');
+		  	}
+
+		  	function sendRejectMail(btn) {
+		  		let rejectModal = $(btn).closest('.modal');
+
+		  		let reject_msg = $(rejectModal).find('textarea[name="rejectReasonMessage"]').val();
+
+		  		if (reject_msg == '') {
+		  			$('#reject-alert').find('.toast-body').text('Submit reason for Compliance Rejection');
+     				$('#reject-alert').toast('show');
+	      			return false;
+		  		}
+
+		  		let ncr_id = $('input[name="ncrID"]').val();
+
+		  		let pp_activity_observation_id = $('input[name="pp_activity_observation_id"]').val();
+
+		  		$('#rejectReasonMessage').val('');
+		  		$('#rejectComplianceModal').modal('hide');
+
+		  		$('.email-loader').removeAttr('hidden');
+				$('.email-loader').find('.email-loader-message').html('Please wait while the system is sending rejection email to the FE/FS.');
+
+		  		// Ajax Call to Send Reject Compliance Mail to FE/FS
+		  		$.ajax({
+		  			type: 'POST',
+		  			url: '<?php echo base_url('send-ncr-compliance-reject-mail') ?>',
+		  			dataType: 'json',
+		  			data: {ncr_id:ncr_id, pp_activity_observation_id:pp_activity_observation_id, reject_msg:reject_msg},
+		  			success: function(response) {
+		  				// console.log(response); return false;
+		  				$('.email-loader').attr('hidden', true);
+
+		  				$('.toast-body').text(response.message);
+	        			$('.toast').toast('show');
+
+	        			setTimeout(function() {
+	        				location.reload(true)
+	        			}, 5000);
+		  			},
+		  			error: function(xhr, status, error) {
+		  				console.log(xhr);
+		  			}
+		  		});
+		  	}
 
 		  	$('#updateNCRDetails').submit(function(event) {	
 		  		let logged_user_role = '<?php echo $logged_user_role ?>';

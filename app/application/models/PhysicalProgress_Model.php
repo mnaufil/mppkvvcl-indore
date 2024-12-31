@@ -1879,7 +1879,14 @@ class PhysicalProgress_Model extends CI_Model
 							array_push($obs_data['completion_files'], $value);
 						}
 					}	
-				}				
+				}	
+
+				// Check for any rejection flags against the NCR
+				$rejection_flag_result = $this->getFlagRaisedForComplianceRejection($query_result['physical_progress_activity_observation_id'], $query_result['ncr_id']);
+				$obs_data['compliance_rejection_messages'] = [];
+				if (!empty($rejection_flag_result)) {
+					$obs_data['compliance_rejection_messages'] = $rejection_flag_result;
+				}			
 			}
 
 			return $obs_data;
@@ -1890,6 +1897,31 @@ class PhysicalProgress_Model extends CI_Model
 	{
 		$this->db->select('flag_message');
 		$query = $this->db->get_where('ncr_flag', array('physical_progress_activity_observation_id' => $pp_activity_obs_id, 'ncr_id' => $ncr_id));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['flag_message']);
+				}
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getFlagRaisedForComplianceRejection($pp_activity_observation_id, $ncr_id)
+	{
+		$this->db->select('flag_message');
+		$query = $this->db->get_where('compliance_reject_flag', array('physical_progress_activity_observation_id' => $pp_activity_observation_id, 'ncr_id' => $ncr_id));
 		// echo $this->db->last_query(); die();
 
 		if (!$query) {

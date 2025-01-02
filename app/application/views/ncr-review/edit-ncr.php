@@ -328,13 +328,15 @@
 					            					<div class="col-xl-6 mt-5 mb-3">
 					            						<?php if ($logged_user_role == 'TKC') { ?>
 					            						<button class="btn btn-success" type="submit">Submit</button>
-					            						<?php } elseif ($logged_user_role == 'Admin' || $logged_user_role == 'Deputy Team Leader') {
+					            						<?php } elseif ($logged_user_role == 'Admin' || $logged_user_role == 'Deputy Team Leader' || $logged_user_role == 'Key Experts') {
 					            								if ($ncr_data['observation_status'] == 'Pending' && ($ncr_data['is_active'] == 1 && empty($ncr_data['deletedby']))) {
 					            						?>
 					            						<input type="hidden" name="changed_observation_status" value="Forwarded">
 					            						<button class="btn btn-success" type="submit">Mark as Forwarded and Send Mail to TKC</button>
 					            						<?php 	} elseif ($ncr_data['observation_status'] == 'Reviewed' && ($ncr_data['is_active'] == 1 && empty($ncr_data['deletedby']))) { ?>
+					            						<?php if ($logged_user_role == 'Admin' || $logged_user_role == 'Deputy Team Leader') { ?>
 					            						<button class="btn btn-danger" type="button" id="btn-reject" onclick="rejectCompliance()">Reject Compliance</button>
+					            						<?php } ?>					            						
 					            						<input type="hidden" name="changed_observation_status" value="Closed">
 					            						<button class="btn btn-success" type="submit">Mark as Closed and Send Mail to TKC</button>
 					            						<?php 	}

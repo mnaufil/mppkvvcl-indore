@@ -1630,6 +1630,7 @@
               											if ($sheet_data['sheet_status'] != 'Completed' && !(isset($sheet_data['sheet_mode']))) {
               												if ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) { 
               							?>
+              							<button class="btn btn-danger" type="button" id="btn-reject" onclick="rejectCompletion()">Reject Completion</button>
               							<button type="button" class="btn btn-success" id="markReviewedSheetComplete">Mark as Complete</button>
               							<?php 		} else { ?>
               							<button type="submit" class="btn btn-success">Submit</button>		

@@ -163,6 +163,16 @@
                 						</div>	
               						</div>
               					</div>
+
+              					<!-- Loading Spinner -->
+			            			<div class="row email-loader m-0 mt-2" hidden>
+			            				<div class="d-flex align-items-center rounded-2 pt-1 pb-1" style="background: #efefef">
+											  		<strong class="email-loader-message">Loading...</strong>
+											  		<div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+													</div>	
+			            			</div>
+			            			<!-- Loading Spinner Ends -->
+
               					<!-- Row2 Form Inputs -->
               					<div class="form-row">
               						<!-- Contractor -->
@@ -1428,10 +1438,13 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
+																											<?php //echo '<pre>'; print_r($v2['status_id']); echo '</pre>'; ?>
+																											<?php //echo '<pre>'; print_r($v2['observations_list']); echo '</pre>'; ?>
 																											<?php if (isset($v2['status_id'])) { ?>
 																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00)) && !empty($v2['observations_list'])) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
+																																//echo 'obs_list_count: <pre>'; print_r($obs_list_count); echo '</pre>';
 																																$obs_complete_count = 0;
 																																$ncr_submitted_by_tkc_count = 0;
 																																foreach ($v2['applied_observations'] as $aokey => $aovalue) {
@@ -1529,7 +1542,8 @@
 	                    		<?php } ?>
 	                    	<?php } ?>
               					<!-- Row8 Upload Completion File -->
-              					<?php $hidden_upload_photo = ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) ? '' : 'hidden'; ?>
+              					<?php $hidden_upload_photo = (($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) || ($sheet_data['sheet_status'] == 'In Process' && !empty($sheet_data['ppsheet_completion_file']))) ? '' : 'hidden'; ?>
+              					<?php //echo 'hidden_upload_photo: <pre>'; print_r($hidden_upload_photo); echo '</pre>'; ?>
               					<div class="form-row completionFile" <?php echo $hidden_upload_photo; ?>>
               						<div class="col-xl-12 mb-3">
               							<label for="completionFile" class="form-label mt-0">Upload Completion File
@@ -1539,7 +1553,7 @@
               							<div class="text-wrap mt-2" id="preview-img-ppsheet-complete"></div>
               						</div>
               					</div>
-              					<?php if (($sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') && isset($sheet_data['ppsheet_completion_file'])) { ?>
+              					<?php if (($sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed' || $sheet_data['sheet_status'] == 'In Process') && isset($sheet_data['ppsheet_completion_file']) && $sheet_data['work_completion'] == 100) { ?>
               						<div class="form-row completion-photo-row">
               							<div class="col-xl-12">
               								<label for="completionFile" class="form-label mt-0">Completion File
@@ -1562,6 +1576,19 @@
               								</div>
               							</div>
               						</div>
+
+              						<?php if (isset($sheet_data['completion_rejection_messages']) && !empty($sheet_data['completion_rejection_messages'])) { ?>
+              						<div class="form-row mt-2">
+              							<div class="col-xl-12">
+              								<label for="feederCompletionRejection" class="form-label mt-0">Feeder Completion Rejection Messages</label>
+              								<ol class="list-group list-group-numbered" id="feeder-rejection-message-list">
+              									<?php foreach ($sheet_data['completion_rejection_messages'] as $key => $value) { ?>
+						      							<li class="list-group-item"><?php echo $value; ?></li>
+              									<?php } ?>
+					              			</ol>
+              							</div>
+              						</div>
+              						<?php } ?>
               					<?php } ?>
               					<!-- Row9 Remark -->
               					<div class="form-row">
@@ -1600,7 +1627,7 @@
               					<div class="form-row">
               						<div class="col-xl-6 mt-5 mb-3">
               							<?php if (!isset($sheet_type)) {
-              											if ($sheet_data['sheet_status'] != 'Completed' && !(isset($sheet_data['sheet_mode']))) { 
+              											if ($sheet_data['sheet_status'] != 'Completed' && !(isset($sheet_data['sheet_mode']))) {
               												if ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) { 
               							?>
               							<button type="button" class="btn btn-success" id="markReviewedSheetComplete">Mark as Complete</button>
@@ -1610,6 +1637,7 @@
               								 		} else if (isset($sheet_data['sheet_mode']) && ($sheet_data['sheet_mode'] == 'update' && $sheet_data['sheet_status'] != 'Completed')) { 
               												if ($sheet_data['sheet_status'] == 'Reviewed' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Deputy Team Lead' || $userdata['role'] == 'Key Experts' || $userdata['role'] == 'Team Lead')) { 
               							?>
+              							<button class="btn btn-danger" type="button" id="btn-reject" onclick="rejectCompletion()">Reject Completion</button>
               							<button type="button" class="btn btn-success" id="markReviewedSheetComplete">Mark as Complete</button>	
               							<?php 		} else if($sheet_data['sheet_status'] == 'In Process' && ($userdata['role'] == 'Admin' || $userdata['role'] == 'Field Engineer' || $userdata['role'] == 'Field Supervisor' || $userdata['role'] == 'Client')) { ?>
               							<button type="submit" class="btn btn-success">Update</button>
@@ -1861,6 +1889,15 @@
                       </div>
                   </div>
                 </div>
+                <div class="row mt-2" id="div-compliance-rejection" hidden>
+                	<!-- Compliance Rejection Messages -->
+                	<div class="col-xl-12">
+                		<label class="form-label">Compliance Rejection Messages</label>
+                		<ol class="list-group list-group-numbered" id="rejection-message-list">
+	      							<li class="list-group-item"></li>
+              			</ol>
+                	</div>
+                </div>
               </form>
             </div>
             <div class="modal-footer">
@@ -1871,6 +1908,38 @@
         </div>
       </div>
       <!-- Observation Detail Modal Ends -->
+
+      <!-- Reject Compliance Modal -->
+    	<div class="modal fade" id="rejectComplianceModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="rejectComplianceModalLabel" style="display: none" aria-modal="true" role="dialog">
+    		<div class="modal-dialog">
+    			<div class="modal-content">
+    				<div class="modal-header">
+    					<h6 class="modal-title" id="rejectComplianceModalLabel">Reject Reason</h6>
+    					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+		                	<span aria-hidden="true">×</span>
+		              	</button>
+
+		              	<!-- Toaster Alert -->
+            				<div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000" data-bs-animation="true" id="reject-alert">
+              				<div class="d-flex toster-out">
+              					<div class="toast-body"> Hello, world! This is a toast message. </div>
+              					<button aria-label="Close" class="btn-close text-white ms-auto  pe-2" data-bs-dismiss="toast" style="margin: -6px;">
+                 						<span aria-hidden="true">×</span>
+                					</button>
+              				</div>
+            				</div>
+    				</div>
+    				<div class="modal-body">
+    					<textarea class="form-control" id="rejectReasonMessage" name="rejectReasonMessage" rows="3" placeholder="Mention your reason for rejecting the Feeder Completion"></textarea>
+    				</div>
+    				<div class="modal-footer">
+    					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    					<button type="button" class="btn btn-primary" id="btn-send-reject-mail" onclick="sendRejectMail(this)">Send Mail</button>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    	<!-- Reject Compliance Modal Ends-->
 
       <!-- Image Modal -->
       <div class="modal fade" id="img-modal" tabindex="-1" aria-hidden="true" style="display: none; text-align: center;">
@@ -2769,6 +2838,8 @@
 					data: {pp_id: pp_id, activity_id: activity_id, contract_location_id: contract_location_id, prev_pp_id: prev_pp_id},
 					success:function(response){
 						let activity_details = response.activity_details;
+						/*console.log('activity_details: ');
+						console.log(activity_details);*/
 						
 						if (!$.isEmptyObject(activity_details)) {
 							//Enabling the Save Changes button
@@ -2800,7 +2871,8 @@
 								let user_id = '<?php echo $userdata['user_id'] ?>';
 								
 								html += '<tr data-row-id="'+index+'">';
-								if ((obs_completion_file_count > 0 && completion_date != '') || (sheet_type == 'old')) {
+								// if ((obs_completion_file_count > 0 && completion_date != '') || (sheet_type == 'old')) {
+								if (value.observation_status == 'Closed' || value.observation_status == 'Reviewed' || (sheet_type == 'old')) {
 									html += '<td>';
 							    html += '<div class="btn-list">';
 							    html += '<button id="bEdit" type="button" class="btn btn-sm" data-action="view" onclick="showObservationsDetails(this)" data-table-row="'+table_row+'" data-tablename="'+table+'" data-bs-dismiss="modal" data-activity-observation-id="'+value.physical_progress_activity_observation_id+'">';
@@ -2808,7 +2880,8 @@
 							    html += '</button>';
 							    html += '</div>';
 							    html += '</td>';
-								} else if ((obs_completion_file_count == 0 && completion_date == '')) {
+								// } else if ((obs_completion_file_count == 0 && completion_date == '')) {
+								} else if ((obs_completion_file_count == 0 && completion_date == '') || value.observation_status == 'Submitted by TKC') {
 									let action_mode = ((ncr_created_by_id == user_id) || (user == 'Admin') || (user == 'Field Engineer')) ? 'edit' : 'view';
 									let delete_obs_allow = ((ncr_created_by_id == user_id) || (user == 'Admin')) ? 'onclick="deleteObservation(this)"' : '';
 									html += '<td>';
@@ -3378,6 +3451,16 @@
 		      			});
 
 		      			$('#preview-img-complete').append(html_img);
+
+		      			if (obs_data.observation_status == 'Submitted by TKC' && !$.isEmptyObject(obs_data.compliance_rejection_messages)) {
+		      				let list_html = ''
+		      				$.each(obs_data.compliance_rejection_messages, function(index, value) {
+		      					list_html += '<li class="list-group-item">'+ value +'</li>';
+		      				});
+
+		      				$('#rejection-message-list').empty().append(list_html);
+		      				$('#div-compliance-rejection').prop('hidden', false);
+		      			}
 		      		}
 
 		      		$('#saveObs').attr({'data-activity-observation-id': pp_activity_obs_id, 'data-tr-id': tr_id});
@@ -3781,6 +3864,58 @@
 
       	event.preventDefault();
       });
+
+      function rejectCompletion() {
+      	$('#rejectReasonMessage').val('');
+		  	$('#rejectComplianceModal').modal('show');
+      }
+
+      function sendRejectMail(btn) {
+      	let rejectModal = $(btn).closest('.modal');
+
+	  		let reject_msg = $(rejectModal).find('textarea[name="rejectReasonMessage"]').val();
+
+	  		if (reject_msg == '') {
+	  			$('#reject-alert').find('.toast-body').text('Submit reason for Feeder Completion Rejection');
+   				$('#reject-alert').toast('show');
+      		return false;
+	  		}
+
+	  		let physical_progress_id = $('#physical_progress_id').val();
+
+	  		let feeder_id = $('#feederID').val();
+
+	  		let contract_location_id = $('#contract_location_id').val();
+ 
+	  		$('#rejectReasonMessage').val('');
+ 		  	$('#rejectComplianceModal').modal('hide'); //Uncomment Later
+
+		  	$('.email-loader').removeAttr('hidden');
+				$('.email-loader').find('.email-loader-message').html('Please wait while the system is sending rejection email to the FE/FS.');
+
+				// Ajax Call to Send Feeder Completion Reject Mail to FE/FS
+				$.ajax({
+					type: 'POST',
+					url: '<?php echo base_url('send-feeder-completion-reject-mail') ?>',
+					dataType: 'json',
+					data: {physical_progress_id:physical_progress_id, feeder_id:feeder_id, contract_location_id:contract_location_id, reject_msg:reject_msg},
+					success: function(response) {
+						console.log(response);
+
+						$('.email-loader').attr('hidden', true);
+
+	  				$('.toast-body').text(response.message);
+      			$('.toast').toast('show');
+
+      			setTimeout(function() {
+      				location.reload(true)
+      			}, 5000);
+					},
+					error: function(xhr, status, error) {
+	  				console.log(xhr);
+	  			}
+				});
+      }
 
       function sendEmailToTKC(btn) {
       	let pp_activity_obs_id = $(btn).data('pp-activity-obs-id');

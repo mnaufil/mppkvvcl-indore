@@ -317,6 +317,11 @@ class PhysicalProgress extends CI_Controller
                          //Setting physical_progress_id to latest ID
                          $sheet_result['physical_progress_id'] = $sheet_result['prev_physical_progress_id'];
                     }
+
+                    if (!empty($sheet_result['ppsheet_completion_file'])) {
+                         //Check for any feeder completion rejection messages
+                         $sheet_result['completion_rejection_messages'] = $this->pp_model->getFeederCompletionRejectionMessages($sheet_result['feeder_id']);
+                    }
                }
 
                $data['sheet_data'] = $sheet_result;
@@ -1967,6 +1972,133 @@ class PhysicalProgress extends CI_Controller
           } else {
                http_response_code(400);
                $response['message'] = 'No Inputs Found';
+          }
+
+          echo json_encode($response);
+     }
+
+     public function sendFeederCompletionRejectMail()
+     {
+          if (!empty($_POST)) {
+               $physical_progress_id = $this->input->post('physical_progress_id');
+               $feeder_id = $this->input->post('feeder_id');
+               $contract_location_id = $this->input->post('contract_location_id');
+               $reject_msg = $this->input->post('reject_msg');
+
+               $user_id = $this->pp_model->getLoggedInUserID();
+
+               $result = $this->pp_model->saveFeederCompletionRejectionFlag($physical_progress_id, $feeder_id, $reject_msg, $user_id); //Uncomment Later 
+               // $result = 1; //Delete Later
+
+               if ($result) {
+                    $feeder_data = $this->pp_model->getFeederDetails($feeder_id, $contract_location_id, $physical_progress_id);
+
+                    $embedded_img_arr = [];
+
+                    if (!empty($feeder_data)) {
+                         $temp_files = [];
+
+                         foreach ($feeder_data['feeder_completion_file'] as $key => $value) {
+                              $target_path = 'assets/uploads/physical_progress_completion_files/thumb/';
+                              $resized_image = $this->resizeImage($value['file_path'], 1000, 1000, $target_path);
+
+                              $embedded_img_arr['file_'.$key] = $resized_image;
+                              $temp_files['file_'.$key] = $resized_image;
+                         }
+
+                         $feeder_data['feeder_completion_file'] = $temp_files;
+
+                         $feeder_data['reject_msg'] = $reject_msg;
+
+                         $data['feeder_data'] = $feeder_data;
+
+                         $fe_fs_data = $this->pp_model->getFEFSForFeeder($feeder_id, $contract_location_id);
+                         $fe_fs_emails = array_column($fe_fs_data, 'email');
+
+                         $other_email_ids_data = $this->pp_model->getCCBCCEmailIDs();
+                         foreach ($other_email_ids_data as $key => $value) {
+                              $other_email_ids[$value['display_name']] = $value['fieldvalue'];
+                         }
+
+                         $bcc_str = $other_email_ids['BCC EMAIL ID'];
+                         $bcc_arr = explode(',', $bcc_str);
+
+                         $message = $this->load->view('physical-progress/feeder-completion-reject-email-body', $data, true);
+
+                         $subject = 'Feeder ID:'.$feeder_id.' Completion Photo Rejected By DTL';
+
+                         $from = $this->config->item('smtp_user');
+
+                         // PHP Mailer Code Begins
+                         $mail = new PHPMailer(true);
+
+                         try {
+                              $mail->SMTPDebug = SMTP::DEBUG_OFF;
+                              $mail->isSMTP();
+                              $mail->Host = 'smtp.gmail.com';
+                              $mail->SMTPAuth = true;
+                              $mail->Username = 'mppkvvcl.sgs@gmail.com';
+                              $mail->Password = 'tarhuogjifshezmd';
+                              // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                              $mail->SMTPSecure = 'tls';
+                              $mail->Port = 587;
+                              $mail->setFrom($from);
+
+                              foreach ($fe_fs_emails as $value) {
+                                   $mail->addAddress($value);
+                              }
+
+                              foreach ($bcc_arr as $key => $value) {
+                                   $mail->AddBCC($value);
+                              }
+
+                              $mail->isHTML(true);
+                              $mail->Subject = $subject;
+
+                              foreach ($embedded_img_arr as $emb_key => $emb_value) {
+                                   $mail->addEmbeddedImage("$emb_value","$emb_key");
+                              }
+
+                              $mail->Body = $message;
+
+                              if (!$mail->send()) {
+                                   $error = $mail->ErrorInfo;
+
+                                   $response['message'] = 'Failed to send email <br/>Error Message: '.$error;
+                              } else {
+                                   $pp_status_ids = $this->pp_model->getStatusList();
+                                   $pp_status_ids = $this->modify_pp_status_ids($pp_status_ids);
+
+                                   $changed_feeder_status_id = $pp_status_ids['In Process'];
+
+                                   // Reverting Feeder status back to In Process
+                                   $status_revert_result = $this->pp_model->updateFeederStatus($changed_feeder_status_id, $physical_progress_id, $contract_location_id);
+
+                                   if ($status_revert_result) {
+                                        $response['message'] = 'Email has been sent successfully for Feeder ID: '.$feeder_id; 
+                                   } else {
+                                        $response['message'] = 'Failed to revert Feeder status to In Process';
+                                   }
+                              }
+                         } catch (Exception $e) {
+                              $error = $mail->ErrorInfo;
+
+                              // Setting Feeder Status to as it was i.e Reviewed
+                              $pp_status_ids = $this->pp_model->getStatusList();
+                              $pp_status_ids = $this->modify_pp_status_ids($pp_status_ids);
+
+                              $changed_feeder_status_id = $pp_status_ids['Reviewed'];
+
+                              $status_revert_result = $this->pp_model->updateFeederStatus($changed_feeder_status_id, $physical_progress_id, $contract_location_id);
+
+                              $response['message'] = 'Failed to send email <br/>Error Message: '.$error;
+                         }
+                    } else {
+                         $response['message'] = 'No Feeder Data found';     
+                    }
+               }
+          } else {
+               $response['message'] = 'Failed to send email';
           }
 
           echo json_encode($response);

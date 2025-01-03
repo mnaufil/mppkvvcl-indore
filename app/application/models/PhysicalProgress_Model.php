@@ -1141,14 +1141,14 @@ class PhysicalProgress_Model extends CI_Model
 	public function saveObservationAPI($contract_location_id, $work_activity_id, $observation_id, $observation_name, $other_observation_name, $ncr_id, $ncr_date, $raised_by, $designation, $distribution_centre, $observation_remark, $completion_remark, $completion_date, $obs_status_id, $user_id)
 	{
 		//Check if NCR ID already exists
-    $ncr_id_check_result = $this->checkNCRIDExists($ncr_id);
+    	$ncr_id_check_result = $this->checkNCRIDExists($ncr_id);
 
-    if (!empty($ncr_id_check_result)) {
-      $last_obs_data = $this->fetchLastObservation();
-      $last_ncr_id = $last_obs_data['ncr_id'];
+	    if (!empty($ncr_id_check_result)) {
+	      $last_obs_data = $this->fetchLastObservation();
+	      $last_ncr_id = $last_obs_data['ncr_id'];
 
-      $ncr_id = ++$last_ncr_id;
-    }
+	      $ncr_id = ++$last_ncr_id;
+	    }
 
 		$data = array(
 			// 'physical_progress_activity_id' => $pp_activity_id,
@@ -3202,24 +3202,24 @@ class PhysicalProgress_Model extends CI_Model
 	}
 
 	public function executeQuery($session_query)
-  {
-    $query = $this->db->query($session_query);
+  	{
+    	$query = $this->db->query($session_query);
 
-    if (!$query) {
-      $error = $this->db->error();
-      echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
-      die();
-    } else {
-      $query_result = [];
-      if ($query->num_rows() > 0) {
-          $query_result = $query->result_array();
-      }
+    	if (!$query) {
+		    $error = $this->db->error();
+		    echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+		    die();
+    	} else {
+	      	$query_result = [];
+	      	if ($query->num_rows() > 0) {
+	        	$query_result = $query->result_array();
+	      	}
 
-      return $query_result;
-    }
-  }
+      		return $query_result;
+    	}
+  	}
 
-  public function getCCBCCEmailIDs()
+	public function getCCBCCEmailIDs()
 	{
 		$this->db->select('display_name, fieldvalue');
 		$query = $this->db->get_where('sysconfig', array('module' => 'NCR Review'));
@@ -3246,6 +3246,129 @@ class PhysicalProgress_Model extends CI_Model
 		$key_array = array_column($array, $sort_key);
 		array_multisort($key_array, SORT_ASC, $array); //or SORT_DESC
 		return $array;
+	}
+
+	public function saveFeederCompletionRejectionFlag($physical_progress_id, $feeder_id, $reject_msg, $user_id)
+	{
+		$data = array(
+			'feeder_id' => $feeder_id,
+			'physical_progress_id' => $physical_progress_id,
+			'flag_message' => $reject_msg,
+			'createdby' => $user_id,
+			'createddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->insert('feeder_completion_reject_flag', $data);
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$insert_id = $this->db->insert_id();
+			return $insert_id;
+		}
+	}
+
+	public function getFeederDetails($feeder_id, $contract_location_id, $physical_progress_id)
+	{
+		$query_stmt = "SELECT physical_progress.physical_progress_id, physical_progress.contract_id, physical_progress.contract_location_id, physical_progress.site_location, physical_progress.reported_by, physical_progress.reported_date, physical_progress.status_id, contract.contract_id, contract.contractor_name, contract.tender_award_no, contract.tender_award_date,contract.package_group_no, contract.typeofwork_id, contract_location.contract_location_id, contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.location_name, contract_location.feeder_id, contract_location.feeder_name, contract_location.charging_status, mst_user.username AS pp_reported_by, mst_region.region_name, mst_circle.circle_name, mst_division.division_name, mst_status.name AS sheet_status, mst_typeofwork.name AS typeofwork_name, CASE WHEN physical_progress.status_id = 1 THEN IFNULL(tt_act.tt_activity, 0) ELSE IFNULL(cz_act.comp_act, 0) END AS tt_task, IFNULL(cc_act.comp_act, 0) AS cc_task, IFNULL(tt_obs.tt_observation, 0) AS tt_observation, IFNULL(cc_obs.cc_observation, 0) AS cc_observation FROM (SELECT MAX(physical_progress.physical_progress_id) AS physical_progress_id, physical_progress.contract_id, physical_progress.contract_location_id, MAX(reported_date) AS reported_date FROM physical_progress WHERE physical_progress.is_draft = 0 GROUP BY physical_progress.contract_id, physical_progress.contract_location_id) grp INNER JOIN physical_progress ON physical_progress.physical_progress_id = grp.physical_progress_id AND physical_progress.contract_id = grp.contract_id AND physical_progress.contract_location_id = grp.contract_location_id INNER JOIN contract ON physical_progress.contract_id = contract.contract_id INNER JOIN contract_location ON physical_progress.contract_id = contract_location.contract_id AND physical_progress.contract_location_id = contract_location.contract_location_id LEFT JOIN mst_user_data_access U ON U.region_id = contract_location.region_id AND U.circle_id = contract_location.circle_id AND U.division_id = contract_location.division_id LEFT JOIN mst_user ON mst_user.user_id = physical_progress.reported_by INNER JOIN mst_region ON mst_region.region_id = contract_location.region_id INNER JOIN mst_circle ON mst_circle.circle_id = contract_location.circle_id INNER JOIN mst_division ON mst_division.division_id = contract_location.division_id INNER JOIN mst_status ON mst_status.status_id = physical_progress.status_id INNER JOIN mst_typeofwork ON mst_typeofwork.typeofwork_id = contract.typeofwork_id LEFT JOIN (SELECT physical_progress_id, COUNT(mst_typeofwork_activity.typeofwork_activity_id) AS tt_activity FROM physical_progress a INNER JOIN contract ON contract.contract_id = a.contract_id INNER JOIN mst_typeofwork_activity ON mst_typeofwork_activity.typeofwork_id = contract.typeofwork_id GROUP BY physical_progress_id, mst_typeofwork_activity.typeofwork_id) tt_act ON tt_act.physical_progress_id = physical_progress.physical_progress_id LEFT JOIN (SELECT A.physical_progress_id AS physical_progress_id, IFNULL(COUNT(A.activity_id), 0) AS comp_act FROM (SELECT P1.physical_progress_id, P1.contract_location_id, P2.activity_id, P2.status_id FROM contract C LEFT JOIN contract_location CL ON
+            CL.contract_id = C.contract_id LEFT JOIN (SELECT MAX(physical_progress.physical_progress_id) AS physical_progress_id, physical_progress.contract_id, physical_progress.contract_location_id, MAX(reported_date) AS reported_date FROM physical_progress GROUP BY physical_progress.contract_id, physical_progress.contract_location_id) P ON P.contract_location_id = CL.contract_location_id AND P.contract_id = CL.contract_id LEFT JOIN physical_progress P1 ON P1.physical_progress_id = P.physical_progress_id LEFT JOIN physical_progress_activity P2 ON P2.physical_progress_id = P1.physical_progress_id WHERE CL.is_active = 1) A GROUP BY A.physical_progress_id) cz_act ON cz_act.physical_progress_id = physical_progress.physical_progress_id LEFT JOIN (SELECT A.physical_progress_id AS physical_progress_id, IFNULL(COUNT(A.activity_id), 0) AS comp_act FROM (SELECT P1.physical_progress_id, P1.contract_location_id, P2.activity_id, P2.status_id FROM contract C LEFT JOIN contract_location CL ON CL.contract_id = C.contract_id LEFT JOIN (SELECT MAX(physical_progress.physical_progress_id) AS physical_progress_id, physical_progress.contract_id, physical_progress.contract_location_id, MAX(reported_date) AS reported_date FROM physical_progress GROUP BY physical_progress.contract_id, physical_progress.contract_location_id) P ON P.contract_location_id = CL.contract_location_id AND P.contract_id = CL.contract_id LEFT JOIN physical_progress P1 ON P1.physical_progress_id = P.physical_progress_id LEFT JOIN physical_progress_activity P2 ON P2.physical_progress_id = P1.physical_progress_id WHERE CL.is_active = 1) A LEFT JOIN (SELECT P1.physical_progress_id, P1.contract_location_id, 1 AS is_no_pending_observation, P.activity_id FROM mst_typeofwork_activity T INNER JOIN physical_progress_activity P ON P.activity_id = T.typeofwork_activity_id INNER JOIN physical_progress P1 ON P1.physical_progress_id = P.physical_progress_id INNER JOIN physical_progress_activity_observation P2 ON P2.contract_location_id = P1.contract_location_id AND P.activity_id = P2.activity_id AND P2.completion_date IS NULL INNER JOIN contract_location CL ON CL.contract_location_id = P1.contract_location_id AND P1.contract_id = CL.contract_id WHERE CL.is_active = 1 AND P2.deletedby IS NULL GROUP BY P1.contract_id, P1.contract_location_id, P.activity_id) P3 ON P3.contract_location_id = A.contract_location_id AND P3.activity_id = A.activity_id WHERE (A.status_id = 1 AND IFNULL(is_no_pending_observation, 0) = 0) OR (A.status_id = 3) GROUP BY A.physical_progress_id) cc_act ON cc_act.physical_progress_id = physical_progress.physical_progress_id LEFT JOIN (SELECT contract_location_id, COUNT(observation_id) AS tt_observation FROM physical_progress_activity_observation WHERE physical_progress_activity_observation.deletedby IS NULL GROUP BY contract_location_id) tt_obs ON tt_obs.contract_location_id = contract_location.contract_location_id LEFT JOIN (SELECT contract_location_id, COUNT(observation_id) AS cc_observation FROM physical_progress_activity_observation WHERE IFNULL(completion_date, '') <> '' GROUP BY contract_location_id) cc_obs ON cc_obs.contract_location_id = contract_location.contract_location_id WHERE contract_location.feeder_id = '".$feeder_id."' AND contract_location.contract_location_id = ".$contract_location_id." AND physical_progress.physical_progress_id = ".$physical_progress_id." GROUP BY physical_progress.physical_progress_id";
+
+		$query = $this->db->query($query_stmt);
+		// echo $this->db->last_query();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->row_array();
+
+				$pp_completion_file = $this->getPhysicalProgressCompletionFile($physical_progress_id);
+				$query_result['feeder_completion_file'] = $pp_completion_file;
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function getFEFSForFeeder($feeder_id, $contract_location_id)
+	{
+		$this->db->select('contract_location.region_id, contract_location.circle_id, contract_location.division_id, contract_location.feeder_id, mst_user_data_access.user_id, mst_user.username, mst_user.email, mst_user.role_id, mst_role.name AS role');
+		$this->db->from('contract_location');
+		$this->db->join('mst_user_data_access', 'contract_location.region_id = mst_user_data_access.region_id AND contract_location.circle_id = mst_user_data_access.circle_id AND contract_location.division_id = mst_user_data_access.division_id', 'INNER');
+		$this->db->join('mst_user', 'mst_user_data_access.user_id = mst_user.user_id', 'INNER');
+		$this->db->join('mst_role', 'mst_user.role_id = mst_role.role_id', 'INNER');
+		$this->db->group_start();
+		$this->db->where('mst_role.name', 'Field Engineer');
+		$this->db->or_where('mst_role.name', 'Field Supervisor');
+		$this->db->group_end();
+		$this->db->where(array('contract_location.feeder_id' => $feeder_id, 'contract_location.contract_location_id' => $contract_location_id));
+
+		$query = $this->db->get();
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$query_result = $query->result_array();
+			}
+
+			return $query_result;
+		}
+	}
+
+	public function updateFeederStatus($changed_feeder_status_id, $physical_progress_id, $contract_location_id)
+	{
+		$data = array(
+			'status_id' => $changed_feeder_status_id,
+			'modifiedby' => $this->getLoggedInUserID(),
+			'modifieddate' => date('Y-m-d H:i:s')
+		);
+
+		$query = $this->db->update('physical_progress', $data, array('physical_progress_id' => $physical_progress_id, 'contract_location_id' => $contract_location_id));
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			return $this->db->affected_rows();
+		}
+	}
+
+	public function getFeederCompletionRejectionMessages($feeder_id)
+	{
+		$this->db->select('flag_message');
+		$query = $this->db->get_where('feeder_completion_reject_flag', array('feeder_id' => $feeder_id));
+		// echo $this->db->last_query(); die();
+
+		if (!$query) {
+			$error = $this->db->error();	
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+		} else {
+			$query_result = [];
+
+			if ($query->num_rows() > 0) {
+				$result = $query->result_array();
+
+				foreach ($result as $key => $value) {
+					array_push($query_result, $value['flag_message']);
+				}
+			}
+
+			return $query_result;
+		}
 	}
 }
 

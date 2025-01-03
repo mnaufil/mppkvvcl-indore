@@ -119,6 +119,7 @@ $route['clear-physical-progress'] = 'PhysicalProgress/clearPhysicalProgress';
 $route['mark-pp-reviewed-sheet-complete'] = 'PhysicalProgress/markReviewedSheetComplete';
 $route['export-physical-verification-list'] = 'PhysicalProgress/exportPhysicalVerificationList';
 $route['send-flag-mail'] = 'PhysicalProgress/sendFlagMailToTKC';
+$route['send-feeder-completion-reject-mail'] = 'PhysicalProgress/sendFeederCompletionRejectMail';
 
 /*NCR Review Module*/
 $route['ncr-review'] = 'NCRReview/index';

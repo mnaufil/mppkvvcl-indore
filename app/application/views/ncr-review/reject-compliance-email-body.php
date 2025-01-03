@@ -74,11 +74,14 @@
 				<th>Observation Photos uploaded by TKC: </th>
 				<td>
 					<?php 	$obs_files_by_tkc = $ncr_data['observation_tkc_files'];
-							foreach ($obs_files_by_tkc as $key => $value) {
+							if (!empty($obs_files_by_tkc)) {
+								foreach ($obs_files_by_tkc as $key => $value) {
 					?>
 					<img src="cid:<?php echo $key; ?>" width="100" height="100">
 					<br/><br/>
-					<?php	} ?>
+					<?php		}
+							}
+					?>
 				</td>
 			</tr>			
 			<!-- Completion Remark -->

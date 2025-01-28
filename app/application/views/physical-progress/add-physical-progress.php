@@ -3884,6 +3884,10 @@
 
 	  		let physical_progress_id = $('#physical_progress_id').val();
 
+	  		if (physical_progress_id == '') {
+	  			physical_progress_id = $('#prev_physical_progress_id').val();
+	  		}
+
 	  		let feeder_id = $('#feederID').val();
 
 	  		let contract_location_id = $('#contract_location_id').val();
@@ -3901,7 +3905,7 @@
 					dataType: 'json',
 					data: {physical_progress_id:physical_progress_id, feeder_id:feeder_id, contract_location_id:contract_location_id, reject_msg:reject_msg},
 					success: function(response) {
-						console.log(response);
+						// console.log(response);
 
 						$('.email-loader').attr('hidden', true);
 

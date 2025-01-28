@@ -1987,7 +1987,7 @@ class PhysicalProgress extends CI_Controller
 
                $user_id = $this->pp_model->getLoggedInUserID();
 
-               $result = $this->pp_model->saveFeederCompletionRejectionFlag($physical_progress_id, $feeder_id, $reject_msg, $user_id); //Uncomment Later 
+               $result = $this->pp_model->saveFeederCompletionRejectionFlag($physical_progress_id, $feeder_id, $reject_msg, $user_id); //Uncomment Later
                // $result = 1; //Delete Later
 
                if ($result) {

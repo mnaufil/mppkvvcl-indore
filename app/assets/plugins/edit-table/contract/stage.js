@@ -419,14 +419,12 @@ class BSTable {
     }
     _actionAddRow() {
         // Add row to this table
-		
         let $allRows = this.table.find('tbody tr');
 		var rowCount = $('#new-edit-milestone tr').length;
 		var rowIndex = rowCount - 1;
         if ($allRows.length == 0) { // there are no rows. we must create them
             let $currentRow = this.table.find('thead tr'); // find header
-			
-			
+
             // create the new ro w
             let newColumnHTML = '';
              let $cols = $currentRow.find('th'); // read each header field
@@ -479,46 +477,41 @@ class BSTable {
             let $cols = $lastRow.find('td'); //lee campos
             $cols.each(function(e) {
                 let column = this; // Inner function this (column object)
-                                console.log("e = "+e);
-                                console.log("common = "+JSON.stringify(column));
+                console.log("e = "+e);
+                console.log("common = "+JSON.stringify(column));
 
                 if ($(column).attr('name') == 'bstable-actions') {
                     // action buttons column. change nothing
                 } 
                 /*else if (e == '1')
                 {
-					 $.ajax({url: baseUrl+"loadmilestones", success: function(result){
+					$.ajax({url: baseUrl+"loadmilestones", success: function(result){
 						$(column).html(result);
 					}});	
                 }*/
-                                    /* $(column).html('<select class="form-control"><option value="Select">Select Milestone</option><option value="1">Milestone 1</option><option value="2">Milestone 2</option><option value="3">Milestone 3</option><option value="4">Milestone 4</option><option value="5">Milestone 5</option><option value="6">Milestone 6</option><option value="7">Milestone 7</option><option value="8">Milestone 8</option></select>') */
+                /* $(column).html('<select class="form-control"><option value="Select">Select Milestone</option><option value="1">Milestone 1</option><option value="2">Milestone 2</option><option value="3">Milestone 3</option><option value="4">Milestone 4</option><option value="5">Milestone 5</option><option value="6">Milestone 6</option><option value="7">Milestone 7</option><option value="8">Milestone 8</option></select>') */
 
                 else {
-					
-					
-						 if(e==1)
-						 {
-							  $(column).attr('id', 'td_dynamicstages'+rowIndex);
-						      $(column).html(''); // clear the text
-						 }
-						 else if(e==2)
-						 {
-							 $(column).attr('id', 'td_dynamicdatepickerstage'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 else if(e==3)
-						 {
-							 $(column).attr('id', 'td_dynamicqtystage'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						 else if(e==4)
-						 {
-							 $(column).attr('id', 'td_dynamicamountstage'+rowIndex);
-						     $(column).html(''); // clear the text
-						 }
-						
-                    
-                   
+					if(e==1)
+					{
+					    $(column).attr('id', 'td_dynamicstages'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+					else if(e==2)
+					{
+					    $(column).attr('id', 'td_dynamicdatepickerstage'+rowIndex);
+						$(column).html(''); // clear the text
+					}
+					else if(e==3)
+					{
+						$(column).attr('id', 'td_dynamicqtystage'+rowIndex);
+					    $(column).html(''); // clear the text
+					}
+					else if(e==4)
+					{
+						$(column).attr('id', 'td_dynamicamountstage'+rowIndex);
+					    $(column).html(''); // clear the text
+					}                   
                 }
             });
         }

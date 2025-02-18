@@ -174,7 +174,7 @@
 								                		<label class="form-label" for="other_observation">Other Observation
 								                			<span class="text-red">*</span>
 								                		</label>
-								                    <input type="text" class="form-control" id="other_observation" name="other_observation" value="<?php echo $ncr_data['other_observation_name']; ?>" <?php echo $readonly_other_observation; ?>>
+								                    	<input type="text" class="form-control" id="other_observation" name="other_observation" value="<?php echo $ncr_data['other_observation_name']; ?>" <?php echo $readonly_other_observation; ?>>
 								                	</div>
 								                </div>	
 					            				<?php } ?>
@@ -206,7 +206,7 @@
                   										<div class="text-wrap mt-2" id="preview-img-obs">
                   										<?php 	if (!empty($ncr_data['observation_files'])) {
                   													foreach ($ncr_data['observation_files'] as $key => $value) { ?>
-                  											<div class="file-image-1" data-ppao-file_id="<?php echo $value['physical_progress_activity_observation_file_id']; ?>">
+                  											<div class="file-image-1" data-ppao-file-id="<?php echo $value['physical_progress_activity_observation_file_id']; ?>">
                   												<a href="javascript:void(0)" onclick="showImageModal(this)">
 										                        	<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="" width="100" height="100">
 										                        </a>
@@ -292,7 +292,7 @@
                   										<div class="text-wrap mt-2" id="preview-img-complete">
               											<?php 	if (!empty($ncr_data['observation_completion_files'])) {
               														foreach ($ncr_data['observation_completion_files'] as $key => $value) { ?>
-              												<div class="file-image-1" data-ppao-file_id="<?php echo $value['physical_progress_activity_completion_file_id']; ?>">
+              												<div class="file-image-1" data-ppao-file-id="<?php echo $value['physical_progress_activity_completion_file_id']; ?>">
                   												<a href="javascript:void(0)" onclick="showImageModal(this)">
 										                        	<img src="<?php echo base_url($value['file_path']); ?>" class="br-5" alt="" width="100" height="100">
 										                        </a>

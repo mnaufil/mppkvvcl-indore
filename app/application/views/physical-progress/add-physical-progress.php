@@ -563,7 +563,7 @@
 																								<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																									<!-- Sheet Status: In Process || Completed || Reviewed -->
 																									<td class="observation">
-																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || $v2['status_id'] == 4 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) {
+																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || $v2['status_id'] == 4 || ($v2['status_id'] == 0 && !empty($v2['applied_observations'])))) {
 																														$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																														$obs_list_count = count($v2['applied_observations']);
 																														$obs_complete_count = 0;
@@ -693,7 +693,7 @@
 																								<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																									<!-- Sheet Status: In Process || Completed || Reviewed -->
 																									<td class="observation">
-																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || $v2['status_id'] == 4 || ($v2['status_id'] == 0 && !empty($v2['applied_observations']))) && !empty($v2['observations_list'])) {
+																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || $v2['status_id'] == 4 || ($v2['status_id'] == 0 && !empty($v2['applied_observations'])))) {
 																														$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																														$obs_list_count = count($v2['applied_observations']);
 																														$obs_complete_count = 0;
@@ -839,7 +839,7 @@
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00)) && !empty($v2['observations_list'])) 
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00))) 
 																														{
 																																$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
@@ -994,7 +994,7 @@
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00)) && !empty($v2['observations_list'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00))) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
 																																$obs_complete_count = 0;
@@ -1137,7 +1137,7 @@
 																								<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																									<!-- Sheet Status: In Process || Completed || Reviewed -->
 																									<td class="observation">
-																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || $v2['status_id'] == 4 || ($v2['status_id'] == 0 && !empty($v2['applied_observations'])) || $userdata['role'] == 'Client') && !empty($v2['observations_list'])) {
+																										<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || $v2['status_id'] == 4 || ($v2['status_id'] == 0 && !empty($v2['applied_observations'])) || $userdata['role'] == 'Client')) {
 																														$row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																														$obs_list_count = count($v2['applied_observations']);
 																														$obs_complete_count = 0;
@@ -1283,7 +1283,7 @@
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00)) && !empty($v2['observations_list'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00))) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
 																																$obs_complete_count = 0;
@@ -1441,7 +1441,7 @@
 																											<?php //echo '<pre>'; print_r($v2['status_id']); echo '</pre>'; ?>
 																											<?php //echo '<pre>'; print_r($v2['observations_list']); echo '</pre>'; ?>
 																											<?php if (isset($v2['status_id'])) { ?>
-																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00)) && !empty($v2['observations_list'])) { ?>
+																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00))) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
 																																//echo 'obs_list_count: <pre>'; print_r($obs_list_count); echo '</pre>';

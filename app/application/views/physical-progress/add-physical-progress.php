@@ -3221,7 +3221,19 @@
 		  		});
 
 					$('#preview-img-obs').empty();
+					$('#preview-img-obs-by-tkc').empty();
 					$('#preview-img-complete').empty();
+
+					// Clearing Observation By TKC Data
+					$('#remark_by_tkc').val('');
+					$('.list-group').empty();
+
+					if ($('#flag-div').is(':visible')) {
+						$('#flag-div').prop('hidden', true);
+					}
+
+					// Hiding Compliance By TKC block
+					$('#observation_photos_by_tkc').prop('hidden', true);
       	} else if (action == 'edit' || action == 'view') {
       		let pp_activity_obs_id = $(btn).attr('data-activity-observation-id');
       		let tr = $(btn).closest('tr');
@@ -3236,10 +3248,12 @@
       			$('select[name="observation"]').prop('disabled', true);
       			$('input[name="remark"]').prop('readonly', true);
       			$('#obs_photo').prop('disabled', true);
-      			$('#obs_photo').prop('disabled', true);
       			$('#completion_photo').prop('disabled', true);
       			$('#completionDate').prop('disabled', true);
       			$('#observation_remark').prop('readonly', true);
+      			$('#remark_by_tkc').prop('readonly', true);
+      			$('#raiseFlag').prop('hidden', true);
+      			$('#flag-div').prop('hidden', true);
 
       			$('#saveObs').hide();
 
@@ -3413,7 +3427,7 @@
 		      			$('#preview-img-obs-by-tkc').append(html_img);
 
 		      			// Displaying Flag Messages if any
-		      			if (!$.isEmptyObject(obs_data.flag_msgs)) {
+		      			if (!$.isEmptyObject(obs_data.flag_msgs) && action == 'edit') {
 		      				let flag_html = '';
 
 		      				$.each(obs_data.flag_msgs, function(index, value) {
@@ -3422,6 +3436,9 @@
 
 	      					$('#obs-detail-modal').find('#flag-div').prop('hidden', false);
 	      					$('#obs-detail-modal').find('#flag-div .list-group').empty().append(flag_html);
+		      			} else {
+		      				$('#obs-detail-modal').find('#flag-div .list-group').empty();
+		      				$('#obs-detail-modal').find('#flag-div').prop('hidden', true);
 		      			}
 		      		}
 
@@ -3944,7 +3961,7 @@
 	      		dataType: 'json',
 	      		data: {pp_activity_obs_id:pp_activity_obs_id, ncr_id:ncr_id, flag_msg:flag_msg},
 	      		success:function(response) {
-	      			console.log(response); 
+	      			// console.log(response);
 
 	      			// Removing Loader
 		      		$('.email-loader-message').html('Loading...');

@@ -48,7 +48,7 @@ class NCRReview extends CI_Controller
 		}
 
 		// $result = $this->ncr_model->getNCRs($ncr_status_ids['Pending'], $ncr_status_ids['Reviewed'], $contract_location_ids);
-		$result = $this->ncr_model->getNCRs($ncr_status_ids['Pending'], $ncr_status_ids['Reviewed'], $contract_ids);
+		$result = $this->ncr_model->getNCRs($ncr_status_ids['Pending'], $ncr_status_ids['Reviewed'], $ncr_status_ids['Forwarded'], $contract_ids);
 
 		// Formatting Dates
 		foreach ($result as $key => $value) {

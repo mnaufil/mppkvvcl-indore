@@ -144,8 +144,8 @@
 						<?php 	$obs_photos = explode(', ', $value['observation_photos']);
 								for ($j = 0; $j < count($obs_photos); $j++) { 
 						?>
-						<img src="<?php echo $obs_photos[$j] ?>" width="100" height="100">
-						<br/><br/>
+						<img src="<?php echo $obs_photos[$j] ?>" alt="Observation Photo by PMA" width="100" height="100" style="margin-top: 30px;">
+						<!-- <br/><br/> -->
 						<?php 	} ?>
 					</td>
 				</tr>
@@ -157,8 +157,8 @@
 								if (!empty($obs_tkc_photos)) {
 									for ($j = 0; $j < count($obs_tkc_photos); $j++) {
 						?>
-						<img src="<?php echo $obs_tkc_photos[$j]; ?>" width="100" height="100" >
-						<br/><br/>			
+						<img src="<?php echo $obs_tkc_photos[$j]; ?>" alt="Compliance Photo by PMA" width="100" height="100" style="margin-top: 30px;">
+						<!-- <br/><br/> -->
 						<?php 		}
 								}
 						?>
@@ -181,8 +181,8 @@
 								if (!empty($obs_completion_photos)) {
 									for ($j = 0; $j < count($obs_completion_photos); $j++) {
 						?>
-						<img src="<?php echo $obs_completion_photos[$j] ?>" width="100" height="100">
-						<br/><br/>
+						<img src="<?php echo $obs_completion_photos[$j] ?>" alt="Compliance Verification Photo by PMA" width="100" height="100" style="margin-top: 30px;">
+						<!-- <br/><br/> -->
 						<?php 		} 
 								}
 						?>

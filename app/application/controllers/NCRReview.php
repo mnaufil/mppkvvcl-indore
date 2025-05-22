@@ -229,6 +229,7 @@ class NCRReview extends CI_Controller
 
 	public function updateNCR()
 	{
+		echo '<pre>'; print_r($_POST); echo '</pre>';
 		$errors = [];
 
 		$pp_activity_obs_id = $this->input->post('pp_activity_observation_id');
@@ -238,7 +239,7 @@ class NCRReview extends CI_Controller
 		$observation_name = $this->input->post('observationName');
 		$ncr_id = $this->input->post('ncrID');
 		$ncr_date = $this->input->post('ncrDate');
-		$observation_remark = $this->input->post('remark');
+		$observation_remark = $this->input->post('observation_remark');
 		$remark_by_tkc = $this->input->post('remark_by_tkc');
 		$completion_date = (!empty($this->input->post('completionDate'))) ? date('Y-m-d', strtotime($this->input->post('completionDate'))) : NULL;
 		$changed_obs_status = $this->input->post('changed_observation_status');
@@ -263,6 +264,7 @@ class NCRReview extends CI_Controller
 		if ($logged_user_role != 'TKC') {
 			//Updating record in physical_progress_activity_observation table
 			$result = $this->ncr_model->updateNCRDetails($pp_activity_obs_id, $observation_id, $observation_name, $observation_remark, $completion_date, $changed_obs_status_ID);
+			echo 'result: <pre>'; print_r($result); echo '</pre>'; die();
 			if (!empty($obs_deleted_file_id)) {
 				// Changing delete flag of deleted observation files
 				foreach ($obs_deleted_file_id as $key => $value) {
@@ -1394,10 +1396,12 @@ class NCRReview extends CI_Controller
 
 		// Generating NCR Report data
 		$report_data = $this->ncr_model->getNCRReportData($ncr_id, $user_id);
+		// echo 'report_data: <pre>'; print_r($report_data); echo '</pre>'; die();
 
 		foreach ($report_data as $r_key => $r_value) {
 			if (!empty($r_value['observation_photos'])) {
 				$observation_photos = explode(',', $r_value['observation_photos']);
+				// echo 'observation_photos: <pre>'; print_r($observation_photos); echo '</pre>'; die();
 
 				$r_value['observation_photos'] = [];
 				$temp_observation_photos = [];

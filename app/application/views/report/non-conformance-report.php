@@ -314,7 +314,7 @@
 	                                          $count = count($explode);
 	                                          for($i=0;$i<$count;$i++) { 
 	                                    ?>
-	                                    <img src="<?php echo $explode[$i]; ?>" width="150"/>
+	                                    <img src="<?php echo $explode[$i]; ?>" width="100px" height="100px"/>
 	                                    <?php } ?>
 	                                  </td>
 	                                </tr>
@@ -346,7 +346,7 @@
 	                                          $count1 = count($explode1);
 	                                          for($j=0;$j<$count1;$j++) { 
 	                                    ?>
-	                                    <img src="<?php echo $explode1[$j]; ?>" width="150"/>
+	                                    <img src="<?php echo $explode1[$j]; ?>" width="100px" height="100px"/>
 	                                  	<?php } ?>
 	                                	</td>
 	                                </tr>	                                

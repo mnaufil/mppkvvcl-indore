@@ -529,7 +529,7 @@ class NCRReview_Model extends CI_Model
 		$data = array(
 			'observation_id' => $observation_id,
 			'observation_name' => $observation_name,
-			'remark' => $observation_remark,
+			'observation_remark' => $observation_remark,
 			'completion_date' => $completion_date,
 			'status_id' => $changed_obs_status_ID,
 			'modifiedby' => $this->getLoggedInUserID(),

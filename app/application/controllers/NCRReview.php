@@ -229,7 +229,6 @@ class NCRReview extends CI_Controller
 
 	public function updateNCR()
 	{
-		echo '<pre>'; print_r($_POST); echo '</pre>';
 		$errors = [];
 
 		$pp_activity_obs_id = $this->input->post('pp_activity_observation_id');
@@ -264,7 +263,7 @@ class NCRReview extends CI_Controller
 		if ($logged_user_role != 'TKC') {
 			//Updating record in physical_progress_activity_observation table
 			$result = $this->ncr_model->updateNCRDetails($pp_activity_obs_id, $observation_id, $observation_name, $observation_remark, $completion_date, $changed_obs_status_ID);
-			echo 'result: <pre>'; print_r($result); echo '</pre>'; die();
+
 			if (!empty($obs_deleted_file_id)) {
 				// Changing delete flag of deleted observation files
 				foreach ($obs_deleted_file_id as $key => $value) {

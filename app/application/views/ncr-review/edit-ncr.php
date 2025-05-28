@@ -124,7 +124,7 @@
 				            						<!-- Designation -->
 								              		<div class="col-xl-4">
 								              			<label class="form-label" for="designation">Designation</label>
-								                    <input type="text" class="form-control" id="designation" name="designation" value="<?php echo $ncr_data['designation']; ?>" readonly>
+								                    	<input type="text" class="form-control" id="designation" name="designation" value="<?php echo $ncr_data['designation']; ?>" readonly>
 								              		</div>
 								              		<!-- Distribution Centre -->
 								              		<div class="col-xl-4">
@@ -843,9 +843,7 @@
 		  	}
 
 		  	$('#updateNCRDetails').submit(function(event) {	
-		  		let logged_user_role = '<?php echo $logged_user_role ?>';
-		  		console.log('logged_user_role: ' + logged_user_role);
-		  		
+		  		let logged_user_role = '<?php echo $logged_user_role ?>';		  		
 
 		  		if (logged_user_role == 'TKC') {
 		  			let uploaded_obs_photos_by_tkc = $('#preview-img-obs-tkc').find('.file-image-1');
@@ -904,7 +902,7 @@
 	    				dataType: 'json',
 	    				data: {feeder_id : feeder_id_arr, ncr_id: ncr_id_arr},
 	    				success: function(response) {
-	    					console.log(response);
+	    					// console.log(response);
 	    					// return false;
 
 	    					let to_html = '<label class="form-label" for="">To Recipients</label>';
@@ -971,6 +969,7 @@
 		  		let observation_completion_photo = $('#completion_photo')[0].files;*/
 
 		  		let formData = new FormData($('#updateNCRDetails')[0]);
+		  		// console.log('formData: ', formData);
 
 		  		// Ajax call to send email
 		  		$.ajax({
@@ -981,7 +980,7 @@
     				contentType: false,
     				data: formData,
     				success: function(response) {
-    					console.log(response);
+    					// console.log(response); return false;
 
     					$('.toast-body').text(response.message);
 	        			$('.toast').toast('show');

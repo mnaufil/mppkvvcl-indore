@@ -1415,5 +1415,31 @@ class Setup_Model extends CI_Model
    			return $query_result;
    		}
    	}
-	
+
+   	public function checkFeederDuplicacy($feeder_id, $contract_location_id)
+   	{
+   		if (empty($contract_location_id)) {
+   			$where_array = array('feeder_id' => $feeder_id, 'is_active' => 1);
+   		} else {
+   			$where_array = array('feeder_id' => $feeder_id, 'contract_location_id !=' => $contract_location_id, 'is_active' => 1);
+   		}
+
+   		$this->db->select('feeder_id');
+   		$query = $this->db->get_where('contract_location', $where_array);
+   		// echo $this->db->last_query(); die();
+
+   		if (!$query) {
+   			$error = $this->db->error();
+			echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+			die();
+   		} else {
+   			$query_result = [];
+
+   			if ($query->num_rows() > 0) {
+   				$query_result = $query->row_array();
+   			}
+
+   			return $query_result;
+   		}
+   	}
 }

@@ -253,6 +253,7 @@ $route['contract-management/(:num)'] = 'Setup/editcontractpage/$1';
 $route['view-contract-management/(:num)'] = 'Setup/viewcontractpage/$1';
 $route['add-contract-management'] = 'Setup/addcontract';
 $route['update-contract-management'] = 'Setup/updatecontract';
+$route['check-feeder-duplicacy'] = 'Setup/checkFeederDuplicacy';
 
 $route['delete-contract/(:num)'] = 'Setup/deletecontract/$1';
 $route['typeofworkboq/(:num)'] = 'Setup/typeofworkboq/$1';

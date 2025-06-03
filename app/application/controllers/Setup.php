@@ -315,5 +315,21 @@ class Setup extends CI_Controller
 	{
 		$this->Setup_Model->checkdatelessthan($inputField, $rowIndex, $dateField);	
 	}
+
+	public function checkFeederDuplicacy()
+	{
+		if (!empty($_POST)) {
+			$feeder_id = $this->input->post('feeder_id');
+			$contract_location_id = $this->input->post('contract_location_id');
+
+			$result = $this->Setup_Model->checkFeederDuplicacy($feeder_id, $contract_location_id);
+			$response['duplicacy_check'] = empty($result) ? 0 : 1;
+		} else {
+			http_response_code(400);
+        	$response['message'] = 'No Input Found';
+		}
+
+		echo json_encode($response);
+	}
 	
 }

@@ -344,7 +344,7 @@ class BSTable1 {
         data.action = 'acceptregion';
         data.rowId = rowIndex
 
-        console.log($currentRow);
+        var database_id = $currentRow.attr('data-database-id');
         let $cols = $currentRow.find('td'); // read fields
         if (!this.currentlyEditingRow($currentRow)) return; // not currently editing, return
 		
@@ -443,12 +443,12 @@ class BSTable1 {
 
                 if(i==8) 
                 {
-    				var   isOk = requiredvalid("region", "dynamicfeederidregion", cont, rowIndex);
+    				var isOk = requiredvalid("region", "dynamicfeederidregion", cont, rowIndex, database_id);
     				checkErrors.push(isOk);
     				if(isOk==false)
     				{
     				    exit();
-    				}	    
+    				}
                     data.feederid = cont;
                 }
 
@@ -573,6 +573,9 @@ class BSTable1 {
             let $lastRow = this.table.find('tr:last');
             $lastRow.clone().appendTo($lastRow.parent());
             $lastRow = this.table.find('tr:last');
+
+            $lastRow.attr('data-database-id', ''); //Clearing the attr data-database-id for the newly appended row
+
             let $cols = $lastRow.find('td'); //lee campos
             $cols.each(function(e) {
                 let column = this; // Inner function this (column object)

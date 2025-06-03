@@ -410,7 +410,7 @@
 	                        							<tbody>
 	                        								<?php if(!empty($contractregionsdetails)) { ?>	
 																	<?php foreach($contractregionsdetails as $region) { ?>
-                     										<tr>
+                     										<tr data-database-id=<?php echo $region['databaseId']; ?>>
                      											<td id="td_dynamicregion<?php echo $region['rowId'];?>"><?php echo $region['region_text'];?></td>
                      											<td id="td_dynamiccircle<?php echo $region['rowId'];?>"><?php echo $region['circle_text'];?></td>
                      											<td id="td_dynamicdivision<?php echo $region['rowId'];?>"><?php echo $region['division_text'];?></td>

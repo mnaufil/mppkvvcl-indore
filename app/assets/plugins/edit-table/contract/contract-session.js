@@ -507,283 +507,308 @@ function checkDateWithRow(elementIdwithout, inputValue, rowIndex)
 }
 
 
-function requiredvalid(validtype, fieldid, fieldValue, rowIndex)
+function requiredvalid(validtype, fieldid, fieldValue, rowIndex, database_id = null)
+{
+	if(validtype=="stage")
 	{
-			if(validtype=="stage")
+		//alert("fieldid="+fieldid+"fieldValue ="+fieldValue.trim());
+		if(fieldid=="dynamicstages")
+		{
+			var stageType =fieldValue.trim();
+			if(stageType == "" || stageType == "Select Stages")
 			{
-				//alert("fieldid="+fieldid+"fieldValue ="+fieldValue.trim());
-				if(fieldid=="dynamicstages")
-				{
-					var stageType =fieldValue.trim();
-					if(stageType == "" || stageType == "Select Stages")
-					{
-						callToast("error", "Please select stage");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-				if(fieldid=="dynamicdatepickerstage")
-				{
-					var stageDate = fieldValue.trim();
-					//alert("stageDate="+stageDate);
-					if(stageDate=="" || stageDate=="DD-MM-YYYY")
-					{
-						callToast("error", "Please select Date");
-						$("#"+fieldid+rowIndex).val();
-						return false;	
-					}
-					else
-					{
-						return true;
-					}
-				}
-				if(fieldid=="dynamicqtystage")
-				{
-					var stageQty = fieldValue.trim();
-					//alert("stageDate="+stageDate);
-					if(stageQty=="")
-					{
-						callToast("error", "Please Enter Quantity");
-						$("#"+fieldid+rowIndex).val();
-						return false;	
-					}
-					else
-					{
-						return true;
-					}
-				}
-				if(fieldid=="dynamicamountstage")
-				{
-					var stageAmount = fieldValue.trim();
-					//alert("stageDate="+stageDate);
-					if(stageAmount=="")
-					{
-						callToast("error", "Please Enter Amount");
-						$("#"+fieldid+rowIndex).val();
-						return false;	
-					}
-					else
-					{
-						return true;
-					}
-				}
-				
+				callToast("error", "Please select stage");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
 			}
-			if(validtype=="region")
+			else
 			{
-				if(fieldid=="dynamicregion")
-				{
-					var regionRegion =fieldValue.trim();
-					if(regionRegion == "" || regionRegion == "Select Region")
-					{
-						callToast("error", "Please select Region");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-				if(fieldid=="dynamiccircleregion")
-				{
-					var regionCircle =fieldValue.trim();
-					if(regionCircle == "" || regionCircle == "Select Circle")
-					{
-						callToast("error", "Please select Circle");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-				if(fieldid=="dynamicdivisionregion")
-				{
-					var regionDivision =fieldValue.trim();
-					if(regionDivision == "" || regionDivision == "Select Division")
-					{
-						callToast("error", "Please select Divisions");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-				if(fieldid=="dynamiclocationregion")
-				{
-					var regionLocation =fieldValue.trim();
-					if(regionLocation == "")
-					{
-						callToast("error", "Please select Location");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-				if(fieldid=="dynamicfeedernameregion")
-				{
-					var regionFeederName =fieldValue.trim();
-					if(regionFeederName == "")
-					{
-						callToast("error", "Please select Feeder  Name");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-				
-				if(fieldid=="dynamicfeederidregion")
-				{
-					var regionFeederId =fieldValue.trim();
-					if(regionFeederId == "")
-					{
-						callToast("error", "Please select Feeder  ID");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-				
-				if(fieldid=="dynamicprojectidregion")
-				{
-					var regionProjectId =fieldValue.trim();
-					if(regionProjectId == "")
-					{
-						callToast("error", "Please select Project ID");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-				
-				if(fieldid=="dynamicqtyregion")
-				{
-					var regionQuantity =fieldValue.trim();
-					if(regionQuantity == "")
-					{
-						callToast("error", "Please select Quantity");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-				
+				return true;
 			}
-			if(validtype=="bank")
+		}
+
+		if(fieldid=="dynamicdatepickerstage")
+		{
+			var stageDate = fieldValue.trim();
+			//alert("stageDate="+stageDate);
+			if(stageDate=="" || stageDate=="DD-MM-YYYY")
 			{
-				if(fieldid=="dynamictype")
-				{
-					var banktype =fieldValue.trim();
-					if(banktype == "" || banktype == "Select Bank Type")
-					{
-						callToast("error", "Please select Bank Type");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-
-				if(fieldid=="dynamicbgno")
-				{
-					var bgno =fieldValue.trim();
-					if(bgno == "")
-					{
-						callToast("error", "Please enter BG Number");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-
-				if(fieldid=="dynamicbgdate")
-				{
-					var bgdate =fieldValue.trim();
-					if(bgdate == "" || bgdate=="DD-MM-YYYY")
-					{
-						callToast("error", "Please enter BG Date");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-
-				if(fieldid=="dynamicbgamount")
-				{
-					var bgamount =fieldValue.trim();
-					if(bgamount == "")
-					{
-						callToast("error", "Please enter BG Amount");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-
-				if(fieldid=="dynamicbank")
-				{
-					var bank =fieldValue.trim();
-					if(bank == "")
-					{
-						callToast("error", "Please enter Bank");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-
-				if(fieldid=="dynamicvalidtill")
-				{
-					var validtill =fieldValue.trim();
-					if(validtill == "" || validtill=="DD-MM-YYYY")
-					{
-						callToast("error", "Please enter BG Valid date");	
-						$("#"+fieldid+rowIndex).val();
-						return false;
-					}
-					else
-					{
-						return true;
-					}
-				}
-
+				callToast("error", "Please select Date");
+				$("#"+fieldid+rowIndex).val();
+				return false;	
 			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamicqtystage")
+		{
+			var stageQty = fieldValue.trim();
+			//alert("stageDate="+stageDate);
+			if(stageQty=="")
+			{
+				callToast("error", "Please Enter Quantity");
+				$("#"+fieldid+rowIndex).val();
+				return false;	
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamicamountstage")
+		{
+			var stageAmount = fieldValue.trim();
+			//alert("stageDate="+stageDate);
+			if(stageAmount=="")
+			{
+				callToast("error", "Please Enter Amount");
+				$("#"+fieldid+rowIndex).val();
+				return false;	
+			}
+			else
+			{
+				return true;
+			}
+		}		
 	}
+	
+	if(validtype=="region")
+	{
+		if(fieldid=="dynamicregion")
+		{
+			var regionRegion =fieldValue.trim();
+			if(regionRegion == "" || regionRegion == "Select Region")
+			{
+				callToast("error", "Please select Region");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamiccircleregion")
+		{
+			var regionCircle =fieldValue.trim();
+			if(regionCircle == "" || regionCircle == "Select Circle")
+			{
+				callToast("error", "Please select Circle");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamicdivisionregion")
+		{
+			var regionDivision =fieldValue.trim();
+			if(regionDivision == "" || regionDivision == "Select Division")
+			{
+				callToast("error", "Please select Divisions");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamiclocationregion")
+		{
+			var regionLocation =fieldValue.trim();
+			if(regionLocation == "")
+			{
+				callToast("error", "Please select Location");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamicfeedernameregion")
+		{
+			var regionFeederName =fieldValue.trim();
+			if(regionFeederName == "")
+			{
+				callToast("error", "Please select Feeder  Name");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		
+		if(fieldid=="dynamicfeederidregion")
+		{
+			var regionFeederId = fieldValue.trim();
+
+			if (regionFeederId != '') {
+				duplicateFeederCheck(regionFeederId, database_id).done(function(response) {
+					if (response.duplicacy_check) {
+						callToast("error", "Feeder ID already exist");			
+						return false;
+					}
+				});
+			} else if (regionFeederId == "") {
+				callToast("error", "Please select Feeder  ID");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		if(fieldid=="dynamicprojectidregion")
+		{
+			var regionProjectId =fieldValue.trim();
+			if(regionProjectId == "")
+			{
+				callToast("error", "Please select Project ID");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		
+		if(fieldid=="dynamicqtyregion")
+		{
+			var regionQuantity =fieldValue.trim();
+			if(regionQuantity == "")
+			{
+				callToast("error", "Please select Quantity");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
+
+	if(validtype=="bank")
+	{
+		if(fieldid=="dynamictype")
+		{
+			var banktype =fieldValue.trim();
+			if(banktype == "" || banktype == "Select Bank Type")
+			{
+				callToast("error", "Please select Bank Type");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamicbgno")
+		{
+			var bgno =fieldValue.trim();
+			if(bgno == "")
+			{
+				callToast("error", "Please enter BG Number");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamicbgdate")
+		{
+			var bgdate =fieldValue.trim();
+			if(bgdate == "" || bgdate=="DD-MM-YYYY")
+			{
+				callToast("error", "Please enter BG Date");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamicbgamount")
+		{
+			var bgamount =fieldValue.trim();
+			if(bgamount == "")
+			{
+				callToast("error", "Please enter BG Amount");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamicbank")
+		{
+			var bank =fieldValue.trim();
+			if(bank == "")
+			{
+				callToast("error", "Please enter Bank");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+
+		if(fieldid=="dynamicvalidtill")
+		{
+			var validtill =fieldValue.trim();
+			if(validtill == "" || validtill=="DD-MM-YYYY")
+			{
+				callToast("error", "Please enter BG Valid date");	
+				$("#"+fieldid+rowIndex).val();
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
+}
+
+function duplicateFeederCheck(feederID, database_id) {
+	// Ajax Call to check if feederID alredy exist
+	return $.ajax({
+		type: 'POST',
+		url: baseUrl + 'check-feeder-duplicacy',
+		dataType: 'json',
+		data: {feeder_id:feederID, contract_location_id:database_id},
+		success: function(response) {},
+		error: function(xhr, status, error) {
+			console.log(xhr);
+		}
+	});
+}
 

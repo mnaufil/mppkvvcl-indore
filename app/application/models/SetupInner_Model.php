@@ -9,7 +9,7 @@ class SetupInner_Model extends CI_Model
     }
 
 
-     function insertMilestones($last_id, $actionItem)
+    function insertMilestones($last_id, $actionItem)
     {
         try
         {
@@ -1024,7 +1024,10 @@ class SetupInner_Model extends CI_Model
        
     }
 
-
-
-
+    function __destruct()
+    {
+        if (isset($this->db)) {
+            $this->db->close(); // Explicitly close the DB connection
+        }
+    }
 }

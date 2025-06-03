@@ -1378,6 +1378,13 @@ class TKCPhysicalVerification_Model extends CI_Model
 		array_multisort($key_array, SORT_ASC, $array); //or SORT_DESC
 		return $array;
 	}
+
+	function __destruct()
+    {
+    	if (isset($this->db)) {
+            $this->db->close(); // Explicitly close the DB connection
+        }
+    }
 }
 
 

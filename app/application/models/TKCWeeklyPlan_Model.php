@@ -1080,6 +1080,13 @@ class TKCWeeklyPlan_Model extends CI_Model
 		$userdata = $_SESSION['loggedData'];
 		return $userdata->user_id;
 	}
+
+	function __destruct()
+    {
+    	if (isset($this->db)) {
+            $this->db->close(); // Explicitly close the DB connection
+        }
+    }
 }
 
 ?>

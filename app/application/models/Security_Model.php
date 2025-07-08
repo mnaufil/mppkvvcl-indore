@@ -71,7 +71,7 @@ class Security_Model extends CI_Model
             'package_access' => (!empty($package_access)) ? $package_access : NULL,
             'is_active' => 1,
             'modifiedby' => $_SESSION['loggedData']->user_id,
-            'modifieddate' => date ('Y-m-d H:i:s')
+            'modifieddate' => date ('Y-m-d H:i:s') 
         );
 
         $query = $this->db->update('mst_user', $data, array('user_id' => $user_id));

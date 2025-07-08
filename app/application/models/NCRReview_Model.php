@@ -1300,10 +1300,14 @@ class NCRReview_Model extends CI_Model
 
 	public function getNCRData($pp_activity_observation_id, $ncr_id)
 	{
-		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.status_id, contract_location.feeder_id, mst_status.name AS observation_status, ppao.is_active, ppao.deletedby');
+		$this->db->select('ppao.physical_progress_activity_observation_id, ppao.contract_location_id, ppao.activity_id, ppao.observation_id, ppao.observation_name, ppao.other_observation_name, ppao.ncr_id, ppao.ncr_date, ppao.remark, ppao.observation_remark, ppao.completion_date, ppao.raised_by, ppao.designation, ppao.distribution_centre, ppao.status_id, contract_location.feeder_id, contract_location.feeder_name, mst_status.name AS observation_status, ppao.is_active, ppao.deletedby, contract.contractor_name, contract.package_group_no, mst_region.region_name, mst_circle.circle_name, mst_division.division_name');
 		$this->db->from('physical_progress_activity_observation AS ppao');
 		$this->db->join('contract_location', 'ppao.contract_location_id = contract_location.contract_location_id');
 		$this->db->join('mst_status', 'ppao.status_id = mst_status.status_id', 'INNER');
+		$this->db->join('contract', 'contract_location.contract_id = contract.contract_id', 'INNER');
+		$this->db->join('mst_region', 'contract_location.region_id = mst_region.region_id', 'INNER');
+		$this->db->join('mst_circle', 'contract_location.circle_id = mst_circle.circle_id', 'INNER');
+		$this->db->join('mst_division', 'contract_location.division_id = mst_division.division_id', 'INNER');
 		$this->db->where(array('physical_progress_activity_observation_id' => $pp_activity_observation_id, 'ppao.ncr_id' => $ncr_id));
 
 		$query = $this->db->get();
@@ -1371,5 +1375,12 @@ class NCRReview_Model extends CI_Model
 			return $query_result;
 		}		
 	}
+
+	function __destruct()
+    {
+    	if (isset($this->db)) {
+            $this->db->close(); // Explicitly close the DB connection
+        }
+    }
 }
 ?>

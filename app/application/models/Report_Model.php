@@ -1920,6 +1920,13 @@ class Report_Model extends CI_Model
             return $query_result;
         }
     }
+
+    function __destruct()
+    {
+    	if (isset($this->db)) {
+            $this->db->close(); // Explicitly close the DB connection
+        }
+    }
 }
 
 ?>

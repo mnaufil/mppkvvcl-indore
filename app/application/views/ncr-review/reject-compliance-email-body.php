@@ -15,16 +15,46 @@
 	<body>
 		<p>Admin/DTL has rejected the Compliance submitted by FE/FS for NCR ID: <?php echo $ncr_data['ncr_id']; ?>. Following are the details:</p>
 		<table>
-			<!-- NCR ID -->
+			<!-- TKC -->
 			<tr>
-				<th>NCR ID: </th>
-				<td><?php echo $ncr_data['ncr_id']; ?></td>
+				<th>TKC: </th>
+				<td><?php echo $ncr_data['contractor_name']; ?></td>
+			</tr>
+			<!-- Package No -->
+			<tr>
+				<th>Package No: </th>
+				<td><?php echo $ncr_data['package_group_no']; ?></td>
+			</tr>
+			<!-- Region -->
+			<tr>
+				<th>Region Name: </th>
+				<td><?php echo $ncr_data['region_name']; ?></td>
+			</tr>
+			<!-- Circle -->
+			<tr>
+				<th>Circle Name: </th>
+				<td><?php echo $ncr_data['circle_name']; ?></td>
+			</tr>
+			<!-- Division -->
+			<tr>
+				<th>Division Name: </th>
+				<td><?php echo $ncr_data['division_name']; ?></td>
 			</tr>
 			<!-- Feeder ID -->
 			<tr>
 				<th>Feeder ID: </th>
 				<td><?php echo $ncr_data['feeder_id']; ?></td>
 			</tr>
+			<!-- Feeder Name -->
+			<tr>
+				<th>Feeder Name: </th>
+				<td><?php echo $ncr_data['feeder_name'] ?></td>
+			</tr>
+			<!-- NCR ID -->
+			<tr>
+				<th>NCR ID: </th>
+				<td><?php echo $ncr_data['ncr_id']; ?></td>
+			</tr>			
 			<!-- Raised By -->
 			<tr>
 				<th>Raised By: </th>
@@ -69,9 +99,9 @@
 					<?php 	} ?>
 				</td>
 			</tr>
-			<!-- Observation Photos By TKC -->
+			<!-- Compliance Photos by TKC -->
 			<tr>
-				<th>Observation Photos uploaded by TKC: </th>
+				<th>Compliance Photos by TKC: </th>
 				<td>
 					<?php 	$obs_files_by_tkc = $ncr_data['observation_tkc_files'];
 							if (!empty($obs_files_by_tkc)) {

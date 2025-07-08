@@ -416,4 +416,11 @@ class Session_Model extends CI_Model
     {
        unset($_SESSION['acceptstage']); 
     }
+
+    function __destruct()
+    {
+        if (isset($this->db)) {
+            $this->db->close(); // Explicitly close the DB connection
+        }
+    }
 }

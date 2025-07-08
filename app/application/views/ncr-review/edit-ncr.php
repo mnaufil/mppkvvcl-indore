@@ -826,8 +826,8 @@
 		  			dataType: 'json',
 		  			data: {ncr_id:ncr_id, pp_activity_observation_id:pp_activity_observation_id, reject_msg:reject_msg},
 		  			success: function(response) {
-		  				// console.log(response); return false;
 		  				$('.email-loader').attr('hidden', true);
+		  				// console.log(response); return false;
 
 		  				$('.toast-body').text(response.message);
 	        			$('.toast').toast('show');

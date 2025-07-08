@@ -1002,6 +1002,7 @@ class NCRReview extends CI_Controller
 
                 $data['ncr_data'] = $ncr_data;
 
+                // Comment below fe_fs_emails when testing
                 $fe_fs_data = $this->ncr_model->getFEFSForNCR($ncr_id);
 				$fe_fs_emails = array_column($fe_fs_data, 'email');
 

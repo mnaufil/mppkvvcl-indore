@@ -65,131 +65,142 @@
 		        		<div class="main-container container-fluid">
 		        			
 		        			<!-- Page-Header -->
-				            <div class="page-header">
-				            	<h1 class="page-title"><?php echo $title; ?></h1>
-				            </div>
-				            <!-- Page-Header Ends -->
+			            <div class="page-header">
+			            	<h1 class="page-title"><?php echo $title; ?></h1>
+			            </div>
+			            <!-- Page-Header Ends -->
 
-				            <!-- Row -->
-				            <div class="row row-sm">
-				            	<div class="col-lg-12">
-				            		<div class="card">
-				            			<div class="card-body p-2">
-				            				<!-- Search Block -->
-				            				<div class="accordion" id="accordionExample">
-				            					<div class="accordion-item">
-				            						<h2 class="accordion-header" id="headingOne">
-				            							<?php 	$accordion_btn_class = (isset($filter_data)) ? 'filters-on' : '';
-							                                  	$accordion_btn_style = (isset($filter_data)) ? 'style="height:57px;"' : '';
-							                                  	$clear_btn_visibility = (isset($filter_data)) ? '' : 'hidden';
-							                            ?>
-							                            <button class="accordion-button collapsed active prog-btn <?php echo $accordion_btn_class; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" <?php echo $accordion_btn_style; ?>>
-							                              	Search <?php echo $title; ?>
-							                            </button>
-				            						</h2>
-				            						<div class="clear-data" <?php echo $clear_btn_visibility; ?>>
-						                            	<a href="#" class="text-danger clear-search-filters" id="clear-btn"> Clear</a>
-						                          	</div>
-						                          	<div class="lab-value">
-						                          		<ul>
-						                          			<?php 	if (isset($filter_data)) {
-						                          						foreach ($filter_data as $key => $value) {
-						                          								if (!empty($value['value'])) { ?>
-						                          			<li><?php echo $value['label'].' : '.$value['value']; ?></li>
-						                          			<?php 				}
-						                          						}	
-						                          					}
-				                          					?>
-						                          		</ul>
-						                          	</div>
-						                          	<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-						                          		<div class="accordion-body p-1">
-						                          			<form name="searchComplianceByTKC" id="searchComplianceByTKC" method="post" action="<?php echo base_url('search-compliance-by-tkc'); ?>">
-						                          				<!-- Row1 -->
-						                          				<div class="row">
-						                          					<!-- Contractor (TKC) -->
-						                          					<div class="col-md-4">
-																		<div class="form-group">
-																			<label class="form-label m-0" for="contractor">Contractor (TKC)</label>
-																			<input class="form-control" type="text" name="contractor" id="contractor" onpaste="changeFormStatus()" onkeyup="showtkclist(this.value)" value="<?php echo (isset($filter_data) && !empty($filter_data['contractor']['value'])) ? $filter_data['contractor']['value'] : ''; ?>">
-																			<div class="list-group list-view-contractor" id="list-view"></div>
-																		</div>
-																	</div>
-																	<!-- Date Range -->
-																	<div class="col-md-4">
-			                											<label class="form-label m-0" for="complianceByTKCDate">Compliance Submitted By TKC Date</label>
-                        												<div class="input-group">
-                                      										<div class="input-group-text dates">
-                                        										<i class="fa fa-calendar tx-16 lh-0 op-6"></i>
-                                      										</div>
-                                      										<input type="text" class="form-control" name="complianceByTKCDate" id="complianceByTKCDate" value="<?php echo (isset($filter_data) && !empty($filter_data['complianceByTKCDate']['value'])) ? $filter_data['complianceByTKCDate']['value'] : '';?>" />
-                                    									</div>
-	                												</div>
-	                												<!-- Feeder ID -->
-						                          					<div class="col-md-2">
-						                          						<div class="form-group">
-																			<label class="form-label m-0" for="feederID">Feeder ID</label>
-																			<input type="text" class="form-control" name="feederID" id="feederID" onpaste="changeFormStatus()" oninput="changeFormStatus()" value="<?php echo (isset($filter_data) && !empty($filter_data['feederID']['value'])) ? $filter_data['feederID']['value'] : ''; ?>" />
-																		</div>
-						                          					</div>
-						                          					<!-- NCR ID -->
-						                          					<div class="col-md-2">
-																		<div class="form-group">
-																			<label class="form-label m-0" for="ncrID">NCR ID</label>
-																			<input type="text" class="form-control" name="ncrID" id="ncrID" onpaste="changeFormStatus()" oninput="changeFormStatus()" value="<?php echo (isset($filter_data) && !empty($filter_data['ncrID']['value'])) ? $filter_data['ncrID']['value'] : ''; ?>">
-																		</div>
-																	</div>
-						                          				</div>
-						                          				<!-- Row2 -->
-						                          				<div class="row">
-																	<!-- Lot No -->
-	                												<div class="col-md-2">
-																		<div class="form-group">
-																			<label class="form-label m-0" for="packageNo">Lot No.</label>
-																			<select multiple="multiple" class="filter-multi" name="package_group_no[]" id="package_group_no">
-																				<?php $selected_lot = (isset($filter_data) && !empty($filter_data['package_group_no']['id'])) ? $filter_data['package_group_no']['id'] : ''; ?>
-																				<?php foreach ($package_group_nos as $package_group_no) { ?>
-																				<?php $selected = (is_array($selected_lot) && in_array($package_group_no['package_group_no'], $selected_lot)) ? 'selected' : ''; ?>
-																				<option value="<?php echo $package_group_no['package_group_no']; ?>" <?php echo $selected; ?>><?php echo $package_group_no['package_group_no']; ?></option>
-																				<?php } ?>
-																			</select>
-																		</div>
-																	</div>
-																	<!-- Circle -->
-																	<div class="col-md-2">
-																		<div class="form-group">
-																			<label class="form-label m-0" for="circle">Circle</label>
-																			<select class="form-control form-select select2 select2-hidden-accessible" name="circle" data-bs-placeholder="Select Circle" tabindex="-1" aria-hidden="true" id="circle" style="width:100%">
+			            <!-- Row -->
+			            <div class="row row-sm">
+			            	<div class="col-lg-12">
+			            		<div class="card">
+			            			<div class="card-body p-2">
+			            				<!-- Search Block -->
+			            				<div class="accordion" id="accordionExample">
+			            					<div class="accordion-item">
+			            						<h2 class="accordion-header" id="headingOne">
+			            							<?php $accordion_btn_class = (isset($filter_data)) ? 'filters-on' : '';
+						                          $accordion_btn_style = (isset($filter_data)) ? 'style="height:57px;"' : '';
+						                          $clear_btn_visibility = (isset($filter_data)) ? '' : 'hidden';
+						                    ?>
+						                    <button class="accordion-button collapsed active prog-btn <?php echo $accordion_btn_class; ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" <?php echo $accordion_btn_style; ?>>
+						                      Search <?php echo $title; ?>
+					                      </button>
+			            						</h2>
+			            						<div class="clear-data" <?php echo $clear_btn_visibility; ?>>
+					                      <a href="#" class="text-danger clear-search-filters" id="clear-btn"> Clear</a>
+				                      </div>
+					                    <div class="lab-value">
+	                          		<ul>
+	                          			<?php if (isset($filter_data)) {
+	                          							foreach ($filter_data as $key => $value) {
+	                          								if (!empty($value['value'])) {
+	                          			?>
+	                          			<li><?php echo $value['label'].' : '.$value['value']; ?></li>
+	                          			<?php 		}
+	                          							}	
+	                          						}
+                        					?>
+	                          		</ul>
+					                    </div>
+	                          	<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+					                    	<div class="accordion-body p-1">
+					                      	<form name="searchComplianceByTKC" id="searchComplianceByTKC" method="post" action="<?php echo base_url('search-compliance-by-tkc'); ?>">
+	                          				<!-- Row1 -->
+	                          				<div class="row">
+	                          					<!-- Contractor (TKC) -->
+	                          					<div class="col-md-4">
+																				<div class="form-group">
+																					<label class="form-label m-0" for="contractor">Contractor (TKC)</label>
+																					<input class="form-control" type="text" name="contractor" id="contractor" onpaste="changeFormStatus()" onkeyup="showtkclist(this.value)" value="<?php echo (isset($filter_data) && !empty($filter_data['contractor']['value'])) ? $filter_data['contractor']['value'] : ''; ?>">
+																					<div class="list-group list-view-contractor" id="list-view"></div>
+																				</div>
+																			</div>
+																			<!-- Date Range -->
+																			<div class="col-md-4">
+		                										<label class="form-label m-0" for="complianceByTKCDate">Compliance Submitted By TKC Date</label>
+                    										<div class="input-group">
+                      										<div class="input-group-text dates">
+                        										<i class="fa fa-calendar tx-16 lh-0 op-6"></i>
+                      										</div>
+                      										<input type="text" class="form-control" name="complianceByTKCDate" id="complianceByTKCDate" value="<?php echo (isset($filter_data) && !empty($filter_data['complianceByTKCDate']['value'])) ? $filter_data['complianceByTKCDate']['value'] : '';?>" />
+                              					</div>
+                											</div>
+                											<!-- Feeder ID -->
+	                          					<div class="col-md-2">
+	                          						<div class="form-group">
+																					<label class="form-label m-0" for="feederID">Feeder ID</label>
+																					<input type="text" class="form-control" name="feederID" id="feederID" onpaste="changeFormStatus()" oninput="changeFormStatus()" value="<?php echo (isset($filter_data) && !empty($filter_data['feederID']['value'])) ? $filter_data['feederID']['value'] : ''; ?>" />
+																				</div>
+					                          	</div>
+	                          					<!-- NCR ID -->
+	                          					<div class="col-md-2">
+																				<div class="form-group">
+																					<label class="form-label m-0" for="ncrID">NCR ID</label>
+																					<input type="text" class="form-control" name="ncrID" id="ncrID" onpaste="changeFormStatus()" oninput="changeFormStatus()" value="<?php echo (isset($filter_data) && !empty($filter_data['ncrID']['value'])) ? $filter_data['ncrID']['value'] : ''; ?>">
+																				</div>
+																			</div>
+	                          				</div>
+	                          				<!-- Row2 -->
+	                          				<div class="row">
+																			<!-- Lot No -->
+                											<div class="col-md-2">
+																				<div class="form-group">
+																					<label class="form-label m-0" for="packageNo">Lot No.</label>
+																					<select multiple="multiple" class="filter-multi" name="package_group_no[]" id="package_group_no">
+																						<?php $selected_lot = (isset($filter_data) && !empty($filter_data['package_group_no']['id'])) ? $filter_data['package_group_no']['id'] : ''; ?>
+																						<?php foreach ($package_group_nos as $package_group_no) { ?>
+																						<?php $selected = (is_array($selected_lot) && in_array($package_group_no['package_group_no'], $selected_lot)) ? 'selected' : ''; ?>
+																						<option value="<?php echo $package_group_no['package_group_no']; ?>" <?php echo $selected; ?>><?php echo $package_group_no['package_group_no']; ?></option>
+																						<?php } ?>
+																					</select>
+																				</div>
+																			</div>
+																			<!-- Circle -->
+																			<div class="col-md-2">
+																				<div class="form-group">
+																					<label class="form-label m-0" for="circle">Circle</label>
+																					<select class="form-control form-select select2 select2-hidden-accessible" name="circle" data-bs-placeholder="Select Circle" tabindex="-1" aria-hidden="true" id="circle" style="width:100%">
 																            <option value="select" <?php echo (isset($filter_data) && !empty($filter_data['circle']['id'])) ? '' : 'selected'; ?> disabled>Select Circle</option>
 																            <?php $selected_circle = (isset($filter_data)) ? $filter_data['circle']['id'] : ''; ?>
 																            <?php foreach ($circles as $circle) { ?>
 																            <?php $selected = ($circle['circle_id'] == $selected_circle) ? 'selected' : ''; ?>
 																            <option value="<?php echo $circle['circle_id']; ?>" <?php echo $selected; ?>><?php echo $circle['circle_name']; ?></option>
-																            <?php } ?>
-																          </select>
+																		        <?php } ?>
+																		      </select>
+																				</div>
+																			</div>
+	                          				</div>
+	                          				<!-- Row3 -->
+																		<div class="row">
+																			<!-- Search Button -->
+																			<div class="col-md-3 mt-3">
+																				<button type="submit" class="btn btn-primary mt-1 mb-1 search-ncr-btn">Search</button>
+																				<button type="button" class="btn default-clear clear-search-filters mt-1 mb-1">Clear</button>
+																			</div>
 																		</div>
-																	</div>
-						                          				</div>
-						                          				<!-- Row3 -->
-																<div class="row">
-																	<!-- Search Button -->
-																	<div class="col-md-3 mt-3">
-																		<button type="submit" class="btn btn-primary mt-1 mb-1 search-ncr-btn">Search</button>
-																		<button type="button" class="btn default-clear clear-search-filters mt-1 mb-1">Clear</button>
-																	</div>
-																</div>
-						                          			</form>
-						                          		</div>
-						                          	</div>
-				            					</div>
-				            				</div>
-				            				<!-- Search Block Ends -->
+					                        </form>
+			                          </div>
+			                        </div>
+			            					</div>
+			            				</div>
+			            				<!-- Search Block Ends -->
 
-				            				<!-- Table -->
-				            				<div class="table-responsive mt-3">
-				            					<div id="basic-datatable_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-				            						<div class="row">
-				            							<table class="table table-bordered text-nowrap border-bottom dataTable no-footer" id="basic-datatable" role="grid" aria-describedby="basic-datatable_info">
+			            				<!-- Table -->
+			            				<div class="table-responsive mt-3">
+			            					<div id="basic-datatable_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+			            						<div class="row">
+			            							<div class="col-sm-12">
+			            								<!-- Export Button -->
+		                              <!-- Uncomment later -->
+		                              <div class="col-sm-12 col-md-9s">
+		                                <div class="dts-buttons btn-group flex-wrap" style="float:right;">
+		                                  <!-- <button class="btn btn-primary" type="button"><span>Export</span></button> -->
+		                                  <a href="<?php echo base_url('export-compliance-by-tkc-list') ?>" class="btn btn-primary" type="button"><span>Export</span></a>
+		                                </div>  
+		                              </div>
+
+		                              <table class="table table-bordered text-nowrap border-bottom dataTable no-footer" id="basic-datatable" role="grid" aria-describedby="basic-datatable_info">
 				            								<thead>
 				            									<tr role="row">
 				            										<th class="wd-10p border-bottom-0" tabindex="0" aria-controls="basic-datatable" rowspan="1" colspan="1"style="width: 95.5156px;">Actions</th>
@@ -218,45 +229,45 @@
 				            								</thead>
 				            								<tbody>
 				            									<?php foreach ($ncr_data as $key => $value) { ?>
-				            										<tr>
-				            											<!-- Action Buttons -->
-				            											<td class="d-flex">
-				            												<?php if (!empty($user_access) && (isset($user_access['view']))) { ?>
-					            											<a href="<?php echo base_url('view-compliance-by-tkc/'.$value['physical_progress_activity_observation_id']); ?>" class="btn btn-sm">
-			                                                               		<span class="fa fa-eye fa-lg action-btn-table"></span>
-		                                                            		</a>
-			                                                            	&nbsp;&nbsp;	
-					            											<?php } ?>
-					            											<?php if (!empty($user_access) && (isset($user_access['update']))) { ?>
-					            											<a href="<?php echo base_url('download-compliance-by-tkc/'.$value['physical_progress_activity_observation_id']); ?>" id="btn-download" class="btn btn-sm">
-									                                        	<span class="fe fe-download fa-lg action-btn-table"></span>
-									                                        </a>	
-					            											<?php } ?>
-					            										</td>
-				            											<!-- NCR ID -->
-					            										<td><?php echo $value['ncr_id']; ?></td>
-					            										<!-- NCR Date -->
-					            										<td><?php echo $value['ncr_date']; ?></td>
-					            										<!-- Contractor (TKC) -->
-					            										<td><?php echo $value['contractor_name']; ?></td>
-					            										<!-- Package No. -->
-					            										<td><?php echo $value['package_no']; ?></td>
-					            										<!-- Feeder ID -->
-					            										<td><?php echo $value['feeder_id']; ?></td>
-					            										<!-- Region -->
-					            										<td><?php echo $value['region_name']; ?></td>
-					            										<!-- Circle -->
-					            										<td><?php echo $value['circle_name']; ?></td>
-					            										<!-- Division -->
-					            										<td><?php echo $value['division_name']; ?></td>
-					            										<!-- Location -->
-					            										<td><?php echo $value['location_name']; ?></td>
-					            										<!-- Observation Type -->
-					            										<td><?php echo $value['observation_name']; ?></td>
-					            										<!-- Completion Date -->
-					            										<td><?php echo $value['completion_date']; ?></td>
-					            										<!-- Status -->
-					            										<?php 	if ($value['observation_status'] == 'Pending')
+			            										<tr>
+			            											<!-- Action Buttons -->
+			            											<td class="d-flex">
+			            												<?php if (!empty($user_access) && (isset($user_access['view']))) { ?>
+				            											<a href="<?php echo base_url('view-compliance-by-tkc/'.$value['physical_progress_activity_observation_id']); ?>" class="btn btn-sm">
+		                                        <span class="fa fa-eye fa-lg action-btn-table"></span>
+	                                        </a>
+		                                      &nbsp;&nbsp;
+				            											<?php } ?>
+				            											<?php if (!empty($user_access) && (isset($user_access['update']))) { ?>
+				            											<a href="<?php echo base_url('download-compliance-by-tkc/'.$value['physical_progress_activity_observation_id']); ?>" id="btn-download" class="btn btn-sm">
+								                            <span class="fe fe-download fa-lg action-btn-table"></span>
+							                            </a>	
+				            											<?php } ?>
+				            										</td>
+			            											<!-- NCR ID -->
+				            										<td><?php echo $value['ncr_id']; ?></td>
+				            										<!-- NCR Date -->
+				            										<td><?php echo $value['ncr_date']; ?></td>
+				            										<!-- Contractor (TKC) -->
+				            										<td><?php echo $value['contractor_name']; ?></td>
+				            										<!-- Package No. -->
+				            										<td><?php echo $value['package_no']; ?></td>
+				            										<!-- Feeder ID -->
+				            										<td><?php echo $value['feeder_id']; ?></td>
+				            										<!-- Region -->
+				            										<td><?php echo $value['region_name']; ?></td>
+				            										<!-- Circle -->
+				            										<td><?php echo $value['circle_name']; ?></td>
+				            										<!-- Division -->
+				            										<td><?php echo $value['division_name']; ?></td>
+				            										<!-- Location -->
+				            										<td><?php echo $value['location_name']; ?></td>
+				            										<!-- Observation Type -->
+				            										<td><?php echo $value['observation_name']; ?></td>
+				            										<!-- Completion Date -->
+				            										<td><?php echo $value['completion_date']; ?></td>
+				            										<!-- Status -->
+				            										<?php if ($value['observation_status'] == 'Pending')
 					            												{
 					            													$text_color_class = 'text-gray';
 					            												} elseif ($value['observation_status'] == 'Reviewed') {
@@ -268,40 +279,40 @@
 					            												} elseif ($value['observation_status'] == 'Submitted by TKC') {
 					            													$text_color_class = 'text-info';
 					            												}
-					            										?>
-					            										<td><h6 class="<?php echo $text_color_class; ?>"><?php echo $value['observation_status']; ?></h6></td>
-					            										<!-- Last Email Details -->
-					            										<td>
-				            											<?php 	if (!empty($value['last_email_details'])) {
-				            														echo 'Date and Time: '.$value['last_email_details'].'<br/>'.'Sent To: '.$value['contractor_email'];
-				            													} 
-				            											?>
-				            											</td>
-				            											<?php if (isset($filter_data) && !empty($filter_data['status']['value']) && $filter_data['status']['value'] == 'Deleted') { ?>
-					            										<td><?php echo $value['deleted_by']; ?></td>
-					            										<?php } else { ?>
-					            										<td><?php echo (!empty($value['raised_by'])) ? $value['raised_by'] : $value['username']; ?></td>
-					            										<?php } ?>
-					            										<!-- Designation -->
-					            										<td><?php echo $value['designation']; ?></td>
-					            										<!-- Distribution Centre -->
-					            										<td><?php echo $value['distribution_centre']; ?></td
-					            										>
-					            										<!-- Date of Submitted By TKC -->
-					            										<td><?php echo $value['date_of_submitted_by_tkc']; ?></td>
-				            										</tr>
+				            										?>
+				            										<td><h6 class="<?php echo $text_color_class; ?>"><?php echo $value['observation_status']; ?></h6></td>
+				            										<!-- Last Email Details -->
+				            										<td>
+			            											<?php if (!empty($value['last_email_details'])) {
+			            															echo 'Date and Time: '.$value['last_email_details'].'<br/>'.'Sent To: '.$value['contractor_email'];
+			            														} 
+			            											?>
+			            											</td>
+			            											<?php if (isset($filter_data) && !empty($filter_data['status']['value']) && $filter_data['status']['value'] == 'Deleted') { ?>
+				            										<td><?php echo $value['deleted_by']; ?></td>
+				            										<?php } else { ?>
+				            										<td><?php echo (!empty($value['raised_by'])) ? $value['raised_by'] : $value['username']; ?></td>
+				            										<?php } ?>
+				            										<!-- Designation -->
+				            										<td><?php echo $value['designation']; ?></td>
+				            										<!-- Distribution Centre -->
+				            										<td><?php echo $value['distribution_centre']; ?></td>
+				            										<!-- Date of Submitted By TKC -->
+				            										<td><?php echo $value['date_of_submitted_by_tkc']; ?></td>
+			            										</tr>
 				            									<?php } ?>
 				            								</tbody>
 				            							</table>
-				            						</div>
-				            					</div>
-				            				</div>
-				            				<!-- Table Ends -->
-				            			</div>
-				            		</div>
-				            	</div>
-				            </div>
-				            <!-- Row Ends -->
+			            							</div>
+			            						</div>
+			            					</div>
+			            				</div>
+			            				<!-- Table Ends -->
+			            			</div>
+			            		</div>
+			            	</div>
+			            </div>
+			            <!-- Row Ends -->
 
 		        		</div>
 		        		<!-- Container Ends -->
@@ -313,8 +324,8 @@
 	    	<!-- Page Main Ends -->
 
 	    	<!-- Footer -->
-	      	<?php $this->load->view('include/footer');?>
-	      	<!-- Footer Ends -->
+      	<?php $this->load->view('include/footer');?>
+      	<!-- Footer Ends -->
 
 	    </div>
 
@@ -401,69 +412,69 @@
 	    	let form_change = false;
 
 	    	$('input[name="complianceByTKCDate"]').daterangepicker({
-	            autoUpdateInput: false,
-	            locale: {
-	                format: 'DD-MM-YYYY'
-	            }
-	        });
+          autoUpdateInput: false,
+          locale: {
+            format: 'DD-MM-YYYY'
+          }
+	      });
 
-	        $('input[name="complianceByTKCDate"]').on('apply.daterangepicker', function(ev, picker) {
-	            $(this).val(picker.startDate.format('DD-MM-YYYY') +' - '+ picker.endDate.format('DD-MM-YYYY'));
-	        });
+        $('input[name="complianceByTKCDate"]').on('apply.daterangepicker', function(ev, picker) {
+        	$(this).val(picker.startDate.format('DD-MM-YYYY') +' - '+ picker.endDate.format('DD-MM-YYYY'));
+        });
 
 	    	//Displays contractor search list view
     		function showtkclist(tkcValue) {
-		      	$.ajax({
-			        type: 'POST',
-			        url: '<?php echo base_url('search-contractor-pp') ?>',
-			        dataType: 'json',
-			        data: {contractor: tkcValue},
-			        success: function(response){
-			          	// console.log(response); 
+	      	$.ajax({
+		        type: 'POST',
+		        url: '<?php echo base_url('search-contractor-pp') ?>',
+		        dataType: 'json',
+		        data: {contractor: tkcValue},
+		        success: function(response){
+	          	// console.log(response); 
 
-			          	$('#list-view').show();
-			          	$('#list-view').empty();
+	          	$('#list-view').show();
+	          	$('#list-view').empty();
 
-			          	var html = '';
+	          	var html = '';
 
-			          	let contractor_data = response.contractor_data;
+	          	let contractor_data = response.contractor_data;
 
-			          	if ($.isEmptyObject(contractor_data)) {
-			            	html += 'No Contractor Found';
-			          	} else {
-			            	$.each(contractor_data, function(index, value) {
-			              		html += '<a href="javascript:void(0)" class="p-2 list-group-item list-group-item-action flex-column align-items-start" data-typeofwork-id="'+value.typeofwork_id+'" data-contract-id="'+value.contract_id+'" onclick=applyContractorDetails(this)>';
-				              	html += '<div class="d-flex w-100 justify-content-between">';
-				              	html += '<h4 class="mb-1 contractor-name"><strong>'+value.contractor_name+'</strong></h4>';
-				              	html += '<small class="text-muted contract-date">Contract Date : <span class="text-primary"> '+value.tender_award_date+'</span></small>';
-			              		html += '</div>';
-			              		html += '<p class="mb-0 type-of-work">Type Of Work: <span class="text-primary"> '+value.typeofwork_name+'</span></p>';
-			              		html += '<small class="text-muted contract-no">Contract No: <span class="text-primary">'+value.tender_award_no+'</span></small>';
-			              		html += '</a>';
-			            	});
-			          	}
+	          	if ($.isEmptyObject(contractor_data)) {
+	            	html += 'No Contractor Found';
+	          	} else {
+	            	$.each(contractor_data, function(index, value) {
+              		html += '<a href="javascript:void(0)" class="p-2 list-group-item list-group-item-action flex-column align-items-start" data-typeofwork-id="'+value.typeofwork_id+'" data-contract-id="'+value.contract_id+'" onclick=applyContractorDetails(this)>';
+	              	html += '<div class="d-flex w-100 justify-content-between">';
+	              	html += '<h4 class="mb-1 contractor-name"><strong>'+value.contractor_name+'</strong></h4>';
+	              	html += '<small class="text-muted contract-date">Contract Date : <span class="text-primary"> '+value.tender_award_date+'</span></small>';
+              		html += '</div>';
+              		html += '<p class="mb-0 type-of-work">Type Of Work: <span class="text-primary"> '+value.typeofwork_name+'</span></p>';
+              		html += '<small class="text-muted contract-no">Contract No: <span class="text-primary">'+value.tender_award_no+'</span></small>';
+              		html += '</a>';
+	            	});
+	          	}
 
-			          	$('#list-view').append(html);
-			        },
-			        error: function(xhr, status, error){
-			          	console.log(xhr.responseText);
-			        }
-		      	});
+		          $('#list-view').append(html);
+		        },
+		        error: function(xhr, status, error){
+		          console.log(xhr.responseText);
+		        }
+	      	});
     		}
 
     		function applyContractorDetails(anchor) {
-      			$('#list-view').hide();
+    			$('#list-view').hide();
 
-      			let contractor_name = $(anchor).find('.contractor-name').text();
-      			$('input[name="contractor"]').val(contractor_name);
-			}
+    			let contractor_name = $(anchor).find('.contractor-name').text();
+    			$('input[name="contractor"]').val(contractor_name);
+				}
 
     		$(document).click(function() {
-      			// alert('click');
-      			var list_view = $('#list-view');
-      			if (!list_view.is(event.target) && !list_view.has(event.target).length) {
-        			list_view.hide();
-      			}
+    			// alert('click');
+    			var list_view = $('#list-view');
+    			if (!list_view.is(event.target) && !list_view.has(event.target).length) {
+      			list_view.hide();
+    			}
     		});
 
     		function changeFormStatus() {
@@ -481,13 +492,13 @@
 
     			let selects = $(this).find('select.form-control');
     			$(selects).each(function(index, value) {
-		        	let selected_data = $(value).select2('data');
-		        	if (!selected_data[0].text.includes('Select')) {
-		          		form_change = true;
-		        	}
-		      	});
+	        	let selected_data = $(value).select2('data');
+	        	if (!selected_data[0].text.includes('Select')) {
+	          		form_change = true;
+	        	}
+	      	});
 
-		      	let multi_select = $(this).find('#package_group_no');
+		      let multi_select = $(this).find('#package_group_no');
 			    if ($(multi_select).val().length > 0) {
 			    	form_change = true;
 			    }
@@ -499,8 +510,8 @@
 
 			    if (form_change === false) {
 			    	$('.toast-body').text('Select atleast one filter');
-		        	$('.toast').toast('show');
-		        	event.preventDefault(); 
+	        	$('.toast').toast('show');
+	        	event.preventDefault(); 
 			    }
     		});
 
@@ -509,32 +520,32 @@
 
     			$('.lab-value').find('ul').empty();
     			$('#headingOne').find('button').removeClass('filters-on');
-      			$('#headingOne').find('button').removeAttr('style');
+      		$('#headingOne').find('button').removeAttr('style');
 
-      			let search_form = $('#searchComplianceByTKC')[0];
+      		let search_form = $('#searchComplianceByTKC')[0];
 
-      			//Clearing all input[type=text] values
+      		//Clearing all input[type=text] values
 			    $(search_form).find('input.form-control:text').each(function() {
 			    	$(this).val('');
 			    });
 
 			    //Clearing all select values
-		      	$(search_form).find('.select2').each(function() {
-		        	$(this).val('select');
-		        	$(this).trigger('change');
-		      	});
+	      	$(search_form).find('.select2').each(function() {
+	        	$(this).val('select');
+	        	$(this).trigger('change');
+	      	});
 
-		      	//Clearing Lot No filter values
-		      	let lot_no_select = $(search_form).find('.filter-multi:eq(1)');
-		      	$(lot_no_select).find('li.selected').each(function() {
-		        	$(this).removeClass('selected');
-		        	$(this).find('input:checkbox').prop('checked', false);
-		      	});		      	
-		      	$(lot_no_select).find('.ms-choice span').text('');
+	      	//Clearing Lot No filter values
+	      	let lot_no_select = $(search_form).find('.filter-multi:eq(1)');
+	      	$(lot_no_select).find('li.selected').each(function() {
+	        	$(this).removeClass('selected');
+	        	$(this).find('input:checkbox').prop('checked', false);
+	      	});		      	
+	      	$(lot_no_select).find('.ms-choice span').text('');
 
-		      	$('#clear-btn').hide();
+	      	$('#clear-btn').hide();
 
-		      	window.location.replace('<?php echo base_url("compliance-by-tkc") ?>');
+	      	window.location.replace('<?php echo base_url("compliance-by-tkc") ?>');
     		});
 	    </script>
 	</body>

@@ -41,6 +41,7 @@ class ComplianceByTKC_Model extends CI_Model
 
 		$query = $this->db->get();
 		// echo $this->db->last_query(); die();
+		$_SESSION['compliance_by_tkc_query'] = $this->db->last_query();
 
 		if (!$query) {
 			$error = $this->db->error();
@@ -582,6 +583,24 @@ class ComplianceByTKC_Model extends CI_Model
 		$userdata = $_SESSION['loggedData'];
 		return $userdata->user_id;
 	}
+
+	public function executeQuery($session_query)
+  	{
+    	$query = $this->db->query($session_query);
+
+    	if (!$query) {
+		    $error = $this->db->error();
+		    echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+		    die();
+    	} else {
+	      	$query_result = [];
+	      	if ($query->num_rows() > 0) {
+	        	$query_result = $query->result_array();
+	      	}
+
+      		return $query_result;
+    	}
+  	}
 
 	function __destruct()
     {

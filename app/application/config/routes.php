@@ -312,6 +312,7 @@ $route['compliance-by-tkc'] = 'ComplianceByTKC/index';
 $route['search-compliance-by-tkc'] = 'ComplianceByTKC/searchComplianceByTKC';
 $route['view-compliance-by-tkc/(:num)'] = 'ComplianceByTKC/viewComplianceByTKC/$1';
 $route['download-compliance-by-tkc/(:num)'] = 'ComplianceByTKC/downloadComplianceByTKC/$1';
+$route['export-compliance-by-tkc-list'] = 'ComplianceByTKC/exportComplianceByTKCList';
 
 /*Security / Roles Module*/
 $route['roles'] = 'Security/roles';

@@ -1,7 +1,7 @@
 <?php  defined('BASEPATH') OR exit('No direct script access allowed'); 
-/**
- * 
- */
+
+require APPPATH.'libraries/PhpXlsxGenerator.php';
+
 class ComplianceByTKC extends CI_Controller
 {	
 	function __construct()
@@ -249,6 +249,35 @@ class ComplianceByTKC extends CI_Controller
  		$pdf_name = $folder_path.'Compliance_By_TKC_'.$ncr_id.'.pdf';
 
  		$this->pdf->createPDFForComplianceByTKC($html, $pdf_name);
+ 	}
+
+ 	public function exportComplianceByTKCList()
+ 	{
+ 		// Excel file name for download 
+        $fileName = "Compliance_By_TKC_Data_".date('Y-m-d').".xlsx";
+
+        $excel_data[] = array('<center>NCR ID</center>', '<center>NCR DATE</center>', '<center>CONTRACTOR(TKC)</center>', '<center>LOT NO</center>', '<center>FEEDER ID</center>', '<center>REGION</center>', '<center>CIRCLE</center>', '<center>DIVISION</center>', '<center>LOCATION</center>', '<center>OBSERVATION TYPE</center>', '<center>COMPLETION DATE</center>', '<center>STATUS</center>', '<center>LAST EMAIL DETAILS</center>', '<center>RAISED BY</center>', '<center>DESIGNATION</center>', '<center>DISTRIBUTION CENTRE</center>');
+
+        // Fetch records from database and store in an array
+	    $session_query = $_SESSION['compliance_by_tkc_query'];
+	    $result = $this->cbt_model->executeQuery($session_query);
+
+	    if (!empty($result)) {
+	    	foreach ($result as $key => $value) {
+	    		$ncr_date = date('d-m-Y', strtotime($value['ncr_date']));
+	    		$completion_date = (!empty($value['completion_date'])) ? date('d-m-Y', strtotime($value['completion_date'])) : '';
+
+	    		$temp_data = array('<center>'.$value['ncr_id'].'</center>', '<center>'.$ncr_date.'</center>', '<center>'.$value['contractor_name'].'</center>', '<center>'.$value['package_no'].'</center>', '<center>'.$value['feeder_id'].'</center>', '<center>'.$value['region_name'].'</center>', '<center>'.$value['circle_name'].'</center>', '<center>'.$value['division_name'].'</center>', '<center>'.$value['location_name'].'</center>', '<center>'.$value['observation_name'].'</center>', '<center>'.$completion_date.'</center>', '<center>'.$value['observation_status'].'</center>', '<center>'.$value['last_email_details'].'</center>', '<center>'.$value['raised_by'].'</center>', '<center>'.$value['designation'].'</center>', '<center>'.$value['distribution_centre'].'</center>');
+
+	    		array_push($excel_data, $temp_data);
+	    	}
+	    }
+
+	    // Export data to excel and download as xlsx file
+      	$xlsx = CodexWorld\PhpXlsxGenerator::fromArray($excel_data);
+      	$xlsx->downloadAs($fileName);
+
+      	exit;
  	}
 
  	public function encode_img_base64($img_path)

@@ -458,12 +458,18 @@ class Report_Model extends CI_Model
 	
 	function generateNcrReport()
 	{
-		$physicalProgressDate = explode(" - ", $this->input->post('physicalProgressDate'));
-		$physicalProgressFromDate = date('Y-m-d', strtotime($physicalProgressDate[0]));
-		$physicalProgressToDate = date('Y-m-d', strtotime($physicalProgressDate[1]));
+		$physicalProgressFromDate = 'NULL';
+		$physicalProgressToDate = 'NULL';
+
+		if (!empty($this->input->post('physicalProgressDate'))) {
+			$physicalProgressDate = explode(" - ", $this->input->post('physicalProgressDate'));
+			$physicalProgressFromDate = "'".date('Y-m-d', strtotime($physicalProgressDate[0]))."'";
+			$physicalProgressToDate = "'".date('Y-m-d', strtotime($physicalProgressDate[1]))."'";
+		}		
+
 		$employee = $this->input->post('employee');	
 
-		$sessionId = $_SESSION['userId'];		
+		$sessionId = $_SESSION['userId'];
 		
 		$package = $this->input->post('package');
 		$region = $this->input->post('region');	
@@ -545,9 +551,9 @@ class Report_Model extends CI_Model
 		
 		//echo "CALL sp_rpt_ncr_data($sessionId, '$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)"; die;		
 		
-	    $query = $this->db->query("CALL sp_rpt_ncr_data($sessionId,'$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)");
+	    $query = $this->db->query("CALL sp_rpt_ncr_data($sessionId, $physicalProgressFromDate, $physicalProgressToDate, $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)");
 		
-		$_SESSION['spQuery'] = "CALL sp_rpt_ncr_data($sessionId,'$physicalProgressFromDate', '$physicalProgressToDate', $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)";
+		$_SESSION['spQuery'] = "CALL sp_rpt_ncr_data($sessionId, $physicalProgressFromDate, $physicalProgressToDate, $spEmployee, $spPackage, $spRegion, $spCircle, $spStatus, $spReportType)";
 		// echo $this->db->last_query(); die();
 		
 		if($query)

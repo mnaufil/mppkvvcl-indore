@@ -412,7 +412,7 @@ class Report extends CI_Controller
 		$data['status'] = 	"";
 		$data['reportType'] = 	"";
 		$data['allEmployee'] = array();	
-	  $data['allPackage'] = array();
+	  	$data['allPackage'] = array();
 		$data['allRegion'] = array();
 		$data['allCircle'] = array();
 		$data['ncr_status'] = array();
@@ -421,7 +421,7 @@ class Report extends CI_Controller
 	}	
 	
 	public function generateNcrReport()
-	{	
+	{
 		$data['employees'] = $this->Report_Model->loadEmployees();
 		$data['packages'] = $this->Report_Model->loadPackages();
 		$data['regions'] = $this->Report_Model->loadRegions();
@@ -432,7 +432,7 @@ class Report extends CI_Controller
 		$data['reportType'] = 	$this->input->post('reportType');		
 		
 		$data['allEmployee'] = array();	
-	  $data['allPackage'] = array();
+	  	$data['allPackage'] = array();
 		$data['allRegion'] = array();
 		$data['allCircle'] = array();
 		$data['ncr_status'] = array();		

@@ -507,7 +507,7 @@ function checkDateWithRow(elementIdwithout, inputValue, rowIndex)
 }
 
 
-function requiredvalid(validtype, fieldid, fieldValue, rowIndex, database_id = null)
+async function requiredvalid(validtype, fieldid, fieldValue, rowIndex, database_id = null)
 {
 	if(validtype=="stage")
 	{
@@ -658,10 +658,12 @@ function requiredvalid(validtype, fieldid, fieldValue, rowIndex, database_id = n
 			var regionFeederId = fieldValue.trim();
 
 			if (regionFeederId != '') {
-				duplicateFeederCheck(regionFeederId, database_id).done(function(response) {
+				await duplicateFeederCheck(regionFeederId, database_id).done(function(response) {
 					if (response.duplicacy_check) {
 						callToast("error", "Feeder ID already exist");			
 						return false;
+					} else {
+						return true;
 					}
 				});
 			} else if (regionFeederId == "") {

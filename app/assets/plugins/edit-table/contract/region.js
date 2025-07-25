@@ -168,7 +168,7 @@ class BSTable1 {
         });
     }
 
-   _rowEdit(button) {
+    _rowEdit(button) {
         // Indicate user is editing the row
         let $currentRow = $(button).parents('tr'); // access the row
         var rowIndex = $(button).closest("tr").index();
@@ -178,16 +178,16 @@ class BSTable1 {
         data.rowId = rowIndex;
         //alert(rowIndex);
         this.postdata(data);
-        console.log($currentRow);
+        // console.log($currentRow);
         let $cols = $currentRow.find('td'); // read rows
          $("#table2-new-row-button-region").hide();
-        console.log($cols);
+        // console.log($cols);
         if (this.currentlyEditingRow($currentRow)) return; // not currently editing, return
         //Pone en modo de ediciÃ³n
 		let i = 0;
         this._modifyEachColumn(this.options.editableColumns, $cols, function($td) { // modify each column
             let content = $.trim($td.html()); // read content
-            console.log(content);
+            // console.log(content);
             let div = '<div style="display: none;">' + content + '</div>'; // hide content (save for later use)
             let input = '<input class="form-control input-sm"  data-original-value="' + content + '" value="' + content + '">';
             //$td.html(div + input); // set content
@@ -419,8 +419,7 @@ class BSTable1 {
                 }
 
                 if(i==6)
-                {
-                    
+                {                    
     				/*var   isOk = requiredvalid("region", "dynamiclocationregion", cont, rowIndex);
     				checkErrors.push(isOk);
     				if(isOk==false)
@@ -432,7 +431,7 @@ class BSTable1 {
 
                 if(i==7)
                 {
-    				var   isOk = requiredvalid("region", "dynamicfeedernameregion", cont, rowIndex);
+    				var isOk = requiredvalid("region", "dynamicfeedernameregion", cont, rowIndex);
     				checkErrors.push(isOk);
     				if(isOk==false)
     				{
@@ -483,7 +482,7 @@ class BSTable1 {
                 {
                     data.boq = cont;
                 }
-            } 
+            }
 		 
 		    //$td.html(cont); // set the content and remove the input fields
 			// if(checkErrors.filter(Boolean).length ==8) //Original
@@ -508,7 +507,7 @@ class BSTable1 {
         this._actionsModeNormal(button);
         this.options.onEdit($currentRow[0]);
          var regionhiddentable = $("#region_table").html();
-        console.log(regionhiddentable);
+        // console.log(regionhiddentable);
         $("#regionhiddentable").val(regionhiddentable);
     }
     _rowCancel(button) {

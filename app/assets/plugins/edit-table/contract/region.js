@@ -333,7 +333,7 @@ class BSTable1 {
         console.log(regionhiddentable);
         $("#regionhiddentable").val(regionhiddentable);
     }
-    _rowAccept(button) {
+    _rowAccept_old(button) {
         // Accept the changes to the row
         let $currentRow = $(button).parents('tr'); // access the row
         $("#table2-new-row-button-region").show();
@@ -360,14 +360,18 @@ class BSTable1 {
 		    // if(i==0 || i==1 || i==2)
             if(i==0)
             {
-                cont = $td.find('option:selected').text();			
-    			var isOk = requiredvalid("region", "dynamicregion", cont, rowIndex);
-                checkErrors.push(isOk);
+                cont = $td.find('option:selected').text();
+    			// var isOk;
+                requiredvalid("region", "dynamicregion", cont, rowIndex).then(function(result) {
+                    isOk = result;
 
-    		    if(isOk==false)
-    		    {
-    			  exit();
-    		    }
+                    checkErrors.push(isOk);
+                    if(isOk==false)
+                    {
+                        // exit();
+                        return;
+                    }
+                });
 
                 data.region  = $td.find('select').val();
                 data.region_text = $td.find('option:selected').text();
@@ -375,28 +379,38 @@ class BSTable1 {
             else if(i==1)
             {
                 cont = $td.find('option:selected').text();
-    			var   isOk = requiredvalid("region", "dynamiccircleregion", cont, rowIndex);
-                checkErrors.push(isOk);
+                // var isOk = requiredvalid("region", "dynamiccircleregion", cont, rowIndex);
+                requiredvalid("region", "dynamiccircleregion", cont, rowIndex).then(function(result) {
+                    isOk = result;
 
-    		    if(isOk==false)
-    		    {
-    			  exit();
-    		    }	 
-    			
+                    checkErrors.push(isOk);
+
+                    if(isOk==false)
+                    {
+                        // exit();
+                        return;
+                    }
+                });
+                
                 data.circle  = $td.find('select').val();
                 data.circle_text = $td.find('option:selected').text();
             }
             else if(i==2)
             {
                 cont = $td.find('option:selected').text();
-    			var   isOk = requiredvalid("region", "dynamicdivisionregion", cont, rowIndex);
-                checkErrors.push(isOk);
+                // var isOk = requiredvalid("region", "dynamicdivisionregion", cont, rowIndex);
+                requiredvalid("region", "dynamicdivisionregion", cont, rowIndex).then(function(result) {
+                    isOk = result;
 
-    		    if(isOk==false)
-    		    {
-    			  exit();
-    		    }	 
-    			
+                    checkErrors.push(isOk);
+
+                    if(isOk==false)
+                    {
+                        // exit();
+                        return;
+                    }
+                });                
+                
                 data.division  = $td.find('select').val();
                 data.division_text = $td.find('option:selected').text();
             }
@@ -420,45 +434,57 @@ class BSTable1 {
 
                 if(i==6)
                 {                    
-    				/*var   isOk = requiredvalid("region", "dynamiclocationregion", cont, rowIndex);
-    				checkErrors.push(isOk);
-    				if(isOk==false)
-    				{
-    				    exit();
-    				}*/	    
+                    /*var   isOk = requiredvalid("region", "dynamiclocationregion", cont, rowIndex);
+                    checkErrors.push(isOk);
+                    if(isOk==false)
+                    {
+                        exit();
+                    }*/     
                     data.location = cont;
                 }
 
                 if(i==7)
                 {
-    				var isOk = requiredvalid("region", "dynamicfeedernameregion", cont, rowIndex);
-    				checkErrors.push(isOk);
-    				if(isOk==false)
-    				{
-    				    exit();
-    				}	 
-                    data.feedername = cont;
+                    // var isOk = requiredvalid("region", "dynamicfeedernameregion", cont, rowIndex);
+                    requiredvalid("region", "dynamicfeedernameregion", cont, rowIndex).then(function(result) {
+                        isOk = result;
+
+                        checkErrors.push(isOk);
+                        if(isOk==false)
+                        {
+                            // exit();
+                            return;
+                        }
+                    });
+
+                    data.feedername = cont;                    
                 }
 
                 if(i==8) 
                 {
-    				var isOk = requiredvalid("region", "dynamicfeederidregion", cont, rowIndex, database_id);
-    				checkErrors.push(isOk);
-    				if(isOk==false)
-    				{
-    				    exit();
-    				}
+                    // var isOk = requiredvalid("region", "dynamicfeederidregion", cont, rowIndex, database_id);
+                    requiredvalid("region", "dynamicfeederidregion", cont, rowIndex, database_id).then(function(result) {
+                        isOk = result;
+
+                        checkErrors.push(isOk);
+                        if(isOk==false)
+                        {
+                            // exit();
+                            return;
+                        }
+                    });
+                    
                     data.feederid = cont;
                 }
 
                 if(i==9)
                 {
-    				/*var   isOk = requiredvalid("region", "dynamicprojectidregion", cont, rowIndex);
-    				checkErrors.push(isOk);
-    				if(isOk==false)
-    				{
-    				    exit();
-    				}*/	   //Uncomment Later
+                    /*var   isOk = requiredvalid("region", "dynamicprojectidregion", cont, rowIndex);
+                    checkErrors.push(isOk);
+                    if(isOk==false)
+                    {
+                        exit();
+                    }*/    //Uncomment Later
                     data.projectid = cont;
                 }
                 
@@ -469,12 +495,18 @@ class BSTable1 {
 
                 if(i==11)
                 {
-    				var   isOk = requiredvalid("region", "dynamicqtyregion", cont, rowIndex);
-    				checkErrors.push(isOk);
-    				if(isOk==false)
-    				{
-    				    exit();
-    				}
+                    // var isOk = requiredvalid("region", "dynamicqtyregion", cont, rowIndex);
+                    requiredvalid("region", "dynamicqtyregion", cont, rowIndex).then(function(result) {
+                        isOk = result;
+
+                        checkErrors.push(isOk);
+                        if(isOk==false)
+                        {
+                            // exit();
+                            return;
+                        }
+                    });
+                    
                     data.quantity = cont;
                 }
 
@@ -503,12 +535,149 @@ class BSTable1 {
 			}
             i++;
         });
+    
         this.postdata(data);
         this._actionsModeNormal(button);
         this.options.onEdit($currentRow[0]);
-         var regionhiddentable = $("#region_table").html();
-        // console.log(regionhiddentable);
+        var regionhiddentable = $("#region_table").html();
         $("#regionhiddentable").val(regionhiddentable);
+    }
+
+    _rowAccept(button) {
+        // Accept the changes to the row
+        let $currentRow = $(button).parents('tr'); // access the row
+        $("#table2-new-row-button-region").show();
+        var rowIndex = $(button).closest("tr").index();
+        //alert(rowIndex);
+        var data = {};
+        data.sessionName = 'addcontract';
+        data.action = 'acceptregion';
+        data.rowId = rowIndex
+
+        var database_id = $currentRow.attr('data-database-id');
+        let $cols = $currentRow.find('td'); // read fields
+        if (!this.currentlyEditingRow($currentRow)) return; // not currently editing, return
+        
+        let i = 0;
+        const checkErrors = [];
+        let validationPromises = [];
+        let allRowsValidated = false;
+        var self = this;
+
+        // Finish editing the row & save edits
+        this._modifyEachColumn(this.options.editableColumns, $cols, function($td) { // modify each column
+            // let cont = $td.find('input').val(); // read through each input
+            // $td.html(cont); // set the content and remove the input fields
+            let cont = '';
+            var isOk = true;
+            let promise = null;
+            
+            // if(i==0 || i==1 || i==2)
+            if(i==0) {
+                cont = $td.find('option:selected').text();
+                data.region  = $td.find('select').val();
+                data.region_text = $td.find('option:selected').text();
+
+                promise = requiredvalid("region", "dynamicregion", cont, rowIndex);
+            } else if(i==1) {
+                cont = $td.find('option:selected').text();
+                data.circle  = $td.find('select').val();
+                data.circle_text = $td.find('option:selected').text();
+                
+                promise = requiredvalid("region", "dynamiccircleregion", cont, rowIndex);
+            } else if(i==2) {
+                cont = $td.find('option:selected').text();
+                data.division  = $td.find('select').val();
+                data.division_text = $td.find('option:selected').text();
+                
+                promise = requiredvalid("region", "dynamicdivisionregion", cont, rowIndex);
+            } else if(i==7) {
+                cont = $td.find('input').val();
+                data.feedername = cont;
+
+                promise = requiredvalid("region", "dynamicfeedernameregion", cont, rowIndex);
+            } else if(i==8) {
+                cont = $td.find('input').val();
+                data.feederid = cont;
+                
+                promise = requiredvalid("region", "dynamicfeederidregion", cont, rowIndex, database_id);
+            } else if(i==11) {
+                cont = $td.find('input').val();
+                data.quantity = cont;
+                
+                promise = requiredvalid("region", "dynamicqtyregion", cont, rowIndex);
+            }
+
+            if (promise) {
+                validationPromises.push(
+                    promise.then(result => {
+                        checkErrors.push(result);
+                    })
+                );
+            }
+
+            if (i == 3) {
+                data.district = $td.find('input').val(); // read through each input
+            }
+
+            if (i == 4) {
+                data.vidhansabha = $td.find('input').val(); // read through each input
+            }
+
+            if (i == 5) {
+                data.loksabha = $td.find('input').val(); // read through each input
+            }
+
+            if(i==6) {
+                data.location = $td.find('input').val(); // read through each input
+            }
+
+            if(i==9) {                
+                data.projectid = $td.find('input').val(); // read through each input
+            }
+            
+            if(i==10) {                
+                data.geocode = $td.find('input').val(); // read through each input
+            }
+
+            if(i==12) {
+                data.boq = $td.find('input').val(); // read through each input
+            }
+
+            // Wait until all validations finish
+            Promise.all(validationPromises).then(() => {
+                const validCount = checkErrors.filter(Boolean).length;
+
+                if (validCount === 6) {
+                    $("#td_dynamicregion"+rowIndex).html(data.region_text);
+                    $("#td_dynamiccircle"+rowIndex).html(data.circle_text);
+                    $("#td_dynamicdivision"+rowIndex).html(data.division_text);
+                    $("#td_dynamicdistrict"+rowIndex).html(data.district);
+                    $("#td_dynamicvidhansabha"+rowIndex).html(data.vidhansabha);
+                    $("#td_dynamicloksabha"+rowIndex).html(data.loksabha);
+                    $("#td_dynamiclocationregion"+rowIndex).html(data.location);
+                    $("#td_dynamicfeedernameregion"+rowIndex).html(data.feedername);
+                    $("#td_dynamicfeederidregion"+rowIndex).html(data.feederid);
+                    $("#td_dynamicprojectidregion"+rowIndex).html(data.projectid);
+                    $("#td_dynamicgeocoderegion"+rowIndex).html(data.geocode);
+                    $("#td_dynamicqtyregion"+rowIndex).html(data.quantity);
+
+                    self.postdata(data);
+                    self._actionsModeNormal(button);
+                    self.options.onEdit($currentRow[0]);
+                    var regionhiddentable = $("#region_table").html();
+                    $("#regionhiddentable").val(regionhiddentable);
+                }
+            });         
+            
+            i++;
+        });
+    
+        /*this.postdata(data);
+        this._actionsModeNormal(button);
+        this.options.onEdit($currentRow[0]);
+        var regionhiddentable = $("#region_table").html();
+        $("#regionhiddentable").val(regionhiddentable);*/
     }
     _rowCancel(button) {
         // Reject the changes

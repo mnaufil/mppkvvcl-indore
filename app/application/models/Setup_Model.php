@@ -144,7 +144,7 @@ class Setup_Model extends CI_Model
 
 	function loadSessionDivision($circleId)
 	{
-		$select = '<div id="loaddivisions"><select class="form-control" ><option value="Select">Select Divisions</option>';
+		$select = '<div id="loaddivisions"><select class="form-control" ><option value="Select">Select Division</option>';
 
 		if(isset($_SESSION['acceptregion']) && count($_SESSION['acceptregion']) > 0 && isset($_SESSION['acceptregion'][$circleId]))
 		{

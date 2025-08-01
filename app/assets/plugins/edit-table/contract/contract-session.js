@@ -658,14 +658,14 @@ async function requiredvalid(validtype, fieldid, fieldValue, rowIndex, database_
 			var regionFeederId = fieldValue.trim();
 
 			if (regionFeederId != '') {
-				await duplicateFeederCheck(regionFeederId, database_id).done(function(response) {
-					if (response.duplicacy_check) {
-						callToast("error", "Feeder ID already exist");			
-						return false;
-					} else {
-						return true;
-					}
-				});
+				const response = await duplicateFeederCheck(regionFeederId, database_id);
+
+				if (response.duplicacy_check == 1) {
+					callToast("error", "Feeder ID already exist");
+					return false;
+				} else if (response.duplicacy_check == 0) {
+					return true;
+				}
 			} else if (regionFeederId == "") {
 				callToast("error", "Please select Feeder  ID");	
 				$("#"+fieldid+rowIndex).val();

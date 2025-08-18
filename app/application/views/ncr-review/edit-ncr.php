@@ -826,6 +826,7 @@
 		  			dataType: 'json',
 		  			data: {ncr_id:ncr_id, pp_activity_observation_id:pp_activity_observation_id, reject_msg:reject_msg},
 		  			success: function(response) {
+		  				// console.log('response: ', response); return false;
 		  				$('.email-loader').attr('hidden', true);
 		  				// console.log(response); return false;
 
@@ -1036,7 +1037,7 @@
     				dataType: 'json',
     				data: {checked_ncr: ncr_id_arr, feeder_id: feeder_IDs, to_email_recipients: to_email_recipients, cc_email_recipients: cc_email_recipients, add_to_recipient: add_to_recipient, add_cc_recipient: add_cc_recipient},
     				success: function(response) {
-    					// console.log(response);
+    					// console.log(response); return false;
     					$('#sendMail').attr('disabled', false);
     					$('.email-loader').attr('hidden', true);
 

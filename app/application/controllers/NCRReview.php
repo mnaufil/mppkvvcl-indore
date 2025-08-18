@@ -532,7 +532,8 @@ class NCRReview extends CI_Controller
 
 		$users_result = $this->ncr_model->getUsersByRegionCircleDivision($contract_location_data);
 
-		$users = $this->filterUsers($users_result);
+		$users = $this->filterUsers($users_result); //Uncomment Later
+		// $users[] = 'mansi.p@benchmarksolution.com'; //Delete Later
 
 		$email_errors = [];
 		$data['title'] = 'NCR Review';
@@ -1004,7 +1005,8 @@ class NCRReview extends CI_Controller
 
                 // Comment below fe_fs_emails when testing
                 $fe_fs_data = $this->ncr_model->getFEFSForNCR($ncr_id);
-				$fe_fs_emails = array_column($fe_fs_data, 'email');
+				$fe_fs_emails = array_column($fe_fs_data, 'email'); //Uncomment Later
+				// $fe_fs_emails[] = 'mansi.p@benchmarksolution.com'; //Delete Later
 
 				$other_email_ids_data = $this->ncr_model->getCCBCCEmailIDs();
 				foreach ($other_email_ids_data as $key => $value) {

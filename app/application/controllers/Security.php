@@ -2,20 +2,18 @@
 
 class Security extends CI_Controller
 {
-
 	function __construct()
     {
 		parent::__construct();
 
-        	$this->load->library('form_validation'); 
-        	$this->load->model('Security_Model');
-        
-        	if(!$this->session->isUserLoggedIn)
-        	{ 
-             	redirect('login'); 
-        	}
+    	$this->load->library('form_validation'); 
+    	$this->load->model('Security_Model');
+    
+    	if(!$this->session->isUserLoggedIn)
+    	{ 
+         	redirect('login'); 
+    	}
 	}
-
 
 	function users()
 	{
@@ -46,7 +44,6 @@ class Security extends CI_Controller
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('security/user/add-user', $data);
 	}
-
 
 	public function addusers()
 	{
@@ -177,6 +174,9 @@ class Security extends CI_Controller
 		$updated_user_id = $this->Security_Model->updateUser($user_id, $user_name, $user_email, $user_contact, $user_designation, $user_location, $user_role_id, $user_reporting_id, $package_access, $full_site_access);
 
 		if ($updated_user_id && $user_role_id != 8) {
+			// Delete all the previous site access records for the user
+			$delete_result = $this->Security_Model->deleteAllSiteAccess($user_id);
+
 			$regionsArray = $this->input->post('regions');
 
 			for ($i=0; $i < count($regionsArray); $i++) { 

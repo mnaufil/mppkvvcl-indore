@@ -243,34 +243,38 @@
                                        <div class="col-xl-12 mb-3" id="site_access_div" <?php echo $site_div_hidden; ?>>
                                           <label for="validationCustom02" class="form-label">Site Grant Access <span class="text-red">*</span></label>
                                           <div class="form-row">
-                                             <ul class="treeview">
+                                             <ul class="treeview"><!-- Region -->
                                                 <?php foreach ($regions as $region) { ?>
-                                                <li>
+                                                <li data-type="region">
                                                    <?php $regionCheckboxesName = "regions[]";?>
-                                                   <input type="checkbox" name=<?php echo $regionCheckboxesName; ?> value="<?php echo $region->region_id;?>" <?php echo in_array($region->region_id,$selectedRegionsArray) ? "checked" : ""; ?>>
+                                                   <input type="checkbox" name=<?php echo $regionCheckboxesName; ?> data-region="<?php echo $region->region_name; ?>" value="<?php echo $region->region_id;?>" <?php echo in_array($region->region_id,$selectedRegionsArray) ? "checked" : ""; ?>>
                                                    <label class="<?php echo in_array($region->region_id,$selectedRegionsArray) ? "custom-checked" : "custom-unchecked"; ?>"><?php echo $region->region_name;?></label>
-                                                   <?php foreach ($circles as $circle) { ?>
-                                                   <?php    if($circle->region_id == $region->region_id) { ?>
-                                                   <ul>
-                                                      <li>
-                                                         <?php $circleCheckboxesName = "circles".$region->region_id."[]";?>
-                                                         <input type="checkbox" name=<?php echo $circleCheckboxesName; ?> value="<?php echo $circle->circle_id;?>" <?php echo in_array($circle->circle_id,$selectedCirclesArray) ? "checked" : ""; ?>>
+                                                   <ul><!-- Circle -->
+                                                   <?php foreach ($circles as $circle) { 
+                                                            if($circle->region_id == $region->region_id) {
+                                                               $circleCheckboxesName = "circles".$region->region_id."[]";
+                                                   ?>                                                   
+                                                      <li data-type="circle">
+                                                         <input type="checkbox" name=<?php echo $circleCheckboxesName; ?> data-circle="<?php echo $circle->circle_name ?>" value="<?php echo $circle->circle_id;?>" <?php echo in_array($circle->circle_id,$selectedCirclesArray) ? "checked" : ""; ?>>
                                                          <label class="<?php echo in_array($circle->circle_id,$selectedCirclesArray) ? "custom-checked" : "custom-unchecked"; ?>"><?php echo $circle->circle_name;?></label>
-                                                         <?php foreach ($divisions as $division) {?>
-                                                         <?php    if($division->circle_id == $circle->circle_id) { ?>
-                                                         <ul>
-                                                            <?php $divisionCheckboxesName = "divisions".$circle->circle_id."[]";?>
-                                                            <li>
+                                                         <ul><!-- Division -->
+                                                         <?php foreach ($divisions as $division) {
+                                                                  if($division->circle_id == $circle->circle_id) {
+                                                                     $divisionCheckboxesName = "divisions".$circle->circle_id."[]";
+                                                         ?>
+                                                            <li data-type="division">
                                                                <input type="checkbox" name=<?php echo $divisionCheckboxesName; ?> value="<?php echo $division->division_id;?>" <?php echo in_array($division->division_id,$selectedDivisionsArray) ? "checked" : ""; ?>>
                                                                <label  class="<?php echo in_array($division->division_id,$selectedDivisionsArray) ? "custom-checked" : "custom-unchecked"; ?>"><?php echo $division->division_name;?></label>
-                                                            </li>
+                                                            </li>                                                    
+                                                         <?php    }
+                                                               }
+                                                         ?>
                                                          </ul>
-                                                         <?php } ?>
-                                                         <?php } ?>
                                                       </li>
+                                                   <?php    } 
+                                                         }
+                                                   ?>
                                                    </ul>
-                                                   <?php } ?>
-                                                   <?php } ?>
                                                 </li>
                                                 <?php } ?>
                                              </ul>
@@ -396,67 +400,56 @@
             var email_exists = false;
 
             // Site Grant Access Script
-            $('input[type="checkbox"]').change(checkboxChanged);
+            $(document).on("change", "#site_access_div input[type=checkbox]", checkboxChanged);
 
             function checkboxChanged() {
                var $this = $(this),
                checked = $this.prop("checked"),
-               container = $this.parent(),
-               siblings = container.siblings();
+               container = $this.closest("li"); // ✅ always the LI
 
-               container.find('input[type="checkbox"]')
-                  .prop({
-                     indeterminate: false,
-                     checked: checked
-                  })
-                  .siblings('label')
-                  .removeClass('custom-checked custom-unchecked custom-indeterminate')
-                  .addClass(checked ? 'custom-checked' : 'custom-unchecked');
+               // push state down
+               container.find("input[type=checkbox]")
+                        .prop({ checked: checked, indeterminate: false })
+                        .each(function () {
+                           setLabel($(this), checked, false);
+                        });
 
-                  checkSiblings(container, checked);
+               // pull state up
+               updateAncestors(container);
             }
 
-            function checkSiblings($el, checked) {
-               var parent = $el.parent().parent(),
-               all = true,
-               indeterminate = false;
+            function updateAncestors($li) {
+               var $parentLi = $li.parent().closest("li"); // ✅ parent LI (circle or region)
+               if (!$parentLi.length) return;
 
-               $el.siblings().each(function() {
-                  return all = ($(this).children('input[type="checkbox"]').prop("checked") === checked);
-               });
+               // all immediate children of parent
+               var $children = $parentLi.children("ul").children("li");               
 
-               if (all && checked) {
-                  parent.children('input[type="checkbox"]')
-                     .prop({
-                        indeterminate: false,
-                        checked: checked
-                     })
-                     .siblings('label')
-                     .removeClass('custom-checked custom-unchecked custom-indeterminate')
-                     .addClass(checked ? 'custom-checked' : 'custom-unchecked');
+               var total = $children.length;
+               var checkedCount = $children.children("input[type=checkbox]:checked").length;               
 
-                     checkSiblings(parent, checked);
-               } else if (all && !checked) {
-                  indeterminate = parent.find('input[type="checkbox"]:checked').length > 0;
-
-                  parent.children('input[type="checkbox"]')
-                     .prop("checked", checked)
-                     .prop("indeterminate", indeterminate)
-                     .siblings('label')
-                     .removeClass('custom-checked custom-unchecked custom-indeterminate')
-                     .addClass(indeterminate ? 'custom-indeterminate' : (checked ? 'custom-checked' : 'custom-unchecked'));
-
-                  checkSiblings(parent, checked);
+               if (checkedCount === 0) {
+                  setState($parentLi, false, false);
+               } else if (checkedCount === total) {
+                  setState($parentLi, true, false);
                } else {
-                  $el.parents("li").children('input[type="checkbox"]')
-                     .prop({
-                        indeterminate: true,
-                        checked: false
-                     })
-                     .siblings('label')
-                     .removeClass('custom-checked custom-unchecked custom-indeterminate')
-                     .addClass('custom-indeterminate');
+                  setState($parentLi, true, true); // indeterminate
                }
+
+               // recurse upwards
+               updateAncestors($parentLi);
+            }
+
+            function setState($li, checked, indeterminate) {
+               var $cb = $li.children("input[type=checkbox]");
+               $cb.prop({ checked: checked, indeterminate: indeterminate });
+               setLabel($cb, checked, indeterminate);
+            }
+
+            function setLabel($cb, checked, indeterminate) {
+               var $label = $cb.siblings("label");
+               $label.removeClass("custom-checked custom-unchecked custom-indeterminate")
+                     .addClass(indeterminate ? "custom-indeterminate" : (checked ? "custom-checked" : "custom-unchecked"));
             }
             // Site Grant Access Script Ends
 

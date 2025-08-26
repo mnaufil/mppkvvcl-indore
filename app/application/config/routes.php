@@ -170,6 +170,7 @@ $route['view-invoice/(:num)'] = 'InvoiceStatus/viewInvoice/$1';
 $route['reports'] = 'Report/index';
 $route['view-report'] = 'Report/viewReport';
 $route['generate-physical-report'] = 'Report/generatePhysicalReport';
+$route['export-excel-physical-progress-report/(:num)'] = 'Report/exportExcelPhysicalProgressReport/$1';
 $route['visit-report'] = 'Report/visitReport';
 $route['generate-visit-report'] = 'Report/generateVisitReport';
 $route['ncr-report'] = 'Report/ncrReport';

@@ -1,7 +1,12 @@
 <?php 	defined('BASEPATH') OR exit('No direct script access allowed');
-/**
- * 
- */
+
+// require APPPATH.'libraries/PhpXlsxGenerator.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+
 class Report extends CI_Controller
 {	
 	function __construct()
@@ -14,9 +19,9 @@ class Report extends CI_Controller
 		$this->load->library("Pdf");
 		$this->load->library('image_lib');
 		if(!$this->session->isUserLoggedIn)
-    { 
-      redirect('login'); 
-    }
+	    { 
+	      redirect('login'); 
+	    }
 	}
 
 	public function index()
@@ -210,6 +215,175 @@ class Report extends CI_Controller
 		// echo 'data: <pre>'; print_r($data); echo '</pre>'; die();
 		$this->load->view('report/view-report', $data);
 	}
+
+	public function exportExcelPhysicalProgressReport($report_type_no)
+	{
+		// Excel file name for download 
+		$filename = "PhysicalProgressReport-".date('Ymd').".xlsx";
+
+		$spQuery = $_SESSION['spQuery'];
+		$result = $this->Report_Model->executeQuery($spQuery);
+
+		// Create Spreadsheet
+	    $spreadsheet = new Spreadsheet();
+	    $sheet = $spreadsheet->getActiveSheet();
+
+		if ($report_type_no == 1) {
+			$onlyKeys = array_keys($result[0]);	
+
+			$mainHeadingArray = $subHeadingArray = $subSubHeadingArray = [];
+
+			foreach($onlyKeys as $mainHeading)
+			{
+				if ($mainHeading == 'feeder_id' || $mainHeading == 'region_name' || $mainHeading == 'circle_name' || $mainHeading == 'division_name' || $mainHeading == 'pstatus' || $mainHeading == 'vidhansabha' || $mainHeading == 'district' || $mainHeading == 'loksabha') {
+					continue;
+				}
+
+				$explode = explode("__", $mainHeading);
+				array_push($mainHeadingArray, $explode[0]);
+				array_push($subHeadingArray, $explode[1].' ('.$explode[2].')');
+				array_push($subSubHeadingArray, $explode[3]);
+			}		
+
+			$mainHeadingArray = array_unique($mainHeadingArray);
+
+			$header_count = [];
+			foreach ($mainHeadingArray as $group_name) {
+				$header_count[$group_name] = 0;
+				foreach ($onlyKeys as $value) {
+					// $match = '/^'.$group_name.'__/';
+					$match = '#^'.$group_name.'__#'; //Changed delimiter because a group name contained '/' 
+					
+					if (preg_match($match, $value)) {
+						$header_count[$group_name]++;
+					}
+				}
+			}		
+
+			// Modifying reportData
+			$modified_report_data = [];
+
+			foreach ($result as $key => $value) {
+				$i = 1;
+				foreach ($value as $k => $val) {
+					if (str_contains($k, 'boq_qty')) {
+						$boq_key = 'boq_qty_'.$i;
+						$modified_report_data[$value['feeder_id']][$boq_key] = $val;
+
+						$i++;
+					} elseif (str_contains($k, 'erection_qty')) {
+						$erection_key = 'erection_qty_'.$i;
+						$modified_report_data[$value['feeder_id']][$erection_key] = $val;
+
+						$i++;
+					} elseif (str_contains($k, 'region_name')) {
+						$modified_report_data[$value['feeder_id']]['region_name'] = $val;
+					} elseif (str_contains($k, 'circle_name')) {
+						$modified_report_data[$value['feeder_id']]['circle_name'] = $val;
+					} elseif (str_contains($k, 'division_name')) {
+						$modified_report_data[$value['feeder_id']]['division_name'] = $val;
+					} elseif (str_contains($k, 'pstatus')) {
+						$modified_report_data[$value['feeder_id']]['pstatus'] = $val;
+					} elseif (str_contains($k, 'vidhansabha')) {
+						$modified_report_data[$value['feeder_id']]['vidhansabha'] = $val;
+					} elseif (str_contains($k, 'loksabha')) {
+						$modified_report_data[$value['feeder_id']]['loksabha'] = $val;
+					} elseif (str_contains($k, 'district')) {
+						$modified_report_data[$value['feeder_id']]['district'] = $val;
+					}
+				}
+			}
+
+			
+
+		    // First row - leave first 9 cols empty
+			for ($i = 1; $i <= 9; $i++) {
+				$cell = Coordinate::stringFromColumnIndex($i).'1';
+			    $sheet->setCellValue($cell, '');
+			}
+
+			// Now place group headings in merged cells
+			$startColumn = 9; // column I
+			$row = 1;
+			foreach ($header_count as $group_name => $mergeCount) {
+			    $endColumn = $startColumn + $mergeCount - 1;
+			    $range = Coordinate::stringFromColumnIndex($startColumn).$row.':'.Coordinate::stringFromColumnIndex($endColumn).$row;
+
+			    // Merge and set group name
+			    $sheet->mergeCells($range);
+			    $sheet->setCellValue(Coordinate::stringFromColumnIndex($startColumn).$row, $group_name);
+
+			    $startColumn = $endColumn + 1;
+			}
+
+		    // Second row
+	    	$second_row = array_merge(['Region','Circle','Division','Vidhansabha','Loksabha','District','Feeder ID','Status'], $subHeadingArray);
+	    	$sheet->fromArray($second_row, null, 'A2');
+
+	    	// Third row
+		    $third_row = array_merge(['', '', '', '', '', '', '', ''], $subSubHeadingArray);
+		    $sheet->fromArray($third_row, null, 'A3');
+
+		    // Print Data
+		    if (!empty($modified_report_data)) {
+		    	$rowIndex = 4;
+			    foreach ($modified_report_data as $key => $value) {
+			        $temp_data = [
+			            $value['region_name'], $value['circle_name'], $value['division_name'],
+			            $value['vidhansabha'], $value['loksabha'], $value['district'], $key, $value['pstatus']
+			        ];
+
+			        $sliced_value = array_slice($value, 7);
+			        foreach ($sliced_value as $val) {
+			            $temp_data[] = $val;
+			        }
+
+			        $sheet->fromArray($temp_data, null, 'A'.$rowIndex);
+			        $rowIndex++;
+			    }
+		    }
+
+		    $lastColumnIndex = $sheet->getHighestColumn(); // e.g. "AF"
+			$sheet->getStyle("A1:{$lastColumnIndex}3")
+			      ->getAlignment()
+			      ->setHorizontal(Alignment::HORIZONTAL_CENTER)
+			      ->setVertical(Alignment::VERTICAL_CENTER);	
+		} elseif ($report_type_no == 2) {
+			
+		}		
+
+	    // Output file
+	    ob_clean(); // clear any extra output
+	    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+	    header("Content-Disposition: attachment; filename=\"$filename\"");
+	    header('Cache-Control: max-age=0');
+
+	    $writer = new Xlsx($spreadsheet);
+	    $writer->save('php://output');
+	    exit;
+	}
+
+	// Convert column letters to number (H = 8)
+	public function colLetterToNumber($col) {
+	    $num = 0;
+	    $len = strlen($col);
+	    for ($i = 0; $i < $len; $i++) {
+	        $num = $num * 26 + (ord($col[$i]) - ord('A') + 1);
+	    }
+	    return $num;
+	}
+
+	// Convert number back to column letters
+	public function colNumberToLetter($num) {
+	    $col = '';
+	    while ($num > 0) {
+	        $rem = ($num - 1) % 26;
+	        $col = chr(65 + $rem) . $col;
+	        $num = intval(($num - 1) / 26);
+	    }
+	    return $col;
+	}
+
 
 	public function getRegionIDs($user_regions)
 	{
@@ -510,22 +684,24 @@ class Report extends CI_Controller
 		{
 			$tasks[] = $rows;
 		}
+
+		echo 'tasks: <pre>'; print_r($tasks); echo '</pre>'; die();
 		
 		$filename = "report-".date('Ymd') . ".xls";     
-    header("Content-Type: application/vnd.ms-excel");
-    header("Content-Disposition: attachment; filename=\"$filename\"");
+	    header("Content-Type: application/vnd.ms-excel");
+	    header("Content-Disposition: attachment; filename=\"$filename\"");
 		$heading = false;
 
-    if(!empty($tasks))
-      foreach($tasks as $row) {
-	      if(!$heading) {
-	        // display field/column names as a first row
-	        echo implode("\t", array_keys($row)) . "\n";
-	        $heading = true;
-	      }
+    	if(!empty($tasks))
+  		foreach($tasks as $row) {
+      		if(!$heading) {
+        		// display field/column names as a first row
+        		echo implode("\t", array_keys($row)) . "\n";
+        		$heading = true;
+      		}
 
-      	echo implode("\t", array_values($row)) . "\n";
-     	}
+  			echo implode("\t", array_values($row)) . "\n";
+ 		}
     	exit;
 	}	
 	

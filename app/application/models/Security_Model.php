@@ -152,6 +152,20 @@ class Security_Model extends CI_Model
 
     }
 
+    public function deleteAllSiteAccess($user_id)
+    {
+        $this->db->where('user_id', $user_id);
+        $query = $this->db->delete('mst_user_data_access');
+
+        if (!$query) {
+            $error = $this->db->error();    
+            echo 'Error Code: '.$error['code'].'<br> Error Message: '.$error['message'];
+            die();
+        } else {
+            return $this->db->affected_rows();
+        }
+    }
+
     public function checkRegionCircleDivisionExists($user_id, $region, $circle, $division)
     {
         $query = $this->db->get_where('mst_user_data_access', array('user_id' => $user_id, 'region_id' => $region, 'circle_id' => $circle, 'division_id' => $division));

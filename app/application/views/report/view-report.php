@@ -209,7 +209,8 @@
                                           <!-- Export Button -->
                                           <div class="col-sm-12 col-md-9s mt-3 mb-3">
                                              <div class="dts-buttons btn-group flex-wrap" style="float:right;">
-                                                <a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>
+                                                <!-- <a href="<?php //echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a> -->
+                                                <a href="<?php echo base_url('export-excel-physical-progress-report/'.$reportType);?>" class="btn btn-primary" ><span>Export</span></a>
                                              </div>
                                           </div>
                                        </div>   
@@ -318,7 +319,8 @@
                                           <!-- Export Button -->
                                           <div class="col-sm-12 col-md-9s mt-3 mb-3">
                                              <div class="dts-buttons btn-group flex-wrap" style="float:right;">
-                                                <a href="<?php echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a>
+                                                <!-- <a href="<?php //echo base_url('export-excel-sp');?>" class="btn btn-primary" ><span>Export</span></a> -->
+                                                <a href="<?php echo base_url('export-excel-physical-progress-report/'.$reportType);?>" class="btn btn-primary" ><span>Export</span></a>
                                              </div>
                                           </div>
                                        </div>   

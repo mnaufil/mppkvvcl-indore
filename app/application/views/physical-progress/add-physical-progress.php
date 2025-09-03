@@ -1363,9 +1363,9 @@
 																								<!-- tr open -->
 																								<tr data-table-row="<?php echo $k2; ?>" data-seqno="<?php echo $v2['seqno'];?>" data-activity-id="<?php echo $v2['typeofwork_activity_id'];?>" data-unit-id="<?php echo $v2['unit_id'];?>">
 																									<!-- Calculating Observation Flag -->
-																									<?php if (str_contains($k1, '/')) {
+																									<?php /*if (str_contains($k1, '/')) {
 																													$k1 = str_replace('/', ' ', $k1);
-																												}
+																												}*/
 																									?>
 																									<?php $hidden_input_name = strtolower(str_replace(' ', '_', $k1)).'_observation_'.$v2['typeofwork_activity_id']; ?>
 																									<?php $observation_flag = 'no observation'; ?>
@@ -1438,13 +1438,10 @@
 																									<?php } elseif ($sheet_data['sheet_status'] == 'In Process' || $sheet_data['sheet_status'] == 'Completed' || $sheet_data['sheet_status'] == 'Reviewed') { ?>
 																										<!-- Sheet Status: In Process || Completed || Reviewed -->
 																										<td class="observation">
-																											<?php //echo '<pre>'; print_r($v2['status_id']); echo '</pre>'; ?>
-																											<?php //echo '<pre>'; print_r($v2['observations_list']); echo '</pre>'; ?>
 																											<?php if (isset($v2['status_id'])) { ?>
 																												<?php if (($v2['status_id'] == 1 || $v2['status_id'] == 2 || ($userdata['role'] == 'Client' && $v2['boq'] > 0.00))) { ?>
 																													<?php $row_id = $k2; $table = $k1; $activity_id = $v2['typeofwork_activity_id'];
 																																$obs_list_count = count($v2['applied_observations']);
-																																//echo 'obs_list_count: <pre>'; print_r($obs_list_count); echo '</pre>';
 																																$obs_complete_count = 0;
 																																$ncr_submitted_by_tkc_count = 0;
 																																foreach ($v2['applied_observations'] as $aokey => $aovalue) {
@@ -3813,7 +3810,6 @@
       }
 
       function getActivityDetails(table, id, activity_index) {
-      	
       	let activities = <?php echo json_encode($sheet_data['activities_list']); ?>;
       	let activity = activities[activity_index][table][id];
 

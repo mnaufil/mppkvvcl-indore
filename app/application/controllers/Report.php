@@ -684,8 +684,6 @@ class Report extends CI_Controller
 		{
 			$tasks[] = $rows;
 		}
-
-		echo 'tasks: <pre>'; print_r($tasks); echo '</pre>'; die();
 		
 		$filename = "report-".date('Ymd') . ".xls";     
 	    header("Content-Type: application/vnd.ms-excel");

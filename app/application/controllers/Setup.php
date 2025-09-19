@@ -320,9 +320,9 @@ class Setup extends CI_Controller
 	{
 		if (!empty($_POST)) {
 			$feeder_id = $this->input->post('feeder_id');
-			$contract_location_id = $this->input->post('contract_location_id');
+			// $contract_location_id = $this->input->post('contract_location_id');
 
-			$result = $this->Setup_Model->checkFeederDuplicacy($feeder_id, $contract_location_id);
+			$result = $this->Setup_Model->checkFeederDuplicacy($feeder_id);
 			$response['duplicacy_check'] = empty($result) ? 0 : 1;
 		} else {
 			http_response_code(400);

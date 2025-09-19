@@ -657,8 +657,8 @@ async function requiredvalid(validtype, fieldid, fieldValue, rowIndex, database_
 		{
 			var regionFeederId = fieldValue.trim();
 
-			if (regionFeederId != '' && database_id == '') {
-				const response = await duplicateFeederCheck(regionFeederId);
+			if (regionFeederId != '') {
+				const response = await duplicateFeederCheck(regionFeederId, database_id);
 
 				if (response.duplicacy_check == 1) {
 					callToast("error", "Feeder ID already exist");
@@ -800,13 +800,13 @@ async function requiredvalid(validtype, fieldid, fieldValue, rowIndex, database_
 	}
 }
 
-function duplicateFeederCheck(feederID) {
+function duplicateFeederCheck(feederID, database_id) {
 	// Ajax Call to check if feederID alredy exist
 	return $.ajax({
 		type: 'POST',
 		url: baseUrl + 'check-feeder-duplicacy',
 		dataType: 'json',
-		data: {feeder_id:feederID},
+		data: {feeder_id:feederID, contract_location_id:database_id},
 		success: function(response) {},
 		error: function(xhr, status, error) {
 			console.log(xhr);

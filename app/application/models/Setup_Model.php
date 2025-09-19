@@ -1418,13 +1418,11 @@ class Setup_Model extends CI_Model
 
    	public function checkFeederDuplicacy($feeder_id)
    	{
-   		/*if (empty($contract_location_id)) {
+   		if (empty($contract_location_id)) {
    			$where_array = array('feeder_id' => $feeder_id, 'is_active' => 1);
    		} else {
    			$where_array = array('feeder_id' => $feeder_id, 'contract_location_id !=' => $contract_location_id, 'is_active' => 1);
-   		}*/
-
-   		$where_array = array('feeder_id' => $feeder_id, 'is_active' => 1);
+   		}
 
    		$this->db->select('feeder_id');
    		$query = $this->db->get_where('contract_location', $where_array);

@@ -1416,7 +1416,7 @@ class Setup_Model extends CI_Model
    		}
    	}
 
-   	public function checkFeederDuplicacy($feeder_id, $contract_location_id)
+   	public function checkFeederDuplicacy($feeder_id)
    	{
    		if (empty($contract_location_id)) {
    			$where_array = array('feeder_id' => $feeder_id, 'is_active' => 1);

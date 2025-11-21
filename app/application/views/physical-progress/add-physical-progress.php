@@ -2512,6 +2512,11 @@
 
       			$('#preview-img-complete').append(html_img);
     			}
+
+    			// Setting current date if completion photo is uploaded
+    			var today = moment().format("DD-MM-YYYY");
+
+    			$('#completionDate').val(today);
     		} 
       });
 
@@ -4015,8 +4020,7 @@
         if (!d) throw new TypeError("expected argument to FileList is File or array of File objects")
         for (b = (new ClipboardEvent("")).clipboardData || new DataTransfer; c--;) b.items.add(file[c])
         return b.files
-      }
-            
+      }            
     </script>
 	</body>
 </html>

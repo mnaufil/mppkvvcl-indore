@@ -38,7 +38,7 @@
                                     <span style="text-align: right;">Total Financial Value of the Work<br><h6 class="mb-0 text-green fw-semibold"><b><?php echo isset($totalData[1]['Total_financial_physical_progress']) ? $totalData[1]['Total_financial_physical_progress'] : 0; ?></b>(<?php echo isset($totalData[1]['Total_financial_physical_progress_per']) ? $totalData[1]['Total_financial_physical_progress_per'].'%' : 0; ?>)</h6></span>
                                 </div>
                                 <div class="row financial-value">
-                                    <span style="text-align: right;">Financial Value - WIP <br><h6 class="mb-0 text-green fw-semibold"><b><?php echo $totalData[1]['wip_financial_physical_progress'];?></b>(<?php echo $totalData[1]['wip_financial_physical_progress_per'].'%'; ?>)</h6></span>
+                                    <span style="text-align: right;">Financial Value - WIP <br><h6 class="mb-0 text-green fw-semibold"><b><?php echo isset($totalData[1]['wip_financial_physical_progress']) ? $totalData[1]['wip_financial_physical_progress'] : 0;?></b>(<?php echo isset($totalData[1]['wip_financial_physical_progress_per']) ? $totalData[1]['wip_financial_physical_progress_per'].'%' : 0; ?>)</h6></span>
                                     <span style="text-align: right;">Financial Value - Completed <br><h6 class="mb-0 text-green fw-semibold"><b><?php echo $totalData[1]['completed_financial_physical_progress'];?></b>(<?php echo $totalData[1]['completed_financial_physical_progress_per'].'%'; ?>)</h6></span>
                                 </div>
                             </div>

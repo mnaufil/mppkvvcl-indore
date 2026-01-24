@@ -166,8 +166,8 @@ class Login_Model extends CI_Model
         //$query = $this->db->query("CALL sp_get_dashboard_statistics($mileStoneId, 1)");
         // $query = $this->db->query("CALL sp_dashboard_insights(1)"); //Original SP
         // $query = $this->db->query("CALL bkp_020824_sp_dashboard_insights(1)");
-        $query = $this->getMultipleQueryResult("CALL sp_dashboard_insights(1)"); //Original SP Call
-        // $query = $this->getMultipleQueryResult("CALL bkp_activity_price_sp_dashboard_insights(1)"); //Currently used SP
+        // $query = $this->getMultipleQueryResult("CALL sp_dashboard_insights(1)"); //Original SP Call
+        $query = $this->getMultipleQueryResult("CALL bkp_activity_price_sp_dashboard_insights(1)"); //Currently used SP
         // echo 'query: <pre>'; print_r($query); echo '</pre>'; die();
 
         /*if($query)

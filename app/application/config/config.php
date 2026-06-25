@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $config['base_url'] = 'https://mpwzrdss.co.in/';
 // $config['base_url'] = 'http://192.168.3.14:9001/';
 // $config['base_url'] = $_SERVER['SERVER_NAME'];
-$config['base_url'] = 'http://localhost/mppkvvcl-indore/app/';
+$config['base_url'] = 'http://localhost:8080/mppkvvcl-indore/app/';
 
 
 /*

@@ -72,8 +72,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 // $active_group = 'default';
-$active_group = 'mpp';
-// $active_group = 'mpp_prod';
+// $active_group = 'mpp';
+$active_group = 'mpp_prod';
 $query_builder = TRUE;
 
 $db['default'] = array(

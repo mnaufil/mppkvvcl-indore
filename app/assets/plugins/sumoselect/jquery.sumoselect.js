@@ -547,7 +547,7 @@
                     O.placeholder = O.placeholder ? (settings.prefix + ' ' + O.placeholder) : settings.placeholder
 
                     //set display text
-                    O.caption.html(O.placeholder);
+                    O.caption.text(O.placeholder);
                     if (settings.showTitle) O.CaptionCont.attr('title', O.placeholder);
 
                     //set the hidden field if post as csv is true.

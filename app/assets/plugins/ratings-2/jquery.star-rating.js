@@ -60,7 +60,13 @@
     };
 
     // create unique id for stars
-    this._uid = Math.floor( Math.random() * 999 );
+    if (window.crypto && window.crypto.getRandomValues) {
+      var uidArray = new Uint32Array(1);
+      window.crypto.getRandomValues(uidArray);
+      this._uid = uidArray[0] % 999;
+    } else {
+      this._uid = Math.floor( Math.random() * 999 );
+    }
 
     // override gradient if not used
     if( !options.starGradient && !this.settings.useGradient ){

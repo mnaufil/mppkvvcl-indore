@@ -161,7 +161,12 @@
 
                     tab_content_selector.each(function() {
                         if ($(this).hasClass(add_relation)) {
-                            get_parent.find(" > div > div.tab_content." + add_relation).before("<div title='" + add_relation + "' class='accordian_header " + add_relation + ' ' + current_tab_class + "'>" + accordian_header + "<span class='arrow'></span></div>");
+                            var $accordionHeader = $("<div>")
+                                .attr("title", add_relation)
+                                .addClass("accordian_header " + add_relation + " " + current_tab_class)
+                                .text(accordian_header)
+                                .append($("<span>").addClass("arrow"));
+                            get_parent.find(" > div > div.tab_content." + add_relation).before($accordionHeader);
                         }
                     });
                     li_rel++;

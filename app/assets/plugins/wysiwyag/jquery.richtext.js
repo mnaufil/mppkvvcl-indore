@@ -771,13 +771,33 @@
             });
 
         // adding URL
+        function isSafeUrl(url) {
+            if (!url) {
+                return false;
+            }
+
+            var normalized = $.trim(url);
+            if (normalized.charAt(0) === '#' || normalized.charAt(0) === '/') {
+                return true;
+            }
+
+            var match = normalized.match(/^([a-zA-Z][a-zA-Z0-9+.-]*):/);
+            if (!match) {
+                // relative URLs without a scheme are allowed
+                return true;
+            }
+
+            var scheme = match[1].toLowerCase();
+            return scheme === 'http' || scheme === 'https' || scheme === 'mailto' || scheme === 'tel';
+        }
+
         $(document).on("click", "#richText-URL button.btn", function(event) {
             event.preventDefault();
             var $button = $(this);
             var $form = $button.parent('.richText-form-item').parent('.richText-form');
             if ($form.attr("data-editor") === editorID) {
                 // only for currently selected editor
-                var url = $form.find('input#url').val();
+                var url = $.trim($form.find('input#url').val());
                 var text = $form.find('input#urlText').val();
                 var target = $form.find('#openIn').val();
 
@@ -797,14 +817,18 @@
                             $(this).remove();
                         });
                     }, 5000);
+                } else if (!isSafeUrl(url)) {
+                    // invalid or unsafe url set
+                    $form.prepend($('<div />', { style: 'color:red;display:none;', class: 'form-item is-error', text: settings.translations.pleaseEnterURL }));
+                    $form.children('.form-item.is-error').slideDown();
+                    setTimeout(function() {
+                        $form.children('.form-item.is-error').slideUp(function() {
+                            $(this).remove();
+                        });
+                    }, 5000);
                 } else {
                     // write html in editor
-                    var html = '';
-                    if (settings.useSingleQuotes === true) {
-                        html = "<a href='" + url + "' target='" + target + "'>" + text + "</a>";
-                    } else {
-                        html = '<a href="' + url + '" target="' + target + '">' + text + '</a>';
-                    }
+                    var html = $('<a />', { href: url, target: target }).text(text).prop('outerHTML');
                     restoreSelection(editorID, false, true);
 
                     var $editNode = $('.richText-editNode');

@@ -106,7 +106,7 @@
         var target = $this.attr('data-target') ||
             e.preventDefault() ||
             (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')
-        var $target = $(target)
+        var $target = $($.find(target))
         var data = $target.data('bs.sidebar')
         var option = data ? 'toggle' : $this.data()
 

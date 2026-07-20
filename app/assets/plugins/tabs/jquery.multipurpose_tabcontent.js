@@ -137,7 +137,12 @@
                     var get_parent = $(this).closest(".tab_wrapper");
                     var active_tab_text = $(this).find(" >ul li:eq(0)").text();
                     get_parent.addClass("show-as-dropdown");
-                    get_parent.prepend("<div class='active_tab'><span class='text'>" + active_tab_text + "</span><span class='arrow'></span></div>");
+                    var activeTab = $("<div>", { "class": "active_tab" });
+                    var textSpan = $("<span>", { "class": "text" }).text(active_tab_text);
+                    var arrowSpan = $("<span>", { "class": "arrow" });
+
+                    activeTab.append(textSpan).append(arrowSpan);
+                    get_parent.prepend(activeTab);
                 }
 
                 $(".active_tab").click(function() {

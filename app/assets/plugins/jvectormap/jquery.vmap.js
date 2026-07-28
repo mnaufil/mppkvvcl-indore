@@ -74,7 +74,8 @@ var JQVMap = function (params) {
   var map = this;
   var mapData = JQVMap.maps[params.map];
   var mapPins;
-  var $container = jQuery(params.container);
+  var $container = (params.container && params.container.jquery) ? params.container :
+    (params.container && params.container.nodeType) ? jQuery(params.container) : jQuery();
 
   if( !mapData){
     throw new Error('Invalid "' + params.map + '" map parameter. Please make sure you have loaded this map file in your HTML.');

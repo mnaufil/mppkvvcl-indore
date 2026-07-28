@@ -8140,10 +8140,22 @@ var dialog = $.widget( "ui.dialog", {
 
 	_appendTo: function() {
 		var element = this.options.appendTo;
-		if ( element && (element.jquery || element.nodeType) ) {
+		if ( element && ( element.jquery || element.nodeType ) ) {
 			return $( element );
 		}
-		return this.document.find( element || "body" ).eq( 0 );
+
+		if ( typeof element === "string" ) {
+			element = $.trim( element );
+			if ( !element || /[<>]/.test( element ) || !/^[#.\w\-\s]+$/.test( element ) ) {
+				element = "body";
+			}
+		}
+
+		try {
+			return this.document.find( element || "body" ).eq( 0 );
+		} catch ( e ) {
+			return this.document.find( "body" ).eq( 0 );
+		}
 	},
 
 	_destroy: function() {

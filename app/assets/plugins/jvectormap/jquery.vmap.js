@@ -74,6 +74,7 @@ var JQVMap = function (params) {
   var map = this;
   var mapData = JQVMap.maps[params.map];
   var mapPins;
+  var $container = jQuery(params.container);
 
   if( !mapData){
     throw new Error('Invalid "' + params.map + '" map parameter. Please make sure you have loaded this map file in your HTML.');
@@ -156,7 +157,7 @@ var JQVMap = function (params) {
     jQuery(this.rootGroup).append(path);
   }
 
-  jQuery(params.container).delegate(this.canvas.mode === 'svg' ? 'path' : 'shape', 'mouseover mouseout', function (e) {
+  $container.delegate(this.canvas.mode === 'svg' ? 'path' : 'shape', 'mouseover mouseout', function (e) {
     var containerPath = e.target,
       code = e.target.id.split('_').pop(),
       labelShowEvent = jQuery.Event('labelShow.jqvmap'),
@@ -187,7 +188,7 @@ var JQVMap = function (params) {
     }
   });
 
-  jQuery(params.container).delegate(this.canvas.mode === 'svg' ? 'path' : 'shape', 'click', function (regionClickEvent) {
+  $container.delegate(this.canvas.mode === 'svg' ? 'path' : 'shape', 'click', function (regionClickEvent) {
 
     var targetPath = regionClickEvent.target;
     var code = regionClickEvent.target.id.split('_').pop();
@@ -195,7 +196,7 @@ var JQVMap = function (params) {
 
     code = code.toLowerCase();
 
-    jQuery(params.container).trigger(mapClickEvent, [code, mapData.paths[code].name]);
+    $container.trigger(mapClickEvent, [code, mapData.paths[code].name]);
 
     if ( !params.multiSelectRegion && !mapClickEvent.isDefaultPrevented()) {
       for (var keyPath in mapData.paths) {

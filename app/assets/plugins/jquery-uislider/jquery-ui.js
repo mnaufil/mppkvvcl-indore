@@ -4376,9 +4376,15 @@ $.extend(Datepicker.prototype, {
 	 *					event - if triggered by focus
 	 */
 	_showDatepicker: function(input) {
-		input = input.target || input;
+		input = input && (input.target || input);
+		if (!input || !input.nodeName) {
+			return;
+		}
 		if (input.nodeName.toLowerCase() !== "input") { // find from button/image trigger
-			input = $("input", input.parentNode)[0];
+			input = input.parentNode ? input.parentNode.getElementsByTagName("input")[0] : null;
+		}
+		if (!input || input.nodeName.toLowerCase() !== "input") {
+			return;
 		}
 
 		if ($.datepicker._isDisabledDatepicker(input) || $.datepicker._lastInput === input) { // already here

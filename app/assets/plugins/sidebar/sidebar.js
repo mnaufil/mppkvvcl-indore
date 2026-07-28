@@ -16,7 +16,15 @@
         this.options = $.extend({}, Sidebar.DEFAULTS, options)
         this.transitioning = null
 
-        if (this.options.parent) this.$parent = $(this.options.parent)
+        if (this.options.parent) {
+            if (this.options.parent.jquery) {
+                this.$parent = this.options.parent
+            } else if (typeof this.options.parent === 'string') {
+                this.$parent = $($.find(this.options.parent))
+            } else if (this.options.parent.nodeType) {
+                this.$parent = $(this.options.parent)
+            }
+        }
         if (this.options.toggle) this.toggle()
     }
 

@@ -14433,8 +14433,11 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 		}
 
 		if(!(/^(document|window|parent)$/).test(o.containment)) {
-			ce = $(o.containment)[0];
-			co = $(o.containment).offset();
+			var containmentElement = typeof o.containment === "string" ?
+				$.find(o.containment)[0] :
+				$(o.containment)[0];
+			ce = containmentElement;
+			co = $(ce).offset();
 			over = ($(ce).css("overflow") !== "hidden");
 
 			this.containment = [

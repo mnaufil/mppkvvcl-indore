@@ -16400,9 +16400,15 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 		}
 
 		if ( !( /^(document|window|parent)$/ ).test( o.containment ) ) {
-			ce = typeof o.containment === "string" ?
-				$.find( o.containment )[ 0 ] :
-				$( o.containment )[ 0 ];
+			if ( typeof o.containment === "string" ) {
+				ce = $.find( o.containment )[ 0 ];
+			} else if ( o.containment && o.containment.jquery ) {
+				ce = o.containment[ 0 ];
+			} else if ( o.containment && o.containment.nodeType === 1 ) {
+				ce = o.containment;
+			} else {
+				ce = null;
+			}
 			if ( !ce ) {
 				return;
 			}

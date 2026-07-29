@@ -28,6 +28,18 @@
         root.daterangepicker = factory(root.moment, root.jQuery);
     }
 }(this, function(moment, $) {
+    function isSafeSelectorString(value) {
+        return typeof value === 'string' && !/^\s*</.test(value);
+    }
+
+    function sanitizeParentElOption(parentEl, fallback) {
+        if (parentEl == null) return fallback;
+        if (parentEl && parentEl.jquery) return parentEl;
+        if (parentEl && parentEl.nodeType === 1) return parentEl;
+        if (isSafeSelectorString(parentEl)) return parentEl;
+        return fallback;
+    }
+
     var DateRangePicker = function(element, options, cb) {
 
         //default settings for options
@@ -126,7 +138,8 @@
                 '</div>' +
             '</div>';
 
-        this.parentEl = (options.parentEl && $(options.parentEl).length) ? $(options.parentEl) : $(this.parentEl);
+        var sanitizedParentEl = sanitizeParentElOption(options.parentEl, this.parentEl);
+        this.parentEl = (sanitizedParentEl && $(sanitizedParentEl).length) ? $(sanitizedParentEl) : $(this.parentEl);
         this.container = $(options.template).appendTo(this.parentEl);
 
         //

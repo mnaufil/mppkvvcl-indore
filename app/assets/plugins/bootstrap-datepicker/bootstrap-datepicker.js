@@ -1624,6 +1624,33 @@
 	}
 
 	var old = $.fn.bootstrapdatepicker;
+
+	function isSafeSelectorString(value) {
+		return typeof value === 'string' && !/^\s*</.test(value);
+	}
+
+	function sanitizeContainerOption(container, fallback) {
+		if (container == null) return fallback;
+		if (container && container.jquery) return container;
+		if (container && container.nodeType === 1) return container;
+		if (isSafeSelectorString(container)) return container;
+		return fallback;
+	}
+
+	function sanitizeInputsOption(inputs, $context) {
+		if (!inputs) return inputs;
+		if (typeof inputs === 'string') {
+			return isSafeSelectorString(inputs) ? inputs : $context.find('input').toArray();
+		}
+		if (inputs.jquery) return inputs.toArray();
+		if (Array.isArray(inputs)) {
+			return $.grep(inputs, function(input) {
+				return input && (input.nodeType === 1 || (input.jquery && input.length));
+			});
+		}
+		return inputs;
+	}
+
 	var datepickerPlugin = function(option){
 		var args = Array.apply(null, arguments);
 		args.shift();
@@ -1633,6 +1660,11 @@
 				data = $this.data('datepicker'),
 				options = typeof option === 'object' && option;
 			if (!data){
+				if (options) {
+					options = $.extend({}, options);
+					options.container = sanitizeContainerOption(options.container, 'body');
+					options.inputs = sanitizeInputsOption(options.inputs, $this);
+				}
 				var elopts = opts_from_el(this, 'date'),
 					// Preliminary otions
 					xopts = $.extend({}, defaults, elopts, options),

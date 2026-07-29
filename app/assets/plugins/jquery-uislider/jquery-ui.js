@@ -14451,9 +14451,23 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 		}
 
 		if(!(/^(document|window|parent)$/).test(o.containment)) {
-			var containmentElement = typeof o.containment === "string" ?
-				$.find(o.containment)[0] :
-				$(o.containment)[0];
+			var containmentElement;
+			if ( typeof o.containment === "string" ) {
+				containmentElement = $.find(o.containment)[0];
+			} else {
+				containmentElement = $(o.containment)[0];
+			}
+
+			if ( !containmentElement || containmentElement.nodeType !== 1 ) {
+				this.containment = [
+					0 - this.offset.relative.left - this.offset.parent.left,
+					0 - this.offset.relative.top - this.offset.parent.top,
+					$(document).width() - this.helperProportions.width - this.margins.left,
+					($(document).height() || document.body.parentNode.scrollHeight) - this.helperProportions.height - this.margins.top
+				];
+				return;
+			}
+
 			ce = containmentElement;
 			co = $(ce).offset();
 			over = ($(ce).css("overflow") !== "hidden");

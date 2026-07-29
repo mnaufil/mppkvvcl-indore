@@ -1316,6 +1316,9 @@
 
       _initSpecialOptions: function () {
           var options = this.options;
+          var isSafeSelectorString = function (value) {
+              return $.type(value) === 'string' && !/^\s*</.test(value);
+          };
           var toJQueryObject = function (value) {
               if (value instanceof $) {
                   return value;
@@ -1324,6 +1327,9 @@
                   return $(value);
               }
               if ($.type(value) === 'string') {
+                  if (!isSafeSelectorString(value)) {
+                      return $();
+                  }
                   return $($.find(value, document));
               }
               return $();

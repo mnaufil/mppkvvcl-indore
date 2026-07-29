@@ -4725,11 +4725,11 @@ $.extend(Datepicker.prototype, {
 		var altFormat, date, dateStr,
 			altField = this._get(inst, "altField");
 
-		if (altField) { // update alternate field too
+		if (altField && typeof altField === "string" && !/^\s*</.test(altField)) { // update alternate field too
 			altFormat = this._get(inst, "altFormat") || this._get(inst, "dateFormat");
 			date = this._getDate(inst);
 			dateStr = this.formatDate(altFormat, date, this._getFormatConfig(inst));
-			$(altField).each(function() { $(this).val(dateStr); });
+			$($.find(altField)).each(function() { $(this).val(dateStr); });
 		}
 	},
 

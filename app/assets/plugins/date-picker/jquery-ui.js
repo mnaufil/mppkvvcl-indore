@@ -15986,8 +15986,12 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 					} catch ( e ) {
 						item = $();
 					}
-				} else {
+				} else if ( _queries[ j ] && _queries[ j ].jquery ) {
+					item = _queries[ j ];
+				} else if ( _queries[ j ] && ( _queries[ j ].nodeType || _queries[ j ] === window ) ) {
 					item = $( _queries[ j ] );
+				} else {
+					item = $();
 				}
 
 				// Data for target checking (mouse manager)

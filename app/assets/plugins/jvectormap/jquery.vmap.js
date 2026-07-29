@@ -185,7 +185,7 @@ var JQVMap = function (params) {
       map.unhighlight(code, containerPath);
 
       map.label.hide();
-      jQuery(params.container).trigger('regionMouseOut.jqvmap', [code, mapData.paths[code].name]);
+      $container.trigger('regionMouseOut.jqvmap', [code, mapData.paths[code].name]);
     }
   });
 

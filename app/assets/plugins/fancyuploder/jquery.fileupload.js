@@ -1316,18 +1316,26 @@
 
       _initSpecialOptions: function () {
           var options = this.options;
+          var toJQueryObject = function (value) {
+              if (value instanceof $) {
+                  return value;
+              }
+              if (value && (value.nodeType || value === window || value === document)) {
+                  return $(value);
+              }
+              if ($.type(value) === 'string') {
+                  return $($.find(value, document));
+              }
+              return $();
+          };
           if (options.fileInput === undefined) {
               options.fileInput = this.element.is('input[type="file"]') ?
                       this.element : this.element.find('input[type="file"]');
-          } else if (!(options.fileInput instanceof $)) {
-              options.fileInput = $(options.fileInput);
+          } else {
+              options.fileInput = toJQueryObject(options.fileInput);
           }
-          if (!(options.dropZone instanceof $)) {
-              options.dropZone = $(options.dropZone);
-          }
-          if (!(options.pasteZone instanceof $)) {
-              options.pasteZone = $(options.pasteZone);
-          }
+          options.dropZone = toJQueryObject(options.dropZone);
+          options.pasteZone = toJQueryObject(options.pasteZone);
       },
 
       _getRegExp: function (str) {

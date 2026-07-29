@@ -95,7 +95,19 @@
 		this.viewDate = this.o.defaultViewDate;
 		this.focusDate = null;
 
-		this.element = $(element);
+		if (element && element.jquery) {
+			this.element = element;
+		}
+		else if (element && element.nodeType === 1) {
+			this.element = $(element);
+		}
+		else if (typeof element === 'string') {
+			var resolvedElement = $.find(element)[0];
+			this.element = resolvedElement ? $(resolvedElement) : $();
+		}
+		else {
+			this.element = $();
+		}
 		this.isInput = this.element.is('input');
 		this.inputField = this.isInput ? this.element : this.element.find('input');
 		this.component = this.element.hasClass('date') ? this.element.find('.add-on, .input-group-addon, .btn') : false;

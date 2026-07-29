@@ -29,14 +29,14 @@
             // wrap element in a wrapper div
             var wrapElement = function() {
                 var classes = ['br-wrapper'];
+                var wrapper;
 
                 if (self.options.theme !== '') {
                     classes.push('br-theme-' + self.options.theme);
                 }
 
-                self.$elem.wrap($('<div />', {
-                    'class': classes.join(' ')
-                }));
+                wrapper = $(document.createElement('div')).addClass(classes.join(' '));
+                self.$elem.wrap(wrapper);
             };
 
             // unwrap element
@@ -50,7 +50,9 @@
                     value = Math.floor(value);
                 }
 
-                return $('option[value="' + value  + '"]', self.$elem);
+                return self.$elem.find('option').filter(function() {
+                    return $(this).val() == value;
+                });
             };
 
             // get initial option

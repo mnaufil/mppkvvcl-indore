@@ -14454,6 +14454,9 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 			var containmentElement = typeof o.containment === "string" ?
 				$.find(o.containment)[0] :
 				$(o.containment)[0];
+			if (!containmentElement) {
+				return;
+			}
 			ce = containmentElement;
 			co = $(ce).offset();
 			over = ($(ce).css("overflow") !== "hidden");

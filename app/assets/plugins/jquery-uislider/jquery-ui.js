@@ -14112,7 +14112,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 			_queries = queries[i][0];
 
 			for (j=0, queriesLength = _queries.length; j < queriesLength; j++) {
-				item = $(_queries[j]);
+				item = _queries.eq(j);
 
 				item.data(this.widgetName + "-item", targetData); // Data for target checking (mouse manager)
 

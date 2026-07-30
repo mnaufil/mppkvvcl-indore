@@ -40,11 +40,18 @@
         return fallback;
     }
 
+    function sanitizeElementInput(element, fallback) {
+        if (element && element.jquery) return element;
+        if (element && element.nodeType === 1) return element;
+        if (isSafeSelectorString(element)) return element;
+        return fallback;
+    }
+
     var DateRangePicker = function(element, options, cb) {
 
         //default settings for options
         this.parentEl = 'body';
-        this.element = $(element);
+        this.element = $(sanitizeElementInput(element, document.body));
         this.startDate = moment().startOf('day');
         this.endDate = moment().endOf('day');
         this.minDate = false;

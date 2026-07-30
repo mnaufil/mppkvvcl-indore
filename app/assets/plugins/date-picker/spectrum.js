@@ -294,7 +294,16 @@
             }
             else {
 
-                var appendTo = opts.appendTo === "parent" ? boundElement.parent() : $(opts.appendTo);
+                var appendTo;
+                if (opts.appendTo === "parent") {
+                    appendTo = boundElement.parent();
+                }
+                else if (typeof opts.appendTo === "string") {
+                    appendTo = $($.find(opts.appendTo, doc));
+                }
+                else {
+                    appendTo = $(opts.appendTo);
+                }
                 if (appendTo.length !== 1) {
                     appendTo = $("body");
                 }

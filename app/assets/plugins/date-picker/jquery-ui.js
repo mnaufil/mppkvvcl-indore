@@ -15988,7 +15988,14 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 					}
 				} else if ( _queries[ j ] && _queries[ j ].jquery ) {
 					item = _queries[ j ];
-				} else if ( _queries[ j ] && ( _queries[ j ].nodeType || _queries[ j ] === window ) ) {
+				} else if (
+					_queries[ j ] &&
+					(
+						_queries[ j ] === window ||
+						_queries[ j ] === document ||
+						( typeof _queries[ j ].nodeType === "number" && _queries[ j ].nodeType > 0 )
+					)
+				) {
 					item = $( _queries[ j ] );
 				} else {
 					item = $();

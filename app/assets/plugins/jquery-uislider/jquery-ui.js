@@ -13927,7 +13927,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 			str = [];
 		o = o || {};
 
-		$(items).each(function() {
+		items.each(function() {
 			var res = ($(o.item || this).attr(o.attribute || "id") || "").match(o.expression || (/(.+)[\-=_](.+)/));
 			if (res) {
 				str.push((o.key || res[1]+"[]")+"="+(o.key && o.expression ? res[1] : res[2]));

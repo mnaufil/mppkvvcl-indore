@@ -249,7 +249,22 @@ $.Widget.prototype = {
 		create: null
 	},
 	_createWidget: function( options, element ) {
-		element = $( element || this.defaultElement || this )[ 0 ];
+		var resolvedElement = element || this.defaultElement || this,
+			defaultElement = this.defaultElement || this;
+
+		if ( typeof resolvedElement === "string" ) {
+			if ( /^\s*</.test( resolvedElement ) ) {
+				resolvedElement = resolvedElement === this.defaultElement ?
+					$( resolvedElement )[ 0 ] :
+					$( defaultElement )[ 0 ];
+			} else {
+				resolvedElement = $.find( resolvedElement, document )[ 0 ] || $( defaultElement )[ 0 ];
+			}
+		} else {
+			resolvedElement = $( resolvedElement )[ 0 ];
+		}
+
+		element = resolvedElement;
 		this.element = $( element );
 		this.uuid = widget_uuid++;
 		this.eventNamespace = "." + this.widgetName + this.uuid;

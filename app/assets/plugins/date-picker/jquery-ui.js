@@ -16405,7 +16405,10 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 	_setContainment: function() {
 
 		var ce, co, over,
-			o = this.options;
+			o = this.options,
+			isSafeSelectorString = function( value ) {
+				return typeof value === "string" && !/^\s*</.test( value );
+			};
 		if ( o.containment === "parent" ) {
 			o.containment = this.helper[ 0 ].parentNode;
 		}
@@ -16424,7 +16427,7 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 		}
 
 		if ( !( /^(document|window|parent)$/ ).test( o.containment ) ) {
-			if ( typeof o.containment === "string" ) {
+			if ( typeof o.containment === "string" && isSafeSelectorString( o.containment ) ) {
 				ce = $.find( o.containment )[ 0 ];
 			} else if ( o.containment && o.containment.jquery ) {
 				ce = o.containment[ 0 ];

@@ -9225,9 +9225,26 @@ function datepicker_extendRemove( target, props ) {
    @return  jQuery object */
 $.fn.datepicker = function( options ) {
 
+	function isSafeSelectorString( value ) {
+		return typeof value === "string" && !/^\s*</.test( value );
+	}
+
 	/* Verify an empty collection wasn't passed - Fixes #6976 */
 	if ( !this.length ) {
 		return this;
+	}
+
+	if ( options && typeof options === "object" ) {
+		options = $.extend( {}, options );
+		if ( options.containment != null &&
+			options.containment !== "document" &&
+			options.containment !== "window" &&
+			options.containment !== "parent" &&
+			!( options.containment && options.containment.jquery ) &&
+			!( options.containment && options.containment.nodeType === 1 ) &&
+			!isSafeSelectorString( options.containment ) ) {
+			options.containment = "document";
+		}
 	}
 
 	/* Initialise the date picker. */

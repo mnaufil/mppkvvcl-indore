@@ -532,8 +532,20 @@
       },
 
       _getParamName: function (options) {
-          var fileInput = $(options.fileInput),
-              paramName = options.paramName;
+          var fileInputOption = options.fileInput,
+              fileInput;
+          if (fileInputOption && fileInputOption.jquery) {
+              fileInput = fileInputOption;
+          } else if (fileInputOption && fileInputOption.nodeType === 1) {
+              fileInput = $(fileInputOption);
+          } else if (typeof fileInputOption === 'string') {
+              fileInput = /^\s*</.test(fileInputOption) ?
+                  $() :
+                  $($.find(fileInputOption));
+          } else {
+              fileInput = $();
+          }
+          var paramName = options.paramName;
           if (!paramName) {
               paramName = [];
               fileInput.each(function () {

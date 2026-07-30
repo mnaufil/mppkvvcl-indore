@@ -1336,7 +1336,7 @@
                   return value;
               }
               if (value && (value.nodeType || value === window || value === document)) {
-                  return $(value);
+                  return $($.makeArray(value));
               }
               if ($.type(value) === 'string') {
                   if (!isSafeSelectorString(value)) {

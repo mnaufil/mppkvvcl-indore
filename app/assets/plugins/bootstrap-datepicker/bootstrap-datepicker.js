@@ -1650,17 +1650,21 @@
 	}
 
 	function sanitizeInputsOption(inputs, $context) {
+		var safeFallback = $context.find('input').toArray();
 		if (!inputs) return inputs;
 		if (typeof inputs === 'string') {
-			return isSafeSelectorString(inputs) ? inputs : $context.find('input').toArray();
+			return isSafeSelectorString(inputs) ? inputs : safeFallback;
 		}
 		if (inputs.jquery) return inputs.toArray();
 		if (Array.isArray(inputs)) {
-			return $.grep(inputs, function(input) {
-				return input && (input.nodeType === 1 || (input.jquery && input.length));
+			return $.map(inputs, function(input) {
+				if (!input) return null;
+				if (input.nodeType === 1) return input;
+				if (input.jquery && input.length) return input.toArray();
+				return null;
 			});
 		}
-		return inputs;
+		return safeFallback;
 	}
 
 	var datepickerPlugin = function(option){

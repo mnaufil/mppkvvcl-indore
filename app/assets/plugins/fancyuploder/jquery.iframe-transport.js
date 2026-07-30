@@ -63,10 +63,10 @@
                   // elements that have already been added to the DOM,
                   // so we set the name along with the iframe HTML markup:
                   counter += 1;
-                  iframe = $(
-                      '<iframe src="' + initialIframeSrc +
-                          '" name="iframe-transport-' + counter + '"></iframe>'
-                  ).bind('load', function () {
+                  iframe = $('<iframe></iframe>')
+                      .attr('src', initialIframeSrc)
+                      .attr('name', 'iframe-transport-' + counter)
+                      .bind('load', function () {
                       var fileInputClones,
                           paramNames = $.isArray(options.paramName) ?
                                   options.paramName : [options.paramName];
@@ -96,7 +96,8 @@
                               );
                               // Fix for IE endless progress bar activity bug
                               // (happens on form submits to iframe targets):
-                              $('<iframe src="' + initialIframeSrc + '"></iframe>')
+                              $('<iframe></iframe>')
+                                  .attr('src', initialIframeSrc)
                                   .appendTo(form);
                               window.setTimeout(function () {
                                   // Removing the form in a setTimeout call

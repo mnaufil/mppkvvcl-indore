@@ -14458,8 +14458,12 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 			var containmentElement;
 			if ( typeof o.containment === "string" ) {
 				containmentElement = $.find(o.containment)[0];
+			} else if ( o.containment && o.containment.nodeType === 1 ) {
+				containmentElement = o.containment;
+			} else if ( o.containment && o.containment.jquery ) {
+				containmentElement = o.containment[0];
 			} else {
-				containmentElement = $(o.containment)[0];
+				containmentElement = null;
 			}
 
 			if ( !containmentElement || containmentElement.nodeType !== 1 ) {

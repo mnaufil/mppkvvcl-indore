@@ -167,7 +167,7 @@ var JQVMap = function (params) {
     code = code.toLowerCase();
 
     if (e.type === 'mouseover') {
-      jQuery(params.container).trigger(regionMouseOverEvent, [code, mapData.paths[code].name]);
+      $container.trigger(regionMouseOverEvent, [code, mapData.paths[code].name]);
       if (!regionMouseOverEvent.isDefaultPrevented()) {
         map.highlight(code, containerPath);
       }

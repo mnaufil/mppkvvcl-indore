@@ -278,9 +278,9 @@ class BSTableTKCWeeklyPlan {
                 input = '<input type="text" class="form-control" name="remark" id="remark" value="'+remark+'">';
             }
 
-            let div = '<div style="display: none;">' + content + '</div>'; // hide content (save for later use)
+            let $hiddenContent = $('<div>', { style: 'display: none;' }).text(content); // hide content (save for later use)
 
-            $td.html(div + input); // set content
+            $td.empty().append($hiddenContent).append($(input)); // set content
 			i++;
         });        
 

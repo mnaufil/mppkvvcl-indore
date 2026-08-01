@@ -175,9 +175,12 @@
                         $a = $('<a />', {
                             'href': '#',
                             'data-rating-value': val,
-                            'data-rating-text': text,
-                            'html': (self.options.showValues) ? text : ''
+                            'data-rating-text': text
                         });
+
+                        if (self.options.showValues) {
+                            $a.text(text);
+                        }
 
                         $w.append($a);
                     }

@@ -363,7 +363,7 @@ function charlimit(elementId, charLength)
 function ValidateEmail(mail) 
 {
 	
- if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
+ if (/^[A-Za-z0-9_]+(?:[.-][A-Za-z0-9_]+)*@[A-Za-z0-9_]+(?:[.-][A-Za-z0-9_]+)*(?:\.[A-Za-z]{2,3})+$/.test(mail))
   {
 	  
     return (true)

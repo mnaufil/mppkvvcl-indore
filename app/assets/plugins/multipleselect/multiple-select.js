@@ -144,7 +144,10 @@
         // label element
         this.$label = this.$el.closest('label');
         if (this.$label.length === 0 && this.$el.attr('id')) {
-            this.$label = $(sprintf('label[for="%s"]', this.$el.attr('id').replace(/:/g, '\\:')));
+            var escapedId = $.escapeSelector ?
+                $.escapeSelector(this.$el.attr('id')) :
+                this.$el.attr('id').replace(/([\\!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
+            this.$label = $(sprintf('label[for="%s"]', escapedId));
         }
 
         // restore class and title from select element

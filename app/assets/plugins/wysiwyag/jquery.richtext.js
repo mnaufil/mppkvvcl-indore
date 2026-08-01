@@ -369,36 +369,41 @@
             } else if ($inputElement.val()) {
                 value = $inputElement.val();
                 attributes = $inputElement.prop("attributes");
+                var $textareaInit = $('<textarea>', { 'data-richtext': 'init' });
                 // loop through <select> attributes and apply them on <div>
                 $.each(attributes, function() {
                     if (this.name) {
-                        attributes_html += ' ' + this.name + '="' + this.value + '"';
+                        $textareaInit.attr(this.name, this.value);
                     }
                 });
-                $inputElement.replaceWith($('<textarea' + attributes_html + ' data-richtext="init">' + value + '</textarea>'));
+                $textareaInit.val(value);
+                $inputElement.replaceWith($textareaInit);
                 $inputElement = $('[data-richtext="init"]');
                 $inputElement.removeAttr("data-richtext");
             } else if ($inputElement.html()) {
                 value = $inputElement.html();
                 attributes = $inputElement.prop("attributes");
+                var $textareaHtmlInit = $('<textarea>', { 'data-richtext': 'init' });
                 // loop through <select> attributes and apply them on <div>
                 $.each(attributes, function() {
                     if (this.name) {
-                        attributes_html += ' ' + this.name + '="' + this.value + '"';
+                        $textareaHtmlInit.attr(this.name, this.value);
                     }
                 });
-                $inputElement.replaceWith($('<textarea' + attributes_html + ' data-richtext="init">' + value + '</textarea>'));
+                $textareaHtmlInit.val(value);
+                $inputElement.replaceWith($textareaHtmlInit);
                 $inputElement = $('[data-richtext="init"]');
                 $inputElement.removeAttr("data-richtext");
             } else {
                 attributes = $inputElement.prop("attributes");
+                var $textareaEmptyInit = $('<textarea>', { 'data-richtext': 'init' });
                 // loop through <select> attributes and apply them on <div>
                 $.each(attributes, function() {
                     if (this.name) {
-                        attributes_html += ' ' + this.name + '="' + this.value + '"';
+                        $textareaEmptyInit.attr(this.name, this.value);
                     }
                 });
-                $inputElement.replaceWith($('<textarea' + attributes_html + ' data-richtext="init"></textarea>'));
+                $inputElement.replaceWith($textareaEmptyInit);
                 $inputElement = $('[data-richtext="init"]');
                 $inputElement.removeAttr("data-richtext");
             }

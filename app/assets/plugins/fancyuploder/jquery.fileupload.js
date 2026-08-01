@@ -536,8 +536,6 @@
               fileInput;
           if (fileInputOption && fileInputOption.jquery) {
               fileInput = fileInputOption;
-          } else if (fileInputOption && fileInputOption.nodeType === 1) {
-              fileInput = $(fileInputOption);
           } else if (typeof fileInputOption === 'string') {
               fileInput = /^\s*</.test(fileInputOption) ?
                   $() :

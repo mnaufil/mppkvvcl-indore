@@ -292,8 +292,23 @@ class BSTable1 {
                             //$("#boqform").reset();
 //                             input = '<button id="bEdit" type="button" class="btn btn-sm btn-obs" data-bs-toggle="modal" data-bs-target="#boq-modal"><span class="fe fe-more-vertical"> </span> </button>';  
                                 let row_feeder_id = $($currentRow).find('td[id^=td_dynamicfeederidregion] > input').val();
-                                input = '<button id="bEdit" type="button" class="btn btn-sm btn-obs" onclick="showmodal('+rowIndex+','+row_feeder_id+')"><span class="fe fe-more-vertical"> </span> </button>';                            
-                             $td.html(div + input)
+                                var safeRowIndex = parseInt(rowIndex, 10);
+                                var safeRowFeederId = parseInt(row_feeder_id, 10);
+
+                                if (isNaN(safeRowIndex)) { safeRowIndex = 0; }
+                                if (isNaN(safeRowFeederId)) { safeRowFeederId = 0; }
+
+                                var $button = $('<button type="button"></button>')
+                                    .attr('id', 'bEdit')
+                                    .addClass('btn btn-sm btn-obs')
+                                    .append($('<span></span>').addClass('fe fe-more-vertical'))
+                                    .on('click', function() {
+                                        showmodal(safeRowIndex, safeRowFeederId);
+                                    });
+
+                                $td.empty();
+                                $td.append(div);
+                                $td.append($button);
                         }
                         else
                         {

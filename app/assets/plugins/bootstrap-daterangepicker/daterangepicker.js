@@ -1657,8 +1657,28 @@
 
     };
 
+    function isSafeSelectorString(value) {
+        return typeof value === 'string' && !/^\s*</.test(value);
+    }
+
+    function sanitizeParentElOption(parentEl, fallback) {
+        if (parentEl == null) return fallback;
+        if (parentEl && parentEl.jquery) return parentEl;
+        if (parentEl && parentEl.nodeType === 1) return parentEl;
+        if (isSafeSelectorString(parentEl)) return parentEl;
+        return fallback;
+    }
+
     $.fn.daterangepicker = function(options, callback) {
-        var implementOptions = $.extend(true, {}, $.fn.daterangepicker.defaultOptions, options);
+        var safeOptions = options;
+        if (options && typeof options === 'object') {
+            safeOptions = $.extend(true, {}, options);
+            safeOptions.parentEl = sanitizeParentElOption(
+                safeOptions.parentEl,
+                $.fn.daterangepicker.defaultOptions.parentEl
+            );
+        }
+        var implementOptions = $.extend(true, {}, $.fn.daterangepicker.defaultOptions, safeOptions);
         this.each(function() {
             var el = $(this);
             if (el.data('daterangepicker'))

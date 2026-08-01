@@ -1726,6 +1726,24 @@
 
     };
 
+    Slick.prototype.sanitizeImageSource = function (src) {
+
+        if (!src || typeof src !== 'string') {
+            return null;
+        }
+
+        src = $.trim(src);
+
+        // Disallow executable/unsafe schemes while preserving common image sources.
+        // Allow: relative URLs, http(s), protocol-relative URLs, and image data URIs.
+        if (/^(?:https?:|\/\/|\/|\.\/|\.\.\/)/i.test(src) ||
+            /^data:image\/(?:gif|png|jpe?g|webp|bmp|svg\+xml);/i.test(src)) {
+            return src;
+        }
+
+        return null;
+    };
+
     Slick.prototype.progressiveLazyLoad = function (tryCount) {
 
         tryCount = tryCount || 1;
@@ -1741,10 +1759,23 @@
         if ($imgsToLoad.length) {
 
             image = $imgsToLoad.first();
-            imageSource = image.attr('data-lazy');
+            imageSource = _.sanitizeImageSource(image.attr('data-lazy'));
             imageSrcSet = image.attr('data-srcset');
             imageSizes = image.attr('data-sizes') || _.$slider.attr('data-sizes');
             imageToLoad = document.createElement('img');
+
+            if (!imageSource) {
+
+                image
+                    .removeAttr('data-lazy')
+                    .removeClass('slick-loading')
+                    .addClass('slick-lazyload-error');
+
+                _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+                _.progressiveLazyLoad();
+                return;
+
+            }
 
             imageToLoad.onload = function () {
 

@@ -156,7 +156,9 @@
                     var O = this;
 
                     if (!opt.attr('value')) opt.attr('value', opt.val());
-                    var li = $('<li class="opt"><label>' + opt.text() + '</label></li>');
+                    var li = $('<li class="opt"></li>');
+                    var label = $('<label></label>').text(opt.text());
+                    li.append(label);
 
                     li.data('opt', opt);    // store a direct reference to option.
                     opt.data('li', li);    // store a direct reference to list item.

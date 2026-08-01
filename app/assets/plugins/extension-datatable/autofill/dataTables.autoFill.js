@@ -591,7 +591,9 @@ $.extend( AutoFill.prototype, {
 			left = 0;
 
 		if ( ! targetParent ) {
-			targetParent = $( $( this.s.dt.table().node() )[0].offsetParent );
+			var tableNode = this.s.dt.table().node();
+			var tableOffsetParent = tableNode ? tableNode.offsetParent : null;
+			targetParent = $( tableOffsetParent || document.body );
 		}
 
 		do {

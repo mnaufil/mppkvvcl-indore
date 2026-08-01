@@ -1157,6 +1157,9 @@
     * Define a jQuery plugin
     */
     var dataID = "spectrum.id";
+    function isPlainObjectOptions(value) {
+        return value != null && $.isPlainObject(value);
+    }
     $.fn.spectrum = function (opts, extra) {
 
         if (typeof opts == "string") {
@@ -1193,6 +1196,8 @@
 
             return returnValue;
         }
+
+        opts = isPlainObjectOptions(opts) ? opts : {};
 
         // Initializing a new instance of spectrum
         return this.spectrum("destroy").each(function () {

@@ -674,7 +674,7 @@ class BSTable1 {
                     $("#td_dynamicfeedernameregion"+rowIndex).html(data.feedername);
                     $("#td_dynamicfeederidregion"+rowIndex).html(data.feederid);
                     $("#td_dynamicprojectidregion"+rowIndex).html(data.projectid);
-                    $("#td_dynamicgeocoderegion"+rowIndex).html(data.geocode);
+                    $("#td_dynamicgeocoderegion"+rowIndex).text(data.geocode);
                     $("#td_dynamicqtyregion"+rowIndex).text(data.quantity);
 
                     self.postdata(data);

@@ -1672,9 +1672,10 @@
 		args.shift();
 		var internal_return;
 		this.each(function(){
-			var $this = $(this),
+			var $this = (this && this.nodeType === 1) ? $(this) : (this && this.jquery ? this : $()),
 				data = $this.data('datepicker'),
 				options = typeof option === 'object' && option;
+			if (!$this.length) return;
 			if (!data){
 				if (options) {
 					options = $.extend({}, options);

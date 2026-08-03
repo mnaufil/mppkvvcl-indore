@@ -498,8 +498,8 @@
                     .join(this.options.delimiter) + '...');
             } else if (this.options.countSelected && sl > this.options.minimumCountSelected) {
                 $span.removeClass('placeholder').html(this.options.countSelected
-                    .replace('#', selects.length)
-                    .replace('%', this.$selectItems.length + this.$disableItems.length));
+                    .replace(/#/g, selects.length)
+                    .replace(/%/g, this.$selectItems.length + this.$disableItems.length));
             } else {
                 $span.removeClass('placeholder').text(selects.join(this.options.delimiter));
             }

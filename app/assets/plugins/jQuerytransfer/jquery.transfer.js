@@ -338,7 +338,7 @@ var Transfer = (function ($) {
          * 将选中项添加至右侧
          */
         $(addSelected).on("click", function () {
-            var listHtmlStr = "";
+            var listItems = $();
             var selectedItemNum = 0;
             // 分组
             if ($(transferId).find(tabContentFirst).css("display") != "none") {
@@ -350,13 +350,21 @@ var Transfer = (function ($) {
                         var idIndex = checkboxItemArray[3];
                         var val = $(transferId).find(groupCheckboxName).eq(i).text();
                         var value = $(transferId).find(groupCheckboxItem).eq(i).val();
+                        var selectedId = "group_" + groupIdIndex + "_selectedCheckbox_" + idIndex + "_" + currentTimeStr;
+                        var $li = $('<li></li>').addClass('transfer-double-selected-list-li transfer-double-selected-list-li-' + currentTimeStr + ' clearfix');
+                        var $div = $('<div></div>').addClass('checkbox-group');
+                        var $input = $('<input type="checkbox">')
+                            .val(value)
+                            .addClass('checkbox-normal checkbox-selected-item-' + currentTimeStr)
+                            .attr('id', selectedId);
+                        var $label = $('<label></label>')
+                            .addClass('checkbox-selected-name-' + currentTimeStr)
+                            .attr('for', selectedId)
+                            .text(val);
+                        $div.append($input).append($label);
+                        $li.append($div);
+                        listItems = listItems.add($li);
                         $(transferId).find(transferDoubleGroupListLiUlLi).eq(i).css('display', 'none');
-                        listHtmlStr = listHtmlStr + '<li class="transfer-double-selected-list-li transfer-double-selected-list-li-' + currentTimeStr + ' .clearfix">' +
-                            '<div class="checkbox-group">' +
-                            '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + currentTimeStr + '" id="group_' + groupIdIndex + '_selectedCheckbox_' + idIndex + '_' + currentTimeStr + '">' +
-                            '<label class="checkbox-selected-name-' + currentTimeStr + '" for="group_' + groupIdIndex + '_selectedCheckbox_' + idIndex + '_' + currentTimeStr + '">' + val + '</label>' +
-                            '</div>' +
-                            '</li>'
                         selectedItemNum = selectedItemNum + 1;
                     }
                 }
@@ -387,13 +395,21 @@ var Transfer = (function ($) {
                         var idIndex = checkboxItemId.split("_")[1];
                         var val = $(transferId).find(checkboxName).eq(i).text();
                         var value = $(transferId).find(checkboxItem).eq(i).val();
+                        var selectedId = "selectedCheckbox_" + idIndex + "_" + currentTimeStr;
+                        var $li = $('<li></li>').addClass('transfer-double-selected-list-li transfer-double-selected-list-li-' + currentTimeStr + ' clearfix');
+                        var $div = $('<div></div>').addClass('checkbox-group');
+                        var $input = $('<input type="checkbox">')
+                            .val(value)
+                            .addClass('checkbox-normal checkbox-selected-item-' + currentTimeStr)
+                            .attr('id', selectedId);
+                        var $label = $('<label></label>')
+                            .addClass('checkbox-selected-name-' + currentTimeStr)
+                            .attr('for', selectedId)
+                            .text(val);
+                        $div.append($input).append($label);
+                        $li.append($div);
+                        listItems = listItems.add($li);
                         $(transferId).find(transferDoubleListLi).eq(i).css('display', 'none');
-                        listHtmlStr = listHtmlStr + '<li class="transfer-double-selected-list-li  transfer-double-selected-list-li-' + currentTimeStr + ' .clearfix">' +
-                            '<div class="checkbox-group">' +
-                            '<input type="checkbox" value="' + value + '" class="checkbox-normal checkbox-selected-item-' + currentTimeStr + '" id="selectedCheckbox_' + idIndex + '_' + currentTimeStr + '">' +
-                            '<label class="checkbox-selected-name-' + currentTimeStr + '" for="selectedCheckbox_' + idIndex + '_' + currentTimeStr + '">' + val + '</label>' +
-                            '</div>' +
-                            '</li>';
                         selectedItemNum = selectedItemNum + 1;
                     }
                 }
@@ -414,7 +430,7 @@ var Transfer = (function ($) {
             }
             $(addSelected).removeClass("btn-arrow-active");
             $(transferId).find(transferDoubleSelectedListUl).empty();
-            $(transferId).find(transferDoubleSelectedListUl).append(listHtmlStr);
+            $(transferId).find(transferDoubleSelectedListUl).append(listItems);
             // 数据变化触发回调
             callable.call(this, getSelected(), getSelectedName());
         });

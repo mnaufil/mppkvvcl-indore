@@ -166,6 +166,7 @@ class BSTableClaim {
         //Pone en modo de edición
         var i = 0;
         let row_id = $currentRow.attr('data-row-id');
+        let safeRowId = $('<div/>').text(String(row_id)).html();
 
         //Disabling Add New button
         $('#table2-new-row-button-claim-details').prop('disabled', true);
@@ -213,7 +214,7 @@ class BSTableClaim {
                 // input += '</a>';
 
                 if (content == '') {
-                    input += '<a href="javascript:void(0)" class="btn btn-link" data-claim-row="'+ row_id +'" onclick="openPaymentDetailsModal(this);">';
+                    input += '<a href="javascript:void(0)" class="btn btn-link" data-claim-row="'+ safeRowId +'" onclick="openPaymentDetailsModal(this);">';
                     input += 'Add';
                     input += '</a>';                    
                 } else {

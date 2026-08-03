@@ -383,10 +383,10 @@ class BSTable {
             //alert("isOk="+isOk);
             if(checkErrors.filter(Boolean).length ==4)
             {
-				$("#td_dynamicstages"+rowIndex).html(data.stage_text);
-				$("#td_dynamicdatepickerstage"+rowIndex).html(data.date);
-				$("#td_dynamicqtystage"+rowIndex).html(data.quantity);
-				$("#td_dynamicamountstage"+rowIndex).html(data.amount);
+				$("#td_dynamicstages"+rowIndex).text(data.stage_text);
+				$("#td_dynamicdatepickerstage"+rowIndex).text(data.date);
+				$("#td_dynamicqtystage"+rowIndex).text(data.quantity);
+				$("#td_dynamicamountstage"+rowIndex).text(data.amount);
                // $td.html(cont); // set the content and remove the input fields  
             }
              i++;  

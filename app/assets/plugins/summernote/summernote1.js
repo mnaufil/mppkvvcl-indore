@@ -2910,22 +2910,25 @@
 					key: "purify",
 					value: function(t) {
 						if (this.options.codeviewFilter && (t = t.replace(this.options.codeviewFilterRegex, ""), this.options.codeviewIframeFilter)) {
-							var e = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase);
-							t = t.replace(/(<iframe.*?>.*?(?:<\/iframe>)?)/gi, (function(t) {
-								if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(t)) return "";
-								var n, o = jt(e);
-								try {
-									for (o.s(); !(n = o.n()).done;) {
-										var i = n.value;
-										if (new RegExp('src="(https?:)?//' + i.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&") + '/(.+)"').test(t)) return t
+							var e = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase),
+								r;
+							do {
+								r = t, t = t.replace(/(<iframe.*?>.*?(?:<\/iframe>)?)/gi, (function(t) {
+									if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(t)) return "";
+									var n, o = jt(e);
+									try {
+										for (o.s(); !(n = o.n()).done;) {
+											var i = n.value;
+											if (new RegExp('src="(https?:)?//' + i.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&") + '/(.+)"').test(t)) return t
+										}
+									} catch (t) {
+										o.e(t)
+									} finally {
+										o.f()
 									}
-								} catch (t) {
-									o.e(t)
-								} finally {
-									o.f()
-								}
-								return ""
-							}))
+									return ""
+								}))
+							} while (t !== r)
 						}
 						return t
 					}

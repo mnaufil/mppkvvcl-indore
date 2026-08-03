@@ -952,6 +952,32 @@
     *   @param {Boolean} fromTouch - true if slide function called via touch event or mouse drag
     *   @param {Boolean} fromThumb - true if slide function called via thumbnail click
     */
+    Plugin.prototype._sanitizeDownloadUrl = function (url) {
+        if (!url) {
+            return '';
+        }
+
+        var value = String(url).trim();
+        if (!value) {
+            return '';
+        }
+
+        var lower = value.toLowerCase();
+        if (lower.indexOf('javascript:') === 0 || lower.indexOf('data:') === 0 || lower.indexOf('vbscript:') === 0) {
+            return '';
+        }
+
+        var a = document.createElement('a');
+        a.href = value;
+        var protocol = (a.protocol || '').toLowerCase();
+
+        if (!protocol || protocol === ':' || protocol === 'http:' || protocol === 'https:' || protocol === 'mailto:' || protocol === 'tel:') {
+            return value;
+        }
+
+        return '';
+    };
+
     Plugin.prototype.slide = function (index, fromTouch, fromThumb) {
 
         var _prevIndex = 0;
@@ -984,6 +1010,8 @@
                 } else {
                     _src = _this.items[index].getAttribute('data-download-url') !== 'false' && (_this.items[index].getAttribute('data-download-url') || _this.items[index].getAttribute('href') || _this.items[index].getAttribute('data-src'));
                 }
+
+                _src = _this._sanitizeDownloadUrl(_src);
 
                 if (_src) {
                     document.getElementById('lg-download').setAttribute('href', _src);

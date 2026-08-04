@@ -1511,7 +1511,7 @@
             loadRange, cloneRange, rangeStart, rangeEnd;
 
         function isSafeImageSource(source) {
-            var parser;
+            var parsedUrl;
 
             if (!source) {
                 return false;
@@ -1529,10 +1529,13 @@
             }
 
             // For absolute/protocol-relative URLs, allow only HTTP(S).
-            parser = document.createElement('a');
-            parser.href = source;
+            try {
+                parsedUrl = new URL(source, window.location.href);
+            } catch (e) {
+                return false;
+            }
 
-            return parser.protocol === 'http:' || parser.protocol === 'https:';
+            return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
         }
 
         function loadImages(imagesScope) {

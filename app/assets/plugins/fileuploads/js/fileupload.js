@@ -301,7 +301,7 @@
           imgTag.appendTo(render);
       } else {
           $('<i />').attr('class', 'dropify-font-file').appendTo(render);
-          $('<span class="dropify-extension" />').html(this.getFileType()).appendTo(render);
+          $('<span class="dropify-extension" />').text(this.getFileType()).appendTo(render);
       }
       this.preview.fadeIn();
   };

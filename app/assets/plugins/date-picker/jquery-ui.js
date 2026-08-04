@@ -304,7 +304,15 @@ $.Widget.prototype = {
 	},
 
 	_createWidget: function( options, element ) {
-		element = $( element || this.defaultElement || this )[ 0 ];
+		var rawElement = element;
+		if ( rawElement && rawElement.jquery ) {
+			rawElement = rawElement[ 0 ];
+		}
+		if ( !( rawElement &&
+			( rawElement.nodeType === 1 || rawElement.nodeType === 9 || rawElement.window === rawElement ) ) ) {
+			rawElement = null;
+		}
+		element = $( rawElement || this.defaultElement || this )[ 0 ];
 		this.element = $( element );
 		this.uuid = widgetUuid++;
 		this.eventNamespace = "." + this.widgetName + this.uuid;

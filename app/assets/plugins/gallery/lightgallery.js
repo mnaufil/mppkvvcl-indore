@@ -854,7 +854,19 @@
                     videoClass = 'lg-has-html5';
                 }
 
-                _this.___slide[index].insertAdjacentHTML('beforeend', '<div class="lg-video-cont ' + videoClass + ' "><div class="lg-video"><span class="lg-video-play"></span><img class="lg-object lg-has-poster" src="' + _poster + '" /></div></div>');
+                var videoCont = document.createElement('div');
+				videoCont.className = 'lg-video-cont ' + videoClass + ' ';
+				var video = document.createElement('div');
+                video.className = 'lg-video';
+                var play = document.createElement('span');
+                play.className = 'lg-video-play';
+                var posterImg = document.createElement('img');
+                posterImg.className = 'lg-object lg-has-poster';
+                posterImg.setAttribute('src', _poster);
+                video.appendChild(play);
+                video.appendChild(posterImg);
+                videoCont.appendChild(video);
+                _this.___slide[index].appendChild(videoCont);
             } else if (_isVideo) {
                 _this.___slide[index].insertAdjacentHTML('beforeend', '<div class="lg-video-cont "><div class="lg-video"></div></div>');
                 _lgUtils2.default.trigger(_this.el, 'hasVideo', {

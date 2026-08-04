@@ -816,11 +816,25 @@
             }
 
             _html = _this.items[index].getAttribute('data-html');
-            _src = _this.items[index].getAttribute('href') || _this.items[index].getAttribute('data-src');
+            var sanitizeUrl = function (url) {
+                if (!url) {
+                    return '';
+                }
+                var trimmed = ('' + url).replace(/^\s+|\s+$/g, '');
+				(/^(javascript|data|vbscript):/i.test(trimmed)) {
+                    return '';
+                }
+                if (/^(https?:)?\/\//i.test(trimmed) || trimmed.charAt(0) === '/' || /^[^:?#\s]+([/?#]|$)/.test(trimmed)) {
+                    return trimmed;
+                }
+                return '';
+            };
 
+			_src = sanitizeUrl(_this.items[index].getAttribute('href') || _this.items[index].getAttribute('data-src'));
             if (_this.items[index].getAttribute('data-responsive')) {
                 var srcItms = _this.items[index].getAttribute('data-responsive').split(',');
                 getResponsiveSrc(srcItms);
+				_src = sanitizeUrl(_src);
             }
 
             _srcset = _this.items[index].getAttribute('data-srcset');

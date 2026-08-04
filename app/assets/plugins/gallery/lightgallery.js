@@ -962,17 +962,23 @@
             return '';
         }
 
-        var lower = value.toLowerCase();
-        if (lower.indexOf('javascript:') === 0 || lower.indexOf('data:') === 0 || lower.indexOf('vbscript:') === 0) {
+        var parser = document.createElement('a');
+        parser.href = value;
+
+        var normalizedHref = (parser.href || '').trim();
+        if (!normalizedHref) {
             return '';
         }
 
-        var a = document.createElement('a');
-        a.href = value;
-        var protocol = (a.protocol || '').toLowerCase();
+        var protocol = (parser.protocol || '').toLowerCase();
 
-        if (!protocol || protocol === ':' || protocol === 'http:' || protocol === 'https:' || protocol === 'mailto:' || protocol === 'tel:') {
+        // Allow relative URLs (no explicit scheme)
+        if (!protocol || protocol === ':') {
             return value;
+        }
+
+        if (protocol === 'http:' || protocol === 'https:' || protocol === 'mailto:' || protocol === 'tel:') {
+            return normalizedHref;
         }
 
         return '';

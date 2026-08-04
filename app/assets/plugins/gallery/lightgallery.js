@@ -863,7 +863,13 @@
                     html: _html
                 });
             } else {
-                _this.___slide[index].insertAdjacentHTML('beforeend', '<div class="lg-img-wrap"><img class="lg-object lg-image" src="' + _src + '" /></div>');
+                var _imgWrap = document.createElement('div');
+				_imgWrap.setAttribute('class', 'lg-img-wrap');
+                var _imgEl = document.createElement('img');
+                _imgEl.setAttribute('class', 'lg-object lg-image');
+                _imgEl.setAttribute('src', _src);
+                _imgWrap.appendChild(_imgEl);
+                _this.___slide[index].appendChild(_imgWrap);
             }
 
             _lgUtils2.default.trigger(_this.el, 'onAferAppendSlide', {

@@ -1511,15 +1511,28 @@
             loadRange, cloneRange, rangeStart, rangeEnd;
 
         function isSafeImageSource(source) {
+            var parser;
+
             if (!source) {
                 return false;
             }
 
             source = source.replace(/^\s+|\s+$/g, '');
 
-            return /^(https?:)?\/\//i.test(source) ||
-                /^[\/\.]/.test(source) ||
-                !/^[a-z][a-z0-9+.-]*:/i.test(source);
+            if (!source) {
+                return false;
+            }
+
+            // Allow relative URLs that do not declare a scheme.
+            if (/^[\/\.?#]/.test(source) || !/^[a-z][a-z0-9+.-]*:/i.test(source)) {
+                return true;
+            }
+
+            // For absolute/protocol-relative URLs, allow only HTTP(S).
+            parser = document.createElement('a');
+            parser.href = source;
+
+            return parser.protocol === 'http:' || parser.protocol === 'https:';
         }
 
         function loadImages(imagesScope) {

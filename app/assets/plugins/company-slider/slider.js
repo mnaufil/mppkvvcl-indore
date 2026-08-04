@@ -1510,6 +1510,18 @@
         var _ = this,
             loadRange, cloneRange, rangeStart, rangeEnd;
 
+        function isSafeImageSource(source) {
+            if (!source) {
+                return false;
+            }
+
+            source = source.replace(/^\s+|\s+$/g, '');
+
+            return /^(https?:)?\/\//i.test(source) ||
+                /^[\/\.]/.test(source) ||
+                !/^[a-z][a-z0-9+.-]*:/i.test(source);
+        }
+
         function loadImages(imagesScope) {
 
             $('img[data-lazy]', imagesScope).each(function () {
@@ -1557,6 +1569,16 @@
                     _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
 
                 };
+
+                if (!isSafeImageSource(imageSource)) {
+                    image
+                        .removeAttr('data-lazy')
+                        .removeClass('slick-loading')
+                        .addClass('slick-lazyload-error');
+
+                    _.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+                    return;
+                }
 
                 imageToLoad.src = imageSource;
 

@@ -862,7 +862,8 @@
                 play.className = 'lg-video-play';
                 var posterImg = document.createElement('img');
                 posterImg.className = 'lg-object lg-has-poster';
-                posterImg.setAttribute('src', _poster);
+                var _safePoster = (/^(https?:\/\/|\/\/|\/(?!\/)|\.\.?\/|[^:/?#]+(?:[/?#]|$))/i).test(_poster || '') ? _poster : '';
+                posterImg.setAttribute('src', _safePoster);
                 video.appendChild(play);
                 video.appendChild(posterImg);
                 videoCont.appendChild(video);

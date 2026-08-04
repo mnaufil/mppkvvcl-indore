@@ -286,7 +286,7 @@
   Dropify.prototype.setPreview = function(previewable, src)
   {
       this.wrapper.removeClass('has-error').addClass('has-preview');
-      this.filenameWrapper.children('.dropify-filename-inner').html(this.file.name);
+      this.filenameWrapper.children('.dropify-filename-inner').text(this.file.name);
       var render = this.preview.children('.dropify-render');
   
       this.hideLoader();

@@ -8250,13 +8250,15 @@ $.extend( Datepicker.prototype, {
 	_updateAlternate: function( inst ) {
 		var altFormat, date, dateStr,
 			altField = this._get( inst, "altField" ),
-			isSafeAltField = typeof altField !== "string" || !/^\s*</.test( altField );
+			isSafeAltField = typeof altField !== "string" || !/^\s*</.test( altField ),
+			altFieldTarget;
 
 		if ( altField && isSafeAltField ) { // update alternate field too
 			altFormat = this._get( inst, "altFormat" ) || this._get( inst, "dateFormat" );
 			date = this._getDate( inst );
 			dateStr = this.formatDate( altFormat, date, this._getFormatConfig( inst ) );
-			$( altField ).val( dateStr );
+			altFieldTarget = typeof altField === "string" ? $( $.find( altField ) ) : $( altField );
+			altFieldTarget.val( dateStr );
 		}
 	},
 

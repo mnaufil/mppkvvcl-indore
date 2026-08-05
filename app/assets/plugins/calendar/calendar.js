@@ -1668,6 +1668,20 @@
   
     $.fn.clndr = function (options) {
       var clndrInstance;
+      var safeOptions = options;
+      var isSafeSelectorString = function (value) {
+        return typeof value === 'string' && !/^\s*</.test(value);
+      };
+  
+      if (safeOptions && $.isPlainObject(safeOptions)) {
+        safeOptions = $.extend({}, safeOptions);
+        if (safeOptions.calendarContainer != null &&
+            !(safeOptions.calendarContainer && safeOptions.calendarContainer.jquery) &&
+            !(safeOptions.calendarContainer && safeOptions.calendarContainer.nodeType === 1) &&
+            !isSafeSelectorString(safeOptions.calendarContainer)) {
+          safeOptions.calendarContainer = null;
+        }
+      }
   
       if (this.length > 1) {
         throw new Error(
@@ -1681,7 +1695,7 @@
       }
   
       if (!this.data('plugin_clndr')) {
-        clndrInstance = new Clndr(this, options);
+        clndrInstance = new Clndr(this, safeOptions);
   
         this.data('plugin_clndr', clndrInstance);
   

@@ -1671,8 +1671,11 @@
 		var args = Array.apply(null, arguments);
 		args.shift();
 		var internal_return;
-		this.each(function(){
-			var $this = (this && this.nodeType === 1) ? $(this) : (this && this.jquery ? this : $()),
+		var $collection = this.filter(function() {
+			return this && this.nodeType === 1;
+		});
+		$collection.each(function(){
+			var $this = $(this),
 				data = $this.data('datepicker'),
 				options = typeof option === 'object' && option;
 			if (!$this.length) return;

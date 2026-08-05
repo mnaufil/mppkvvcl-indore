@@ -260,8 +260,12 @@ $.Widget.prototype = {
 			} else {
 				resolvedElement = $.find( resolvedElement, document )[ 0 ] || $( defaultElement )[ 0 ];
 			}
+		} else if ( resolvedElement && resolvedElement.jquery ) {
+			resolvedElement = resolvedElement[ 0 ];
+		} else if ( resolvedElement && ( resolvedElement.nodeType || resolvedElement === window || resolvedElement === document ) ) {
+			resolvedElement = resolvedElement;
 		} else {
-			resolvedElement = $( resolvedElement )[ 0 ];
+			resolvedElement = $( defaultElement )[ 0 ];
 		}
 
 		element = resolvedElement;

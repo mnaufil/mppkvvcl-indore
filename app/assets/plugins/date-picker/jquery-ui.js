@@ -16184,11 +16184,17 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 
 	_createTrPlaceholder: function( sourceTr, targetTr ) {
 		var that = this,
-			safeTargetTr;
+			safeTargetTr,
+			targetNode;
 
 		if ( targetTr && targetTr.jquery ) {
-			safeTargetTr = targetTr;
-		} else if ( targetTr && targetTr.nodeType === 1 ) {
+			targetNode = targetTr[ 0 ];
+			safeTargetTr = targetNode && targetNode.nodeType === 1 &&
+				targetNode.nodeName && targetNode.nodeName.toLowerCase() === "tr" ?
+				targetTr.eq( 0 ) :
+				$( "<tr>", that.document[ 0 ] );
+		} else if ( targetTr && targetTr.nodeType === 1 &&
+			targetTr.nodeName && targetTr.nodeName.toLowerCase() === "tr" ) {
 			safeTargetTr = $( targetTr );
 		} else {
 			safeTargetTr = $( "<tr>", that.document[ 0 ] );

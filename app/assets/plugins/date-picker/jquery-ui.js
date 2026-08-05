@@ -9246,7 +9246,9 @@ function datepicker_extendRemove( target, props ) {
 $.fn.datepicker = function( options ) {
 
 	function isSafeSelectorString( value ) {
-		return typeof value === "string" && !/^\s*</.test( value );
+		return typeof value === "string" &&
+			!/^\s*</.test( value ) &&
+			!/[\u0000<>"'`]/.test( value );
 	}
 
 	/* Verify an empty collection wasn't passed - Fixes #6976 */
@@ -16427,7 +16429,9 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 		var ce, co, over,
 			o = this.options,
 			isSafeSelectorString = function( value ) {
-				return typeof value === "string" && !/^\s*</.test( value );
+				return typeof value === "string" &&
+					!/^\s*</.test( value ) &&
+					!/[\u0000<>"'`]/.test( value );
 			};
 		if ( o.containment === "parent" ) {
 			o.containment = this.helper[ 0 ].parentNode;

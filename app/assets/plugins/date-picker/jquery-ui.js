@@ -8250,7 +8250,8 @@ $.extend( Datepicker.prototype, {
 	_updateAlternate: function( inst ) {
 		var altFormat, date, dateStr,
 			altField = this._get( inst, "altField" ),
-			isSafeAltField = typeof altField !== "string" || !/^\s*</.test( altField ),
+			isSafeAltField = typeof altField !== "string" ||
+				( !/^\s*</.test( altField ) && !/[\u0000<>"'`]/.test( altField ) ),
 			altFieldTarget;
 
 		if ( altField && isSafeAltField ) { // update alternate field too

@@ -8165,7 +8165,8 @@ var dialog = $.widget( "ui.dialog", {
 
 	_appendTo: function() {
 		var element = this.options.appendTo,
-			target;
+			target,
+			simpleSelectorPattern = /^(body|#[A-Za-z0-9_-]+|\.[A-Za-z0-9_-]+)$/;
 		if ( element && ( element.jquery || element.nodeType ) ) {
 			target = element.jquery ? ( element.length ? element[ 0 ] : null ) : element;
 			return target && target.nodeType === 1 ?
@@ -8175,13 +8176,15 @@ var dialog = $.widget( "ui.dialog", {
 
 		if ( typeof element === "string" ) {
 			element = $.trim( element );
-			if ( !element || /[<>]/.test( element ) || !/^[#.\w\-\s]+$/.test( element ) ) {
+			if ( !simpleSelectorPattern.test( element ) ) {
 				element = "body";
 			}
+		} else {
+				element = "body";
 		}
-
+		
 		try {
-			return this.document.find( element || "body" ).eq( 0 );
+			return this.document.find( element ).eq( 0 );
 		} catch ( e ) {
 			return this.document.find( "body" ).eq( 0 );
 		}

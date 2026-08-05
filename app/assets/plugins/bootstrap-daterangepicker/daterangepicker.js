@@ -1658,7 +1658,9 @@
     };
 
     function isSafeSelectorString(value) {
-        return typeof value === 'string' && !/^\s*</.test(value);
+        return typeof value === 'string' &&
+            !/^\s*</.test(value) &&
+            !/[\u0000<>"'`]/.test(value);
     }
 
     function sanitizeParentElOption(parentEl, fallback) {

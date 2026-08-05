@@ -1638,7 +1638,9 @@
 	var old = $.fn.bootstrapdatepicker;
 
 	function isSafeSelectorString(value) {
-		return typeof value === 'string' && !/^\s*</.test(value);
+		return typeof value === 'string' &&
+			!/^\s*</.test(value) &&
+			!/[\u0000<>"'`]/.test(value);
 	}
 
 	function sanitizeContainerOption(container, fallback) {

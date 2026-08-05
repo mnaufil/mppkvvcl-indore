@@ -1655,12 +1655,20 @@
 		if (typeof inputs === 'string') {
 			return isSafeSelectorString(inputs) ? inputs : safeFallback;
 		}
-		if (inputs.jquery) return inputs.toArray();
+		if (inputs.jquery) {
+			return $.map(inputs.toArray(), function(input) {
+				return input && input.nodeType === 1 ? input : null;
+			});
+		}
 		if (Array.isArray(inputs)) {
 			return $.map(inputs, function(input) {
 				if (!input) return null;
 				if (input.nodeType === 1) return input;
-				if (input.jquery && input.length) return input.toArray();
+				if (input.jquery && input.length) {
+					return $.map(input.toArray(), function(node) {
+						return node && node.nodeType === 1 ? node : null;
+					});
+				}
 				return null;
 			});
 		}

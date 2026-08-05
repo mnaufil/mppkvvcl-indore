@@ -16181,12 +16181,21 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 	},
 
 	_createTrPlaceholder: function( sourceTr, targetTr ) {
-		var that = this;
+		var that = this,
+			safeTargetTr;
+
+		if ( targetTr && targetTr.jquery ) {
+			safeTargetTr = targetTr;
+		} else if ( targetTr && targetTr.nodeType === 1 ) {
+			safeTargetTr = $( targetTr );
+		} else {
+			safeTargetTr = $( "<tr>", that.document[ 0 ] );
+		}
 
 		sourceTr.children().each( function() {
 			$( "<td>&#160;</td>", that.document[ 0 ] )
 				.attr( "colspan", $( this ).attr( "colspan" ) || 1 )
-				.appendTo( targetTr );
+				.appendTo( safeTargetTr );
 		} );
 	},
 

@@ -8167,9 +8167,9 @@ var dialog = $.widget( "ui.dialog", {
 		var element = this.options.appendTo,
 			target;
 		if ( element && ( element.jquery || element.nodeType ) ) {
-			target = element.jquery ? element[ 0 ] : element;
+			target = element.jquery ? ( element.length ? element[ 0 ] : null ) : element;
 			return target && target.nodeType === 1 ?
-				$( target ) :
+				this.document.find( target ).eq( 0 ) :
 				this.document.find( "body" ).eq( 0 );
 		}
 

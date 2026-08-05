@@ -1198,10 +1198,12 @@
         }
 
         opts = isPlainObjectOptions(opts) ? $.extend({}, opts) : {};
-        if (typeof opts.container === "string" && /^\s*</.test(opts.container)) {
+        if (typeof opts.container === "string" &&
+            (/^\s*</.test(opts.container) || /[\u0000<>"'`]/.test(opts.container))) {
             opts.container = "body";
         }
-        if (typeof opts.appendTo === "string" && /^\s*</.test(opts.appendTo)) {
+        if (typeof opts.appendTo === "string" &&
+            (/^\s*</.test(opts.appendTo) || /[\u0000<>"'`]/.test(opts.appendTo))) {
             opts.appendTo = "body";
         }
 

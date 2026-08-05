@@ -1197,7 +1197,13 @@
             return returnValue;
         }
 
-        opts = isPlainObjectOptions(opts) ? opts : {};
+        opts = isPlainObjectOptions(opts) ? $.extend({}, opts) : {};
+        if (typeof opts.container === "string" && /^\s*</.test(opts.container)) {
+            opts.container = "body";
+        }
+        if (typeof opts.appendTo === "string" && /^\s*</.test(opts.appendTo)) {
+            opts.appendTo = "body";
+        }
 
         // Initializing a new instance of spectrum
         return this.spectrum("destroy").each(function () {

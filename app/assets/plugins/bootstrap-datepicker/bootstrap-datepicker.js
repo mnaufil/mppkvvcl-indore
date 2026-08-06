@@ -95,19 +95,8 @@
 		this.viewDate = this.o.defaultViewDate;
 		this.focusDate = null;
 
-		if (element && element.jquery) {
-			this.element = element;
-		}
-		else if (element && element.nodeType === 1) {
-			this.element = $(element);
-		}
-		else if (typeof element === 'string') {
-			var resolvedElement = $.find(element)[0];
-			this.element = resolvedElement ? $(resolvedElement) : $();
-		}
-		else {
-			this.element = $();
-		}
+		var sanitizedElement = sanitizeElementOption(element);
+		this.element = sanitizedElement;
 		this.isInput = this.element.is('input');
 		this.inputField = this.isInput ? this.element : this.element.find('input');
 		this.component = this.element.hasClass('date') ? this.element.find('.add-on, .input-group-addon, .btn') : false;
@@ -1649,6 +1638,23 @@
 		if (container && container.nodeType === 1) return container;
 		if (isSafeSelectorString(container)) return container;
 		return fallback;
+	}
+
+	function sanitizeElementOption(element) {
+		if (!element) return $();
+		if (element.jquery) {
+			return element.filter(function() {
+				return this && this.nodeType === 1;
+			});
+		}
+		if (element.nodeType === 1) {
+			return $(element);
+		}
+		if (typeof element === 'string' && isSafeSelectorString(element)) {
+			var resolvedElement = $.find(element)[0];
+			return resolvedElement && resolvedElement.nodeType === 1 ? $(resolvedElement) : $();
+		}
+		return $();
 	}
 
 	function sanitizeInputsOption(inputs, $context) {

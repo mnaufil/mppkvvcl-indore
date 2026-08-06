@@ -5708,7 +5708,7 @@ $.fn.datepicker = function(options){
 	function isSafeSelectorString(value) {
 		return typeof value === "string" &&
 			!/^\s*</.test(value) &&
-			!/[\u0000<>"'`]/.test(value);
+			!/[\u0000<>"'`(){}]/.test(value);
 	}
 
 	/* Verify an empty collection wasn't passed - Fixes #6976 */

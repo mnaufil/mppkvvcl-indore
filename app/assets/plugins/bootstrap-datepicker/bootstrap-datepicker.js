@@ -1651,8 +1651,13 @@
 			return $(element);
 		}
 		if (typeof element === 'string' && isSafeSelectorString(element)) {
-			var resolvedElement = $.find(element)[0];
-			return resolvedElement && resolvedElement.nodeType === 1 ? $(resolvedElement) : $();
+			try {
+				var resolvedElements = $.find(element);
+				var resolvedElement = resolvedElements && resolvedElements[0];
+				return resolvedElement && resolvedElement.nodeType === 1 ? $(resolvedElement) : $();
+			} catch (e) {
+				return $();
+			}
 		}
 		return $();
 	}

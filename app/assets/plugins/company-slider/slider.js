@@ -1567,7 +1567,7 @@
             $('img[data-lazy]', imagesScope).each(function () {
 
                 var image = $(this),
-                    imageSource = $(this).attr('data-lazy'),
+                    imageSource = ($(this).attr('data-lazy') || '').replace(/^\s+|\s+$/g, ''),
                     imageSrcSet = $(this).attr('data-srcset'),
                     imageSizes = $(this).attr('data-sizes') || _.$slider.attr('data-sizes'),
                     imageToLoad = document.createElement('img');

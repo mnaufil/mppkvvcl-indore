@@ -14479,8 +14479,8 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 		if(!(/^(document|window|parent)$/).test(o.containment)) {
 			var containmentElement;
 			if ( typeof o.containment === "string" ) {
-				// Only allow CSS selector strings; reject HTML-like input.
-				if ( /</.test(o.containment) ) {
+				// Only allow CSS selector strings; reject HTML-like/unsafe input.
+				if ( /^\s*</.test(o.containment) || /[\u0000<>"'`]/.test(o.containment) ) {
 					containmentElement = null;
 				} else {
 					try {

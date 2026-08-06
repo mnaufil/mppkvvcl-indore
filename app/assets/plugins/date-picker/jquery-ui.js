@@ -16186,7 +16186,8 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 	_createTrPlaceholder: function( sourceTr, targetTr ) {
 		var that = this,
 			safeTargetTr,
-			targetNode;
+			targetNode,
+			safeTargetNode;
 
 		if ( targetTr && targetTr.jquery ) {
 			targetNode = targetTr[ 0 ];
@@ -16201,10 +16202,17 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 			safeTargetTr = $( "<tr>", that.document[ 0 ] );
 		}
 
+		safeTargetNode = safeTargetTr && safeTargetTr[ 0 ] &&
+			safeTargetTr[ 0 ].nodeType === 1 &&
+			safeTargetTr[ 0 ].nodeName &&
+			safeTargetTr[ 0 ].nodeName.toLowerCase() === "tr" ?
+			safeTargetTr[ 0 ] :
+			$( "<tr>", that.document[ 0 ] )[ 0 ];
+
 		sourceTr.children().each( function() {
 			$( "<td>&#160;</td>", that.document[ 0 ] )
 				.attr( "colspan", $( this ).attr( "colspan" ) || 1 )
-				.appendTo( safeTargetTr );
+				.appendTo( safeTargetNode );
 		} );
 	},
 

@@ -1538,6 +1538,30 @@
             return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:';
         }
 
+        function isSafeSrcSet(srcsetValue) {
+            var candidates, i, candidate, candidateUrl;
+
+            if (!srcsetValue) {
+                return true;
+            }
+
+            candidates = srcsetValue.split(',');
+
+            for (i = 0; i < candidates.length; i++) {
+                candidate = candidates[i].replace(/^\s+|\s+$/g, '');
+                if (!candidate) {
+                    return false;
+                }
+
+                candidateUrl = candidate.split(/\s+/)[0];
+                if (!isSafeImageSource(candidateUrl)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         function loadImages(imagesScope) {
 
             $('img[data-lazy]', imagesScope).each(function () {
@@ -1586,7 +1610,7 @@
 
                 };
 
-                if (!isSafeImageSource(imageSource)) {
+                if (!isSafeImageSource(imageSource) || !isSafeSrcSet(imageSrcSet)) {
                     image
                         .removeAttr('data-lazy')
                         .removeClass('slick-loading')

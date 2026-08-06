@@ -1003,23 +1003,22 @@
             return '';
         }
 
-        var parser = document.createElement('a');
-        parser.href = value;
-
-        var normalizedHref = (parser.href || '').trim();
-        if (!normalizedHref) {
-            return '';
-        }
-
-        var protocol = (parser.protocol || '').toLowerCase();
-
-        // Allow relative URLs (no explicit scheme)
-        if (!protocol || protocol === ':') {
+        // Keep relative URLs as-is (same behavior as before) after trimming.
+        // A leading scheme-like token indicates an absolute/special URL.
+        var hasExplicitScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value);
+        if (!hasExplicitScheme) {
             return value;
         }
 
-        if (protocol === 'http:' || protocol === 'https:' || protocol === 'mailto:' || protocol === 'tel:') {
-            return normalizedHref;
+        try {
+            var parsed = new URL(value, window.location.href);
+            var protocol = (parsed.protocol || '').toLowerCase();
+
+            if (protocol === 'http:' || protocol === 'https:' || protocol === 'mailto:' || protocol === 'tel:') {
+                return (parsed.href || '').trim();
+            }
+        } catch (e) {
+            return '';
         }
 
         return '';

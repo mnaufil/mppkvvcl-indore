@@ -821,7 +821,7 @@
                     return '';
                 }
                 var trimmed = ('' + url).replace(/^\s+|\s+$/g, '');
-				(/^(javascript|data|vbscript):/i.test(trimmed)) {
+				if (/^(javascript|data|vbscript):/i.test(trimmed)) {
                     return '';
                 }
                 if (/^(https?:)?\/\//i.test(trimmed) || trimmed.charAt(0) === '/' || /^[^:?#\s]+([/?#]|$)/.test(trimmed)) {

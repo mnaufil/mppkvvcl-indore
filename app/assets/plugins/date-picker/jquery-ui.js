@@ -16476,15 +16476,19 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 
 		if ( !( /^(document|window|parent)$/ ).test( o.containment ) ) {
 			if ( typeof o.containment === "string" && isSafeSelectorString( o.containment ) ) {
-				ce = $.find( o.containment )[ 0 ];
+				try {
+					ce = $.find( o.containment )[ 0 ];
+				} catch ( e ) {
+					ce = null;
+				}
 			} else if ( o.containment && o.containment.jquery ) {
 				ce = o.containment[ 0 ];
-				ce = ce && ce.nodeType === 1 ? ce : null;
 			} else if ( o.containment && o.containment.nodeType === 1 ) {
 				ce = o.containment;
 			} else {
 				ce = null;
 			}
+			ce = ce && ce.nodeType === 1 ? ce : null;
 			if ( !ce ) {
 				return;
 			}

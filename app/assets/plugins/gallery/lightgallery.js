@@ -1059,7 +1059,10 @@
 
                 _src = _this._sanitizeDownloadUrl(_src);
 
-                if (_src) {
+                // Defense in depth: only allow safe relative URLs or explicit safe schemes at sink time.
+                var _isSafeDownloadHref = !!_src && (/^(?:[\/#?]|\.{1,2}\/)/.test(_src) || /^(?:https?:|mailto:|tel:)/i.test(_src));
+
+                if (_isSafeDownloadHref) {
                     document.getElementById('lg-download').setAttribute('href', _src);
                     _lgUtils2.default.removeClass(_this.outer, 'lg-hide-download');
                 } else {

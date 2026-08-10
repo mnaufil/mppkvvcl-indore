@@ -14492,7 +14492,7 @@ var sortable = $.widget("ui.sortable", $.ui.mouse, {
 			} else if ( o.containment && o.containment.nodeType === 1 ) {
 				containmentElement = o.containment;
 			} else if ( o.containment && o.containment.jquery ) {
-				containmentElement = o.containment[0];
+				containmentElement = (o.containment[0] && o.containment[0].nodeType === 1) ? o.containment[0] : null;
 			} else {
 				containmentElement = null;
 			}

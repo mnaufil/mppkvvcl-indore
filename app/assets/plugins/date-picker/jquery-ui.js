@@ -16479,6 +16479,7 @@ var widgetsSortable = $.widget( "ui.sortable", $.ui.mouse, {
 				ce = $.find( o.containment )[ 0 ];
 			} else if ( o.containment && o.containment.jquery ) {
 				ce = o.containment[ 0 ];
+				ce = ce && ce.nodeType === 1 ? ce : null;
 			} else if ( o.containment && o.containment.nodeType === 1 ) {
 				ce = o.containment;
 			} else {
